@@ -7531,8 +7531,6 @@ public final class Settings {
                 "camera_double_tap_power_gesture_disabled";
 
         /**
-
-        /**
          * Behavior of twilight on the device.
          * One of {@link #TWILIGHT_MODE_LOCKED_OFF}, {@link #TWILIGHT_MODE_LOCKED_ON}
          * or {@link #TWILIGHT_MODE_AUTO}.
@@ -7624,6 +7622,12 @@ public final class Settings {
          * @hide
          */
         public static final String QS_TILES = "sysui_qs_tiles";
+
+        /**
+         * Whether to display the ADB notification.
+         * @hide
+         */
+        public static final String ADB_NOTIFY = "adb_notify";
 
         /**
          * This are the settings to be backed up.
