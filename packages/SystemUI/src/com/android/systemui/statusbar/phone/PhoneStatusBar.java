@@ -1078,6 +1078,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         } else {
             addAppCircleSidebar();
             addGestureAnywhereView();
+            addSidebarView();
         }
 
         try {
