@@ -64,5 +64,8 @@
 
     <string name="def_ime_layout">**arrow_left**,,,|**arrow_up**,,,|**arrow_down**,,,|**arrow_right**,,,</string>
     <string name="def_navbar_layout">**back**,,,|**home**,,,|**recents**,,,</string>
+    
+    <!-- Error description on theme switch with ligtsensor mode enabled -->
+    <string name="theme_auto_switch_mode_error">Automatic light condition change mode is enabled. Manual switching is not possible.</string>
 
 </resources>
