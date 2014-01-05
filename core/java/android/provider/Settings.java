@@ -3445,6 +3445,12 @@ public final class Settings {
          * @hide
          */
         public static final String STATUSBAR_CLOCK_DATE_FORMAT = "statusbar_clock_date_format";
+        
+        /**
+		 * Settings for clock font style
+		 * @hide
+		 */
+		public static final String STATUSBAR_CLOCK_FONT_STYLE = "statusbar_clock_font_style";
 		
 		/**
 		 *  Enable statusbar double tap gesture on to put device to sleep
