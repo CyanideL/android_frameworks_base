@@ -10584,6 +10584,12 @@ public final class Settings {
        public static final String HALO_UNLOCK_PING = "halo_unlock_ping";
 
         /**
+         * HALO color, default is 0xffbbbbbb (normal)
+         * @hide
+         */
+        public static final String HALO_COLOR = "halo_color";
+
+        /**
          * This are the settings to be backed up.
          *
          * NOTE: Settings are backed up and restored in the order they appear
