@@ -87,7 +87,7 @@ public class PAPieControlTile extends QSTile<QSTile.BooleanState> {
         state.label = mContext.getString(R.string.quick_settings_pa_pie_on);
 	} else {
         state.icon = ResourceIcon.get(R.drawable.ic_qs_pie_global_off);
-	state.label = mContext.getString(R.string.quick_settings_pa_pie_off);
+	    state.label = mContext.getString(R.string.quick_settings_pa_pie_off);
 	    }
 	}
 
