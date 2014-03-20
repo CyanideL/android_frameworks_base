@@ -1189,6 +1189,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             // no window manager? good luck with that
         }
 
+        addAppCircleSidebar();
+
         mAssistManager = SystemUIFactory.getInstance().createAssistManager(this, context);
 
         // figure out which pixel-format to use for the status bar.
