@@ -561,4 +561,9 @@
     <!-- Screen pinning inner nav bar outer circle size -->
     <dimen name="screen_pinning_nav_highlight_outer_size">84dp</dimen>
 
+    <!-- App circle sidebar -->
+    <dimen name="app_sidebar_trigger_width">12dip</dimen>
+    <dimen name="app_sidebar_listview_width">160dp</dimen>
+    <dimen name="app_sidebar_icon_width">72dp</dimen>
+    <dimen name="app_sidebar_icon_height">72dp</dimen>
 </resources>
