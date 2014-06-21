@@ -4451,6 +4451,12 @@ public final class Settings {
          */
         public static final String DISPLAY_TEMPERATURE_NIGHT = "display_temperature_night";
 
+         /**
+         * Disable Immersive Message
+         * @hide
+         */
+        public static final String DISABLE_IMMERSIVE_MESSAGE = "disable_immersive_message";
+
         /**
          * show the membar in recents
          *  @hide
