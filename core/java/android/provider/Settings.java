@@ -2322,6 +2322,19 @@ public final class Settings {
                 "pie_buttons_config_second_layer";
         
         /**
+         * Pie trigger sensitivity
+         * @hide
+         */
+        public static final String PIE_TRIGGER_SENSITIVITY = "pie_trigger_sensitivity";
+        
+        /**
+         * Whether pie triggers on the left and right edge should be reduced if IME shows up.
+         * Default = 1 (enabled)
+         * @hide
+         */
+        public static final String PIE_IME_CONTROL = "pie_ime_control";
+        
+        /**
          * Show when WiFi or data mobile is sending/receiving data
          * @hide
          */
@@ -4806,13 +4819,6 @@ public final class Settings {
          * @hide
          */
         public static final String RECENTS_USE_OMNISWITCH = "recents_use_omniswitch";
-
-        /**
-         * Whether pie triggers on the left and right edge should be reduced if IME shows up.
-         * Default = 1 (enabled)
-         * @hide
-         */
-        public static final String PIE_IME_CONTROL = "pie_ime_control";
 
         /**
          * Whether the notification light will be allowed when in zen mode during downtime
