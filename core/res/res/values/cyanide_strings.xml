@@ -186,4 +186,9 @@
     <string name="custom_lock_to_app_toast">To unpin this screen, assign and use the Unpin App action in Navigation Bar settings.</string>
     <string name="custom_lock_to_app_toast_accessible">To unpin this screen, use the Unpin App action in the Navbar</string>
 
+    <!-- Setting confirmation dialog strings. Shown when any UI interaction can be modified by user input -->
+    <string name="setting_confirmation_ask_me_later">Ask later</string>
+    <string name="setting_confirmation_yes">Yes</string>
+    <string name="setting_confirmation_no">No</string>
+
 </resources>
