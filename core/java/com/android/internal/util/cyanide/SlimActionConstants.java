@@ -14,9 +14,9 @@
 * limitations under the License.
 */
 
-package com.android.internal.util.slim;
+package com.android.internal.util.cyanide;
 
-public class ActionConstants {
+public class SlimActionConstants {
 
     // key must fit with the values arrays from Settings to use
     // SlimActions.java actions

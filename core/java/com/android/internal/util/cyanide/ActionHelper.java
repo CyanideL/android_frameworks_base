@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package com.android.internal.util.slim;
+package com.android.internal.util.cyanide;
 
 import android.content.Context;
 import android.content.Intent;
@@ -36,7 +36,7 @@ public class ActionHelper {
     private static final String SYSTEMUI_METADATA_NAME = "com.android.systemui";
 
     // General methods to retrieve the correct icon for the respective action.
-    public static Drawable getActionIconImage(Context context,
+    public static Drawable getButtonIconImage(Context context,
             String clickAction, String customIcon) {
         int resId = -1;
         Drawable d = null;

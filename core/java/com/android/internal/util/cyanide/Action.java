@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package com.android.internal.util.slim;
+package com.android.internal.util.cyanide;
 
 import android.app.Activity;
 import android.app.ActivityManagerNative;
