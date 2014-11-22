@@ -2208,6 +2208,9 @@
     <!-- Show the next-alarm as a zen exit condition if it occurs in the next n hours. -->
     <integer name="config_next_alarm_condition_lookahead_threshold_hrs">12</integer>
 
+    <!-- Setting to false will disable CM's IME switcher implementation for tablets -->
+    <bool name="config_show_cmIMESwitcher">true</bool>
+
     <!-- Show downtime as a zen exit condition if it starts in the next n hours. -->
     <integer name="config_downtime_condition_lookahead_threshold_hrs">4</integer>
 
@@ -2312,4 +2315,5 @@
     <integer name="config_dayColorTemperature">6500</integer>
     <integer name="config_nightColorTemperature">4500</integer>
     <integer name="config_outdoorAmbientLux">9000</integer>
+
 </resources>
