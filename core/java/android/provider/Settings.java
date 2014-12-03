@@ -4298,7 +4298,7 @@ public final class Settings {
          */
         public static final String STATUS_BAR_BATTERY_STATUS_CHARGING_USE_CIRCE_FILL = "status_bar_battery_status_use_circle_fill_animation";
 
-        /** 
+        /**
          * Whether to allow one finger quick settings expansion on the right side of the statusbar.
          * @hide
          */
@@ -4480,6 +4480,12 @@ public final class Settings {
 		 * @hide
 		 */
 		public static final String STATUS_BAR_CYANIDE_LOGO_COLOR_DARK_MODE = "status_bar_cyanide_logo_color_dark_mode";
+
+        /**
+         * Quick Settings Smart Pulldown
+         * @hide
+         */
+        public static final String QS_SMART_PULLDOWN = "qs_smart_pulldown";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
