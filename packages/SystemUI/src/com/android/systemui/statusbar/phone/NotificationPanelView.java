@@ -191,6 +191,7 @@ public class NotificationPanelView extends PanelView implements
     private SettingsObserver mSettingsObserver;
 
     private int mOneFingerQuickSettingsIntercept;
+    private int mQsSmartPullDown;
     private boolean mDoubleTapToSleepEnabled;
     private int mStatusBarHeaderHeight;
     private GestureDetector mDoubleTapGesture;
@@ -730,6 +731,14 @@ public class NotificationPanelView extends PanelView implements
                 && event.getPointerCount() == 2);
         boolean oneFingerQsOverride = event.getActionMasked() == MotionEvent.ACTION_DOWN
                 && shouldQuickSettingsIntercept(event.getX(), event.getY(), -1, false);
+
+        if (mQsSmartPullDown == 1 && !mStatusBar.hasActiveClearableNotifications()
+                || mQsSmartPullDown == 2 && !mStatusBar.hasActiveVisibleNotifications()
+                || (mQsSmartPullDown == 3 && (!mStatusBar.hasActiveVisibleNotifications()
+                        || !mStatusBar.hasActiveClearableNotifications()))) {
+            oneFingerQsOverride = true;
+        }
+
         if ((twoFingerQsEvent || oneFingerQsOverride)
                 && event.getY(event.getActionIndex()) < mStatusBarMinHeight) {
             mQsExpandImmediate = true;
@@ -2100,6 +2109,9 @@ public class NotificationPanelView extends PanelView implements
                     Settings.System.QS_ICON_COLOR), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_TEXT_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_SMART_PULLDOWN),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -2136,6 +2148,9 @@ public class NotificationPanelView extends PanelView implements
                     Settings.System.QS_QUICK_PULLDOWN, 0, UserHandle.USER_CURRENT);
             mDoubleTapToSleepEnabled = Settings.System.getIntForUser(resolver,
                     Settings.System.DOUBLE_TAP_SLEEP_GESTURE, 1, UserHandle.USER_CURRENT) == 1;
+            mQsSmartPullDown = Settings.System.getIntForUser(
+                    resolver, Settings.System.QS_SMART_PULLDOWN, 0,
+                    UserHandle.USER_CURRENT);
 			mQSBackgroundColor = Settings.System.getInt(
                     resolver, Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
             setQSBackgroundColor();
