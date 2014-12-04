@@ -2917,6 +2917,12 @@ public final class Settings {
         public static final String NAVBAR_FORCE_ENABLE = "navbar_force_enable";
 
         /**
+         * Enable HW keys
+         * @hide
+         */
+        public static final String ENABLE_HW_KEYS = "enable_hw_keys";
+
+        /**
          * Date format string
          *   mm/dd/yyyy
          *   dd/mm/yyyy

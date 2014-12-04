@@ -75,7 +75,7 @@ public class NavBarTile extends QSTile<QSTile.BooleanState> {
 
  protected void toggleState() {
          Settings.System.putInt(mContext.getContentResolver(),
-                        Settings.System.DEV_FORCE_SHOW_NAVBAR, !navbarEnabled() ? 1 : 0);
+                        Settings.System.NAVBAR_FORCE_ENABLE, !navbarEnabled() ? 1 : 0);
     }
 
 
@@ -83,17 +83,17 @@ public class NavBarTile extends QSTile<QSTile.BooleanState> {
     protected void handleUpdateState(BooleanState state, Object arg) {
         state.visible = true;
 	if (navbarEnabled()) {
-        state.iconId = R.drawable.ic_qs_navbar_on;
+        state.icon = ResourceIcon.get(R.drawable.ic_qs_navbar_on);
         state.label = mContext.getString(R.string.quick_settings_navbar_on);
 	} else {
-        state.iconId = R.drawable.ic_qs_navbar_off;
-	state.label = mContext.getString(R.string.quick_settings_navbar_off);
+        state.icon = ResourceIcon.get(R.drawable.ic_qs_navbar_off);
+		state.label = mContext.getString(R.string.quick_settings_navbar_off);
 	    }
 	}
 
     private boolean navbarEnabled() {
         return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.DEV_FORCE_SHOW_NAVBAR, 1) == 1;
+                Settings.System.NAVBAR_FORCE_ENABLE, 1) == 1;
     }
 
     @Override
@@ -119,7 +119,7 @@ public class NavBarTile extends QSTile<QSTile.BooleanState> {
 
         public void startObserving() {
             mContext.getContentResolver().registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.DEV_FORCE_SHOW_NAVBAR),
+                    Settings.System.getUriFor(Settings.System.NAVBAR_FORCE_ENABLE),
                     false, this);
         }
 
