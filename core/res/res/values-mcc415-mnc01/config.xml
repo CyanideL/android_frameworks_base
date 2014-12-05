@@ -18,4 +18,5 @@
 -->
 <resources>
     <bool name="config_use_sim_language_file">false</bool>
+
 </resources>
