@@ -16,6 +16,8 @@
 
 package android.provider;
 
+import android.annotation.ChaosLab;
+import android.annotation.ChaosLab.Classification;
 import android.annotation.SdkConstant;
 import android.annotation.SdkConstant.SdkConstantType;
 import android.annotation.SystemApi;
@@ -3536,6 +3538,57 @@ public final class Settings {
 		public static final String APP_CIRCLE_BAR_SHOW_TRIGGER = "app_circle_bar_show_trigger";
 		
 		/**
+         * Whether to use gesture anywhere feature.
+         * @hide
+         */
+        @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_FIELD)
+        public static final String GESTURE_ANYWHERE_ENABLED = "gesture_anywhere_enabled";
+
+        /**
+         * Position of gesture anywhere trigger.  Value is either Gravity.LEFT or Gravity.RIGHT
+         * @hide
+         */
+        @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_FIELD)
+        public static final String GESTURE_ANYWHERE_POSITION = "gesture_anywhere_position";
+
+        /**
+         * Last time gestures were altered.
+         * Used to determine if gestures should be reloaded by the view.
+         * @hide
+         */
+        @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_FIELD)
+        public static final String GESTURE_ANYWHERE_CHANGED = "gesture_anywhere_changed";
+
+        /**
+         * Width of the gesture anywhere trigger.
+         * @hide
+         */
+        @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_FIELD)
+        public static final String GESTURE_ANYWHERE_TRIGGER_WIDTH = "gesture_anywhere_trigger_width";
+
+        /**
+         * Position of gesture anywhere trigger.
+         * @hide
+         */
+        @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_FIELD)
+        public static final String GESTURE_ANYWHERE_TRIGGER_TOP = "gesture_anywhere_trigger_top";
+
+        /**
+         * Height of the gesture anywhere trigger.
+         * @hide
+         */
+        @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_FIELD)
+        public static final String GESTURE_ANYWHERE_TRIGGER_HEIGHT = "gesture_anywhere_trigger_height";
+
+        /**
+         * Whether to display the gesture anywhere trigger region or not.
+         * Used internally for showing the trigger in settings so user can see its placement
+         * @hide
+         */
+        @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_FIELD)
+        public static final String GESTURE_ANYWHERE_SHOW_TRIGGER = "gesture_anywhere_show_trigger";
+		
+		/**
 		 *  Enable statusbar double tap gesture on to put device to sleep
          * @hide
          */
@@ -3736,7 +3789,6 @@ public final class Settings {
         public static final String ANIMATION_CONTROLS_REVERSE_EXIT = "animation_controls_reverse_exit";		
 		
         /**		
->>>>>>> 123b935... AOKP custom system animations (1/2)
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
