@@ -2193,8 +2193,14 @@ public final class Settings {
          * Whether shorcuts open with normal or longpress
          * @hide
          */
-        public static final String LOCKSCREEN_SHORTCUTS_LONGPRESS =
-                "lockscreen_shortcuts_longpress";
+        public static final String LOCKSCREEN_SHORTCUTS_LONGPRESS = "lockscreen_shortcuts_longpress";
+        
+        /**
+         * Defines the status and navigation bar color is battery safe mode is enabled.
+         *
+         * @hide
+         */
+        public static final String BATTERY_SAVER_MODE_COLOR = "battery_save_mode_color";
 
         /**
          * Whether to allow one finger quick settings expansion on the right side of the statusbar.
