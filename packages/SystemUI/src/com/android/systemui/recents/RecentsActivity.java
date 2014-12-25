@@ -49,6 +49,7 @@ import com.android.systemui.recents.model.RecentsTaskLoader;
 import com.android.systemui.recents.model.SpaceNode;
 import com.android.systemui.recents.model.Task;
 import com.android.systemui.recents.model.TaskStack;
+import com.android.systemui.recents.RecentsConfiguration;
 import com.android.systemui.recents.views.DebugOverlayView;
 import com.android.systemui.recents.views.RecentsView;
 import com.android.systemui.recents.views.SystemBarScrimViews;
@@ -274,6 +275,20 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
                 RecentsConfiguration.searchBarSpaceHeightPx = 0;
             }
         }
+
+	// Update search bar space height
+        Resources reso = getResources();
+
+        if (Settings.System.getInt(getContentResolver(),
+                    Settings.System.RECENTS_SHOW_HIDE_SEARCH_BAR, 1) != 0) {
+        RecentsConfiguration.searchBarSpaceHeightPx = 0;
+
+		}
+
+        if (Settings.System.getInt(getContentResolver(),
+                    Settings.System.RECENTS_SHOW_HIDE_SEARCH_BAR, 1) != 1) {
+	RecentsConfiguration.searchBarSpaceHeightPx = reso.getDimensionPixelSize(R.dimen.recents_search_bar_space_height);
+		}
 
         // Animate the SystemUI scrims into view
         mScrimViews.prepareEnterRecentsAnimation();
