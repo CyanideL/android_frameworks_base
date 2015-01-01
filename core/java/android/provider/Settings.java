@@ -3647,6 +3647,12 @@ public final class Settings {
          */
         public static final String DISPLAY_TEMPERATURE_MODE = "display_temperature_mode";
 
+        /** Whether to vibrate when quick settings tile is pressed.
+         *
+         * @hide
+         */
+        public static final String QUICK_SETTINGS_TILES_VIBRATE = "quick_settings_vibrate";
+
         /**
          * Automatic outdoor mode
          * @hide
