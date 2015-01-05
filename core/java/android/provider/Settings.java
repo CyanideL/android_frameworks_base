@@ -2145,6 +2145,42 @@ public final class Settings {
          * SCREEN_BRIGHTNESS_MODE value for automatic mode.
          */
         public static final int SCREEN_BRIGHTNESS_MODE_AUTOMATIC = 1;
+        
+        /**
+         * Show when WiFi or data mobile is sending/receiving data
+         * @hide
+         */
+        public static final String STATUS_BAR_SHOW_NETWORK_ACTIVITY = "status_bar_show_network_activity";
+
+        /**
+         * Color of the network icons on statusbar
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_ICONS_NORMAL_COLOR = "status_bar_network_icons_normal_color";
+
+        /**
+         * Color of the network icons on statusbar while fully connected
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_ICONS_FULLY_COLOR = "status_bar_network_icons_fully_color";
+
+        /**
+         * Color of the activity indicator on statusbar
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_ACTIVITY_ICONS_NORMAL_COLOR = "status_bar_network_activity_fully_color";
+
+        /**
+         * Color of the activity indicator on statusbar while fully connected
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_ACTIVITY_ICONS_FULLY_COLOR = "status_bar_network_activity_normal_color";
+
+        /**
+         * Color of the airplane mode icon on statusbar
+         * @hide
+         */
+        public static final String STATUS_BAR_AIRPLANE_MODE_ICON_COLOR = "status_bar_airplane_mode_icon_color";
 
         /**
          * Whether to control brightness from status bar
@@ -2802,10 +2838,46 @@ public final class Settings {
 		public static final String CUSTOM_OVERFLING_DISTANCE = "custom_overfling_distance"; 
 
         /**
+         * Wether to show the ticker on the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_SHOW_TICKER = "status_bar_show_show_ticker";
+
+        /**
          * Show the pending notification counts as overlays on the status bar
          * @hide
          */
-        public static final String STATUS_BAR_NOTIF_COUNT = "status_bar_notif_count";
+        public static final String STATUS_BAR_SHOW_NOTIF_COUNT = "status_bar_show_notif_count";
+
+        /**
+         * Wether to colorize the notification icons on the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_COLORIZE_NOTIF_ICONS = "status_bar_colorize_notif_icons";
+
+        /**
+         * Color of the status bar notification icons
+         * @hide
+         */
+        public static final String STATUS_BAR_NOTIF_SYSTEM_ICON_COLOR = "status_bar_notif_system_icon_color";
+
+        /**
+         * Color of the status bar notification text
+         * @hide
+         */
+        public static final String STATUS_BAR_NOTIF_TEXT_COLOR = "status_bar_notif_text_color";
+
+        /**
+         * Color of the status bar notification count icon
+         * @hide
+         */
+        public static final String STATUS_BAR_NOTIF_COUNT_ICON_COLOR = "status_bar_notif_count_icon_color";
+
+        /**
+         * Color of the status bar notification count text
+         * @hide
+         */
+        public static final String STATUS_BAR_NOTIF_COUNT_TEXT_COLOR = "status_bar_notif_count_text_color";
 
         /**
          * Control the type of rotation which can be performed using the accelerometer
@@ -3680,7 +3752,6 @@ public final class Settings {
          */
         @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_FIELD)
         public static final String GESTURE_ANYWHERE_TRIGGER_HEIGHT = "gesture_anywhere_trigger_height";
-
         /**
          * Whether to display the gesture anywhere trigger region or not.
          * Used internally for showing the trigger in settings so user can see its placement
@@ -3699,7 +3770,13 @@ public final class Settings {
          * Boolean value on whether to show weather in the statusbar
          * @hide
          */
-        public static final String STATUS_BAR_SHOW_WEATHER = "status_bar_show_weather";
+        public static final String STATUS_BAR_EXPANDED_HEADER_SHOW_WEATHER = "status_bar_expanded_header_show_weather";
+
+        /**
+         * Whether to show the weather location on the header of the expanded status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_SHOW_WEATHER_LOCATION = "status_bar_expanded_header_show_weather_location";
 
         /**
 		 * show clear all recents button
@@ -3747,6 +3824,18 @@ public final class Settings {
          * @hide
          */
         public static final String VOICE_LAUNCH_INTENT = "voice_launch_intent";
+
+        /**
+         * Override and forcefully disable the fullscreen keyboard
+         * @hide
+         */
+        public static final String DISABLE_FULLSCREEN_KEYBOARD = "disable_fullscreen_keyboard";
+
+        /**
+         * Automatic keyboard rotation timeout.  0 to disable completely.
+         * @hide
+         */
+        public static final String KEYBOARD_ROTATION_TIMEOUT = "keyboard_rotation_timeout";
 
         /**
          * Whether navigation bar is placed on the left side in landscape mode
@@ -3813,18 +3902,6 @@ public final class Settings {
          * @hide
          */
         public static final String LIVE_DISPLAY_HINTED = "live_display_hinted";
-
-		/**
-         * Override and forcefully disable the fullscreen keyboard
-         * @hide
-         */
-        public static final String DISABLE_FULLSCREEN_KEYBOARD = "disable_fullscreen_keyboard";
-
-        /**
-         * Automatic keyboard rotation timeout.  0 to disable completely.
-         * @hide
-         */
-        public static final String KEYBOARD_ROTATION_TIMEOUT = "keyboard_rotation_timeout";
 
         /**
          * Forces formal text input.  1 to replace emoticon key with enter key.
@@ -3906,6 +3983,18 @@ public final class Settings {
         public static final String ANIMATION_CONTROLS_DURATION = "animation_controls_duration";
         public static final String ANIMATION_CONTROLS_EXIT_ONLY = "animation_controls_exit_only";
         public static final String ANIMATION_CONTROLS_REVERSE_EXIT = "animation_controls_reverse_exit";		
+
+        /**
+         * Color of the text on the header of the expanded status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_TEXT_COLOR = "status_bar_expanded_header_text_color";
+
+        /**
+         * Color of the icons on the header of the expanded status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_ICON_COLOR = "status_bar_expanded_header_icon_color";
 		
         /**		
          * Settings to backup. This is here so that it's in the same place as the settings
