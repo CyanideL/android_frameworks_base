@@ -2193,14 +2193,8 @@ public final class Settings {
          * Whether shorcuts open with normal or longpress
          * @hide
          */
-        public static final String LOCKSCREEN_SHORTCUTS_LONGPRESS = "lockscreen_shortcuts_longpress";
-        
-        /**
-         * Defines the status and navigation bar color is battery safe mode is enabled.
-         *
-         * @hide
-         */
-        public static final String BATTERY_SAVER_MODE_COLOR = "battery_save_mode_color";
+        public static final String LOCKSCREEN_SHORTCUTS_LONGPRESS =
+                "lockscreen_shortcuts_longpress";
 
         /**
          * Whether to allow one finger quick settings expansion on the right side of the statusbar.
@@ -3602,6 +3596,12 @@ public final class Settings {
          * @hide
          */
         public static final String RECENTS_SHOW_SEARCH_BAR = "recents_show_search_bar";
+        
+        /**
+		 * Whether to dismiss all recents tasks
+		 * @hide
+		 */
+		public static final String RECENTS_CLEAR_ALL_DISMISS_ALL = "recents_clear_all_dismiss_all";
 
         /**
          * Whether to enable voice wakeup.  The value is boolean (1 or 0).
@@ -3742,6 +3742,13 @@ public final class Settings {
          */
         public static final String SAFE_HEADSET_VOLUME = "safe_headset_volume";
         
+        /**
+         * Defines the status and navigation bar color is battery safe mode is enabled.
+         *
+         * @hide
+         */
+        public static final String BATTERY_SAVER_MODE_COLOR = "battery_save_mode_color";
+
         /**
          * Custom System Animations
          *
