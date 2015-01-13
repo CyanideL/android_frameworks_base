@@ -6363,6 +6363,11 @@
     <!-- **************************************************************** -->
     <eat-comment />
 
+    <!-- Base attributes available to SlimSeekBarPreference. -->
+	<declare-styleable name="SlimSeekBarPreference">
+		<!-- No added attributes at this time -->
+	</declare-styleable>
+    
     <!-- Base attributes available to PreferenceGroup. -->
     <declare-styleable name="PreferenceGroup">
         <!-- Whether to order the Preference under this group as they appear in the XML file.
