@@ -34,7 +34,7 @@
   <java-symbol type="style" name="Animation.Toast.SlideRightLeft" />
   <java-symbol type="style" name="Animation.Toast.SlideLeftRight" />
 
-  <!--  Animations -->
+   <!--  Animations -->
   <java-symbol type="string" name="action_null"/>
   <java-symbol type="string" name="animation_fade"/>
   <java-symbol type="string" name="animation_slide_left"/>
@@ -77,5 +77,7 @@
   <java-symbol type="anim" name="slide_out_left_no_fade" />
   <java-symbol type="anim" name="slide_in_left_no_fade" />
   <java-symbol type="anim" name="slide_out_right_no_fade" />
-  <java-symbol type="anim" name="no_animation" />	
+  <java-symbol type="anim" name="no_animation" />   
+  
+  <java-symbol type="array" name="anim_controls_entries" />	
 </resources>
