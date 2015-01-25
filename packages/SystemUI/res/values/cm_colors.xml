@@ -47,5 +47,7 @@
 
     <!-- Navigation button ripple color -->
     <color name="navbutton_ripple_color">#FFFFFFFF</color>
+    
+    <color name="qs_background_drawable_color">#FFFFFFFF</color>
 
 </resources>

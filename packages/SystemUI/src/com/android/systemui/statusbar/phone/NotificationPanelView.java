@@ -28,9 +28,12 @@ import android.database.ContentObserver;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.PorterDuff.Mode;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.MathUtils;
@@ -191,6 +194,8 @@ public class NotificationPanelView extends PanelView implements
     private int mStatusBarHeaderHeight;
     private GestureDetector mDoubleTapGesture;
 
+    private int mQSBackgroundColor;
+
     public NotificationPanelView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(!DEBUG);
@@ -267,6 +272,7 @@ public class NotificationPanelView extends PanelView implements
                 }
             }
         });
+        setQSBackgroundColor();
     }
 
     @Override
@@ -2080,6 +2086,12 @@ public class NotificationPanelView extends PanelView implements
                     Settings.System.STATUS_BAR_QUICK_QS_PULLDOWN), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.DOUBLE_TAP_SLEEP_GESTURE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_BACKGROUND_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_ICON_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_TEXT_COLOR), false, this);
             update();
         }
 
@@ -2095,15 +2107,48 @@ public class NotificationPanelView extends PanelView implements
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
-            update();
+            ContentResolver resolver = mContext.getContentResolver();
+            if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_BACKGROUND_COLOR))) {
+                mQSBackgroundColor = Settings.System.getInt(
+                        resolver, Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
+                setQSBackgroundColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_ICON_COLOR))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_TEXT_COLOR))) {
+                setQSColors();
+            }
         }
 
         public void update() {
             ContentResolver resolver = mContext.getContentResolver();
-            mOneFingerQuickSettingsIntercept = Settings.System.getInt(
-                    resolver, Settings.System.STATUS_BAR_QUICK_QS_PULLDOWN, 1) == 1;
-            mDoubleTapToSleepEnabled = Settings.System.getInt(
-                    resolver, Settings.System.DOUBLE_TAP_SLEEP_GESTURE, 1) == 1;
+            mDoubleTapToSleepEnabled = Settings.System.getIntForUser(
+                    resolver, Settings.System.DOUBLE_TAP_SLEEP_GESTURE, 1,
+                    UserHandle.USER_CURRENT) == 1;
+			mQSBackgroundColor = Settings.System.getInt(
+                    resolver, Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
+            setQSBackgroundColor();
+            setQSColors();
+        }
+    }
+
+    private void setQSBackgroundColor() {
+        ContentResolver resolver = mContext.getContentResolver();
+        mQSBackgroundColor = Settings.System.getInt(
+                resolver, Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
+        if (mQsContainer != null) {
+            mQsContainer.getBackground().setColorFilter(
+                    mQSBackgroundColor, Mode.MULTIPLY);
+        }
+        if (mQsPanel != null) {
+            mQsPanel.setDetailBackgroundColor(mQSBackgroundColor);
+        }
+    }
+
+    private void setQSColors() {
+        if (mQsPanel != null) {
+            mQsPanel.setColors();
         }
     }
 }

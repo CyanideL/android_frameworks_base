@@ -2227,6 +2227,48 @@ public final class Settings {
          */
         @Deprecated
         public static final String QS_USE_MAIN_TILES = Secure.QS_USE_MAIN_TILES;
+        
+        /**
+		 * Color of the quick settings panel background
+		 * @hide
+		 */
+		public static final String QS_BACKGROUND_COLOR = "qs_background_color";
+
+		/**
+		 * Color of the quick settings icons
+		 * @hide
+		 */
+		public static final String QS_ICON_COLOR = "qs_icons_color";
+
+		/**
+		 * Color of the quick settings text
+		 * @hide
+		 */
+		public static final String QS_TEXT_COLOR = "qs_text_color";
+		
+		/**
+		 *
+		 * @hide
+		 */
+		public static final String ANIMATION_IME_DURATION = "animation_ime_duration";
+
+		/**
+		 *
+		 * @hide
+		 */
+		public static final String ANIMATION_IME_ENTER = "animation_ime_enter";
+
+		/**
+		 *
+		 * @hide
+		 */
+		public static final String ANIMATION_IME_EXIT = "animation_ime_exit";
+
+		/**
+		 *
+		 * @hide
+		 */
+		public static final String ANIMATION_IME_INTERPOLATOR = "animation_ime_interpolator";
 
         /**
          * Enable blocking wakelock
