@@ -3975,6 +3975,12 @@ public final class Settings {
         public static final String STATUS_BAR_BATTERY_STATUS_TEXT_COLOR = "status_bar_battery_status_text_color";
         
         /**
+		 * Disable FC Notifications
+		 * @hide
+		 */
+		public static final String DISABLE_FC_NOTIFICATIONS = "disable_fc_notifications";
+        
+        /**
          * Display second in the Clock
          * @hide
          */
