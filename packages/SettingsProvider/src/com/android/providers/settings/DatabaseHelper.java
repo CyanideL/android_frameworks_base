@@ -1953,6 +1953,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
             upgradeVersion = 122;
 		}
+            String[] settingsToMove = Settings.Secure.NAVIGATION_RING_TARGETS;
+
+            moveSettingsToNewTable(db, TABLE_SYSTEM, TABLE_SECURE,
+                    settingsToMove, true);
+            upgradeVersion = 123;
+        }
 
         // *** Remember to update DATABASE_VERSION above!
 
