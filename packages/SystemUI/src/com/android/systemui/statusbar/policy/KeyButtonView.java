@@ -19,9 +19,11 @@ package com.android.systemui.statusbar.policy;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.ActivityManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.graphics.Canvas;
 import android.graphics.CanvasProperty;
 import android.graphics.Paint;
@@ -36,6 +38,7 @@ import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
@@ -90,8 +93,10 @@ public class KeyButtonView extends ImageView {
     private static AudioManager mAudioManager;
     KeyButtonInfo mActions;
 
-    boolean mIsDPadAction = false;
-    boolean mHasSingleAction = false;
+    private boolean mShouldTintIcons = true;
+
+    private boolean mIsDPadAction;
+    private boolean mHasSingleAction = true;
     private boolean mIsLandscape = false;
     private boolean mTablet = false;
     public boolean mHasBlankSingleAction = false, mHasDoubleAction, mHasLongAction;
@@ -138,6 +143,9 @@ public class KeyButtonView extends ImageView {
         mAudioManager = getAudioManagerService(context);
         mPm = getPowerManagerService(context);
         setBackground(mRipple = new KeyButtonRipple(context, this));
+
+        SettingsObserver settingsObserver = new SettingsObserver(new Handler());
+        settingsObserver.observe();
     }
 
     public void setDeviceOrientation(boolean landscape, boolean tablet) {
@@ -386,6 +394,39 @@ public class KeyButtonView extends ImageView {
         InputManager.getInstance().injectInputEvent(ev,
         InputManager.INJECT_INPUT_EVENT_MODE_ASYNC);
     }
+
+    public void setTint(boolean tint) {
+        setColorFilter(null);
+        if (tint) {
+            int color = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_TINT, -1);
+            if (color != -1) {
+                setColorFilter(color);
+            }
+        }
+        mShouldTintIcons = tint;
+    }
+
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+ 
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_TINT), false, this);
+            updateSettings();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateSettings();
+        }
+    }
+
+    protected void updateSettings() {
+        setTint(mShouldTintIcons);
+        invalidate();
+    }
 }
-
-
