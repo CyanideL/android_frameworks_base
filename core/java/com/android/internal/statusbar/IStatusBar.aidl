@@ -50,5 +50,7 @@ oneway interface IStatusBar
     void showCustomIntentAfterKeyguard(inout Intent intent);
     void notifyLayoutChange(int direction);
     void setPieTriggerMask(int newMask, boolean lock);
+    void toggleLastApp();
+    void toggleKillApp();
 }
 
