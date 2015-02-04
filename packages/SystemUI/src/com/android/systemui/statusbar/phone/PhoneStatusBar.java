@@ -444,7 +444,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL), false, this);
+                    Settings.System.LOCK_SCREEN_TEXT_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCK_SCREEN_ICON_COLOR),
+                    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SCREEN_BRIGHTNESS_MODE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -459,6 +463,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         public void onChange(boolean selfChange, Uri uri) {
             if (uri.equals(Settings.System.getUriFor(
+					Settings.System.LOCK_SCREEN_TEXT_COLOR))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.LOCK_SCREEN_ICON_COLOR))) {
+                setKeyguardTextAndIconColors();
+            } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.BATTERY_SAVER_MODE_COLOR))) {
                     mBatterySaverWarningColor = Settings.System.getIntForUser(
                             mContext.getContentResolver(),
@@ -1236,6 +1245,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         resetUserSetupObserver();
 
         startGlyphRasterizeHack();
+        setKeyguardTextAndIconColors();
         return mStatusBarView;
     }
 
@@ -2320,6 +2330,22 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                             .start();
                 }
             }
+        }
+    }
+
+    public void setKeyguardTextAndIconColors() {
+        int textColor =
+                Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LOCK_SCREEN_TEXT_COLOR, 0xffffffff);
+        int iconColor =
+                Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LOCK_SCREEN_ICON_COLOR, 0xffffffff);
+        if (mKeyguardStatusBar != null) {
+            mKeyguardStatusBar.updateCarrierLabelColor(textColor);
+        }
+        if (mKeyguardBottomArea != null) {
+            mKeyguardBottomArea.updateTextColor(textColor);
+            mKeyguardBottomArea.updateIconColor(iconColor);
         }
     }
 
