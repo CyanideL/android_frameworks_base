@@ -48,6 +48,7 @@ public class QSConstants {
     public static final String TILE_LIVE_DISPLAY = "live_display";
     public static final String TILE_CYANIDE = "cyanide_settings";
     public static final String TILE_SCREENSHOT = "screenshot";
+    public static final String TILE_SCREENRECORD = "screenrecord";
     public static final String TILE_SYNC = "sync";
     public static final String TILE_BRIGHTNESS = "brightness";
     public static final String TILE_BATTERY_SAVER = "battery_saver";
@@ -100,6 +101,7 @@ public class QSConstants {
         TILES_AVAILABLE.add(TILE_LIVE_DISPLAY);
         TILES_AVAILABLE.add(TILE_CYANIDE);
         TILES_AVAILABLE.add(TILE_SCREENSHOT);
+        TILES_AVAILABLE.add(TILE_SCREENRECORD);
         TILES_AVAILABLE.add(TILE_SYNC);
         TILES_AVAILABLE.add(TILE_BRIGHTNESS);
         TILES_AVAILABLE.add(TILE_BATTERY_SAVER);
