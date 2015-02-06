@@ -63,6 +63,7 @@ public class QSConstants {
     public static final String TILE_SLIMPIE = "toggleSlimPie";
     public static final String TILE_NAVBAR = "toggleNavBar";
     public static final String TILE_HWKEYS = "hwkeys";
+    public static final String TILE_HEADS_UP = "toggleHeadsUp";
 
     // Order matters
     protected static final ArrayList<String> TILES_DEFAULT = new ArrayList<String>();
@@ -116,5 +117,6 @@ public class QSConstants {
         TILES_AVAILABLE.add(TILE_GESTURE_ANYWHERE);
         TILES_AVAILABLE.add(TILE_NAVBAR);
         TILES_AVAILABLE.add(TILE_HWKEYS);
+        TILES_AVAILABLE.add(TILE_HEADS_UP);
     }
 }
