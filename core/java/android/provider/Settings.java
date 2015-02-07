@@ -4732,6 +4732,20 @@ public final class Settings {
          * Define when Nfc polling is activated.
          */
         public static final String NFC_POLLING_MODE = "nfc_polling";
+        
+        /**
+         * Should the storage removed notification be shown
+         *
+         * @hide
+         */
+        public static final String STORAGE_MEDIA_REMOVED_NOTIFICTION = "storage_media_removed_notification";
+
+        /**
+         * Enable ongoing mount notifications for those storage volumes
+         *
+         * @hide
+         */
+        public static final String STORAGE_MOUNT_NOTIFICATION = "storage_mount_notification";
 
         /**
          * Alternative recent apps integration using OmniSwitch
