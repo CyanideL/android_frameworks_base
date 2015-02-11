@@ -4451,6 +4451,12 @@ public final class Settings {
         public static final String DOZE_PULSE_DURATION_OUT = "doze_pulse_duration_out";
 
         /**
+         * volume answer
+         * @hide
+         */
+        public static final String ANSWER_VOLUME_BUTTON_BEHAVIOR_ANSWER = "call_volume_answer";
+
+        /**
          * Pulse if there is notifications for ambient display
          * @hide
          */
