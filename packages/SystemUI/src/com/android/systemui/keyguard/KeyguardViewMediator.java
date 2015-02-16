@@ -801,7 +801,7 @@ public class KeyguardViewMediator extends SystemUI {
         }
         Profile profile = mProfileManager.getActiveProfile();
         if (profile != null) {
-            if (profile.getScreenLockMode().getValue() == Profile.LockMode.DISABLE) {
+            if (profile.getScreenLockMode().getValue() == Profile.LockMode.DISABLE && mBootCompleted) {
                 if (DEBUG) Log.d(TAG, "isKeyguardDisabled: keyguard is disabled by profile");
                 return true;
             }
