@@ -65,6 +65,7 @@ import com.android.systemui.qs.tiles.ScreenOffTile;
 import com.android.systemui.qs.tiles.ScreenshotTile;
 import com.android.systemui.qs.tiles.ScreenTimeoutTile;
 import com.android.systemui.qs.tiles.SyncTile;
+import com.android.systemui.qs.tiles.AppCircleBarTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.CyanideTile;
 import com.android.systemui.settings.CurrentUserTracker;
@@ -344,7 +345,8 @@ public class QSTileHost implements QSTile.Host {
             case QSConstants.TILE_SCREEN_OFF:
                 return new ScreenOffTile(this);
             case QSConstants.TILE_EXPANDED_DESKTOP:
-                return new ExpandedDesktopTile(this);
+                return new ExpandedDesktopTile(this);:
+                return new AppCircleBarTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
