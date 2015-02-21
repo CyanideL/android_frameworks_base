@@ -4091,6 +4091,13 @@ public final class Settings {
 
         /**
          * Whether to mute annoying notifications
+		 * Disable ads (HFM)
+		 * @hide
+		 */
+		public static final String HFM_DISABLE_ADS = "hfm_disable_ads";
+        
+        /**
+         * Whether to mute annoying notifications
          * @hide
          */
         public static final String MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD =
