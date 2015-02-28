@@ -4111,6 +4111,19 @@ public final class Settings {
         public static final String STATUS_BAR_TRAFFIC_SUMMARY = "status_bar_traffic_summary"; 
 
         /**
+         * Config for advanced power menu
+         *
+         * @hide
+         */
+        public static final String QUICK_TILE_CONFIG = "quick_tile_config";
+
+         /**
+         * Recents Show/Hide Search Bar
+         * @hide
+         */
+        public static final String RECENTS_SHOW_HIDE_SEARCH_BAR = "recents_show_hide_search_bar";
+
+        /**
          * Wether to show network speed indicators
          * 0: download
          * 1: upload
