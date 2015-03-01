@@ -374,6 +374,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     private boolean mShowCarrierInPanel = false;
     private boolean mShowLabel;
+    private int mShowLabelTimeout;
 
     // battery
     private BatteryMeterView mBatteryView;
@@ -474,6 +475,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_GREETING),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_GREETING_TIMEOUT),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -530,7 +534,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mCyanideLogo = Settings.System.getIntForUser(resolver,
                     Settings.System.STATUS_BAR_CYANIDE_LOGO, 0, mCurrentUserId) == 1;
             showCyanideLogo(mCyanideLogo);
-            
+
+            mGreeting = Settings.System.getStringForUser(resolver,
+                    Settings.System.STATUS_BAR_GREETING,
+                    UserHandle.USER_CURRENT);
+            if (mGreeting != null && !TextUtils.isEmpty(mGreeting)) {
+                mCyanideLabel.setText(mGreeting);
+            }
+
+            mShowLabelTimeout = Settings.System.getIntForUser(resolver,
+                    Settings.System.STATUS_BAR_GREETING_TIMEOUT, 500, mCurrentUserId);
         }
     }
     
@@ -2512,7 +2525,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         mCyanideLabel.animate().cancel();
                         mCyanideLabel.animate()
                                 .alpha(1f)
-                                .setDuration(400)
+                                .setDuration(mShowLabelTimeout)
                                 .setInterpolator(ALPHA_IN)
                                 .setStartDelay(50)
                                 .withEndAction(new Runnable() {
