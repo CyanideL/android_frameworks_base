@@ -68,6 +68,7 @@ import com.android.systemui.qs.tiles.ScreenOffTile;
 import com.android.systemui.qs.tiles.ScreenshotTile;
 import com.android.systemui.qs.tiles.ScreenTimeoutTile;
 import com.android.systemui.qs.tiles.SyncTile;
+import com.android.systemui.qs.tiles.HWKeysTile;
 import com.android.systemui.qs.tiles.AppCircleBarTile;
 import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.SlimPieTile;
@@ -369,6 +370,8 @@ public class QSTileHost implements QSTile.Host {
                 return new GestureAnywhereTile(this);
             case QSConstants.TILE_NAVBAR:
                 return new NavBarTile(this);
+            case QSConstants.TILE_HWKEYS:
+                return new HWKeysTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
