@@ -406,8 +406,12 @@ public class Clock extends TextView implements DemoMode {
             updateClockVisibility();
             updateClock();
         }
-    }
 
+        if (mStatusBar != null) {
+            mStatusBar.setClockAndDateStatus(mClockAndDateWidth, mClockStyle, mShowClock);
+        }
+	}			
+		
     public void getFontStyle(int font) {
         switch (font) {
             case FONT_BOLD:
@@ -428,9 +432,6 @@ public class Clock extends TextView implements DemoMode {
                 break;
         }
 
-        if (mStatusBar != null) {
-            mStatusBar.setClockAndDateStatus(mClockAndDateWidth, mClockStyle, mShowClock);
-        }
 
     }
 

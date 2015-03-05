@@ -42,6 +42,7 @@ import android.annotation.ChaosLab.Classification;
 import android.annotation.NonNull;
 import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
+import android.app.ActivityOptions;
 import android.app.IActivityManager;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -2466,12 +2467,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     public void setClockAndDateStatus(int width, int mode, boolean enabled) {
         if (mNotificationIcons != null) {
-            mNotificationIcons.setClockAndDateWidth(width, mode);
+            mNotificationIcons.setClockAndDateStatus(width, mode, enabled);
         }
         mClockLocation = mode;
         mShowClock = enabled;
-    }
-
+	}	
     private void updateBatteryLevelTextColor() {
         if (mBatteryLevel != null) {
             mBatteryLevel.setTextColor(false);
