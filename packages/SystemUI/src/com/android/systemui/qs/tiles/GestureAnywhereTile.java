@@ -83,11 +83,11 @@ public class GestureAnywhereTile extends QSTile<QSTile.BooleanState> {
     protected void handleUpdateState(BooleanState state, Object arg) {
         state.visible = true;
 	if (GestureAnywhereEnabled()) {
-        state.iconId = R.drawable.ic_qs_heads_up_on;
+        state.icon = ResourceIcon.get(R.drawable.ic_qs_gestures_on);
         state.label = mContext.getString(R.string.quick_settings_gesture_anywhere_on);
 	} else {
-        state.iconId = R.drawable.ic_qs_heads_up_off;
-	state.label = mContext.getString(R.string.quick_settings_gesture_anywhere_off);
+        state.icon = ResourceIcon.get(R.drawable.ic_qs_gestures_off);
+		state.label = mContext.getString(R.string.quick_settings_gesture_anywhere_off);
 	    }
 	}
 
