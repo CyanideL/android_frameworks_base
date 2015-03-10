@@ -70,6 +70,8 @@ import com.android.systemui.qs.tiles.ScreenTimeoutTile;
 import com.android.systemui.qs.tiles.SyncTile;
 import com.android.systemui.qs.tiles.AppCircleBarTile;
 import com.android.systemui.qs.tiles.UsbTetherTile;
+import com.android.systemui.qs.tiles.SlimPieTile;
+import com.android.systemui.qs.tiles.GestureAnywhereTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.CyanideTile;
 import com.android.systemui.settings.CurrentUserTracker;
@@ -360,6 +362,10 @@ public class QSTileHost implements QSTile.Host {
                 return new UsbTetherTile(this);
             case QSConstants.TILE_SLIMACTION:
                 return new SlimActionTile(this);
+            case QSConstants.TILE_SLIMPIE:
+                return new SlimPieTile(this);
+            case QSConstants.TILE_GESTURE_ANYWHERE:
+                return new GestureAnywhereTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
