@@ -309,4 +309,9 @@
     <java-symbol type="integer" name="config_outdoorAmbientLux" />
 
     <java-symbol type="string" name="lock_to_app_toast_no_navbar" />
+
+    <!-- KillSwitch -->
+    <java-symbol type="array" name="config_packagesAllowedAccessToKillSwitch" />
+    <java-symbol type="string" name="config_killSwitchLib" />
+    <java-symbol type="string" name="config_killSwitchClass" />
 </resources>
