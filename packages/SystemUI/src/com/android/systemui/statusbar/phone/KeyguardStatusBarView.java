@@ -78,6 +78,11 @@ public class KeyguardStatusBarView extends RelativeLayout
         updateVisibilities();
     }
 
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
     private void loadDimens() {
         mSystemIconsSwitcherHiddenExpandedMargin = getResources().getDimensionPixelSize(
                 R.dimen.system_icons_switcher_hidden_expanded_margin);
