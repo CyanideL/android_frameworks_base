@@ -2315,4 +2315,9 @@
     <integer name="config_nightColorTemperature">4500</integer>
     <integer name="config_outdoorAmbientLux">9000</integer>
 
+    <bool name="config_enableScreenrecordChord">true</bool>
+
+    <!-- Doze: force using accelerometer as pick up sensor -->
+    <bool name="config_dozeUseAccelerometer">false</bool>
+
 </resources>

@@ -119,5 +119,7 @@
   <!-- Last app switch animations -->
   <java-symbol type="anim" name="last_app_in" />
   <java-symbol type="anim" name="last_app_out" />
+  
+  <java-symbol type="bool" name="config_dozeUseAccelerometer" />
 
 </resources>
