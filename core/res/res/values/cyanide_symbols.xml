@@ -165,4 +165,6 @@
   <java-symbol type="style" name="PowerMenuGrowAnimation" />
   <java-symbol type="style" name="PowerMenuTurnAnimation" />
 
+  <java-symbol type="bool" name="config_dozeUseAccelerometer" />
+
 </resources>
