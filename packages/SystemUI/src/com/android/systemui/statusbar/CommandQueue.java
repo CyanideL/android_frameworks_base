@@ -351,6 +351,9 @@ public class CommandQueue extends IStatusBar.Stub {
                 case MSG_SHOW_SCREEN_PIN_REQUEST:
                     mCallbacks.showScreenPinningRequest();
                     break;
+                case MSG_SET_AUTOROTATE_STATUS:
+                    mCallbacks.setAutoRotate(msg.arg1 != 0);
+                    break;
             }
         }
     }
