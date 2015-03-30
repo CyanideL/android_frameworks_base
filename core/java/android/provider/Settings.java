@@ -3577,6 +3577,12 @@ public final class Settings {
 		 * @hide
 		 */
 		public static final String STATUS_BAR_CYANIDE_LOGO = "status_bar_cyanide_logo";
+		
+		/**
+		 * Statusbar CyanideL logo color setting
+		 * @hide
+		 */
+		public static final String STATUS_BAR_CYANIDE_LOGO_COLOR = "status_bar_cyanide_logo_color";
 
         /**
          * Status bar greeting

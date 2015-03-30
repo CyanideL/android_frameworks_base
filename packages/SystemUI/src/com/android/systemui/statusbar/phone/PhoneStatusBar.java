@@ -66,6 +66,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -382,7 +383,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     // CyanideL logo
     private boolean mCyanideLogo;
+    private int mCyanideLogoColor;
     private ImageView cyanideLogo;
+
+    private boolean mQSCSwitch;
 
     // position
     int[] mPositionTmp = new int[2];
@@ -485,6 +489,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CYANIDE_LOGO),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+					Settings.System.STATUS_BAR_CYANIDE_LOGO_COLOR),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -541,6 +548,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mCyanideLogo = Settings.System.getIntForUser(resolver,
                     Settings.System.STATUS_BAR_CYANIDE_LOGO, 0, mCurrentUserId) == 1;
             showCyanideLogo(mCyanideLogo);
+
+            mCyanideLogoColor = Settings.System.getIntForUser(resolver,
+                    Settings.System.STATUS_BAR_CYANIDE_LOGO_COLOR, 0xFFFFFFFF, mCurrentUserId);
+            showCyanideLogo(mCyanideLogo, mCyanideLogoColor);
 
             mGreeting = Settings.System.getStringForUser(resolver,
                     Settings.System.STATUS_BAR_GREETING,
@@ -3830,15 +3841,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     };
 
-    public void showStatusBarCarrierLabel(boolean show) {
-        if (mStatusBarView == null) return;
-        ContentResolver resolver = mContext.getContentResolver();
-        View statusBarCarrierLabel = mStatusBarView.findViewById(R.id.status_bar_carrier_label);
-        if (statusBarCarrierLabel != null) {
-            statusBarCarrierLabel.setVisibility(show ? (mShowStatusBarCarrier ? View.VISIBLE : View.GONE) : View.GONE);
-        }
-    }
-
     public void showCyanideLogo(boolean show) {
         if (mStatusBarView == null) return;
         ContentResolver resolver = mContext.getContentResolver();
@@ -3859,6 +3861,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
         }
     };
+
+    public void showCyanideLogo(boolean show, int color) {
+        if (mStatusBarView == null) return;
+        ContentResolver resolver = mContext.getContentResolver();
+        cyanideLogo = (ImageView) mStatusBarView.findViewById(R.id.cyanide_logo);
+        cyanideLogo.setColorFilter(color, Mode.SRC_IN);
+        if (cyanideLogo != null) {
+            cyanideLogo.setVisibility(show ? (mCyanideLogo ? View.VISIBLE : View.GONE) : View.GONE);
+        }
+    }
 
     private void resetUserExpandedStates() {
         ArrayList<Entry> activeNotifications = mNotificationData.getActiveNotifications();
