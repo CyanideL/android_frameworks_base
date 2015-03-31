@@ -18,6 +18,9 @@
 <resources>
   
   <java-symbol type="bool" name="config_doze_enabled_by_default" />
+  
+  <!-- Config IME switcher -->
+  <java-symbol type="bool" name="config_show_IMESwitcher" />
 
   <!-- Shortcut actions -->
   <java-symbol type="drawable" name="ic_shortcut_action_silent" />

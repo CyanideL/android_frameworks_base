@@ -16,17 +16,11 @@
 ** limitations under the License.
 */
 -->
-
-<<<<<<< HEAD:core/res/res/values-mcc232-mnc12/config.xml
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Don't use roaming icon for considered operators -->
     <string-array translatable="false" name="config_operatorConsideredNonRoaming">
         <item>23201</item>
     </string-array>
-||||||| parent of 23dd8cd... Frameworks: Add ability to control default value of DOZE_ENABLED
-=======
-  <java-symbol type="bool" name="config_doze_enabled_by_default" />
 
->>>>>>> 23dd8cd... Frameworks: Add ability to control default value of DOZE_ENABLED:core/res/res/values/slim_symbols.xml
 </resources>
 
