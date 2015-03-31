@@ -61,6 +61,7 @@ import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.VisualizerTile;
 import com.android.systemui.qs.tiles.ScreenTimeoutTile;
 import com.android.systemui.qs.tiles.WifiTile;
+import com.android.systemui.qs.tiles.CyanideTile;
 import com.android.systemui.settings.CurrentUserTracker;
 import com.android.systemui.statusbar.policy.BluetoothController;
 import com.android.systemui.statusbar.policy.CastController;
@@ -325,6 +326,8 @@ public class QSTileHost implements QSTile.Host {
                 return new ScreenTimeoutTile(this);
             case QSConstants.TILE_LIVE_DISPLAY:
                 return new LiveDisplayTile(this);
+            case QSConstants.TILE_CYANIDE:
+				return new CyanideTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
