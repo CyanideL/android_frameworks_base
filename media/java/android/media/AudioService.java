@@ -4642,15 +4642,6 @@ public class AudioService extends IAudioService.Stub {
                 if (uri.equals(Settings.System.getUriFor(
                     Settings.System.SAFE_HEADSET_VOLUME))) {
                     mSafeVolumeEnabled = safeVolumeEnabled(mContentResolver);
-                } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.MODE_RINGER_STREAMS_AFFECTED))) {
-                    if (updateRingerModeAffectedStreams()) {
-                        /*
-                         * Ensure all stream types that should be affected by ringer mode
-                         * are in the proper state.
-                         */
-                        setRingerModeInt(getRingerMode(), false);
-                    }
                 } else if (uri.equals(Settings.Global.getUriFor(
                     Settings.Global.DOCK_AUDIO_MEDIA_ENABLED))) {
                     readDockAudioSettings(mContentResolver);

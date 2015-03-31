@@ -881,11 +881,11 @@ public class NotificationManagerService extends SystemService {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_LIGHT_PULSE_CUSTOM_VALUES),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD_URI,
+                    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.Global.getUriFor(
                     Settings.Global.ZEN_DISABLE_DUCKING_DURING_MEDIA_PLAYBACK), false,
                     this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD_URI,
-                    false, this, UserHandle.USER_ALL);
             update(null);
         }
 
@@ -927,6 +927,12 @@ public class NotificationManagerService extends SystemService {
 
             updateNotificationPulse();
 
+            if (uri == null || MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD_URI.equals(uri)) {
+                mAnnoyingNotificationThreshold = Settings.System.getLongForUser(resolver,
+                       Settings.System.MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD, 0,
+                       UserHandle.USER_CURRENT_OR_SELF);
+            }
+
             mDisableDuckingWhileMedia = Settings.Global.getInt(mContext.getContentResolver(),
                     Settings.Global.ZEN_DISABLE_DUCKING_DURING_MEDIA_PLAYBACK, 0) == 1;
             updateDisableDucking();
@@ -942,11 +948,6 @@ public class NotificationManagerService extends SystemService {
         mediaSessionManager.removeOnActiveSessionsChangedListener(mSessionListener);
         if (mDisableDuckingWhileMedia) {
             mediaSessionManager.addOnActiveSessionsChangedListener(mSessionListener, null);
-            if (uri == null || MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD_URI.equals(uri)) {
-                mAnnoyingNotificationThreshold = Settings.System.getLongForUser(resolver,
-                       Settings.System.MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD, 0,
-                       UserHandle.USER_CURRENT_OR_SELF);
-            }
         }
     }
 
