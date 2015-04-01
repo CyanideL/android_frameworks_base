@@ -53,7 +53,6 @@ import android.widget.Toast;
 import com.android.internal.statusbar.IStatusBarService;
 import static com.android.systemui.cm.NavigationRingConstants.*;
 import com.android.systemui.screenshot.TakeScreenshotService;
-import com.android.systemui.statusbar.phone.KeyguardTouchDelegate;
 
 import java.net.URISyntaxException;
 
