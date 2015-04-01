@@ -28,6 +28,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.Canvas;
@@ -41,6 +42,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.RemoteException;
+import android.os.SystemClock;
 import android.os.UserHandle;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -62,7 +64,6 @@ import com.android.keyguard.EmergencyButton;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
 import com.android.systemui.R;
-import com.android.systemui.cm.UserContentObserver;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.KeyguardAffordanceView;
 import com.android.systemui.statusbar.KeyguardIndicationController;
@@ -882,14 +883,12 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         }
     };
 
-    private class SettingsObserver extends UserContentObserver {
+	class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
         }
 
-        @Override
-        protected void observe() {
-            super.observe();
+        void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.LOCKSCREEN_VISUALIZER_ENABLED),
@@ -897,13 +896,11 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
             update();
         }
 
-        @Override
-        protected void unobserve() {
-            super.unobserve();
-            mContext.getContentResolver().unregisterContentObserver(this);
+        void unobserve() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.unregisterContentObserver(this);
         }
 
-        @Override
         public void update() {
             ContentResolver resolver = mContext.getContentResolver();
             mVisualizerEnabled = Settings.Secure.getIntForUser(resolver,
