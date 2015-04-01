@@ -16,7 +16,6 @@
 
 package com.android.internal.widget;
 
-import com.android.internal.widget.ILockSettingsObserver;
 import android.gesture.Gesture;
 
 /** {@hide} */

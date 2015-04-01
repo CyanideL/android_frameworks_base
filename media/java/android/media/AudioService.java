@@ -63,11 +63,13 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.os.Vibrator;
 import android.provider.Settings;
+import android.provider.Settings.Global;
 import android.provider.Settings.System;
 import android.telecom.TelecomManager;
 import android.text.TextUtils;
@@ -587,18 +589,12 @@ public class AudioService extends IAudioService.Stub {
         mHasVibrator = vibrator == null ? false : vibrator.hasVibrator();
 
        // Intialized volume
-        int maxVolume = SystemProperties.getInt("ro.config.vc_call_vol_steps",
-                MAX_STREAM_VOLUME[AudioSystem.STREAM_VOICE_CALL]);
-        if (maxVolume != MAX_STREAM_VOLUME[AudioSystem.STREAM_VOICE_CALL]) {
-            MAX_STREAM_VOLUME[AudioSystem.STREAM_VOICE_CALL] = maxVolume;
-            DEFAULT_STREAM_VOLUME[AudioSystem.STREAM_VOICE_CALL] = (maxVolume * 3) / 4;
-        }
-        maxVolume = SystemProperties.getInt("ro.config.media_vol_steps",
-                MAX_STREAM_VOLUME[AudioSystem.STREAM_MUSIC]);
-        if (maxVolume != MAX_STREAM_VOLUME[AudioSystem.STREAM_MUSIC]) {
-            MAX_STREAM_VOLUME[AudioSystem.STREAM_MUSIC] = maxVolume;
-            DEFAULT_STREAM_VOLUME[AudioSystem.STREAM_MUSIC] = (maxVolume * 3) / 4;
-        }
+        MAX_STREAM_VOLUME[AudioSystem.STREAM_VOICE_CALL] = SystemProperties.getInt(
+            "ro.config.vc_call_vol_steps",
+           MAX_STREAM_VOLUME[AudioSystem.STREAM_VOICE_CALL]);
+        MAX_STREAM_VOLUME[AudioSystem.STREAM_MUSIC] = SystemProperties.getInt(
+            "ro.config.media_vol_steps",
+           MAX_STREAM_VOLUME[AudioSystem.STREAM_MUSIC]);
 
         sSoundEffectVolumeDb = context.getResources().getInteger(
                 com.android.internal.R.integer.config_soundEffectVolumeDb);
@@ -1903,9 +1899,6 @@ public class AudioService extends IAudioService.Stub {
     protected static int getMaxStreamVolume(int streamType) {
         return MAX_STREAM_VOLUME[streamType];
     }
-
-    public static int getDefaultStreamVolume(int streamType) {
-        return DEFAULT_STREAM_VOLUME[streamType];
 
     protected static void setMaxStreamVolume(int streamType, int maxVol) {
         MAX_STREAM_VOLUME[streamType] = maxVol;
