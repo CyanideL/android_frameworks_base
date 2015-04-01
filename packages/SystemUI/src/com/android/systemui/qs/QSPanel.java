@@ -145,6 +145,8 @@ public class QSPanel extends ViewGroup {
         }
         updateResources();
         return brightnessSliderEnabled;
+        
+    }
 
     public boolean isVibrationEnabled() {
         return (Settings.System.getIntForUser(mContext.getContentResolver(),
