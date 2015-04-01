@@ -337,4 +337,7 @@
   <java-symbol type="string" name="custom_lock_to_app_toast" />
   <java-symbol type="string" name="custom_lock_to_app_toast_accessible" />
 
+  <!-- Boot logo -->
+  <java-symbol type="drawable" name="cyanide_boot_logo" />
+
 </resources>
