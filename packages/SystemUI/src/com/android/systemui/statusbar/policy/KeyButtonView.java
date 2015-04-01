@@ -79,20 +79,22 @@ public class KeyButtonView extends ImageView {
 
     private long mDownTime;
     private long mUpTime;
-    private int mTouchSlop;
+    int mTouchSlop;
     private float mDrawingAlpha = 1f;
     private float mQuiescentAlpha = DEFAULT_QUIESCENT_ALPHA;
     private Animator mAnimateToQuiescent = new ObjectAnimator();
-    boolean mShouldClick = true;
+    private KeyButtonRipple mRipple;
+    private boolean mShouldClick = true;
 
     private static PowerManager mPm;
     private static AudioManager mAudioManager;
-    private KeyButtonInfo mActions;
-    private KeyButtonRipple mRipple;
+    KeyButtonInfo mActions;
 
     boolean mIsDPadAction = false;
     boolean mHasSingleAction = false;
-    boolean mHasBlankSingleAction = false, mHasDoubleAction, mHasLongAction;
+    private boolean mIsLandscape = false;
+    private boolean mTablet = false;
+    public boolean mHasBlankSingleAction = false, mHasDoubleAction, mHasLongAction;
 
     public static PowerManager getPowerManagerService(Context context) {
         if (mPm == null) mPm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -138,29 +140,32 @@ public class KeyButtonView extends ImageView {
         setBackground(mRipple = new KeyButtonRipple(context, this));
     }
 
-	public void setButtonActions(KeyButtonInfo actions) {
+    public void setDeviceOrientation(boolean landscape, boolean tablet) {
+		mIsLandscape = landscape;
+		mTablet = tablet;
+	}
+
+    public void setButtonActions(KeyButtonInfo actions) {
         this.mActions = actions;
 
-        if (mActions != null) {
-            mHasSingleAction = (mActions.singleAction != null);
-            mHasLongAction = mActions.longPressAction != null;
-            mHasDoubleAction = mActions.doubleTapAction != null;
-            mHasBlankSingleAction = mHasSingleAction && mActions.singleAction.equals(ACTION_BLANK);
+        setTag(mActions.singleAction); // should be OK even if it's null
 
-            mIsDPadAction = mHasSingleAction
+        mHasSingleAction = mActions != null && (mActions.singleAction != null);
+        mHasLongAction = mActions != null && mActions.longPressAction != null;
+        mHasDoubleAction = mActions != null && mActions.doubleTapAction != null;
+        mHasBlankSingleAction = mHasSingleAction && mActions.singleAction.equals(ACTION_BLANK);
+
+        // TO DO: determine type of key prior to getting a keybuttonview instance to allow more specialized
+        // and efficiently coded keybuttonview classes.
+        mIsDPadAction = mHasSingleAction
                 && (mActions.singleAction.equals(ACTION_ARROW_LEFT)
                 || mActions.singleAction.equals(ACTION_ARROW_UP)
                 || mActions.singleAction.equals(ACTION_ARROW_DOWN)
                 || mActions.singleAction.equals(ACTION_ARROW_RIGHT));
 
-            setImage();
-            setTag(mActions.singleAction);
-            setLongClickable(mHasLongAction);
-
-            if (DEBUG) Log.d(TAG, "Adding a navbar button in landscape or portrait " + mActions.singleAction);
-        } else {
-            Log.e(TAG, "hmmm. mActions was null...";
-        }
+        setImage();
+        setLongClickable(mHasLongAction);
+        if (DEBUG) Log.d(TAG, "Adding a navbar button in landscape or portrait " + mActions.singleAction);
     }
 
     public void setLongPressTimeout(int lpTimeout) {
@@ -187,8 +192,12 @@ public class KeyButtonView extends ImageView {
             if (f.exists()) {
                 setImageDrawable(new BitmapDrawable(res, f.getAbsolutePath()));
             }
-        } else if (mHasSingleAction) {
-            setImageDrawable(NavbarUtils.getIconImage(mContext, mActions.singleAction));
+        } else if (mActions.singleAction != null) {
+            if (mIsLandscape && !mTablet) {
+                setImageDrawable(NavbarUtils.getLandscapeIconImage(mContext, mActions.singleAction));
+        } else {
+                setImageDrawable(NavbarUtils.getIconImage(mContext, mActions.singleAction));
+			}
         } else {
             setImageResource(R.drawable.ic_sysbar_null);
         }
@@ -319,8 +328,10 @@ public class KeyButtonView extends ImageView {
             sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_CLICKED);
         }
 
-        if (mHasSingleAction) {
-            CyanideActions.launchAction(mContext, mActions.singleAction);
+        if (mActions != null) {
+            if (mActions.singleAction != null) {
+                CyanideActions.launchAction(mContext, mActions.singleAction);
+            }
         }
     }
 
@@ -343,12 +354,14 @@ public class KeyButtonView extends ImageView {
     private Runnable mDPadKeyRepeater = new Runnable() {
         @Override
         public void run() {
-            if (mIsDPadAction) {
-                CyanideActions.launchAction(mContext, mActions.singleAction);
-                // click on the first event since we're handling in MotionEvent.ACTION_DOWN
-                if (mShouldClick) {
-                    mShouldClick = false;
-                    playSoundEffect(SoundEffectConstants.CLICK);
+            if (mActions != null) {
+                if (mActions.singleAction != null) {
+                    CyanideActions.launchAction(mContext, mActions.singleAction);
+                    // click on the first event since we're handling in MotionEvent.ACTION_DOWN
+                    if (mShouldClick) {
+                        mShouldClick = false;
+                        playSoundEffect(SoundEffectConstants.CLICK);
+                    }
                 }
             }
             // repeat action

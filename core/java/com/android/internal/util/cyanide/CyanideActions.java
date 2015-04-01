@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.hardware.TorchManager;
 import android.hardware.input.InputManager;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
@@ -140,8 +141,8 @@ public class CyanideActions {
                 break;
 
             case ACTION_TORCH:
-//                Intent intentTorch = new Intent(TorchConstants.ACTION_TOGGLE_STATE);
-//                mContext.sendBroadcast(intentTorch);
+                TorchManager torchManager = (TorchManager) mContext.getSystemService(Context.TORCH_SERVICE);
+                torchManager.toggleTorch();
                 break;
 
             case ACTION_LAST_APP:

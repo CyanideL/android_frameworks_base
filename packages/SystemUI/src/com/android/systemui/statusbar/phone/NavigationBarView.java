@@ -25,7 +25,6 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.ActivityManagerNative;
 import android.app.StatusBarManager;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -366,7 +365,6 @@ public class NavigationBarView extends LinearLayout
         mBackLandIcon = new BackButtonDrawable(res.getDrawable(R.drawable.ic_sysbar_back_land));
         mHomeIcon = res.getDrawable(R.drawable.ic_sysbar_home);
         mHomeLandIcon = res.getDrawable(R.drawable.ic_sysbar_home_land);
-
     }
 
     public void updateResources(Resources res) {
@@ -481,7 +479,7 @@ public class NavigationBarView extends LinearLayout
         }
 
         ((ImageView)getHomeButton()).setImageDrawable(mVertical ? mHomeLandIcon : mHomeIcon);
-		setMenuVisibility(mShowMenu, true);
+               setMenuVisibility(mShowMenu, true);
         setDisabledFlags(mDisabledFlags, true);
     }
 
@@ -867,6 +865,7 @@ public class NavigationBarView extends LinearLayout
             for (int j = 0; j < length; j++) {
                 info = buttonsArray.get(j);
                 button = new KeyButtonView(mContext, null);
+                button.setDeviceOrientation(landscape, mTablet);
                 button.setButtonActions(info);
                 button.setLongPressTimeout(mLongPressTimeout);
                 button.setLayoutParams(getLayoutParams(landscape, mButtonWidth, mTablet ? 1f : 0.5f));
@@ -972,7 +971,6 @@ public class NavigationBarView extends LinearLayout
 
         // force the low profile & disabled states into compliance
         mBarTransitions.init(mVertical);
-        setDisabledFlags(mDisabledFlags, true /* force */);
         setMenuVisibility(mShowMenu, true /* force */);
 
         if (DEBUG) {
