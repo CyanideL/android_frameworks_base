@@ -1015,42 +1015,25 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mHandlerThread.start();
 
         // Other icons
-        if (mLocationController == null) {
-            mLocationController = new LocationControllerImpl(mContext); // will post a notification
-        }
-        if (mBatteryController == null) {
-            mBatteryController = new BatteryController(mContext, mHandler);
-            mBatteryController.addStateChangedCallback(new BatteryStateChangeCallback() {
-                @Override
-                public void onPowerSaveChanged() {
-                    mHandler.post(mCheckBarModes);
-                    if (mDozeServiceHost != null) {
-                        mDozeServiceHost.firePowerSaveChanged(mBatteryController.isPowerSave());
-                    }
+        mLocationController = new LocationControllerImpl(mContext); // will post a notification
+        mBatteryController = new BatteryController(mContext);
+        mBatteryController.addStateChangedCallback(new BatteryStateChangeCallback() {
+            @Override
+            public void onPowerSaveChanged() {
+                mHandler.post(mCheckBarModes);
+                if (mDozeServiceHost != null) {
+                    mDozeServiceHost.firePowerSaveChanged(mBatteryController.isPowerSave());
                 }
-
-                @Override
-                public void onBatteryLevelChanged(int level, boolean pluggedIn, boolean charging) {
-                    // noop
-                }
-
-                @Override
-                public void onBatteryStyleChanged(int style, int percentMode) {
-                    // noop
-                }
-            });
-        }
-        if (mHotspotController == null) {
-            mHotspotController = new HotspotControllerImpl(mContext);
-        }
-        if (mBluetoothController == null) {
-            mBluetoothController = new BluetoothControllerImpl(mContext, mHandlerThread.getLooper());
-        }
-        if (mSecurityController == null) {
-            mSecurityController = new SecurityControllerImpl(mContext);
-        }
-        if (mContext.getResources().getBoolean(R.bool.config_showRotationLock)
-                && mRotationLockController == null) {
+            }
+            @Override
+            public void onBatteryLevelChanged(int level, boolean pluggedIn, boolean charging) {
+                // noop
+            }
+        });
+        mHotspotController = new HotspotControllerImpl(mContext);
+        mBluetoothController = new BluetoothControllerImpl(mContext, mHandlerThread.getLooper());
+        mSecurityController = new SecurityControllerImpl(mContext);
+        if (mContext.getResources().getBoolean(R.bool.config_showRotationLock)) {
             mRotationLockController = new RotationLockControllerImpl(mContext);
         }
         if (mUserInfoController == null) {
@@ -3777,9 +3760,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
         if (mMSimNetworkController != null) {
             mMSimNetworkController.setUserId(mCurrentUserId);
-        }
-        if (mBatteryController != null) {
-            mBatteryController.setUserId(mCurrentUserId);
         }
     }
 
