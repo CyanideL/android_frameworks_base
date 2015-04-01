@@ -32,6 +32,7 @@ import android.graphics.Typeface;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -192,6 +193,13 @@ public class BatteryMeterView extends View implements DemoMode,
         }
     };
 
+    private ContentObserver mObserver = new ContentObserver(new Handler()) {
+        public void onChange(boolean selfChange, Uri uri) {
+            loadShowBatterySetting();
+            postInvalidate();
+        }
+    };
+
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -206,6 +214,10 @@ public class BatteryMeterView extends View implements DemoMode,
         }
         mBatteryController.addStateChangedCallback(this);
         mAttached = true;
+        getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                STATUS_BAR_BATTERY_STYLE), false, mObserver);
+        getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                STATUS_BAR_SHOW_BATTERY_PERCENT), false, mObserver);
     }
 
     @Override

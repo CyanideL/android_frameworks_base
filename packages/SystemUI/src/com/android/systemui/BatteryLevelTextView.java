@@ -18,8 +18,13 @@ package com.android.systemui;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Handler;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.TextView;
 
 import com.android.systemui.statusbar.policy.BatteryController;
@@ -38,6 +43,12 @@ public class BatteryLevelTextView extends TextView implements
 
     private int mStyle;
     private int mPercentMode;
+
+    private ContentObserver mObserver = new ContentObserver(new Handler()) {
+        public void onChange(boolean selfChange, Uri uri) {
+            loadShowBatteryTextSetting();
+        }
+    };
 
     public BatteryLevelTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -100,6 +111,10 @@ public class BatteryLevelTextView extends TextView implements
             mBatteryController.addStateChangedCallback(this);
         }
 
+        getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                STATUS_BAR_BATTERY_STYLE), false, mObserver);
+        getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                STATUS_BAR_SHOW_BATTERY_PERCENT), false, mObserver);
         mAttached = true;
     }
 
@@ -107,6 +122,7 @@ public class BatteryLevelTextView extends TextView implements
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mAttached = false;
+        getContext().getContentResolver().unregisterContentObserver(mObserver);
 
         if (mBatteryController != null) {
             mBatteryController.removeStateChangedCallback(this);
