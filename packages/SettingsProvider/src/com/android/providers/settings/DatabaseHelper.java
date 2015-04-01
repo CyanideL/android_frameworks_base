@@ -2545,7 +2545,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             loadStringSetting(stmt, Settings.System.DATE_FORMAT,
                     R.string.def_date_format);
 
-            loadIntegerSetting(stmt, Settings.Secure.DEV_FORCE_SHOW_NAVBAR,
+            loadIntegerSetting(stmt, Settings.System.DEV_FORCE_SHOW_NAVBAR,
                     R.integer.def_force_disable_navkeys);
 
             loadIntegerSetting(stmt, Settings.System.STATUS_BAR_NOTIF_COUNT,
