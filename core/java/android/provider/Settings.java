@@ -1254,9 +1254,6 @@ public final class Settings {
             MOVED_TO_SECURE.add(Secure.QS_TILES);
             MOVED_TO_SECURE.add(Secure.QS_USE_MAIN_TILES);
             MOVED_TO_SECURE.add(Secure.QS_SHOW_BRIGHTNESS_SLIDER);
-            for (String s : Secure.NAVIGATION_RING_TARGETS) {
-                MOVED_TO_SECURE.add(s);
-            }
         }
 
         private static final HashSet<String> MOVED_TO_GLOBAL;
@@ -6221,16 +6218,6 @@ public final class Settings {
          * @hide
          */
         public static final String QS_LOCATION_ADVANCED = "qs_location_advanced";
-
-        /**
-         * Custom navring actions
-         * @hide
-         */
-        public static final String[] NAVIGATION_RING_TARGETS = new String[] {
-                "navigation_ring_targets_0",
-                "navigation_ring_targets_1",
-                "navigation_ring_targets_2",
-        };
 
         /**
          * Whether to enable "advanced mode" for the current user.

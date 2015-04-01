@@ -1931,14 +1931,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         if (upgradeVersion < 121) {
-            String[] settingsToMove = Settings.Secure.NAVIGATION_RING_TARGETS;
-
-            moveSettingsToNewTable(db, TABLE_SYSTEM, TABLE_SECURE,
-                    settingsToMove, true);
-            upgradeVersion = 121;
-        }
-
-        if (upgradeVersion < 122) {
             db.beginTransaction();
             SQLiteStatement stmt = null;
             try {
@@ -1951,7 +1943,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 db.endTransaction();
                 if (stmt != null) stmt.close();
             }
-            upgradeVersion = 122;
+            upgradeVersion = 121;
         }
 
         // *** Remember to update DATABASE_VERSION above!
