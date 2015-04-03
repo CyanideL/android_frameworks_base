@@ -58,8 +58,12 @@ public class KeyguardAffordanceView extends ImageView implements Palette.Palette
     private final Paint mCirclePaint;
     private final Interpolator mAppearInterpolator;
     private final Interpolator mDisappearInterpolator;
-    private int mInverseColor;
-    private int mNormalColor;
+    private boolean mIsTargetCustom = false;
+    private int mNormalIconColor; 
+    private int mInverseIconColor;
+    private int mCircleColor;
+    private int mCirclePaletteColor; 
+    private boolean mColorizeCustomIcons;
     private final ArgbEvaluator mColorInterpolator;
     private final FlingAnimationUtils mFlingAnimationUtils;
     private final Drawable mArrowDrawable;
@@ -75,7 +79,7 @@ public class KeyguardAffordanceView extends ImageView implements Palette.Palette
     private boolean mCircleWillBeHidden;
     private int[] mTempPoint = new int[2];
     private float mImageScale;
-    private int mCircleColor;
+
     private boolean mIsLeft;
     private float mArrowAlpha = 0.0f;
     private View mPreviewView;
@@ -113,8 +117,6 @@ public class KeyguardAffordanceView extends ImageView implements Palette.Palette
         }
     };
 
-    private ColorFilter mDefaultFilter;
-
     public KeyguardAffordanceView(Context context) {
         this(context, null);
     }
@@ -133,8 +135,6 @@ public class KeyguardAffordanceView extends ImageView implements Palette.Palette
         mCirclePaint = new Paint();
         mCirclePaint.setAntiAlias(true);
 
-        int iconColor = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.LOCK_SCREEN_ICON_COLOR, 0xffffffff);
         mMinBackgroundRadius = mContext.getResources().getDimensionPixelSize(
                 R.dimen.keyguard_affordance_min_background_radius);
         mHintChevronPadding = mContext.getResources().getDimensionPixelSize(
@@ -149,7 +149,7 @@ public class KeyguardAffordanceView extends ImageView implements Palette.Palette
         mArrowDrawable.setBounds(0, 0, mArrowDrawable.getIntrinsicWidth(),
                 mArrowDrawable.getIntrinsicHeight());
 
-        updateColorSettings(iconColor);
+        updateColorSettings();
     }
 
     @Override
@@ -177,7 +177,7 @@ public class KeyguardAffordanceView extends ImageView implements Palette.Palette
     }
 
     private void doPaletteIfNecessary() {
-        if (mDefaultFilter != null && getDrawable() instanceof BitmapDrawable) {
+        if (getDrawable() instanceof BitmapDrawable) {
             Palette.generateAsync(((BitmapDrawable) getDrawable()).getBitmap(), this);
         }
     }
@@ -193,11 +193,9 @@ public class KeyguardAffordanceView extends ImageView implements Palette.Palette
     private void addOverlay() {
         if (mPreviewView != null) {
             mPreviewView.getOverlay().clear();
-            if (mDefaultFilter != null) {
-                ColorDrawable d = new ColorDrawable(mCircleColor);
-                d.setBounds(0, 0, mPreviewView.getWidth(), mPreviewView.getHeight());
-                mPreviewView.getOverlay().add(d);
-            }
+            ColorDrawable d = new ColorDrawable(mCircleColor);
+            d.setBounds(0, 0, mPreviewView.getWidth(), mPreviewView.getHeight());
+            mPreviewView.getOverlay().add(d);
         }
     }
 
@@ -217,25 +215,15 @@ public class KeyguardAffordanceView extends ImageView implements Palette.Palette
         }
     }
 
-    public void setDefaultFilter(ColorFilter filter) {
-        mDefaultFilter = filter;
-        mCircleColor = Color.WHITE;
-        addOverlay();
-    }
-
     private void updateIconColor() {
         Drawable drawable = getDrawable().mutate();
         float alpha = mCircleRadius / mMinBackgroundRadius;
         alpha = Math.min(1.0f, alpha);
-        int color = (int) mColorInterpolator.evaluate(alpha, mNormalColor, mInverseColor);
-        if (mDefaultFilter != null) {
-            if (alpha == 0) {
-                drawable.setColorFilter(mDefaultFilter);
-            } else {
-                drawable.setColorFilter(color, PorterDuff.Mode.DST_IN);
-            }
-        } else {
+        int color = (int) mColorInterpolator.evaluate(alpha, mNormalIconColor, mInverseIconColor);
+        if (!mIsTargetCustom) {
             drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        } else {
+           drawable.setColorFilter(color, PorterDuff.Mode.DST_IN);
         }
     }
 
@@ -556,22 +544,22 @@ public class KeyguardAffordanceView extends ImageView implements Palette.Palette
 
     @Override
     public void onGenerated(Palette palette) {
-        mCircleColor = palette.getDarkVibrantColor(Color.WHITE);
-        addOverlay();
+        mCirclePaletteColor = palette.getDarkVibrantColor(mNormalIconColor);
+        setCircleColor();
+    }
+
+    public void setIsTargetCustom(boolean isCustom) {
+        mIsTargetCustom = isCustom;
+        updateIconColor();
+        setCircleColor();
     }
 
     public void updateColorSettings() {
-        updateColorSettings(mNormalColor);
-    }
-
-    public void updateColorSettings(int color) {
-        mCircleColor = color;
-        mNormalColor = color;
-        mInverseColor = isColorDark(color) ? 0xffffffff : 0xff000000;
-
-        mCirclePaint.setColor(mCircleColor);
-        mArrowDrawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        mNormalIconColor = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LOCK_SCREEN_ICON_COLOR, 0xffffffff);
+        mInverseIconColor = isColorDark(mNormalIconColor) ? 0xffffffff : 0xff000000;
         updateIconColor();
+        setCircleColor();
     }
 
     private boolean isColorDark(int color) {
@@ -583,5 +571,19 @@ public class KeyguardAffordanceView extends ImageView implements Palette.Palette
         } else {
             return true;
         }
+    }
+
+    private void setCircleColor() {
+        if (!mColorizeCustomIcons && mIsTargetCustom) {
+            mCircleColor = mCirclePaletteColor;
+        } else {
+            mCircleColor = mNormalIconColor;
+        }
+        mArrowDrawable.setColorFilter(mCircleColor, PorterDuff.Mode.SRC_ATOP);
+        addOverlay();
+    }
+
+    public void setColorizeCustomIcons(boolean colorize) {
+        mColorizeCustomIcons = colorize;
     }
 }

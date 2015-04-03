@@ -130,6 +130,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     private int mLastUnlockIconRes = 0;
 
     private VisualizerView mVisualizer;
+    private Paint mVisualizerPaint;
     private boolean mScreenOn;
     private boolean mLinked;
     private boolean mVisualizerEnabled;
@@ -155,6 +156,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         mLinearOutSlowInInterpolator =
                 AnimationUtils.loadInterpolator(context, android.R.interpolator.linear_out_slow_in);
         mSettingsObserver = new SettingsObserver(new Handler());
+        mSettingsObserver.observe();
     }
 
     private AccessibilityDelegate mAccessibilityDelegate = new AccessibilityDelegate() {
@@ -220,23 +222,22 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         mPhoneImageView.setOnClickListener(this);
         if (ActivityManager.isHighEndGfx()) {
             mVisualizer = (VisualizerView) findViewById(R.id.visualizerView);
-            if (mVisualizer != null) {
-                Paint paint = new Paint();
-                Resources res = mContext.getResources();
-                paint.setStrokeWidth(res.getDimensionPixelSize(
-                        R.dimen.kg_visualizer_path_stroke_width));
-                paint.setAntiAlias(true);
-                paint.setColor(res.getColor(R.color.equalizer_fill_color));
-                paint.setPathEffect(new DashPathEffect(new float[] {
-                        res.getDimensionPixelSize(R.dimen.kg_visualizer_path_effect_1),
-                        res.getDimensionPixelSize(R.dimen.kg_visualizer_path_effect_2)
-                }, 0));
+        if (mVisualizer != null) {
+            mVisualizerPaint = new Paint();
+            Resources res = mContext.getResources();
+            mVisualizerPaint.setStrokeWidth(res.getDimensionPixelSize(R.dimen.kg_visualizer_path_stroke_width));
+            mVisualizerPaint.setAntiAlias(true);
+            updateVisualizerColor();
+            mVisualizerPaint.setPathEffect(new DashPathEffect(new float[] {
+                    res.getDimensionPixelSize(R.dimen.kg_visualizer_path_effect_1),
+                    res.getDimensionPixelSize(R.dimen.kg_visualizer_path_effect_2)
+            }, 0));
 
-                int bars = res.getInteger(R.integer.kg_visualizer_divisions);
-                mVisualizer.addRenderer(new LockscreenBarEqRenderer(bars, paint,
-                        res.getInteger(R.integer.kg_visualizer_db_fuzz),
-                        res.getInteger(R.integer.kg_visualizer_db_fuzz_factor)));
-            }
+            int bars = res.getInteger(R.integer.kg_visualizer_divisions);
+            mVisualizer.addRenderer(new LockscreenBarEqRenderer(bars, mVisualizerPaint,
+                    res.getInteger(R.integer.kg_visualizer_db_fuzz),
+                    res.getInteger(R.integer.kg_visualizer_db_fuzz_factor)));
+
         }
 
         initAccessibility();
@@ -250,11 +251,26 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         for (int i = 0; i < targets.length; i++) {
             LockscreenShortcutsHelper.TargetInfo item = items.get(i);
             KeyguardAffordanceView v = targets[i];
-            v.setDefaultFilter(item.colorFilter);
+            v.setColorizeCustomIcons(item.colorizeCustomIcons);
             v.setImageDrawable(getScaledDrawable(item.icon));
         }
         updateCameraVisibility();
         updatePhoneVisibility();
+        updateIsTargetCustom();
+    }
+
+    private void updateIsTargetCustom() {
+        boolean isLeftTargetCustom = false;
+        boolean isRightTargetCustom = false;
+
+        if (mShortcutHelper.isTargetCustom(LockscreenShortcutsHelper.Shortcuts.LEFT_SHORTCUT)) {
+            isLeftTargetCustom = true;
+        }
+        if (mShortcutHelper.isTargetCustom(LockscreenShortcutsHelper.Shortcuts.RIGHT_SHORTCUT)) {
+            isRightTargetCustom = true;
+        }
+        mPhoneImageView.setIsTargetCustom(isLeftTargetCustom);
+        mCameraImageView.setIsTargetCustom(isRightTargetCustom);
     }
 
     private Drawable getScaledDrawable(Drawable drawable) {
@@ -545,7 +561,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
             return;
         }
         // TODO: Real icon for facelock.
-       /* int iconRes = mUnlockMethodCache.isFaceUnlockRunning()
+        int iconRes = mUnlockMethodCache.isFaceUnlockRunning()
                 ? com.android.internal.R.drawable.ic_account_circle
                 : mUnlockMethodCache.isMethodInsecure() ? R.drawable.ic_lock_open_24dp
                 : R.drawable.ic_lock_24dp;
@@ -559,9 +575,8 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
                 icon = new IntrinsicSizeDrawable(icon, iconWidth, iconHeight);
             }
             mLockIcon.setImageDrawable(icon);
-        }*/
-        
-        mLockIcon.updateColorSettings();
+            mLockIcon.updateColorSettings();
+        }
         boolean trustManaged = mUnlockMethodCache.isTrustManaged();
         mTrustDrawable.setTrustManaged(trustManaged);
         updateLockIconClickability();
@@ -631,6 +646,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         return false;
     }
 
+    @Override
     public void onMethodSecureChanged(boolean methodSecure) {
         updateLockIcon();
         updateCameraVisibility();
@@ -694,10 +710,11 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
 
     }
 
-    public void updateIconColor(int color) {
-        mCameraImageView.updateColorSettings(color);
-        mPhoneImageView.updateColorSettings(color);
-        mLockIcon.updateColorSettings(color);
+    public void updateIconColor() {
+        mCameraImageView.updateColorSettings();
+        mPhoneImageView.updateColorSettings();
+        mLockIcon.updateColorSettings();
+        updateVisualizerColor();
     }
 
     private final BroadcastReceiver mDevicePolicyReceiver = new BroadcastReceiver() {
@@ -920,6 +937,15 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
             mVisualizerEnabled = Settings.Secure.getIntForUser(resolver,
                     Settings.Secure.LOCKSCREEN_VISUALIZER_ENABLED, 1, UserHandle.USER_CURRENT) != 0;
 
+        }
+    }
+
+    private void updateVisualizerColor() {
+        int iconColor = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LOCK_SCREEN_ICON_COLOR, 0xffffffff);
+        int visualizerColor = (32 << 24) | (iconColor & 0x00ffffff);
+        if (mVisualizerPaint != null) {
+            mVisualizerPaint.setColor(visualizerColor);
         }
     }
 }

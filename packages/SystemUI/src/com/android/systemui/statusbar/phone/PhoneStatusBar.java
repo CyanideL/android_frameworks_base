@@ -2433,12 +2433,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
-    public void setKeyguardTextAndIconColors() {
+    private void setKeyguardTextAndIconColors() {
         int textColor =
                 Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.LOCK_SCREEN_TEXT_COLOR, 0xffffffff);
         if (mKeyguardBottomArea != null) {
             mKeyguardBottomArea.updateTextColor(textColor);
+            mKeyguardBottomArea.updateIconColor();
         }
     }
 

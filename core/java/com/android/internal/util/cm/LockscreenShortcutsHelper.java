@@ -1,18 +1,19 @@
 package com.android.internal.util.cm;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.ContentObserver;
-import android.graphics.ColorFilter;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.Settings;
 import android.text.TextUtils;
+
+import com.android.internal.util.cyanide.ImageHelper;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -42,6 +43,8 @@ public class LockscreenShortcutsHelper {
     private Resources mSystemUiResources;
     private OnChangeListener mListener;
     private List<String> mTargetActivities;
+    private boolean mColorizeCustomIcons;
+    private int mIconColor;
 
     public interface OnChangeListener {
         public void onChange();
@@ -52,7 +55,15 @@ public class LockscreenShortcutsHelper {
         if (listener != null) {
             mListener = listener;
             mContext.getContentResolver().registerContentObserver(
-                    Settings.Secure.getUriFor(Settings.Secure.LOCKSCREEN_TARGETS), false, mObserver);
+                    Settings.Secure.getUriFor(
+                    Settings.Secure.LOCKSCREEN_TARGETS), false, mObserver);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(
+                    Settings.System.LOCK_SCREEN_SHORTCUTS_COLORIZE_CUSTOM_ICONS),
+                    false, mObserver);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(
+                    Settings.System.LOCK_SCREEN_ICON_COLOR), false, mObserver);
         }
         fetchTargets();
     }
@@ -69,11 +80,11 @@ public class LockscreenShortcutsHelper {
 
     public static class TargetInfo {
         public Drawable icon;
-        public ColorFilter colorFilter;
+        public boolean colorizeCustomIcons;
         public String uri;
-        public TargetInfo(Drawable icon, ColorFilter colorFilter, String uri) {
+        public TargetInfo(Drawable icon, boolean colorizeCustomIcons, String uri) {
             this.icon = icon;
-            this.colorFilter = colorFilter;
+            this.colorizeCustomIcons = colorizeCustomIcons;
             this.uri = uri;
         }
     }
@@ -81,26 +92,26 @@ public class LockscreenShortcutsHelper {
     private void fetchTargets() {
         mTargetActivities = Settings.Secure.getDelimitedStringAsList(mContext.getContentResolver(),
                 Settings.Secure.LOCKSCREEN_TARGETS, DELIMITER);
+        ContentResolver resolver = mContext.getContentResolver();
         int itemsToPad = Shortcuts.values().length - mTargetActivities.size();
         if (itemsToPad > 0) {
             for (int i = 0; i < itemsToPad; i++) {
                 mTargetActivities.add(DEFAULT);
             }
         }
+        mColorizeCustomIcons = Settings.System.getInt(resolver,
+                Settings.System.LOCK_SCREEN_SHORTCUTS_COLORIZE_CUSTOM_ICONS, 0) == 1;
+        mIconColor = Settings.System.getInt(resolver,
+                Settings.System.LOCK_SCREEN_ICON_COLOR, 0xffffffff);
     }
 
     public List<TargetInfo> getDrawablesForTargets() {
         fetchTargets();
         List<TargetInfo> result = new ArrayList<TargetInfo>();
 
-        final ColorMatrix cm = new ColorMatrix();
-        cm.setSaturation(0);
-        final ColorMatrixColorFilter filter = new ColorMatrixColorFilter(cm);
-
         for (int i = 0; i < Shortcuts.values().length; i++) {
             String activity = mTargetActivities.get(i);
             Drawable drawable = null;
-            ColorFilter filerToSet = null;
 
             if (!TextUtils.isEmpty(activity) && !activity.equals(NONE)) {
                 // No pre-defined action, try to resolve URI
@@ -111,8 +122,12 @@ public class LockscreenShortcutsHelper {
                             PackageManager.GET_ACTIVITIES);
 
                     if (info != null) {
-                        drawable = info.loadIcon(pm);
-                        filerToSet = filter;
+                        Drawable d = info.loadIcon(pm);
+                        if (mColorizeCustomIcons) {
+                            drawable = new BitmapDrawable(ImageHelper.getColoredBitmap(d, mIconColor));
+                        } else {
+                            drawable = d;
+                        }
                     }
                 } catch (URISyntaxException e) {
                     e.printStackTrace();
@@ -123,10 +138,9 @@ public class LockscreenShortcutsHelper {
             if (drawable == null) {
                 drawable = getDrawableFromSystemUI(i == Shortcuts.LEFT_SHORTCUT.index
                         ? PHONE_DEFAULT_ICON : CAMERA_DEFAULT_ICON);
-                filerToSet = null;
             }
 
-            result.add(new TargetInfo(drawable, filerToSet, activity));
+            result.add(new TargetInfo(drawable, mColorizeCustomIcons, activity));
         }
         return result;
     }

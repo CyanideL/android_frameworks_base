@@ -25,6 +25,7 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.media.audiofx.AudioEffect;
 import android.media.session.MediaController;
@@ -33,6 +34,7 @@ import android.media.session.MediaSessionManager;
 import android.media.session.PlaybackState;
 import android.os.AsyncTask;
 import android.os.PowerManager;
+import android.provider.Settings;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -64,6 +66,7 @@ public class VisualizerTile extends QSTile<QSTile.State>
     private boolean mLinked;
     private boolean mIsAnythingPlaying;
     private boolean mListening;
+    private Paint mPaint;
     private boolean mPowerSaveModeEnabled;
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -114,24 +117,24 @@ public class VisualizerTile extends QSTile<QSTile.State>
             @Override
             protected View createIcon() {
                 Resources r = mContext.getResources();
-
+                updateColors();
                 mVisualizer = new VisualizerView(mContext);
                 mVisualizer.setEnabled(false);
                 mVisualizer.setVisibility(View.VISIBLE);
                 mVisualizer.setAlpha(1.f);
 
-                Paint paint = new Paint();
-                paint.setStrokeWidth(r.getDimensionPixelSize(
+                mPaint = new Paint();
+                mPaint.setStrokeWidth(r.getDimensionPixelSize(
                         R.dimen.visualizer_path_stroke_width));
-                paint.setAntiAlias(true);
-                paint.setColor(r.getColor(R.color.visualizer_fill_color));
-                paint.setPathEffect(new android.graphics.DashPathEffect(new float[]{
+                mPaint.setAntiAlias(true);
+                mPaint.setColor(getIconColor());
+                mPaint.setPathEffect(new android.graphics.DashPathEffect(new float[]{
                         r.getDimensionPixelSize(R.dimen.visualizer_path_effect_1),
                         r.getDimensionPixelSize(R.dimen.visualizer_path_effect_2)
                 }, 0));
                 mVisualizer.addRenderer(new TileBarGraphRenderer(
                         r.getInteger(R.integer.visualizer_divisions),
-                        paint,
+                        mPaint,
                         r.getInteger(R.integer.visualizer_db_fuzz),
                         r.getInteger(R.integer.visualizer_db_fuzz_factor))
                 );
@@ -140,6 +143,7 @@ public class VisualizerTile extends QSTile<QSTile.State>
                 mStaticVisualizerIcon.setId(android.R.id.icon);
                 mStaticVisualizerIcon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 mStaticVisualizerIcon.setImageResource(R.drawable.ic_qs_visualizer_static);
+                mStaticVisualizerIcon.setColorFilter(getIconColor(), Mode.MULTIPLY);
                 mStaticVisualizerIcon.setVisibility(View.VISIBLE);
                 mStaticVisualizerIcon.setAlpha(0.f);
 
@@ -155,6 +159,13 @@ public class VisualizerTile extends QSTile<QSTile.State>
                         Gravity.CENTER
                 ));
                 return visualizerContainer;
+            }
+
+            @Override
+            public void setIconColor() {
+                updateColors();
+                mPaint.setColor((150 << 24) | (getIconColor() & 0x00ffffff));
+                mStaticVisualizerIcon.setColorFilter(getIconColor(), Mode.MULTIPLY);
             }
         };
     }

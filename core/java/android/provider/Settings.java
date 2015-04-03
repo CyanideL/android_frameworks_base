@@ -2224,6 +2224,12 @@ public final class Settings {
          * @hide
          */
         public static final String LOCKSCREEN_SHORTCUTS = "lockscreen_shortcuts";
+        
+        /**
+		 * Whether to colorize shortcuts custom target icons on the lock screen
+		 * @hide
+		 */
+		public static final String LOCK_SCREEN_SHORTCUTS_COLORIZE_CUSTOM_ICONS = "lockscreen_shortcuts_colorize_custom_icons";
 
         /**
          * Whether shorcuts open with normal or longpress
