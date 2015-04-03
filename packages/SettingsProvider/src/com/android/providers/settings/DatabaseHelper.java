@@ -1934,6 +1934,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
             upgradeVersion = 121;
         }
+        
+        if (upgradeVersion < 122) {
+            // Migrate from cm-12.0 if there is no entry from cm-11.0
+            db.beginTransaction();
+            SQLiteStatement stmt = null;
+            try {
+                stmt = db.compileStatement("INSERT OR IGNORE INTO secure(name,value)"
+                        + " VALUES(?,?);");
+                int quickPulldown = getIntValueFromSystem(db,
+                        Settings.System.STATUS_BAR_QUICK_QS_PULLDOWN,
+                        R.integer.def_qs_quick_pulldown);
+                loadSetting(stmt, Settings.System.QS_QUICK_PULLDOWN, quickPulldown);
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+                if (stmt != null) stmt.close();
+            }
+            upgradeVersion = 122;
+		}
 
         // *** Remember to update DATABASE_VERSION above!
 
@@ -2540,6 +2559,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             loadIntegerSetting(stmt, Settings.System.ENABLE_REVERSE_LOOKUP,
                     R.integer.def_reverse_lookup);
+                    
+            loadIntegerSetting(stmt, Settings.System.QS_QUICK_PULLDOWN,
+					R.integer.def_qs_quick_pulldown);
 
         } finally {
             if (stmt != null) stmt.close();
