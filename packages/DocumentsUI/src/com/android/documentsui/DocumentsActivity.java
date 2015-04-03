@@ -470,7 +470,6 @@ public class DocumentsActivity extends Activity {
         if (mDrawerToggle != null) {
             mDrawerToggle.syncState();
         }
-        updateActionBar();
     }
 
     public void setRootsDrawerOpen(boolean open) {
@@ -667,7 +666,6 @@ public class DocumentsActivity extends Activity {
         // Only sort by size when visible
         sortSize.setVisible(mState.showSize);
 
-        boolean searchVisible;
         final boolean searchVisible;
         if (mState.action == ACTION_CREATE || mState.action == ACTION_OPEN_TREE
 			|| mState.action == ACTION_STANDALONE) {
@@ -679,7 +677,6 @@ public class DocumentsActivity extends Activity {
             if (cwd == null) {
                 grid.setVisible(false);
                 list.setVisible(false);
-                fileSizeVisible = false;
             }
 
             if (mState.action == ACTION_CREATE) {
@@ -701,7 +698,7 @@ public class DocumentsActivity extends Activity {
                 ? R.string.menu_file_size_hide : R.string.menu_file_size_show);
 
         advanced.setVisible(mState.action != ACTION_MANAGE);
-        fileSize.setVisible(fileSizeVisible);
+        fileSize.setVisible(mState.action != ACTION_MANAGE);
 
         return true;
     }
@@ -822,6 +819,7 @@ public class DocumentsActivity extends Activity {
     @Override
     protected void onRestoreInstanceState(Bundle state) {
         super.onRestoreInstanceState(state);
+        updateActionBar();
     }
 
     private BaseAdapter mStackAdapter = new BaseAdapter() {

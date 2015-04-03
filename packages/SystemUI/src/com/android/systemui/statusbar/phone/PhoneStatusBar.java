@@ -2439,7 +2439,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 Settings.System.LOCK_SCREEN_TEXT_COLOR, 0xffffffff);
         if (mKeyguardBottomArea != null) {
             mKeyguardBottomArea.updateTextColor(textColor);
-            mKeyguardBottomArea.updateIconColor(iconColor);
         }
     }
 

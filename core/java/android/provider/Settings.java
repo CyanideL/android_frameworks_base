@@ -6563,12 +6563,6 @@ public final class Settings {
         public static final String LOCKSCREEN_VISUALIZER_ENABLED = "lockscreen_visualizer";
 
         /**
-         * Whether detail view for the location tile is enabled
-         * @hide
-         */
-        public static final String QS_LOCATION_ADVANCED = "qs_location_advanced";
-
-        /**
          * Whether to show four tiles per row.
          * @hide
          */
