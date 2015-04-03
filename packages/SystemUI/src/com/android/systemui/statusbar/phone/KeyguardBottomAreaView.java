@@ -220,8 +220,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         mLockIcon.setOnLongClickListener(this);
         mCameraImageView.setOnClickListener(this);
         mPhoneImageView.setOnClickListener(this);
-        if (ActivityManager.isHighEndGfx()) {
-            mVisualizer = (VisualizerView) findViewById(R.id.visualizerView);
+        mVisualizer = (VisualizerView) findViewById(R.id.visualizerView);
         if (mVisualizer != null) {
             mVisualizerPaint = new Paint();
             Resources res = mContext.getResources();
@@ -534,18 +533,8 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        mContext.registerReceiver(mReceiver, new IntentFilter(
-                PowerManager.ACTION_POWER_SAVE_MODE_CHANGING));
-        mSettingsObserver.observe();
-    }
-
-    @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mSettingsObserver.unobserve();
-        mContext.unregisterReceiver(mReceiver);
         mTrustDrawable.stop();
         requestVisualizer(false, 0);
     }
@@ -561,7 +550,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
             return;
         }
         // TODO: Real icon for facelock.
-        int iconRes = mUnlockMethodCache.isFaceUnlockRunning()
+       /* int iconRes = mUnlockMethodCache.isFaceUnlockRunning()
                 ? com.android.internal.R.drawable.ic_account_circle
                 : mUnlockMethodCache.isMethodInsecure() ? R.drawable.ic_lock_open_24dp
                 : R.drawable.ic_lock_24dp;
@@ -575,8 +564,9 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
                 icon = new IntrinsicSizeDrawable(icon, iconWidth, iconHeight);
             }
             mLockIcon.setImageDrawable(icon);
-            mLockIcon.updateColorSettings();
-        }
+        }*/
+        
+        mLockIcon.updateColorSettings();
         boolean trustManaged = mUnlockMethodCache.isTrustManaged();
         mTrustDrawable.setTrustManaged(trustManaged);
         updateLockIconClickability();
@@ -646,7 +636,6 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         return false;
     }
 
-    @Override
     public void onMethodSecureChanged(boolean methodSecure) {
         updateLockIcon();
         updateCameraVisibility();
@@ -728,17 +717,6 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         }
     };
 
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (PowerManager.ACTION_POWER_SAVE_MODE_CHANGING.equals(intent.getAction())) {
-                mPowerSaveModeEnabled = intent.getBooleanExtra(PowerManager.EXTRA_POWER_SAVE_MODE,
-                        false);
-                requestVisualizer(true, 0);
-            }
-        }
-    };
-
     private final KeyguardUpdateMonitorCallback mUpdateMonitorCallback =
             new KeyguardUpdateMonitorCallback() {
         @Override
@@ -806,7 +784,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     }
 
     public void requestVisualizer(boolean show, int delay) {
-        if (mVisualizer == null || !mVisualizerEnabled || mPowerSaveModeEnabled) {
+        if (!mVisualizerEnabled) {
             return;
         }
         removeCallbacks(mStartVisualizer);
