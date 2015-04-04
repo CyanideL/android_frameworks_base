@@ -4253,6 +4253,12 @@ public final class Settings {
         public static final String DISPLAY_TEMPERATURE_NIGHT = "display_temperature_night";
 
         /**
+         * show the membar in recents
+         *  @hide
+         */
+        public static final String SYSTEMUI_RECENTS_MEM_DISPLAY = "systemui_recents_mem_display";
+
+        /**
          * Display color temperature adjustment mode, one of DAY (default), NIGHT, or AUTO.
          * @hide
          */
