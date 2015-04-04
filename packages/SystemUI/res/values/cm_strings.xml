@@ -121,4 +121,6 @@
     <string name="lockscreen_target_empty">Empty</string>   
     <string name="navbar_dialog_title">Choose action to assign</string>
 
+    <!-- Screen pinning dialog description (for devices without navbar) -->
+    <string name="screen_pinning_description_no_navbar">This keeps it in view until you unpin. Touch and hold the Back button to unpin.</string>
 </resources>
