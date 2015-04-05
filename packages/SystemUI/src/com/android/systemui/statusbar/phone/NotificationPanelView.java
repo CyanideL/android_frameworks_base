@@ -76,6 +76,7 @@ public class NotificationPanelView extends PanelView implements
 
     private static final float HEADER_RUBBERBAND_FACTOR = 2.05f;
     private static final float LOCK_ICON_ACTIVE_SCALE = 1.2f;
+    private static final float QUICK_PULLDOWN_REGION_FRACTION = 0.2f;
 
     public static final long DOZE_ANIMATION_DURATION = 700;
 
@@ -189,7 +190,7 @@ public class NotificationPanelView extends PanelView implements
     private Handler mHandler = new Handler();
     private SettingsObserver mSettingsObserver;
 
-    private boolean mOneFingerQuickSettingsIntercept;
+    private int mOneFingerQuickSettingsIntercept;
     private boolean mDoubleTapToSleepEnabled;
     private int mStatusBarHeaderHeight;
     private GestureDetector mDoubleTapGesture;
@@ -727,8 +728,7 @@ public class NotificationPanelView extends PanelView implements
         boolean twoFingerQsEvent = mTwoFingerQsExpandPossible
                 && (event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN
                 && event.getPointerCount() == 2);
-        boolean oneFingerQsOverride = mOneFingerQuickSettingsIntercept
-                && event.getActionMasked() == MotionEvent.ACTION_DOWN
+        boolean oneFingerQsOverride = event.getActionMasked() == MotionEvent.ACTION_DOWN
                 && shouldQuickSettingsIntercept(event.getX(), event.getY(), -1, false);
         if ((twoFingerQsEvent || oneFingerQsOverride)
                 && event.getY(event.getActionIndex()) < mStatusBarMinHeight) {
@@ -1358,8 +1358,17 @@ public class NotificationPanelView extends PanelView implements
                 && y >= header.getTop() && y <= header.getBottom();
 
         final float w = getMeasuredWidth();
-        float region = (w * (1.f/3.f)); // TODO overlay region fraction?
-        boolean showQsOverride = isLayoutRtl() ? (x < region) : (w - region < x);
+        float region = (w * QUICK_PULLDOWN_REGION_FRACTION);
+        boolean showQsOverride = false;
+
+        switch (mOneFingerQuickSettingsIntercept) {
+            case 1: // Right side pulldown
+                showQsOverride = isLayoutRtl() ? (x < region) : (w - region < x);
+                break;
+            case 2: // Left side pulldown
+                showQsOverride = isLayoutRtl() ? (w - region < x) : (x < region);
+                break;
+        }
         showQsOverride = showQsOverride && mStatusBarState == StatusBarState.SHADE;
 
         if (mQsExpanded) {
@@ -1637,7 +1646,6 @@ public class NotificationPanelView extends PanelView implements
 
     private void setListening(boolean listening) {
         mHeader.setListening(listening);
-        mKeyguardStatusBar.setListening(listening);
         mQsPanel.setListening(listening);
     }
 
@@ -2083,7 +2091,7 @@ public class NotificationPanelView extends PanelView implements
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_QUICK_QS_PULLDOWN), false, this);
+                    Settings.System.QS_QUICK_PULLDOWN), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.DOUBLE_TAP_SLEEP_GESTURE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -2124,11 +2132,10 @@ public class NotificationPanelView extends PanelView implements
 
         public void update() {
             ContentResolver resolver = mContext.getContentResolver();
-            mOneFingerQuickSettingsIntercept = Settings.System.getInt(
-                    resolver, Settings.System.STATUS_BAR_QUICK_QS_PULLDOWN, 1) == 1;
-            mDoubleTapToSleepEnabled = Settings.System.getIntForUser(
-                    resolver, Settings.System.DOUBLE_TAP_SLEEP_GESTURE, 1,
-                    UserHandle.USER_CURRENT) == 1;
+            mOneFingerQuickSettingsIntercept = Settings.System.getIntForUser(resolver,
+                    Settings.System.QS_QUICK_PULLDOWN, 0, UserHandle.USER_CURRENT);
+            mDoubleTapToSleepEnabled = Settings.System.getIntForUser(resolver,
+                    Settings.System.DOUBLE_TAP_SLEEP_GESTURE, 1, UserHandle.USER_CURRENT) == 1;
 			mQSBackgroundColor = Settings.System.getInt(
                     resolver, Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
             setQSBackgroundColor();
