@@ -353,7 +353,7 @@ public class QSTileHost implements QSTile.Host {
             case QSConstants.TILE_APPCIRCLEBAR:
                 return new AppCircleBarTile(this);
             case QSConstants.TILE_REBOOT:
-                return new RebootTile(this);;
+                return new RebootTile(this);
             case QSConstants.TILE_AMBIENT_DISPLAY:
                 return new AmbientDisplayTile(this);
             case QSConstants.TILE_USB_TETHER:

@@ -159,33 +159,6 @@ public class ActionHelper {
         return d;
     }
 
-
-    public static int getActionIconUri(Context context,
-            String clickAction, String customIcon) {
-        int resId = -1;
-        PackageManager pm = context.getPackageManager();
-        if (pm == null) {
-            return resId;
-        }
-
-        Resources systemUiResources;
-        try {
-            systemUiResources = pm.getResourcesForApplication(SYSTEMUI_METADATA_NAME);
-        } catch (Exception e) {
-            Log.e("ButtonsHelper:", "can't access systemui resources",e);
-            return resId;
-        }
-
-        if (customIcon != null && customIcon.startsWith(ActionConstants.SYSTEM_ICON_IDENTIFIER)) {
-            resId = systemUiResources.getIdentifier(customIcon.substring(
-                        ActionConstants.SYSTEM_ICON_IDENTIFIER.length()), "drawable", "android");
-        } else if (clickAction.startsWith("**")) {
-            resId = getActionSystemIcon(systemUiResources, clickAction);
-        }
-
-        return resId;
-    }
-
     // Get and set the pie configs from provider and return proper arraylist objects
     // @ActionConfig
     public static ArrayList<ActionConfig> getPieConfig(Context context) {

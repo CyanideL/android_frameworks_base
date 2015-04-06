@@ -7,6 +7,7 @@
 	
 	<!-- The width of the view containing the layout changer icon -->
 	<dimen name="navigation_layout_changer_width">25dip</dimen>
+	<dimen name="floating_action_button_translation_z">12dp</dimen>
 	
 	<!-- Pie controls -->
     <dimen name="pie_padding">4dp</dimen>
