@@ -2330,10 +2330,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         boolean isOngoing = sbn.isOngoing();
         boolean accessibilityForcesLaunch = isFullscreen
                 && mAccessibilityManager.isTouchExplorationEnabled();
-
-        boolean keyguardIsShowing = keyguard.isShowingAndNotOccluded()
-                && keyguard.isInputRestricted();
-
+                
         boolean isExpanded = false;
             if (mStackScroller != null) {
                 isExpanded = mStackScroller.getIsExpanded();
@@ -2347,8 +2344,6 @@ public abstract class BaseStatusBar extends SystemUI implements
                 && (!mStatusBarKeyguardViewManager.isShowing()
                         || mStatusBarKeyguardViewManager.isOccluded())
                 && !mStatusBarKeyguardViewManager.isInputRestricted();
-                && !keyguardIsShowing;
-                && !isExpanded;
         try {
             interrupt = interrupt && !mDreamManager.isDreaming();
         } catch (RemoteException e) {
@@ -2357,7 +2352,7 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         // its below our threshold priority, we might want to always display
         // notifications from certain apps
-        if (!isHighPriority && !isOngoing && !keyguardIsShowing && !isExpanded) {
+        if (!isHighPriority && !isOngoing) {
             // However, we don't want to interrupt if we're in an application that is
             // in Do Not Disturb
             if (!isPackageInDnd(getTopLevelPackage())) {

@@ -527,14 +527,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                             R.integer.heads_up_notification_decay),
                             UserHandle.USER_CURRENT);
                     resetHeadsUpDecayTimer();
-            }
-            update();
-        }
-
-        @Override
-
-        public void onChange(boolean selfChange, Uri uri) {
-            if (uri.equals(Settings.System.getUriFor(
+            } else if (uri.equals(Settings.System.getUriFor(
 					Settings.System.LOCK_SCREEN_TEXT_COLOR))
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.LOCK_SCREEN_ICON_COLOR))) {
