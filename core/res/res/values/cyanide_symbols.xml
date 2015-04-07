@@ -38,6 +38,25 @@
   <java-symbol type="style" name="Animation.Toast.SlideRightLeft" />
   <java-symbol type="style" name="Animation.Toast.SlideLeftRight" />
   
+  <!-- Themes and styles -->
+  <java-symbol type="style" name="Theme.Material.Dialog.Dark" />
+  <java-symbol type="style" name="Theme.Material.Dialog.Alert.Dark" />
+  <java-symbol type="style" name="TextAppearance.Material.Large.Dark" />
+  <java-symbol type="style" name="TextAppearance.Material.Small.Dark" />
+  <java-symbol type="drawable" name="material_bg_blue_grey" />
+  <java-symbol type="color" name="black" />
+
+  <!-- Config Power Menu -->
+  <java-symbol type="id" name="option1_icon" />
+  <java-symbol type="id" name="option2_icon" />
+  <java-symbol type="id" name="option3_icon" />
+  <java-symbol type="drawable" name="ic_lock_settings" />
+  <java-symbol type="color" name="global_actions_icon_color_normal" />
+  <java-symbol type="color" name="global_actions_icon_color_selected" />
+  <java-symbol type="color" name="global_actions_icon_color_enabled" />
+  <java-symbol type="string" name="global_action_current_user" />
+  <java-symbol type="dimen" name="global_actions_avatar_size" />
+
   <!--  Animations -->
   <java-symbol type="string" name="action_null"/>
   <java-symbol type="string" name="animation_fade"/>
