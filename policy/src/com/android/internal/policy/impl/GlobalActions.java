@@ -56,6 +56,7 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.PorterDuff.Mode;
 import android.Manifest;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
@@ -973,6 +974,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private static class SilentModeTriStateAction implements Action, View.OnClickListener {
 
         private final int[] ITEM_IDS = { R.id.option1, R.id.option2, R.id.option3 };
+        private final int[] IMAGE_VIEW_IDS = { R.id.option1_icon, R.id.option2_icon, R.id.option3_icon };
 
         private final AudioManager mAudioManager;
         private final Handler mHandler;
@@ -1006,7 +1008,17 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             int selectedIndex = ringerModeToIndex(mAudioManager.getRingerMode());
             for (int i = 0; i < 3; i++) {
                 View itemView = v.findViewById(ITEM_IDS[i]);
-                itemView.setSelected(selectedIndex == i);
+                View iv = v.findViewById(IMAGE_VIEW_IDS[i]);
+				iv.setSelected(selectedIndex == i);
+				if (selectedIndex == i) {
+					((ImageView)iv).setColorFilter(context.getResources().getColor(
+							R.color.global_actions_icon_color_selected),
+							Mode.MULTIPLY);
+				} else {
+					((ImageView)iv).setColorFilter(context.getResources().getColor(
+							R.color.global_actions_icon_color_normal),
+							Mode.MULTIPLY);
+				}
                 // Set up click handler
                 itemView.setTag(i);
                 itemView.setOnClickListener(this);
@@ -1225,7 +1237,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         private boolean mCancelOnUp;
 
         public GlobalActionsDialog(Context context, AlertParams params) {
-            super(context, getDialogTheme(context));
+            super(context, com.android.internal.R.style.Theme_Material_Dialog_Dark);
             mContext = context;
             mAlert = new AlertController(mContext, this, getWindow());
             mAdapter = (MyAdapter) params.mAdapter;
