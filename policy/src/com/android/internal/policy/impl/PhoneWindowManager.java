@@ -3277,22 +3277,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
             return 0;
         } else if (keyCode == KeyEvent.KEYCODE_APP_SWITCH) {
-            if (!keyguardOn) {
-                if (down) {
-                    if (mPressOnAppSwitchBehavior == KEY_ACTION_APP_SWITCH
-                            || mLongPressOnAppSwitchBehavior == KEY_ACTION_APP_SWITCH) {
-                        preloadRecentApps();
-                    }
-                    if (repeatCount == 0) {
-                        mAppSwitchLongPressed = false;
-                    } else if (longPress) {
-                        if (mLongPressOnAppSwitchBehavior != KEY_ACTION_NOTHING) {
-                            if (mLongPressOnAppSwitchBehavior != KEY_ACTION_APP_SWITCH) {
-                                cancelPreloadRecentApps();
-                            }
-                            performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, false);
-                            performKeyAction(mLongPressOnAppSwitchBehavior);
-                            mAppSwitchLongPressed = true;
 
             // Disable app switch key if navbar is set to on
             if (scanCode != 0 && !hasHwKeysEnabled()) {
@@ -7389,6 +7373,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             ? mHasNavigationBar
             : mContext.getResources().getBoolean(
 					com.android.internal.R.bool.config_showNavigationBar);
+    }
+    
+    public boolean needsNavigationBar() {
+        return mHasNavigationBar;
     }
 
     @Override

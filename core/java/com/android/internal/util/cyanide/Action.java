@@ -293,7 +293,7 @@ public class Action {
 
     public static boolean isNavBarEnabled(Context context) {
         return Settings.System.getIntForUser(context.getContentResolver(),
-                Settings.System.DEV_FORCE_SHOW_NAVBAR,
+                Settings.System.NAVBAR_FORCE_ENABLE,
                 isNavBarDefault(context) ? 1 : 0, UserHandle.USER_CURRENT) == 1;
     }
 
