@@ -4728,15 +4728,6 @@ public class AudioService extends IAudioService.Stub {
                     mVolumeKeysControlMediaStream = Settings.System.getIntForUser(mContentResolver,
                             Settings.System.VOLUME_KEYS_CONTROL_MEDIA_STREAM, 0,
                             UserHandle.USER_CURRENT) == 1;
-                } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.MODE_RINGER_STREAMS_AFFECTED))) {
-                    if (updateRingerModeAffectedStreams()) {
-                        /*
-                         * Ensure all stream types that should be affected by ringer mode
-                         * are in the proper state.
-                         */
-                        setRingerModeInt(getRingerMode(), false);
-                    }
                 } else if (uri.equals(Settings.Global.getUriFor(
                     Settings.Global.DOCK_AUDIO_MEDIA_ENABLED))) {
                     readDockAudioSettings(mContentResolver);
