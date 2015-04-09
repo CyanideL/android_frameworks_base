@@ -61,7 +61,7 @@ public class AppCircleBarTile extends QSTile<QSTile.BooleanState> {
     protected void handleSecondaryClick() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setClassName("com.android.settings",
-            "com.android.settings.Settings$AppCircleBarActivity");
+            "com.android.settings.Settings$AppCircleBarSettingsActivity");
         mHost.startSettingsActivity(intent);
     }
 
@@ -69,7 +69,7 @@ public class AppCircleBarTile extends QSTile<QSTile.BooleanState> {
     public void handleLongClick() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setClassName("com.android.settings",
-            "com.android.settings.Settings$AppCircleBarActivity");
+            "com.android.settings.Settings$AppCircleBarSettingsActivity");
         mHost.startSettingsActivity(intent);
     }
 
@@ -86,8 +86,8 @@ public class AppCircleBarTile extends QSTile<QSTile.BooleanState> {
         state.icon = ResourceIcon.get(R.drawable.ic_qs_appcirclebar_on);
         state.label = mContext.getString(R.string.quick_settings_appcirclebar_on);
 	} else {
-        state.iconId = R.drawable.ic_qs_appcirclebar_off;
-	state.label = mContext.getString(R.string.quick_settings_appcirclebar_off);
+        state.icon = ResourceIcon.get(R.drawable.ic_qs_appcirclebar_off);
+	    state.label = mContext.getString(R.string.quick_settings_appcirclebar_off);
 	    }
 	}
 
