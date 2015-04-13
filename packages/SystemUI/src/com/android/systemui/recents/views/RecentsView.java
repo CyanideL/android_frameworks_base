@@ -368,11 +368,11 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
             params.topMargin = taskStackBounds.top;
             params.bottomMargin = mConfig.systemInsets.bottom;
             switch (clearRecentsLocation) {
-                case Constants.DebugFlags.App.RECENTS_CLEAR_ALL_TOP_LEFT:
-                    params.gravity = Gravity.TOP | Gravity.LEFT;
-                    break;
                 case Constants.DebugFlags.App.RECENTS_CLEAR_ALL_TOP_RIGHT:
                     params.gravity = Gravity.TOP | Gravity.RIGHT;
+                    break;
+                case Constants.DebugFlags.App.RECENTS_CLEAR_ALL_TOP_LEFT:
+                    params.gravity = Gravity.TOP | Gravity.LEFT;
                     break;
                 case Constants.DebugFlags.App.RECENTS_CLEAR_ALL_TOP_CENTER:
                     params.gravity = Gravity.TOP | Gravity.RIGHT;
