@@ -628,8 +628,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         public void onChange(boolean selfChange) {
             boolean visible = Settings.System.getIntForUser(mContext.getContentResolver(),
                     Settings.System.NAVBAR_FORCE_ENABLE, 0, UserHandle.USER_CURRENT) == 1;
+            if (visible) {
                 forceAddNavigationBar();
+            } else {
+                removeNavigationBar();
             }
+        }
     }
 
     private void forceAddNavigationBar() {
@@ -1676,6 +1680,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         mWindowManager.addView(mNavigationBarView, getNavigationBarLayoutParams());
         mNavigationBarOverlay.setNavigationBar(mNavigationBarView);
+    }
+
+    private void removeNavigationBar() {
+        if (DEBUG) Log.d(TAG, "removeNavigationBar: about to remove " + mNavigationBarView);
+        if (mNavigationBarView == null) return;
+
+        mWindowManager.removeView(mNavigationBarView);
+        mNavigationBarView = null;
     }
 
     private void repositionNavigationBar() {
@@ -4344,6 +4356,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (mNavigationBarView != null)  {
             mNavigationBarView.updateResources(getNavbarThemedResources());
             updateSearchPanel();
+            checkBarModes();
         }
     }
 
