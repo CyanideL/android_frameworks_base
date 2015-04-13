@@ -1323,7 +1323,6 @@ public class VolumePanel extends Handler implements DemoMode {
         if (!isShowing()) {
             int stream = (streamType == STREAM_REMOTE_MUSIC) ? -1 : streamType;
             // when the stream is for remote playback, use -1 to reset the stream type evaluation
-            mAudioManager.forceVolumeControlStream(stream);
             if (mDialog != null) {
                 mDialog.show();
                 Runnable r = new Runnable() {
