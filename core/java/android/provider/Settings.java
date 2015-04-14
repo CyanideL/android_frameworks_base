@@ -7080,19 +7080,6 @@ public final class Settings {
         public static final String VOLUME_LINK_NOTIFICATION = "volume_link_notification";
 
         /**
-         * Performance profile
-         * @see config_perf_profile_prop in frameworks/base/core/res/res/values/config.xml
-         * @hide
-         */
-        public static final String PERFORMANCE_PROFILE = "performance_profile";
-
-        /**
-         * App-based performance profile selection
-         * @hide
-         */
-        public static final String APP_PERFORMANCE_PROFILES_ENABLED = "app_perf_profiles_enabled";
-
-        /**
          * Whether to show the brightness slider in quick settings panel.
          * @hide
          */
