@@ -4594,6 +4594,12 @@ public final class Settings {
          * @hide
          */
         public static final String DOZE_TIME_MODE = "doze_time_mode";
+        
+        /**
+         * Brigthness level for ambient display
+         * @hide
+         */
+		public static final String DOZE_BRIGHTNESS = "doze_brightness";
 
         /**
          * Heads Up Notifications
