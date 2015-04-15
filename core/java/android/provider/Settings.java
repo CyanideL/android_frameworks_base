@@ -4637,6 +4637,12 @@ public final class Settings {
         public static final String VOLUME_KEYS_CONTROL_MEDIA_STREAM = "volume_keys_control_media_stream";
 
         /**
+         * Auto brigthness for ambient display
+         * @hide
+         */
+        public static final String DOZE_AUTO_BRIGHTNESS = "doze_auto_brightness";
+
+        /**
          * Volume key controls ringtone or media sound stream
          *
          * @hide
