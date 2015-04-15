@@ -310,4 +310,9 @@
     <java-symbol type="string" name="config_defaultQuickSettingsTiles" />
  
     <java-symbol type="array" name="config_externalCMServices" />
+    
+    <!-- Flashlight notification -->
+    <java-symbol type="string" name="quick_settings_tile_flashlight_not_title" />
+    <java-symbol type="string" name="quick_settings_tile_flashlight_not_summary" />
+    <java-symbol type="drawable" name="ic_signal_flashlight_disable" />
 </resources>

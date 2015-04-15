@@ -65,6 +65,7 @@ public class TorchService extends ITorchService.Stub {
     private static final int DISPATCH_AVAILABILITY_CHANGED = 2;
 
     private static final int NOTIFICATION_ID = 1001;
+
     private static final String ACTION_TURN_FLASHLIGHT_OFF =
             "com.android.server.TorchService.ACTION_TURN_FLASHLIGHT_OFF";
 
@@ -96,6 +97,16 @@ public class TorchService extends ITorchService.Stub {
     private Surface mSurface;
 
     private boolean mReceiverRegistered;
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (ACTION_TURN_FLASHLIGHT_OFF.equals(intent.getAction())) {
+                mHandler.post(mKillFlashlightRunnable);
+            } else if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
+                setNotificationShown(true);
+            }
+        }
+    };
 
     private static class CameraUserRecord {
         IBinder token;
@@ -127,6 +138,54 @@ public class TorchService extends ITorchService.Stub {
         if (mTorchCameraId != -1) {
             ensureHandler();
             mCameraManager.registerAvailabilityCallback(mAvailabilityCallback, mHandler);
+        }
+    }
+
+    private void setNotificationShown(boolean show) {
+        final long callingIdentity = Binder.clearCallingIdentity();
+        try {
+            NotificationManager nm = (NotificationManager)
+                    mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (show) {
+                nm.notify(R.string.quick_settings_tile_flashlight_not_title, buildNotification());
+            } else {
+                nm.cancel(R.string.quick_settings_tile_flashlight_not_title);
+            }
+        } finally {
+            Binder.restoreCallingIdentity(callingIdentity);
+        }
+    }
+
+    private Notification buildNotification() {
+        Intent fireMe = new Intent(ACTION_TURN_FLASHLIGHT_OFF);
+        fireMe.setPackage(mContext.getPackageName());
+
+        return new Notification.Builder(mContext)
+                .setContentTitle(
+                        mContext.getString(R.string.quick_settings_tile_flashlight_not_title))
+                .setContentText(
+                        mContext.getString(R.string.quick_settings_tile_flashlight_not_summary))
+                .setAutoCancel(false)
+                .setOngoing(true)
+                .setVisibility(Notification.VISIBILITY_PUBLIC)
+                .setSmallIcon(R.drawable.ic_signal_flashlight_disable)
+                .setContentIntent(PendingIntent.getBroadcast(mContext, 0, fireMe, 0))
+                .build();
+    }
+
+    private void setListenForScreenOff(boolean listen) {
+        if (listen && !mReceiverRegistered) {
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(ACTION_TURN_FLASHLIGHT_OFF);
+            filter.addAction(Intent.ACTION_SCREEN_ON);
+            mContext.registerReceiver(mReceiver, filter);
+            mReceiverRegistered = true;
+        } else if (!listen) {
+            if (mReceiverRegistered) {
+                mContext.unregisterReceiver(mReceiver);
+                mReceiverRegistered = false;
+            }
+            setNotificationShown(false);
         }
     }
 
@@ -186,9 +245,11 @@ public class TorchService extends ITorchService.Stub {
     public synchronized void setTorchEnabled(boolean enabled) {
         mContext.enforceCallingOrSelfPermission(
                 Manifest.permission.ACCESS_TORCH_SERVICE, null);
+
         if (mTorchEnabled != enabled) {
             mTorchEnabled = enabled;
             postNotification(enabled);
+            setListenForScreenOff(enabled);
             postUpdateFlashlight();
         }
     }
@@ -405,6 +466,7 @@ public class TorchService extends ITorchService.Stub {
 
     private void teardownTorch() {
         postNotification(false);
+        setListenForScreenOff(false);
         dispatchStateChange(false);
         if (mCameraDevice != null) {
             mCameraDevice.close();
