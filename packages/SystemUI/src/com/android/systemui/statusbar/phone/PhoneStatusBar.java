@@ -395,8 +395,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private int mCyanideLogoColor;
     private ImageView cyanideLogo;
 
-    private boolean mQSCSwitch;
-
     // Status bar carrier
     private boolean mShowStatusBarCarrier;
 
@@ -520,18 +518,19 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             update();
         }
 
+        void unobserve() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.unregisterContentObserver(this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            update();
+        }
+
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_NOTIFCATION_DECAY))) {
-                    mHeadsUpNotificationDecay = Settings.System.getIntForUser(
-                            mContext.getContentResolver(),
-                            Settings.System.HEADS_UP_NOTIFCATION_DECAY,
-                            mContext.getResources().getInteger(
-                            R.integer.heads_up_notification_decay),
-                            UserHandle.USER_CURRENT);
-                    resetHeadsUpDecayTimer();
-            } else if (uri.equals(Settings.System.getUriFor(
 					Settings.System.LOCK_SCREEN_TEXT_COLOR))
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.LOCK_SCREEN_ICON_COLOR))) {
@@ -544,6 +543,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         mContext.getResources().getBoolean(R.bool.enable_ticker)
                         ? 1 : 0, UserHandle.USER_CURRENT) == 1;
                 initTickerView();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_NOTIFCATION_DECAY))) {
+                    mHeadsUpNotificationDecay = Settings.System.getIntForUser(
+                            mContext.getContentResolver(),
+                            Settings.System.HEADS_UP_NOTIFCATION_DECAY,
+                            mContext.getResources().getInteger(
+                            R.integer.heads_up_notification_decay),
+                            UserHandle.USER_CURRENT);
+                    resetHeadsUpDecayTimer();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BATTERY_STATUS_TEXT_COLOR))) {
                 updateBatteryLevelTextColor();
@@ -2135,6 +2143,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void updateNotificationIcons() {
+        if (mNotificationIcons == null) return;
+
         final LinearLayout.LayoutParams params
             = new LinearLayout.LayoutParams(mIconSize + 2*mIconHPadding, mNaturalBarHeight);
 
@@ -5287,8 +5297,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     // When in accessibility mode a long press that is recents (not back)
                     // should stop lock task.
                     activityManager.stopLockTaskModeOnCurrent();
-                    // When exiting refresh disabled flags.
-                    mNavigationBarView.setDisabledFlags(mDisabled, true);
                 }
             }
             if (sendBackLongPress) {

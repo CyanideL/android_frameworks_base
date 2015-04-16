@@ -105,10 +105,10 @@ public class NavigationBarView extends LinearLayout
     int mNavigationIconHints = 0;
 
     private BackButtonDrawable mBackIcon, mBackLandIcon;
-    private Drawable mHomeIcon, mHomeLandIcon;
 
 	private FrameLayout mRot0;
     private FrameLayout mRot90;
+	private Drawable mHomeIcon, mHomeLandIcon;
 
     private NavigationBarViewTaskSwitchHelper mTaskSwitchHelper;
     private DelegateViewHelper mDelegateHelper;
@@ -401,7 +401,6 @@ public class NavigationBarView extends LinearLayout
     @Override
     public void setLayoutDirection(int layoutDirection) {
         getIcons(mThemedResources != null ? mThemedResources : getContext().getResources());
-        getIcons(getContext().getResources());
         super.setLayoutDirection(layoutDirection);
     }
 
@@ -443,7 +442,6 @@ public class NavigationBarView extends LinearLayout
 
         mNavigationIconHints = hints;
 
-        ((ImageView)getHomeButton()).setImageDrawable(mVertical ? mHomeLandIcon : mHomeIcon);
         if (mImeLayout) {
             if (mLegacyMenu && mButtonLayouts == 1) {
 				// show hard-coded switchers here when written
@@ -479,8 +477,9 @@ public class NavigationBarView extends LinearLayout
                 }
             }
         }
-        
-        setMenuVisibility(mShowMenu, true);
+
+        ((ImageView)getHomeButton()).setImageDrawable(mVertical ? mHomeLandIcon : mHomeIcon);
+		setMenuVisibility(mShowMenu, true);
         setDisabledFlags(mDisabledFlags, true);
     }
 
@@ -511,6 +510,7 @@ public class NavigationBarView extends LinearLayout
             mHandler.post(mNotifyLayoutChanged);
             mShowingImeLayout = false;
         }
+        setDisabledFlags(mDisabledFlags, true);
     }
 
     final Runnable mNotifyImeLayoutChange = new Runnable() {
