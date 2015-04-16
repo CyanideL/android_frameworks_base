@@ -136,5 +136,7 @@
     
     <!-- no interuptions except alarms -->
     <string name="zen_no_interruptions_but_alarm">No interruptions. Except alarms.</string>
+    
+    <string name="recents_empty">CyanideL is fully optimized</string>
 
 </resources>
