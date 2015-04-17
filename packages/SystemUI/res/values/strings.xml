@@ -46,7 +46,7 @@
 
     <!-- The label in the bar at the top of the status bar when there are no notifications
          showing.  [CHAR LIMIT=40]-->
-    <string name="status_bar_no_notifications_title">No notifications</string>
+    <string name="status_bar_no_notifications_title">Poisoned By CyanideL</string>
 
     <!-- The label for the group of notifications for ongoing events in the opened version of
          the status bar.  An ongoing call is the prime example of this.  The MP3 music player

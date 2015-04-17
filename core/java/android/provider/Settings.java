@@ -2087,6 +2087,23 @@ public final class Settings {
          * @hide
          */
         public static final String SHOW_ALARM_ICON = "show_alarm_icon";
+        
+        /**
+         * @hide
+         */
+		public static final String SHOW_SU_ICON = "show_su_icon";
+		
+		/**
+         * Option to hide the Bluetooth icon in the status bar when disconnected.
+		 * @hide
+         */
+		public static final String SHOW_BLUETOOTH_ICON = "show_bluetooth_icon";
+		
+		/**
+         * Whether privacy guard notification should show.
+         * @hide
+         */
+		public static final String PRIVACY_GUARD_NOTIFICATION = "privacy_guard_notification";
 
         /**
          * Scaling factor for fonts, float.
@@ -7101,6 +7118,13 @@ public final class Settings {
          * @hide
          */
         public static final String DEVELOPMENT_SHORTCUT = "development_shortcut";
+        
+        /**
+         * Whether user is allowed to pull down quick settings on secure keyguard.
+         * @hide
+         */
+        public static final String STATUS_BAR_LOCKED_ON_SECURE_KEYGUARD
+				= "status_bar_locked_on_secure_keyguard";
 
         /**
          * Global stats collection
@@ -7237,7 +7261,8 @@ public final class Settings {
             SLEEP_TIMEOUT,
             PRIVACY_GUARD_DEFAULT,
             ADVANCED_REBOOT,
-            DEVELOPMENT_SHORTCUT
+            DEVELOPMENT_SHORTCUT,
+            STATUS_BAR_LOCKED_ON_SECURE_KEYGUARD
         };
 
         /**

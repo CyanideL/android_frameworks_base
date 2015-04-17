@@ -589,7 +589,11 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             if (showIntent != null && showIntent.isActivity()) {
                 mActivityStarter.startActivity(showIntent.getIntent(), true /* dismissShade */);
             }
-        } else if (v == mWeatherContainer) {
+		} else if (v == mClock) {
+			startClockActivity();
+		} else if (v == mDateGroup) {
+			startDateActivity();        
+		} else if (v == mWeatherContainer) {
             startForecastActivity();
         }
         mQSPanel.vibrateTile(20);
@@ -606,7 +610,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         } else if (v == mDateGroup) {
             startDateLongClickActivity();
         } else if (v == mWeatherContainer) {
-            startForecastActivity();
+            startForecastLongClickActivity();
         }
         mQSPanel.vibrateTile(20);
         return false;
@@ -673,7 +677,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             "com.cyanogenmod.lockclock.preference.Preferences");
         mActivityStarter.startActivity(intent, true /* dismissShade */);
     }
-
 
     public void setQSPanel(QSPanel qsp) {
         mQSPanel = qsp;
@@ -755,8 +758,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mTime.setScaleY(values.timeScale);
         mClock.setY(values.clockY - mClock.getHeight());
         mDateGroup.setY(values.dateY);
-        mWeatherContainer.setY(values.weatherY);
         mAlarmStatus.setY(values.dateY - mAlarmStatus.getPaddingTop());
+        mWeatherContainer.setY(values.weatherY);
         mMultiUserAvatar.setScaleX(values.avatarScale);
         mMultiUserAvatar.setScaleY(values.avatarScale);
         mMultiUserAvatar.setX(values.avatarX - mMultiUserSwitch.getLeft());
