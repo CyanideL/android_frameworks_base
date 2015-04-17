@@ -4695,7 +4695,9 @@ public class AudioService extends IAudioService.Stub {
         SettingsObserver() {
             super(new Handler());
             mContentResolver.registerContentObserver(Settings.System.getUriFor(
-                Settings.System.MODE_RINGER_STREAMS_AFFECTED), false, this);
+                    Settings.System.MODE_RINGER_STREAMS_AFFECTED), false, this);
+            mContentResolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.VOLUME_LINK_NOTIFICATION), false, this);
             mContentResolver.registerContentObserver(Settings.Global.getUriFor(
                 Settings.Global.DOCK_AUDIO_MEDIA_ENABLED), false, this);
             mContentResolver.registerContentObserver(Settings.System.getUriFor(
@@ -4741,6 +4743,14 @@ public class AudioService extends IAudioService.Stub {
                 } else if (uri.equals(Settings.Global.getUriFor(
                     Settings.Global.DOCK_AUDIO_MEDIA_ENABLED))) {
                     readDockAudioSettings(mContentResolver);
+                }
+
+                boolean linkNotificationWithVolume = Settings.Secure.getInt(mContentResolver,
+                        Settings.Secure.VOLUME_LINK_NOTIFICATION, 1) == 1;
+                if (linkNotificationWithVolume != mLinkNotificationWithVolume) {
+                    mLinkNotificationWithVolume = linkNotificationWithVolume;
+                    updateStreamVolumeAlias(true);
+                    createStreamStates();
                 }
             }
         }
