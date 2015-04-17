@@ -93,7 +93,7 @@
 
     <style name="TextAppearance.StatusBar.Expanded.Date">
         <item name="android:textSize">@dimen/qs_date_collapsed_size</item>
-        <item name="android:textStyle">normal</item>
+        <item name="android:textStyle">normal|bold</item>
         <item name="android:textColor">#b2ffffff</item>
     </style>
 
@@ -216,6 +216,7 @@
         parent="@*android:style/TextAppearance.StatusBar.Ticker">
         <!-- Note: must be dp to fit in status bar -->
         <item name="android:textSize">14dp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="systemui_theme" parent="@android:style/Theme.DeviceDefault">
