@@ -76,7 +76,7 @@ public class QSConstants {
         TILES_DEFAULT.add(TILE_ROTATION);
         TILES_DEFAULT.add(TILE_FLASHLIGHT);
         TILES_DEFAULT.add(TILE_LOCATION);
-        TILES_DEFAULT.add(TILE_CAST);
+        TILES_DEFAULT.add(TILE_CYANIDE);
     }
 
     protected static final ArrayList<String> TILES_AVAILABLE = new ArrayList<String>();
@@ -99,7 +99,7 @@ public class QSConstants {
         TILES_AVAILABLE.add(TILE_VISUALIZER);
         TILES_AVAILABLE.add(TILE_SCREEN_TIMEOUT);
         TILES_AVAILABLE.add(TILE_LIVE_DISPLAY);
-        TILES_AVAILABLE.add(TILE_CYANIDE);
+        TILES_AVAILABLE.add(TILE_CAST);
         TILES_AVAILABLE.add(TILE_SCREENSHOT);
         TILES_AVAILABLE.add(TILE_SCREENRECORD);
         TILES_AVAILABLE.add(TILE_SYNC);
