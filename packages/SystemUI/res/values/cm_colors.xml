@@ -56,4 +56,7 @@
     
     <!-- app sidebar trigger region color -->
 	<color name="trigger_region_color">#8015a0e5</color>
+
+    <!-- Quick tile text color when the tile is disabled -->
+    <color name="qs_tile_text_disabled">#ff747474</color>
 </resources>
