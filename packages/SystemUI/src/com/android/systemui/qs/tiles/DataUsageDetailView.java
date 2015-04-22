@@ -125,8 +125,6 @@ public class DataUsageDetailView extends LinearLayout {
                 mHost.startSettingsActivity(intent);
             }
         });
-        final TextView period = (TextView) findViewById(R.id.usage_period_text);
-        period.setText(info.period);
         final TextView infoTop = (TextView) findViewById(R.id.usage_info_top_text);
         infoTop.setVisibility(top != null ? View.VISIBLE : View.GONE);
         infoTop.setText(top);
