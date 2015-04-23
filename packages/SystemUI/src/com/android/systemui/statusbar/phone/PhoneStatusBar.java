@@ -4390,7 +4390,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
 
         // detect theme ui mode change
-        final Context context = mContext;
         final Resources res = context.getResources();
         int uiThemeMode = res.getConfiguration().uiThemeMode;
         if (uiThemeMode != mCurrUiThemeMode) {

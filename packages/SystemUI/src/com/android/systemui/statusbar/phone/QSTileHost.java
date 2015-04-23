@@ -63,7 +63,6 @@ import com.android.systemui.qs.tiles.ProfilesTile;
 import com.android.systemui.qs.tiles.RebootTile;
 import com.android.systemui.qs.tiles.RoamingTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
-<<<<<<< HEAD
 import com.android.systemui.qs.tiles.SlimActionTile;
 import com.android.systemui.qs.tiles.VisualizerTile;
 import com.android.systemui.qs.tiles.ScreenOffTile;
@@ -77,9 +76,6 @@ import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.SlimPieTile;
 import com.android.systemui.qs.tiles.GestureAnywhereTile;
 import com.android.systemui.qs.tiles.NavBarTile;
-=======
-import com.android.systemui.qs.tiles.TrdsTile;
->>>>>>> 1327393... fb: TRDS 5.0 (1/4)
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.CyanideTile;
 import com.android.systemui.settings.CurrentUserTracker;
@@ -286,7 +282,6 @@ public class QSTileHost implements QSTile.Host {
     }
 
     private QSTile<?> createTile(String tileSpec) {
-<<<<<<< HEAD
         if (tileSpec.startsWith(IntentTile.PREFIX)) {
             return IntentTile.create(this, tileSpec);
         }
@@ -386,21 +381,6 @@ public class QSTileHost implements QSTile.Host {
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
-=======
-        if (tileSpec.equals("wifi")) return new WifiTile(this);
-        else if (tileSpec.equals("bt")) return new BluetoothTile(this);
-        else if (tileSpec.equals("inversion")) return new ColorInversionTile(this);
-        else if (tileSpec.equals("cell")) return new CellularTile(this);
-        else if (tileSpec.equals("airplane")) return new AirplaneModeTile(this);
-        else if (tileSpec.equals("rotation")) return new RotationLockTile(this);
-        else if (tileSpec.equals("flashlight")) return new FlashlightTile(this);
-        else if (tileSpec.equals("location")) return new LocationTile(this);
-        else if (tileSpec.equals("cast")) return new CastTile(this);
-        else if (tileSpec.equals("hotspot")) return new HotspotTile(this);
-        else if (tileSpec.equals("trds")) return new TrdsTile(this);
-        else if (tileSpec.startsWith(IntentTile.PREFIX)) return IntentTile.create(this,tileSpec);
-        else throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
->>>>>>> 1327393... fb: TRDS 5.0 (1/4)
     }
 
     private List<String> loadTileSpecs() {
