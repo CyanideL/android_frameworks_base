@@ -4132,6 +4132,12 @@ public final class Settings {
         public static final String STATUSBAR_BATTERY_BAR_COLOR = "statusbar_battery_bar_color";
 
         /**
+         * Color of the vpn icon on statusbar
+         * @hide
+         */
+        public static final String STATUS_BAR_VPN_ICON_COLOR = "status_bar_vpn_icon_color";
+
+        /**
          * @hide
          */
         public static final String STATUSBAR_BATTERY_BAR_THICKNESS = "statusbar_battery_bar_thickness";
