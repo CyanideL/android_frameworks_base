@@ -2457,6 +2457,19 @@ public final class Settings {
 		 * @hide
 		 */
 		public static final String QS_TEXT_COLOR = "qs_text_color";
+
+        /**
+         *
+         * OverScroll effects configuration
+         * @hide
+         */
+        public static final String OVERSCROLL_EFFECT = "overscroll_effect";
+
+        /**
+         * Sets the overscroller weight (edge bounce effect on lists)
+         * @hide
+         */
+        public static final String OVERSCROLL_WEIGHT = "overscroll_weight";
 		
 		/**
 		 *
