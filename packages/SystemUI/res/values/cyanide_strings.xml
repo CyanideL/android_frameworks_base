@@ -160,5 +160,8 @@
     <string name="ext_media_mount_action">Mount</string>
     <string name="ext_media_unmounting_notification_title">unmounting\u2026</string>
     <string name="ext_media_mounting_notification_title">mounting\u2026</string>
+    
+    <!-- Heads up -->
+    <string name="heads_up_snooze_message">Heads up is disabled for <xliff:g id="number">%d</xliff:g> minutes.</string>
 
 </resources>
