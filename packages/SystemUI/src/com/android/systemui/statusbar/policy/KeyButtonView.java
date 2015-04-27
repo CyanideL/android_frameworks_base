@@ -17,10 +17,11 @@
 package com.android.systemui.statusbar.policy;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.app.ActivityManager;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.CanvasProperty;
@@ -38,11 +39,14 @@ import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.MathUtils;
 import android.view.HapticFeedbackConstants;
+import android.view.HardwareCanvas;
 import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.RenderNodeAnimator;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -56,20 +60,23 @@ import java.util.ArrayList;
 
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.util.cyanide.KeyButtonInfo;
-import static com.android.internal.util.cyanide.NavbarConstants.*;
 import com.android.internal.util.cyanide.NavbarUtils;
 import com.android.internal.util.cyanide.CyanideActions;
 import com.android.systemui.R;
+
 import com.cyanide.util.DeviceUtils;
+
+import static com.android.internal.util.cyanide.NavbarConstants.*;
 
 import static android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK;
 import static android.view.accessibility.AccessibilityNodeInfo.ACTION_LONG_CLICK;
 
 public class KeyButtonView extends ImageView {
     private static final String TAG = "StatusBar.KeyButtonView";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = NavbarUtils.DEBUG;
 
     public static final float DEFAULT_QUIESCENT_ALPHA = 1f;
+    public static final float DEFAULT_LAYOUT_CHANGER_ALPHA = 0.20f;
     private static final int DPAD_TIMEOUT_INTERVAL = 500;
     private static final int DPAD_REPEAT_INTERVAL = 75;
 
@@ -79,24 +86,33 @@ public class KeyButtonView extends ImageView {
     private long mDownTime;
     private long mUpTime;
     int mTouchSlop;
+
     private float mDrawingAlpha = 1f;
     private float mQuiescentAlpha = DEFAULT_QUIESCENT_ALPHA;
-    private AudioManager mAudioManager;
     private Animator mAnimateToQuiescent = new ObjectAnimator();
-    private KeyButtonRipple mRipple;
-    private boolean mShouldClick = true;
+    boolean mShouldClick = true;
 
-    private static PowerManager mPm;
+    private static AudioManager mAudioManager;
+    static PowerManager mPm;
+
+    private KeyButtonRipple mRipple;
     KeyButtonInfo mActions;
 
-    private boolean mIsDPadAction;
-    private boolean mHasSingleAction = true;
     public boolean mHasBlankSingleAction = false, mHasDoubleAction, mHasLongAction;
+    boolean mIsDPadAction = false;
+    boolean mHasSingleAction = false;
+    private boolean mIsLandscape = false;
+    private boolean mTablet = false;
 
     public static PowerManager getPowerManagerService(Context context) {
-		if (mPm == null) mPm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-		return mPm;
-	}
+        if (mPm == null) mPm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        return mPm;
+    }
+
+    public static AudioManager getAudioManagerService(Context context) {
+        if (mAudioManager == null) mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        return mAudioManager;
+    }
 
     Runnable mCheckLongPress = new Runnable() {
         public void run() {
@@ -127,32 +143,39 @@ public class KeyButtonView extends ImageView {
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mLongPressTimeout = ViewConfiguration.getLongPressTimeout();
         setLongClickable(false);
-        mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        setBackground(new KeyButtonRipple(context, this));
+        mAudioManager = getAudioManagerService(context);
         mPm = getPowerManagerService(context);
+        setBackground(mRipple = new KeyButtonRipple(context, this));
     }
 
-	public void setButtonActions(KeyButtonInfo actions) {
+    public void setDeviceOrientation(boolean landscape, boolean tablet) {
+		mIsLandscape = landscape;
+		mTablet = tablet;
+	}
+
+    public void setButtonActions(KeyButtonInfo actions) {
         this.mActions = actions;
 
-        setTag(mActions.singleAction); // should be OK even if it's null
+        if (mActions != null) {
+            mHasSingleAction = (mActions.singleAction != null);
+            mHasLongAction = mActions.longPressAction != null;
+            mHasDoubleAction = mActions.doubleTapAction != null;
+            mHasBlankSingleAction = mHasSingleAction && mActions.singleAction.equals(ACTION_BLANK);
 
-        mHasSingleAction = mActions != null && (mActions.singleAction != null);
-        mHasLongAction = mActions != null && mActions.longPressAction != null;
-        mHasDoubleAction = mActions != null && mActions.doubleTapAction != null;
-        mHasBlankSingleAction = mHasSingleAction && mActions.singleAction.equals(ACTION_BLANK);
-
-        // TO DO: determine type of key prior to getting a keybuttonview instance to allow more specialized
-        // and efficiently coded keybuttonview classes.
-        mIsDPadAction = mHasSingleAction
+            mIsDPadAction = mHasSingleAction
                 && (mActions.singleAction.equals(ACTION_ARROW_LEFT)
                 || mActions.singleAction.equals(ACTION_ARROW_UP)
                 || mActions.singleAction.equals(ACTION_ARROW_DOWN)
                 || mActions.singleAction.equals(ACTION_ARROW_RIGHT));
 
-        setImage();
-        setLongClickable(mHasLongAction);
-        if (DEBUG) Log.d(TAG, "Adding a navbar button in landscape or portrait " + mActions.singleAction);
+            setImage();
+            setTag(mActions.singleAction);
+            setLongClickable(mHasLongAction);
+
+            if (DEBUG) Log.d(TAG, "Adding a navbar button in landscape or portrait " + mActions.singleAction);
+        } else {
+            Log.e(TAG, "hmmm. mActions was null...");
+        }
     }
 
     public void setLongPressTimeout(int lpTimeout) {
@@ -164,14 +187,6 @@ public class KeyButtonView extends ImageView {
         setImage(getResources());
     }
 
-    @Override
-    protected void onWindowVisibilityChanged(int visibility) {
-        super.onWindowVisibilityChanged(visibility);
-        if (visibility != View.VISIBLE) {
-            jumpDrawablesToCurrentState();
-        }
-    }
-
     /* @hide */
     public void setImage(final Resources res) {
         if (mActions.iconUri != null && mActions.iconUri.length() > 0) {
@@ -179,14 +194,22 @@ public class KeyButtonView extends ImageView {
             if (f.exists()) {
                 setImageDrawable(new BitmapDrawable(res, f.getAbsolutePath()));
             }
-        } else if (mActions.singleAction != null) {
-            setImageDrawable(NavbarUtils.getIconImage(mContext, mActions.singleAction));
+        } else if (mHasSingleAction) {
+			if (mIsLandscape && !mTablet) {
+				setImageDrawable(NavbarUtils.getLandscapeIconImage(mContext, mActions.singleAction));
+		    } else {
+                setImageDrawable(NavbarUtils.getIconImage(mContext, mActions.singleAction));
+			}
         } else {
             setImageResource(R.drawable.ic_sysbar_null);
         }
     }
 
     public void setQuiescentAlpha(float alpha, boolean animate) {
+        if (mHasSingleAction && (mActions.singleAction == ACTION_LAYOUT_RIGHT
+                || mActions.singleAction == ACTION_LAYOUT_LEFT)) {
+            return;
+        }
         mAnimateToQuiescent.cancel();
         alpha = Math.min(Math.max(alpha, 0), 1);
         if (alpha == mQuiescentAlpha && alpha == mDrawingAlpha) return;
@@ -276,6 +299,9 @@ public class KeyButtonView extends ImageView {
                 if (mHasLongAction) {
                     removeCallbacks(mCheckLongPress);
                 }
+                // hack to fix ripple getting stuck. exitHardware() starts an animation,
+                // but sometimes does not finish it.
+                mRipple.exitSoftware();
                 break;
             case MotionEvent.ACTION_UP:
                 mUpTime = SystemClock.uptimeMillis();
@@ -310,11 +336,8 @@ public class KeyButtonView extends ImageView {
         if (callOnClick()) {
             sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_CLICKED);
         }
-
-        if (mActions != null) {
-            if (mActions.singleAction != null) {
-                CyanideActions.launchAction(mContext, mActions.singleAction);
-            }
+        if (mHasSingleAction) {
+            CyanideActions.launchAction(mContext, mActions.singleAction);
         }
     }
 
@@ -337,14 +360,12 @@ public class KeyButtonView extends ImageView {
     private Runnable mDPadKeyRepeater = new Runnable() {
         @Override
         public void run() {
-            if (mActions != null) {
-                if (mActions.singleAction != null) {
-                    CyanideActions.launchAction(mContext, mActions.singleAction);
-                    // click on the first event since we're handling in MotionEvent.ACTION_DOWN
-                    if (mShouldClick) {
-                        mShouldClick = false;
-                        playSoundEffect(SoundEffectConstants.CLICK);
-                    }
+            if (mIsDPadAction) {
+                CyanideActions.launchAction(mContext, mActions.singleAction);
+                // click on the first event since we're handling in MotionEvent.ACTION_DOWN
+                if (mShouldClick) {
+                    mShouldClick = false;
+                    playSoundEffect(SoundEffectConstants.CLICK);
                 }
             }
             // repeat action

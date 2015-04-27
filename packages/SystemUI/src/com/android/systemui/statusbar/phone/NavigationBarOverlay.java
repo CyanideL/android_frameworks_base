@@ -49,7 +49,6 @@ public class NavigationBarOverlay {
             return;
         }
         final Drawable drawable = new ColorDrawable(manipulateAlpha(color, alpha));
-        mNavigationBar.setForgroundColor(drawable);
     }
 
     public void setIsExpanded(boolean expanded) {
