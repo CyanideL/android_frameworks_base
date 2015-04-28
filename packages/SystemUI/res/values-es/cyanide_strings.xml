@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2015 CyanideL
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- App circle sidebar -->
+    <string name="app_float_maximize_item_title">Maximizar</string>
+    <string name="app_float_item_title">Vista flotante</string>
+    <string name="app_stop_item_title">Matar aplicación</string>
+    
+    <!-- Greeting -->
+    <string name="cyanide_label">Has sido ATRAPADO</string>
+    
+    <!-- Cyanide Action Stuff-->
+    <string name="action_null">En Blanco</string>
+    <string name="action_home">Por defecto: Home</string>
+    <string name="action_back">Por defecto: Atrás</string>
+    <string name="action_recents">Por defecto: Recientes</string>
+    <string name="action_search">Buscar: En la aplicación</string>
+    <string name="action_screenshot">Captura de pantalla</string>
+    <string name="action_menu">Menu</string>
+    <string name="action_ime">Abrir IME</string>
+    <string name="action_kill">Matar proceso</string>
+    <string name="action_last_app">Última aplicación</string>
+    <string name="action_power">Pantalla apagada</string>
+    <string name="action_blank">Espacio vacio</string>
+    <string name="action_notifications">Notificaciones</string>
+    <string name="action_assist">Buscar: Google Now</string>
+    <string name="action_robocop">Menú de reinicio</string>
+    <string name="action_voiceassist">Buscar: Búsqueda por voz</string>
+    <string name="action_torch">Linterna</string>
+    <string name="action_silent">Sonido/Silencio</string>
+    <string name="action_vib">Sonido/Vibración</string>
+    <string name="action_silent_vib">Sonido/Vibración/Silencio</string>
+    <string name="action_ribbon">Cinta</string>
+    <string name="action_app">Aplicación de usuario/Acción Cyanide</string>
+    <string name="action_arrow_left">Cursor Izquierda</string>
+    <string name="action_arrow_right">Cursor Derecha</string>
+    <string name="action_arrow_up">Cursor Arriba</string>
+    <string name="action_arrow_down">Cursor Abajo</string>
+
+    <string name="def_ime_layout">**flecha_izquierda**,,,|**flecha_arriba**,,,|**flecha_abajo**,,,|**flecha_derecha**,,,</string>
+    <string name="def_navbar_layout">**atrás**,,,|**home**,,,|**recientes**,,,</string>
+    
+    <!-- Navigation bar -->
+	<string name="def_navbar_layout_warning">Espacio vacio: !usado por defecto!</string>
+	
+	<!-- Pie controls -->
+	<string name="pie_battery_status_charging">Cargando (<xliff:g id="percent">%d</xliff:g>%%)</string>
+	<string name="pie_battery_status_full">Cargado</string>
+	<string name="pie_battery_status_discharging"><xliff:g id="percent">%d</xliff:g>%% restante</string>
+	<string name="pie_phone_status_no_service">Sin servicio</string>
+	<string name="pie_phone_status_airplane_mode">Modo avión encendido</string>
+	<string name="pie_phone_status_emergency_only">Sólo llamadas de emergencia</string>
+    
+    <string name="quick_settings_usb_tether">USB tethering</string>
+
+    <!-- Off/On/Toggle -->
+    <string name="off">Apagado</string>
+    <string name="on">Encendido</string>
+    <string name="toggle">Turnar</string>
+
+    <!-- Dialog Cancel/OK -->
+    <string name="cancel">Cancelar</string>
+    <string name="dlg_ok">Ok</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+
+    <!-- Slim Shortcut Actions -->
+    <string name="shortcut_picker">Atajos Cyanide</string>
+    <string name="shortcut_rotation">Bloqueo de Rotación</string>
+    <string name="shortcut_torch">Linterna</string>
+	<string name="shortcut_chamber">Cámara de Secretos</string>
+    <string name="shortcut_reboot">Reiniciar</string>
+    <string name="shortcut_recovery">Recovery</string>
+    <string name="chamber_disabled">Cámara de secretos cerrada</string>
+    <string name="chamber_title">Ajustes de entrada</string>
+    <string name="chamber_message">Introduzca una cadena de configuración que será o bien una función de encendido y apagado (casilla de verificación) o, posiblemente, una lista de preferencias. Por ejemplo, el modo descanso o similar. Los ajustes pueden ser encontrados en el archivo Settings.java. !PELIGRO: Éste proceso es peligroso!</string>
+    <string name="chamber_invalid">Ésta es una entrada inválida. Ten cuidado.</string>
+    <string name="chamber_invalid_setting">Intente cambiar el ajuste manualmente para asegurar que ésta acción existe en la base de datos de configuración.</string>
+    <string name="chamber_checkbox">Casilla de verificación</string>
+    <string name="chamber_chk_message">¿Es éste ajuste un ajuste de casilla?</string>
+    <string name="chamber_int">Valores de entrada</string>
+    <string name="chamber_int_message">Pon los valores que te gustaría que el ajuste use para cambiar. Separa cada valor con una coma. Los ajustes de color aceptan valores como #FF00aacc o colores básicos como el rojo, verde, y amarillo.</string>
+    <string name="chamber_name_title">Nombre del atajo</string>
+    <string name="chamber_name_message">Dar al atajo un nombre para mostrar con el icono.</string>
+    <string name="chamber_name_toast">Usando nombre por defecto</string>
+    <string name="shortcut_toggle_title">Acción a desarrollar</string>
+    
+    <!-- Kill app toast -->
+    <string name="app_killed_message">Aplicación terminada</string>
+    
+    <string name="quick_settings_slimpie_on">Pie Activado</string>
+	<string name="quick_settings_slimpie_off">Pie Desactivado</string>
+	<string name="quick_settings_gesture_anywhere_on">Gestos Activados</string>
+	<string name="quick_settings_gesture_anywhere_off">Gestos Desactivados</string>
+	
+	<!-- Screenrecord Notification Ticker -->
+    <string name="screenrecord_notif_ticker">Se está grabando la pantalla</string>
+
+    <!-- Screenrecord notification title -->
+    <string name="screenrecord_notif_title">Grabando pantalla</string>
+
+    <!-- Screenrecord notification action: Stop -->
+    <string name="screenrecord_notif_stop">Stop</string>
+
+    <!-- Screenrecord notification action: show/hide pointer -->
+    <string name="screenrecord_notif_pointer_on">Mostrar puntero</string>
+    <string name="screenrecord_notif_pointer_off">Esconder puntero</string>
+
+    <!-- Screen record notification error title -->
+    <string name="screenrecord_notif_error">Incapaz de grabar pantalla</string>
+    
+    <string name="quick_settings_hwkeys_on">Teclas Físicas Activadas</string>
+	<string name="quick_settings_hwkeys_off">Teclas Físicas Desactivadas</string>
+	
+	<!-- Heads up tile -->
+    <string name="quick_settings_heads_up_on">Heads up activados</string>
+    <string name="quick_settings_heads_up_off">Sin interrupciones</string>
+    
+    <!-- Heads up toast -->
+    <string name="heads_up_enabled">Notificaciones Heads up están activadas</string>
+    <string name="heads_up_disabled">Notificaciones Heads up están desactivadas</string>
+    
+    <!-- no interuptions except alarms -->
+    <string name="zen_no_interruptions_but_alarm">Sin interrupciones. Excepto alarmas.</string>
+    
+    <!-- Random Cyanide Strings -->
+    <string name="recents_empty">CyanideL Está Totalmente Optimizado</string>
+    <string name="cyanide_empty_shade">Atrapado Por CyanideL</string>
+
+    <!-- App sidebar -->
+    <string name="default_folder_text">Carpeta</string>
+    <string name="title_activity_sidebar_configuration">Organiza tu Appbar</string>
+    <string name="action_save">Guardar</string>
+    <string name="toast_items_saved">Los elementos de tu Appbar han sido guardados</string>
+    <string name="content_setup_instructions">Añade elementos a tu Appbar pulsando prolongadamente cualquier app de la derecha y arrástralo encima de la Appbar.\n\nCombina elementos en carpetas dejando caer uno sobre otro existente en la Appbar.\n\nPara eliminar un elemento arrástralo fuera de la \@appbar.</string>
+	<string name="content_setup_dismiss">Continua</string>
+	<string name="toast_not_installed">La Aplicación no está instalada</string>
+	
+	<!-- TRDS -->
+    <string name="quick_settings_trds_label">TRDS</string>
+    
+    <!-- Mount Notifications -->
+    <string name="ext_media_mounted_notification_title">montado</string>
+    <string name="ext_media_unmounted_notification_title">desmontado</string>
+    <string name="ext_media_unmounted_notification_message">Puedes quitar con seguridad tu almacenamiento</string>
+    <string name="ext_media_unmount_action">Desmontado</string>
+    <string name="ext_media_mount_action">Montado</string>
+    <string name="ext_media_unmounting_notification_title">desmontando\u2026</string>
+    <string name="ext_media_mounting_notification_title">montando\u2026</string>
+    
+    <!-- Heads up -->
+    <string name="heads_up_snooze_message">Heads up desactivadas durante <xliff:g id="number">%d</xliff:g> minutos.</string>
+
+</resources>
