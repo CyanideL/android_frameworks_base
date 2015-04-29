@@ -36,7 +36,9 @@ import java.util.ArrayList;
 
 public class ActionHelper {
 
+    private static final String SYSTEM_METADATA_NAME = "android";
     private static final String SYSTEMUI_METADATA_NAME = "com.android.systemui";
+    private static final String SETTINGS_METADATA_NAME = "com.android.settings";
 
     // get and set the lockcreen shortcut configs from provider and return propper arraylist objects
     // @ActionConfig
@@ -62,6 +64,44 @@ public class ActionHelper {
         }
         Settings.System.putString(context.getContentResolver(),
                     Settings.System.LOCKSCREEN_SHORTCUTS, config);
+    }
+
+    // get and set the navbar configs from provider and return propper arraylist objects
+    // @ActionConfig
+    public static ArrayList<ActionConfig> getNavBarConfig(Context context) {
+        return (ConfigSplitHelper.getActionConfigValues(context,
+            getNavBarProvider(context), null, null, false));
+    }
+
+    // get @ActionConfig with description if needed and other then an app description
+    public static ArrayList<ActionConfig> getNavBarConfigWithDescription(
+            Context context, String values, String entries) {
+        return (ConfigSplitHelper.getActionConfigValues(context,
+            getNavBarProvider(context), values, entries, false));
+    }
+
+    private static String getNavBarProvider(Context context) {
+        String config = Settings.System.getStringForUser(
+                    context.getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_BUTTONS,
+                    UserHandle.USER_CURRENT);
+        if (config == null) {
+            config = ActionConstants.NAVIGATION_CONFIG_DEFAULT;
+        }
+        return config;
+    }
+
+    public static void setNavBarConfig(Context context,
+            ArrayList<ActionConfig> actionConfig, boolean reset) {
+        String config;
+        if (reset) {
+            config = ActionConstants.NAVIGATION_CONFIG_DEFAULT;
+        } else {
+            config = ConfigSplitHelper.setActionConfig(actionConfig, false);
+        }
+        Settings.System.putString(context.getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_BUTTONS,
+                    config);
     }
 
     public static ArrayList<ActionConfig> getQuickTileConfigWithDescription(
@@ -307,6 +347,15 @@ public class ActionHelper {
         } else if (clickAction.equals(ActionConstants.ACTION_THEME_SWITCH)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_theme_switch", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_LAST_APP)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_lastapp", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_PIE)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_pie", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_NAVBAR)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_navbar", null, null);
         } else {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_null", null, null);
