@@ -532,11 +532,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
 
         @Override
-        public void onChange(boolean selfChange) {
-            update();
-        }
-
-        @Override
         public void onChange(boolean selfChange, Uri uri) {
             if (uri.equals(Settings.System.getUriFor(
 					Settings.System.LOCK_SCREEN_TEXT_COLOR))
