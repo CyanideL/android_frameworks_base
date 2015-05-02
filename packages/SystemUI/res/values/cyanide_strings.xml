@@ -164,5 +164,9 @@
     
     <!-- Heads up -->
     <string name="heads_up_snooze_message">Heads up is disabled for <xliff:g id="number">%d</xliff:g> minutes.</string>
+    
+    <!-- App SideBar tile -->
+    <string name="quick_settings_appsidebar_on">AppSideBar On</string>
+    <string name="quick_settings_appsidebar_off">AppSideBar Off</string>
 
 </resources>
