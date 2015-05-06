@@ -165,5 +165,12 @@
   <java-symbol type="string" name="global_action_current_user" />
   <java-symbol type="dimen" name="max_avatar_size" />
   <java-symbol type="color" name="dslv_icon_dark" />
+  
+  <!-- DJSeekBarPreference -->
+  <java-symbol type="layout" name="preference_widget_textsize_seekbar" />
+  <java-symbol type="id" name="min_value" />
+  <java-symbol type="id" name="current_value" />
+  <java-symbol type="id" name="max_value" />
+  <java-symbol type="id" name="textsize_seekbar" />
 
 </resources>
