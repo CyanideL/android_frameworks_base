@@ -30,7 +30,6 @@
         android:focusable="true"
         >
         <ImageView
-			android:id="@+id/option1_icon"
             android:layout_width="48dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -40,6 +39,8 @@
             android:layout_marginBottom="6dp"
             android:src="@drawable/ic_audio_ring_notif_mute"
             android:scaleType="center"
+            android:duplicateParentState="true"
+            android:background="@drawable/silent_mode_indicator"
             />
     </LinearLayout>
     <!-- Spacer -->
@@ -57,7 +58,6 @@
         android:focusable="true"
         >
         <ImageView
-			android:id="@+id/option2_icon"
             android:layout_width="48dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -67,6 +67,8 @@
             android:layout_marginBottom="6dp"
             android:src="@drawable/ic_audio_ring_notif_vibrate"
             android:scaleType="center"
+            android:duplicateParentState="true"
+            android:background="@drawable/silent_mode_indicator"
             />
     </LinearLayout>
 
@@ -85,7 +87,6 @@
         android:focusable="true"
         >
         <ImageView
-            android:id="@+id/option3_icon"
             android:layout_width="48dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -95,6 +96,8 @@
             android:layout_marginBottom="6dp"
             android:src="@drawable/ic_audio_ring_notif"
             android:scaleType="center"
+            android:duplicateParentState="true"
+            android:background="@drawable/silent_mode_indicator"
             />
     </LinearLayout>
 </LinearLayout>
