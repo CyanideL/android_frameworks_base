@@ -602,9 +602,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                             Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL,
                             UserHandle.USER_CURRENT);
             mAutomaticBrightness = mode != Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
+            mBrightnessControl = Settings.System.getIntForUser(
+                    resolver, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0,
+                    UserHandle.USER_CURRENT) == 1;
 
-            mBrightnessControl = Settings.System.getInt(
-                    resolver, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0) == 1;
 
             mHeadsUpSwype = Settings.System.getInt(
                     resolver, Settings.System.HEADS_UP_DISMISS_ON_REMOVE, 0) == 1;
@@ -1104,11 +1105,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
 
         // Setup pie container if enabled
-					attachPieContainer(isPieEnabled());
-        
+        attachPieContainer(isPieEnabled());
+
         if (mRecreating) {
+            removeSidebarView();
         } else {
             addAppCircleSidebar();
+            addSidebarView();
             addGestureAnywhereView();
         }
 
@@ -1424,6 +1427,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 
         // receive broadcasts
         IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
         filter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_SCREEN_ON);
@@ -4436,7 +4440,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
      * meantime, just update the things that we know change.
      */
     void updateResources(Configuration newConfig) {
-        final Context context = mContext;
         SettingsObserver observer = new SettingsObserver(mHandler);
 
         // detect theme change.
@@ -4458,6 +4461,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
 
         // detect theme ui mode change
+        final Context context = mContext;
         final Resources res = context.getResources();
         int uiThemeMode = res.getConfiguration().uiThemeMode;
         if (uiThemeMode != mCurrUiThemeMode) {
@@ -5386,6 +5390,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     // When in accessibility mode a long press that is recents (not back)
                     // should stop lock task.
                     activityManager.stopLockTaskModeOnCurrent();
+                    // When exiting refresh disabled flags.
+//                    mNavigationBarView.setDisabledFlags(mDisabled, true);
                 }
             }
             if (sendBackLongPress) {
