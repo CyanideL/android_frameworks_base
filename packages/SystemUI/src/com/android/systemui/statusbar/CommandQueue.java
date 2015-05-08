@@ -120,6 +120,7 @@ public class CommandQueue extends IStatusBar.Stub {
         public void toggleLastApp();
         public void toggleKillApp();
         public void toggleScreenshot();
+        public void toggleOrientationListener(boolean enable);
     }
 
     public CommandQueue(Callbacks callbacks, StatusBarIconList list) {
@@ -239,6 +240,10 @@ public class CommandQueue extends IStatusBar.Stub {
             mHandler.removeMessages(MSG_CANCEL_PRELOAD_RECENT_APPS);
             mHandler.sendEmptyMessage(MSG_CANCEL_PRELOAD_RECENT_APPS);
         }
+    }
+
+    public void toggleOrientationListener(boolean enable) {
+        mCallbacks.toggleOrientationListener(enable);
     }
 
     public void setWindowState(int window, int state) {

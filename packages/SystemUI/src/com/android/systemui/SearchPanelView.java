@@ -115,7 +115,7 @@ public class SearchPanelView extends FrameLayout implements StatusBarPanel,
         new SettingsObserver(new Handler());
     }
 
-    private void startAssistActivity() {
+    public void startAssistActivity() {
         if (!mBar.isDeviceProvisioned()) return;
 
         // Close Recent Apps if needed

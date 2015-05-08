@@ -80,6 +80,7 @@ import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.SlimPieTile;
 import com.android.systemui.qs.tiles.GestureAnywhereTile;
 import com.android.systemui.qs.tiles.NavBarTile;
+import com.android.systemui.qs.tiles.PAPieControlTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.CyanideTile;
 import com.android.systemui.qs.tiles.TrdsTile;
@@ -411,6 +412,8 @@ public class QSTileHost implements QSTile.Host {
                 return new TrdsTile(this);	
             case QSConstants.TILE_APPSIDEBAR:
                 return new AppSideBarTile(this);
+            case QSConstants.TILE_PA_PIE_CONTROL:
+                return new PAPieControlTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
