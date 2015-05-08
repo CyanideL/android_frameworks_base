@@ -143,8 +143,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     String mActions;
     boolean mProfilesEnabled;
 
-    private int mScreenshotDelay;
-
     /**
      * @param context everything needs a context :(
      */
@@ -218,7 +216,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     private void handleShow() {
         awakenIfNecessary();
-        checkSettings();
         prepareDialog();
 
         // If we only have 1 item and it's a simple press action, just do this action.
@@ -813,7 +810,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
                         /* wait for the dialog box to close */
                         try {
-                            Thread.sleep(mScreenshotDelay * 1000);
+                            Thread.sleep(1000);
                         } catch (InterruptedException ie) {
                             // Do nothing
                         }
@@ -1502,11 +1499,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             mContext.startActivityAsUser(intent,UserHandle.CURRENT);
         } catch (ActivityNotFoundException e) {
         }
-    }
-	
-    private void checkSettings() {
-        mScreenshotDelay = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.SCREENSHOT_DELAY, 1);
     }
 
     /**

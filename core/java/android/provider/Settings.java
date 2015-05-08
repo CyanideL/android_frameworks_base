@@ -3641,12 +3641,6 @@ public final class Settings {
         public static final String ENABLE_NAVIGATION_RING = "enable_navigation_ring";
 
         /**
-         * Change the screenshot delay
-         * @hide
-         */
-        public static final String SCREENSHOT_DELAY = "screenshot_delay";
-
-        /**
          * Show icon when stylus is used?
          * 0 = no
          * 1 = yes
