@@ -50,8 +50,8 @@ import com.android.systemui.statusbar.phone.PhoneStatusBar;
 
 import java.util.ArrayList;
 
-public class HeadsUpNotificationView extends FrameLayout implements SwipeHelper.Callback, ExpandHelper.Callback,
-        ViewTreeObserver.OnComputeInternalInsetsListener {
+public class HeadsUpNotificationView extends FrameLayout implements SwipeHelper.Callback,
+        ExpandHelper.Callback, ViewTreeObserver.OnComputeInternalInsetsListener {
     private static final String TAG = "HeadsUpNotificationView";
     private static final boolean DEBUG = false;
     private static final boolean SPEW = DEBUG;
@@ -150,7 +150,7 @@ public class HeadsUpNotificationView extends FrameLayout implements SwipeHelper.
             release();
         }
 
-        mHeadsUp = headsUp;
+        mHeadsUp = headsUp; // set new entry
 
         if (mBar.isExpandedVisible() || mBar.isImeShowing()) {
             releaseAndClose();
