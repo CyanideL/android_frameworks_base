@@ -50,6 +50,7 @@ import android.database.ContentObserver;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -91,6 +92,7 @@ import android.view.WindowManagerGlobal;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.view.OrientationEventListener;
 import android.widget.DateTimeView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -121,6 +123,7 @@ import com.android.systemui.statusbar.appcirclesidebar.AppCircleSidebar;
 import com.android.systemui.statusbar.phone.NavigationBarOverlay;
 import com.android.systemui.statusbar.phone.NavigationBarView;
 import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
+import com.android.systemui.statusbar.papie.PAPieController;
 import com.android.systemui.statusbar.policy.HeadsUpNotificationView;
 import com.android.systemui.statusbar.policy.PieController;
 import com.android.systemui.statusbar.policy.PreviewInflater;
@@ -203,6 +206,12 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     protected int mCurrentUserId = 0;
     final protected SparseArray<UserInfo> mCurrentProfiles = new SparseArray<UserInfo>();
+
+    // PA Pie controls
+    protected PAPieController mPAPieController;
+    public int mOrientation = 0;
+
+    private OrientationEventListener mOrientationListener;
 
     protected int mLayoutDirection = -1; // invalid
     protected AccessibilityManager mAccessibilityManager;
@@ -324,6 +333,30 @@ public abstract class BaseStatusBar extends SystemUI implements
     protected NotificationOverflowContainer mKeyguardIconOverflowContainer;
     protected DismissView mDismissView;
     protected EmptyShadeView mEmptyShadeView;
+
+    public int getNotificationCount() {
+        return mNotificationData.size();
+    }
+
+    public SearchPanelView getSearchPanelView() {
+        return mSearchPanelView;
+    }
+
+
+    private final ContentObserver mPieSettingsObserver = new ContentObserver(mHandler) {
+        @Override
+        public void onChange(boolean selfChange) {
+            update();
+        }
+
+        private void update() {
+            ContentResolver resolver = mContext.getContentResolver();
+            boolean pieEnabled = Settings.System.getIntForUser(resolver,
+                    Settings.System.PA_PIE_STATE, 0, UserHandle.USER_CURRENT) == 1;
+
+            updatePieControls(!pieEnabled);
+        }
+    };
 
     @Override  // NotificationData.Environment
     public boolean isDeviceProvisioned() {
@@ -750,6 +783,75 @@ public abstract class BaseStatusBar extends SystemUI implements
         mContext.registerReceiver(mBroadcastReceiver, filter);
 
         updateCurrentProfilesCache();
+
+        mPieSettingsObserver.onChange(false);
+        mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                Settings.System.PA_PIE_STATE), false, mPieSettingsObserver);
+        mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                Settings.System.PA_PIE_GRAVITY), false, mPieSettingsObserver);
+    }
+
+    public void updatePieControls(boolean reset) {
+        ContentResolver resolver = mContext.getContentResolver();
+
+        if (reset) {
+            Settings.System.putIntForUser(resolver,
+                    Settings.System.PA_PIE_GRAVITY, 0, UserHandle.USER_CURRENT);
+            toggleOrientationListener(false);
+        } else {
+            getOrientationListener();
+            toggleOrientationListener(true);
+        }
+
+        if (mPAPieController == null) {
+            mPAPieController = PAPieController.getInstance();
+            mPAPieController.init(mContext, mWindowManager, this);
+        }
+        int gravity = Settings.System.getInt(resolver,
+                Settings.System.PA_PIE_GRAVITY, 0);
+        mPAPieController.resetPie(!reset, gravity);
+    }
+
+    public void toggleOrientationListener(boolean enable) {
+        if (mOrientationListener == null) {
+            if (!enable) {
+                // Do nothing if listener has already dropped
+                return;
+            } else {
+                boolean shouldEnable = Settings.System.getIntForUser(mContext.getContentResolver(),
+                        Settings.System.PA_PIE_STATE, 0, UserHandle.USER_CURRENT) == 1;
+                if (shouldEnable) {
+                    // Re-init Orientation listener for later action
+                    getOrientationListener();
+                } else {
+                    return;
+                }
+            }
+        }
+
+        if (enable && mPowerManager.isScreenOn()) {
+            mOrientationListener.enable();
+        } else {
+            mOrientationListener.disable();
+            // if it has been disabled, then don't leave it to
+            // prevent called from PhoneWindowManager
+            mOrientationListener = null;
+        }
+    }
+
+    private void getOrientationListener() {
+        if (mOrientationListener == null)
+            mOrientationListener = new OrientationEventListener(mContext,
+                    SensorManager.SENSOR_DELAY_NORMAL) {
+                @Override
+                public void onOrientationChanged(int orientation) {
+                    int rotation = mDisplay.getRotation();
+                    if (rotation != mOrientation) {
+                        if (mPAPieController != null) mPAPieController.detachPie();
+                        mOrientation = rotation;
+                    }
+                }
+            };
     }
 
     protected void notifyUserAboutHiddenNotifications() {
@@ -878,6 +980,12 @@ public abstract class BaseStatusBar extends SystemUI implements
             mLocale = locale;
             mLayoutDirection = ld;
             refreshLayout(ld);
+        }
+
+        int rotation = mDisplay.getRotation();
+        if (rotation != mOrientation) {
+            if (mPAPieController != null) mPAPieController.detachPie();
+            mOrientation = rotation;
         }
     }
 
