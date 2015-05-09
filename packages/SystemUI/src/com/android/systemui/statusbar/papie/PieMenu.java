@@ -200,6 +200,7 @@ public class PieMenu extends FrameLayout {
     private boolean mUsePower;
     private boolean mUseScreenshot;
     private boolean mUseTorch;
+    private boolean mUsePowerMenu;
 
     private int mGlowOffset = 150;
 
@@ -269,6 +270,8 @@ public class PieMenu extends FrameLayout {
                 Settings.System.PA_PIE_TORCH, 0) == 1;
         mUseScreenshot = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PA_PIE_SCREENSHOT, 0) == 1;
+        mUsePowerMenu = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PA_PIE_POWER_MENU, 0) == 1;
         mHasAssistant = mPieHelper.isAssistantAvailable();
 
         // snap
@@ -573,7 +576,8 @@ public class PieMenu extends FrameLayout {
                !(item.getName().equals(PAPieController.LAST_APP_BUTTON) && !mUseLastApp) &&
                !(item.getName().equals(PAPieController.POWER_BUTTON) && !mUsePower) &&
                !(item.getName().equals(PAPieController.TORCH_BUTTON) && !mUseTorch) &&
-               !(item.getName().equals(PAPieController.SCREENSHOT_BUTTON) && !mUseScreenshot);
+               !(item.getName().equals(PAPieController.SCREENSHOT_BUTTON) && !mUseScreenshot) &&
+               !(item.getName().equals(PAPieController.POWER_MENU) && !mUsePowerMenu);
     }
 
     private void layoutPie() {
@@ -597,6 +601,8 @@ public class PieMenu extends FrameLayout {
         if (!mUseTorch)
             itemCount--;
         if (!mUseScreenshot)
+            itemCount--;
+        if (!mUsePowerMenu)
             itemCount--;
 
         int lesserSweepCount = 0;

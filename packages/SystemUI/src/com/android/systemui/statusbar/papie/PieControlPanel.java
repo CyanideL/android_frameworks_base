@@ -328,6 +328,8 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
             Action.processAction(mContext, ActionConstants.ACTION_TORCH, false);
         } else if (buttonName.equals(PAPieController.SCREENSHOT_BUTTON)) {
             Action.processAction(mContext, ActionConstants.ACTION_SCREENSHOT, false);
+        } else if (buttonName.equals(PAPieController.POWER_MENU)) {
+            Action.processAction(mContext, ActionConstants.ACTION_POWER_MENU, false);
         } else if (buttonName.equals(PAPieController.APP_WINDOW_BUTTON)) {
             Intent appWindow = new Intent();
             appWindow.setAction("com.android.systemui.ACTION_SHOW_APP_WINDOW");

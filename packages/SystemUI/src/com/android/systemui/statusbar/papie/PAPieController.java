@@ -60,6 +60,7 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
     public static final String POWER_BUTTON = "##power##";
     public static final String TORCH_BUTTON = "##torch##";
     public static final String SCREENSHOT_BUTTON = "##screenshot##";
+    public static final String POWER_MENU = "##power_menu##";
 
     private static PAPieController mInstance;
     private static PieHelper mPieHelper;
@@ -87,6 +88,7 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
     private PieItem mPower;
     private PieItem mTorch;
     private PieItem mScreenshot;
+    private PieItem mPowerMenu;
 
     protected PieMenu mPie;
     protected int mItemSize;
@@ -253,6 +255,7 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
         mPower = makeItem(R.drawable.ic_sysbar_power, 1, POWER_BUTTON, true);
         mTorch = makeItem(R.drawable.ic_sysbar_torch, 1, TORCH_BUTTON, true);
         mScreenshot = makeItem(R.drawable.ic_sysbar_screenshot, 1, SCREENSHOT_BUTTON, true);
+        mPowerMenu = makeItem(R.drawable.ic_sysbar_power_menu, 1, POWER_MENU, true);
 
         mPie.addItem(mMenu);
         mPie.addItem(mRecent);
@@ -265,6 +268,7 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
         mPie.addItem(mPower);
         mPie.addItem(mTorch);
         mPie.addItem(mScreenshot);
+        mPie.addItem(mPowerMenu);
     }
 
     public void setNavigationIconHints(int hints) {

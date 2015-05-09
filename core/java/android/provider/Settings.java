@@ -4856,6 +4856,12 @@ public final class Settings {
          */
         public static final String PA_PIE_TORCH = "pa_pie_torch";
 
+        /**
+         * Pie power menu
+         * @hide
+         */
+        public static final String PA_PIE_POWER_MENU = "pa_pie_power_menu";
+
        // PIE COLORS EVERYWHERE! //
 
         /**
