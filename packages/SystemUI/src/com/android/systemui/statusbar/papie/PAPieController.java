@@ -255,7 +255,7 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
         mPower = makeItem(R.drawable.ic_sysbar_power, 1, POWER_BUTTON, true);
         mTorch = makeItem(R.drawable.ic_sysbar_torch, 1, TORCH_BUTTON, true);
         mScreenshot = makeItem(R.drawable.ic_sysbar_screenshot, 1, SCREENSHOT_BUTTON, true);
-        mPowerMenu = makeItem(R.drawable.ic_sysbar_power_menu, 1, POWER_MENU, true);
+        mPowerMenu = makeItem(R.drawable.ic_sysbar_power, 1, POWER_MENU, true);
 
         mPie.addItem(mMenu);
         mPie.addItem(mRecent);
