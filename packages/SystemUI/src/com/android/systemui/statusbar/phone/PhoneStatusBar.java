@@ -537,18 +537,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
-                         if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL))
-                || uri.equals(Settings.System.getUriFor(
-                    Settings.System.SCREEN_BRIGHTNESS_MODE))) {
-                boolean autoBrightness = Settings.System.getInt(
-                        mContext.getContentResolver(),
-                        Settings.System.SCREEN_BRIGHTNESS_MODE, 0) ==
-                        Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
-                mBrightnessControl = !autoBrightness && Settings.System.getInt(
-                        mContext.getContentResolver(),
-                        Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0) == 1;
-            } else if (uri.equals(Settings.System.getUriFor(
+            if (uri.equals(Settings.System.getUriFor(
 					Settings.System.LOCK_SCREEN_TEXT_COLOR))
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.LOCK_SCREEN_ICON_COLOR))) {
@@ -561,11 +550,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         mContext.getResources().getBoolean(R.bool.enable_ticker)
                         ? 1 : 0, UserHandle.USER_CURRENT) == 1;
                 initTickerView();
-
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_DRAWER_CLEAR_ALL_ICON_COLOR))) {
                 UpdateNotifDrawerClearAllIconColor();
-
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.HEADS_UP_NOTIFCATION_DECAY))) {
                     mHeadsUpNotificationDecay = Settings.System.getIntForUser(
