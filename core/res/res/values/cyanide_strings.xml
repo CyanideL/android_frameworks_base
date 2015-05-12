@@ -128,5 +128,9 @@
     <!-- Power menu colors -->
     <color name="power_menu_icon_default_color">#ffffffff</color>
     <color name="power_menu_text_default_color">#ffffffff</color>
+    
+    <!-- Flashlight notification -->
+    <string name="notification_flashlight_on_title">Flashlight is on</string>
+    <string name="notification_flashlight_on_summary">Tap to turn off</string>
 
 </resources>
