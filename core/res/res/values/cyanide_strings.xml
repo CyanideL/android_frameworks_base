@@ -101,5 +101,9 @@
 
     <!-- label for current user in phone options dialog -->
     <string name="global_action_current_user">Current</string>
+    
+    <!-- label for item that takes On-The-Go in the phone options dialog -->
+    <string name="global_action_onthego">On-The-Go Mode</string>
+
 
 </resources>

@@ -106,6 +106,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.android.internal.util.cyanide.OnTheGoActions;
 
 /**
  * Helper to show the global actions dialog.  Each item is an {@link Action} that
@@ -284,6 +285,10 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
             Drawable icon = PolicyHelper.getPowerMenuIconImage(mContext, actionKey, config.getIcon());
 
+            // On-The-Go, if enabled
+            boolean showOnTheGo = Settings.System.getBoolean(mContext.getContentResolver(),
+                    Settings.System.POWER_MENU_ONTHEGO_ENABLED, false);
+
             if (actionKey.equals(PolicyConstants.ACTION_POWER_OFF)) {
                 mItems.add(getPowerAction(icon));
             } else if (actionKey.equals(PolicyConstants.ACTION_REBOOT)) {
@@ -301,6 +306,10 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 }
             } else if (actionKey.equals(PolicyConstants.ACTION_LOCKDOWN)) {
                 mItems.add(getLockdownAction(icon));
+            } else if (actionKey.equals(PolicyConstants.ACTION_ONTHEGO)) {
+                if (showOnTheGo) {
+                    mItems.add(getOnTheGoAction(icon));
+                }
             } else if (actionKey != null) {
                 // must be a screenshot, custom app or action shorcut
                 mItems.add(
@@ -478,6 +487,29 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         };
     }
 
+
+    private Action getOnTheGoAction(Drawable icon) {
+        return new SinglePressAction(icon, R.string.global_action_onthego) {
+
+             public void onPress() {
+                 OnTheGoActions.processAction(mContext,
+                         OnTheGoActions.ACTION_ONTHEGO_TOGGLE);
+             }
+
+             public boolean onLongPress() {
+                 return false;
+             }
+
+             public boolean showDuringKeyguard() {
+                 return true;
+             }
+
+             public boolean showBeforeProvisioning() {
+                 return true;
+             }
+        };
+    }
+
     private UserInfo getCurrentUser() {
         try {
             return ActivityManagerNative.getDefault().getCurrentUser();
@@ -541,6 +573,14 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
     }
 
+    private void startOnTheGo() {
+        final ComponentName cn = new ComponentName("com.android.systemui",
+                "com.android.systemui.fusion.onthego.OnTheGoService");
+        final Intent startIntent = new Intent();
+        startIntent.setComponent(cn);
+        startIntent.setAction("start");
+        mContext.startService(startIntent);
+    }
 
     private void prepareDialog() {
         refreshSilentMode();
