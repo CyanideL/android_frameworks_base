@@ -334,6 +334,8 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
             Action.processAction(mContext, ActionConstants.ACTION_SETTINGS_PANEL, false);
         } else if (buttonName.equals(PAPieController.EXPANDED_DESKTOP)) {
             Action.processAction(mContext, ActionConstants.ACTION_EXPANDED_DESKTOP, false);
+        } else if (buttonName.equals(PAPieController.THEME_SWITCH)) {
+            Action.processAction(mContext, ActionConstants.ACTION_THEME_SWITCH, false);
         } else if (buttonName.equals(PAPieController.APP_WINDOW_BUTTON)) {
             Intent appWindow = new Intent();
             appWindow.setAction("com.android.systemui.ACTION_SHOW_APP_WINDOW");

@@ -63,6 +63,7 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
     public static final String SCREENSHOT_BUTTON = "##screenshot##";
     public static final String POWER_MENU = "##power_menu##";
     public static final String EXPANDED_DESKTOP = "##expanded_desktop##";
+    public static final String THEME_SWITCH = "##theme_switch##";
 
     private static PAPieController mInstance;
     private static PieHelper mPieHelper;
@@ -93,6 +94,7 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
     private PieItem mScreenshot;
     private PieItem mPowerMenu;
     private PieItem mExpandedDesktop;
+    private PieItem mThemeSwitch;
 
     protected PieMenu mPie;
     protected int mItemSize;
@@ -262,6 +264,7 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
         mScreenshot = makeItem(R.drawable.ic_sysbar_screenshot, 1, SCREENSHOT_BUTTON, true);
         mPowerMenu = makeItem(R.drawable.ic_sysbar_power, 1, POWER_MENU, true);
         mExpandedDesktop = makeItem(R.drawable.ic_sysbar_expanded_desktop, 1, EXPANDED_DESKTOP, true);
+        mThemeSwitch = makeItem(R.drawable.ic_sysbar_theme_switch, 1, THEME_SWITCH, true);
 
         mPie.addItem(mMenu);
         mPie.addItem(mRecent);
@@ -277,6 +280,7 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
         mPie.addItem(mScreenshot);
         mPie.addItem(mPowerMenu);
         mPie.addItem(mExpandedDesktop);
+        mPie.addItem(mThemeSwitch);
     }
 
     public void setNavigationIconHints(int hints) {

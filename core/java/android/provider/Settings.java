@@ -4885,6 +4885,12 @@ public final class Settings {
          * @hide
          */
         public static final String PA_PIE_EXPANDED_DESKTOP = "pa_pie_expanded_desktop";
+        
+        /**
+         * Pie TRDS Switch
+         * @hide
+         */
+        public static final String PA_PIE_THEME_SWITCH = "pa_pie_theme_switch";
 
        // PIE COLORS EVERYWHERE! //
 

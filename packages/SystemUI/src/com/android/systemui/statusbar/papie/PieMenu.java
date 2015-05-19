@@ -203,6 +203,7 @@ public class PieMenu extends FrameLayout {
     private boolean mUseTorch;
     private boolean mUsePowerMenu;
     private boolean mExpandedDesktop;
+    private boolean mThemeSwitch;
 
     private int mGlowOffset = 150;
 
@@ -278,6 +279,8 @@ public class PieMenu extends FrameLayout {
                 Settings.System.PA_PIE_POWER_MENU, 0) == 1;
         mExpandedDesktop = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PA_PIE_EXPANDED_DESKTOP, 0) == 1;
+        mThemeSwitch = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PA_PIE_THEME_SWITCH, 0) == 1;
         mHasAssistant = mPieHelper.isAssistantAvailable();
 
         // snap
@@ -585,7 +588,8 @@ public class PieMenu extends FrameLayout {
                !(item.getName().equals(PAPieController.TORCH_BUTTON) && !mUseTorch) &&
                !(item.getName().equals(PAPieController.SCREENSHOT_BUTTON) && !mUseScreenshot) &&
                !(item.getName().equals(PAPieController.POWER_MENU) && !mUsePowerMenu) &&
-               !(item.getName().equals(PAPieController.EXPANDED_DESKTOP) && !mExpandedDesktop);
+               !(item.getName().equals(PAPieController.EXPANDED_DESKTOP) && !mExpandedDesktop) &&
+               !(item.getName().equals(PAPieController.THEME_SWITCH) && !mThemeSwitch);
     }
 
     private void layoutPie() {
@@ -615,6 +619,8 @@ public class PieMenu extends FrameLayout {
         if (!mUsePowerMenu)
             itemCount--;
         if (!mExpandedDesktop)
+            itemCount--;
+        if (!mThemeSwitch)
             itemCount--;
 
         int lesserSweepCount = 0;
