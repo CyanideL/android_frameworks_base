@@ -1,5 +1,6 @@
 /*
-* Copyright (C) 2015 DarkKat
+* Copyright (C) 2013-2015 SlimRoms Project
+* Copyright (C) 2015 The Fusion Project
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,9 +17,47 @@
 
 package com.android.internal.util.cyanide;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
 public class ColorHelper {
+
+    public static Bitmap getColoredBitmap(Drawable d, int color) {
+        Bitmap colorBitmap = ((BitmapDrawable) d).getBitmap();
+        Bitmap grayscaleBitmap = toGrayscale(colorBitmap);
+        Paint pp = new Paint();
+        PorterDuffColorFilter frontFilter =
+            new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY);
+        pp.setColorFilter(frontFilter);
+        Canvas cc = new Canvas(grayscaleBitmap);
+        cc.drawBitmap(grayscaleBitmap, 0, 0, pp);
+        return grayscaleBitmap;
+    }
+
+    private static Bitmap toGrayscale(Bitmap bmpOriginal) {
+        int width, height;
+        height = bmpOriginal.getHeight();
+        width = bmpOriginal.getWidth();
+
+        Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bmpGrayscale);
+        Paint paint = new Paint();
+        ColorMatrix cm = new ColorMatrix();
+        cm.setSaturation(0);
+
+        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+        paint.setColorFilter(f);
+        c.drawBitmap(bmpOriginal, 0, 0, paint);
+        return bmpGrayscale;
+    }
 
     public static int getBlendColor(int from, int to, float ratio) {
         final float inverseRatio = 1f - ratio;

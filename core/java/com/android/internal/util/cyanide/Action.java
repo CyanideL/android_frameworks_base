@@ -30,6 +30,7 @@ import android.media.AudioManager;
 import android.media.session.MediaSessionLegacyHelper;
 import android.media.ToneGenerator;
 import android.net.Uri;
+import android.content.ContentResolver;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -44,6 +45,7 @@ import android.view.IWindowManager;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.WindowManagerGlobal;
+import android.view.WindowManagerPolicyControl;
 import android.widget.Toast;
 
 import com.android.internal.statusbar.IStatusBarService;
@@ -80,6 +82,19 @@ public class Action {
                 return; // ouch
             }
 
+            final IWindowManager windowManagerService = IWindowManager.Stub.asInterface(
+                    ServiceManager.getService(Context.WINDOW_SERVICE));
+            if (windowManagerService == null) {
+                return; // ouch
+            }
+
+            boolean isKeyguardSecure = false;
+            try {
+                isKeyguardSecure = windowManagerService.isKeyguardSecure();
+            } catch (RemoteException e) {
+                Log.w("Action", "Error getting window manager service", e);
+            }
+
             if (collapseShade) {
                 if (!action.equals(ActionConstants.ACTION_THEME_SWITCH)) {
                     try {
@@ -87,12 +102,6 @@ public class Action {
                     } catch (RemoteException ex) {
                     }
                 }
-            }
-
-            final IWindowManager windowManagerService = IWindowManager.Stub.asInterface(
-                    ServiceManager.getService(Context.WINDOW_SERVICE));
-            if (windowManagerService == null) {
-                return; // ouch
             }
 
             // process the actions
@@ -148,6 +157,22 @@ public class Action {
                 } catch (RemoteException e) {
                 }
                 return;
+            } else if (action.equals(ActionConstants.ACTION_NOTIFICATIONS)) {
+                if (isKeyguardShowing && isKeyguardSecure) {
+                    return;
+                }
+                try {
+                    barService.expandNotificationsPanel();
+                } catch (RemoteException e) {
+                }
+                return;
+            } else if (action.equals(ActionConstants.ACTION_SETTINGS_PANEL)) {
+                if (isKeyguardShowing && isKeyguardSecure) {
+                    return;
+                }
+                try {
+                    barService.expandSettingsPanel();
+                } catch (RemoteException e) {}
             } else if (action.equals(ActionConstants.ACTION_LAST_APP)) {
                 if (isKeyguardShowing) {
                     return;
@@ -197,6 +222,15 @@ public class Action {
                     barService.toggleScreenshot();
                 } catch (RemoteException e) {
                 }
+                return;
+            } else if (action.equals(ActionConstants.ACTION_EXPANDED_DESKTOP)) {
+                ContentResolver cr = context.getContentResolver();
+                String value = Settings.Global.getString(cr, Settings.Global.POLICY_CONTROL);
+                boolean isExpanded = "immersive.full=*".equals(value);
+                Settings.Global.putString(cr, Settings.Global.POLICY_CONTROL,
+                        isExpanded ? "" : "immersive.full=*");
+                if (isExpanded)
+                    WindowManagerPolicyControl.reloadFromSetting(context);
                 return;
             } else if (action.equals(ActionConstants.ACTION_ASSIST)
                     || action.equals(ActionConstants.ACTION_KEYGUARD_SEARCH)) {

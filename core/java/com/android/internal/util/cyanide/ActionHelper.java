@@ -335,12 +335,21 @@ public class ActionHelper {
         } else if (clickAction.equals(ActionConstants.ACTION_TORCH)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_torch", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_EXPANDED_DESKTOP)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_expanded_desktop", null, null);
         } else if (clickAction.equals(ActionConstants.ACTION_LAST_APP)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_lastapp", null, null);
         } else if (clickAction.equals(ActionConstants.ACTION_KILL)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_killtask", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_NOTIFICATIONS)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_notifications", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_SETTINGS_PANEL)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_quicksettings", null, null);
         } else if (clickAction.equals(ActionConstants.ACTION_SCREENSHOT)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_screenshot", null, null);
