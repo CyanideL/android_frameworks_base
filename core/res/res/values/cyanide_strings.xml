@@ -96,9 +96,14 @@
     <!-- label for item that takes On-The-Go in the phone options dialog -->
     <string name="global_action_onthego">On-The-Go Mode</string>
 
+    <string name="global_actions_toggle_expanded_desktop_mode">Expanded desktop</string>
     <string name="global_actions_toggle_pie_mode">SlimPie</string>
     <string name="global_actions_toggle_nav_bar">Navigation bar</string>
 
+    <!-- status message in phone options dialog for when expanded desktop is on -->
+    <string name="global_actions_expanded_desktop_mode_on_status">Expanded desktop is ON</string>
+    <!-- status message in phone options dialog for when expanded desktop is off -->
+    <string name="global_actions_expanded_desktop_mode_off_status">Expanded desktop is OFF</string>
     <!-- status message in phone options dialog for when pie is on -->
     <string name="global_actions_pie_mode_on_status">SlimPie is ON</string>
     <!-- status message in phone options dialog for when pie is off -->

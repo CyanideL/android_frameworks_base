@@ -145,6 +145,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     private Action mSilentModeAction;
     private ToggleAction mAirplaneModeOn;
+    private ToggleAction mExpandDesktopModeOn;
     private ToggleAction mPieModeOn;
     private ToggleAction mNavBarModeOn;
 
@@ -153,6 +154,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private boolean mKeyguardShowing = false;
     private boolean mDeviceProvisioned = false;
     private ToggleAction.State mAirplaneState = ToggleAction.State.Off;
+    private ToggleAction.State mExpandDesktopState = ToggleAction.State.Off;
     private ToggleAction.State mPieState = ToggleAction.State.Off;
     private ToggleAction.State mNavBarState = ToggleAction.State.Off;
     private boolean mIsWaitingForEcmExit = false;
@@ -303,6 +305,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             } else if (actionKey.equals(PolicyConstants.ACTION_AIRPLANE)) {
                 constructAirPlaneModeToggle(icon);
                 mItems.add(mAirplaneModeOn);
+            } else if (actionKey.equals(PolicyConstants.ACTION_EXPANDED_DESKTOP)) {
+                constructExpandedDesktopToggle(icon);
+                mItems.add(mExpandDesktopModeOn);
             } else if (actionKey.equals(PolicyConstants.ACTION_PIE)) {
                 constructPieToggle(icon);
                 mItems.add(mPieModeOn);
@@ -418,6 +423,30 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             }
         };
         onAirplaneModeChanged();
+    }
+
+    private void constructExpandedDesktopToggle(Drawable icon) {
+        mExpandDesktopModeOn = new ToggleAction(
+                icon,
+                icon,
+                R.string.global_actions_toggle_expanded_desktop_mode,
+                R.string.global_actions_expanded_desktop_mode_on_status,
+                R.string.global_actions_expanded_desktop_mode_off_status) {
+
+            void onToggle(boolean on) {
+                com.android.internal.util.fusion.Action.processAction(
+                    mContext, PolicyConstants.ACTION_EXPANDED_DESKTOP, false);
+            }
+
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return false;
+            }
+        };
+        onExpandDesktopModeChanged();
     }
 
     private void constructPieToggle(Drawable icon) {
@@ -658,6 +687,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 */
         if (mAirplaneModeOn != null) {
             mAirplaneModeOn.updateState(mAirplaneState);
+        }
+        if (mExpandDesktopModeOn != null) {
+            mExpandDesktopModeOn.updateState(mExpandDesktopState);
         }
         if (mPieModeOn != null) {
             mPieModeOn.updateState(mPieState);
@@ -1207,7 +1239,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAVBAR_FORCE_ENABLE), false, this,
                     UserHandle.USER_ALL);
-
         }
 
         @Override
@@ -1296,6 +1327,16 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         mAirplaneState = airplaneModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
         if (mAirplaneModeOn != null) {
             mAirplaneModeOn.updateState(mAirplaneState);
+        }
+    }
+
+    private void onExpandDesktopModeChanged() {
+        ContentResolver cr = mContext.getContentResolver();
+        String value = Settings.Global.getString(cr, Settings.Global.POLICY_CONTROL);
+        boolean expandDesktopModeOn = "immersive.full=*".equals(value);
+        mExpandDesktopState = expandDesktopModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
+        if (mExpandDesktopModeOn != null) {
+            mExpandDesktopModeOn.updateState(mExpandDesktopState);
         }
     }
 
