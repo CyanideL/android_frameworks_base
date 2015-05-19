@@ -429,7 +429,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 R.string.global_actions_pie_mode_off_status) {
 
             void onToggle(boolean on) {
-                com.android.internal.util.fusion.Action.processAction(
+                com.android.internal.util.cyanide.Action.processAction(
                     mContext, PolicyConstants.ACTION_PIE, false);
             }
 
@@ -453,7 +453,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 R.string.global_actions_nav_bar_mode_off_status) {
 
             void onToggle(boolean on) {
-                com.android.internal.util.fusion.Action.processAction(
+                com.android.internal.util.cyanide.Action.processAction(
                     mContext, PolicyConstants.ACTION_NAVBAR, false);
             }
 
@@ -636,7 +636,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     private void startOnTheGo() {
         final ComponentName cn = new ComponentName("com.android.systemui",
-                "com.android.systemui.fusion.onthego.OnTheGoService");
+                "com.android.systemui.cyanide.onthego.OnTheGoService");
         final Intent startIntent = new Intent();
         startIntent.setComponent(cn);
         startIntent.setAction("start");
@@ -1205,7 +1205,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     Settings.System.PIE_CONTROLS), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAVIGATION_BAR_SHOW), false, this,
+                    Settings.System.NAVBAR_FORCE_ENABLE), false, this,
                     UserHandle.USER_ALL);
 
         }
@@ -1217,7 +1217,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     Settings.System.PIE_CONTROLS))) {
                 onPieModeChanged();
             } else if (uri.equals(Settings.System.getUriFor(
-                Settings.System.NAVIGATION_BAR_SHOW))) {
+                Settings.System.NAVBAR_FORCE_ENABLE))) {
                 onNavBarModeChanged();
             }
             mAdapter.notifyDataSetChanged();
@@ -1315,7 +1315,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 com.android.internal.R.bool.config_showNavigationBar);
         boolean navBarModeOn = Settings.System.getIntForUser(
                 mContext.getContentResolver(),
-                Settings.System.NAVIGATION_BAR_SHOW,
+                Settings.System.NAVBAR_FORCE_ENABLE,
                 defaultValue ? 1 : 0, UserHandle.USER_CURRENT) == 1;
         mNavBarState = navBarModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
         if (mNavBarModeOn != null) {

@@ -4851,6 +4851,12 @@ public final class Settings {
         public static final String PA_PIE_ACT_NOTIF = "pa_pie_act_notif";
 
         /**
+         * Pie quick settings
+         * @hide
+         */
+        public static final String PA_PIE_SETTINGS_PANEL = "pa_pie_settings_panel";
+
+        /**
          * PA Pie power, should default to 0 (no, show only when needed)
          * @hide
          */
@@ -4873,6 +4879,12 @@ public final class Settings {
          * @hide
          */
         public static final String PA_PIE_POWER_MENU = "pa_pie_power_menu";
+
+        /**
+         * Pie expanded desktop
+         * @hide
+         */
+        public static final String PA_PIE_EXPANDED_DESKTOP = "pa_pie_expanded_desktop";
 
        // PIE COLORS EVERYWHERE! //
 
