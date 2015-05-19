@@ -1,5 +1,6 @@
 /*
-* Copyright (C) 2013 SlimRoms Project
+* Copyright (C) 2013-2015 SlimRoms Project
+* Copyright (C) 2015 The Fusion Project
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -18,14 +19,17 @@ package com.android.internal.util.cyanide;
 
 public class PolicyConstants {
 
-    public static final String ACTION_POWER_OFF    = "**poweroff**";
-    public static final String ACTION_REBOOT       = "**reboot**";
-    public static final String ACTION_SCREENSHOT   = "**screenshot**";
-    public static final String ACTION_AIRPLANE     = "**airplane**";
-    public static final String ACTION_SOUND        = "**sound**";
-    public static final String ACTION_USERS        = "**users**";
-    public static final String ACTION_LOCKDOWN     = "**lockdown**";
-    public static final String ACTION_ONTHEGO      = "**onthego**";
+    public static final String ACTION_POWER_OFF        = "**poweroff**";
+    public static final String ACTION_REBOOT           = "**reboot**";
+    public static final String ACTION_SCREENSHOT       = "**screenshot**";
+    public static final String ACTION_AIRPLANE         = "**airplane**";
+    public static final String ACTION_SOUND            = "**sound**";
+    public static final String ACTION_EXPANDED_DESKTOP = "**expanded_desktop**";
+    public static final String ACTION_PIE              = "**pie**";
+    public static final String ACTION_NAVBAR           = "**nav_bar**";
+    public static final String ACTION_USERS            = "**users**";
+    public static final String ACTION_LOCKDOWN         = "**lockdown**";
+    public static final String ACTION_ONTHEGO          = "**onthego**";
 
     public static final String ACTION_DELIMITER  = "|";
     public static final String ICON_EMPTY = "empty";

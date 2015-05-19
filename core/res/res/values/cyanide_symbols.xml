@@ -145,7 +145,15 @@
   <java-symbol type="string" name="theme_auto_switch_mode_error" />
   
   <java-symbol type="string" name="disable_navigation_pie_error" />
+  <java-symbol type="string" name="global_actions_toggle_pie_mode" />
+  <java-symbol type="string" name="global_actions_pie_mode_on_status" />
+  <java-symbol type="string" name="global_actions_pie_mode_off_status" />
+  <java-symbol type="drawable" name="ic_lock_pie" />
   <java-symbol type="string" name="disable_pie_navigation_error" />
+  <java-symbol type="string" name="global_actions_toggle_nav_bar" />
+  <java-symbol type="string" name="global_actions_nav_bar_mode_on_status" />
+  <java-symbol type="string" name="global_actions_nav_bar_mode_off_status" />
+  <java-symbol type="drawable" name="ic_lock_navbar" />
   
   <!-- Config Power Menu -->
   <java-symbol type="drawable" name="ic_lock_reboot" />
