@@ -344,7 +344,7 @@ public class OnTheGoService extends Service {
                                 (type == 2 ? R.string.onthego_notif_error
                                         : R.string.onthego_notif_title))
                 ))
-                .setSmallIcon(com.android.internal.R.drawable.ic_lock_onthego)
+                .setSmallIcon(com.android.internal.R.drawable.ic_lock_onthego_alpha)
                 .setWhen(System.currentTimeMillis())
                 .setOngoing(!(type == 1 || type == 2));
 

@@ -36,6 +36,7 @@ import java.util.ArrayList;
 
 public class PolicyHelper {
 
+    private static final String SYSTEM_METADATA_NAME = "android";
     private static final String SYSTEMUI_METADATA_NAME = "com.android.systemui";
 
     public static ArrayList<ActionConfig> getPowerMenuConfigWithDescription(
@@ -64,6 +65,119 @@ public class PolicyHelper {
     }
 
     public static Drawable getPowerMenuIconImage(Context context,
+            String clickAction, String customIcon, boolean colorize) {
+        int resId = -1;
+        int iconColor = -2;
+        int colorMode = 0;
+        Drawable d = null;
+        Drawable dError = null;
+        PackageManager pm = context.getPackageManager();
+        if (pm == null) {
+            return null;
+        }
+
+        if (colorize) {
+            iconColor = Settings.System.getIntForUser(
+                    context.getContentResolver(),
+                    Settings.System.POWER_MENU_ICON_COLOR, -2,
+                    UserHandle.USER_CURRENT);
+            colorMode = Settings.System.getIntForUser(
+                    context.getContentResolver(),
+                    Settings.System.POWER_MENU_ICON_COLOR_MODE, 0,
+                    UserHandle.USER_CURRENT);
+
+            if (iconColor == -2) {
+                iconColor = context.getResources().getColor(
+                    com.android.internal.R.color.power_menu_icon_default_color);
+            }
+        }
+
+        if (!clickAction.startsWith("**")) {
+            try {
+                String extraIconPath = clickAction.replaceAll(".*?hasExtraIcon=", "");
+                if (extraIconPath != null && !extraIconPath.isEmpty()) {
+                    File f = new File(Uri.parse(extraIconPath).getPath());
+                    if (f.exists()) {
+                        d = new BitmapDrawable(context.getResources(),
+                                f.getAbsolutePath());
+                    }
+                }
+                if (d == null) {
+                    d = pm.getActivityIcon(Intent.parseUri(clickAction, 0));
+                }
+            } catch (NameNotFoundException e) {
+                Resources systemUiResources;
+                try {
+                    systemUiResources = pm.getResourcesForApplication(SYSTEMUI_METADATA_NAME);
+                } catch (Exception ex) {
+                    Log.e("PolicyHelper:", "can't access systemui resources",e);
+                    return null;
+                }
+                resId = systemUiResources.getIdentifier(
+                    SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_null", null, null);
+                if (resId > 0) {
+                    dError = systemUiResources.getDrawable(resId);
+                    if (colorMode != 3 && colorMode == 0 && colorize) {
+                        dError = new BitmapDrawable(
+                            ImageHelper.getColoredBitmap(dError, iconColor));
+                    }
+                }
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+
+        boolean coloring = false;
+        if (customIcon != null && customIcon.startsWith(PolicyConstants.SYSTEM_ICON_IDENTIFIER)) {
+            Resources systemResources;
+            try {
+                systemResources = pm.getResourcesForApplication(SYSTEM_METADATA_NAME);
+            } catch (Exception e) {
+                Log.e("ActionHelper:", "can't access system resources",e);
+                return null;
+            }
+
+            resId = systemResources.getIdentifier(customIcon.substring(
+                        ActionConstants.SYSTEM_ICON_IDENTIFIER.length()), "drawable", "android");
+            if (resId > 0) {
+                d = systemResources.getDrawable(resId);
+                if (colorMode != 3 && colorize) {
+                    coloring = true;
+                }
+            }
+        } else if (customIcon != null && !customIcon.equals(ActionConstants.ICON_EMPTY)) {
+            File f = new File(Uri.parse(customIcon).getPath());
+            if (f.exists()) {
+                d = new BitmapDrawable(context.getResources(),
+                        ImageHelper.getRoundedCornerBitmap(
+                        new BitmapDrawable(context.getResources(),
+                        f.getAbsolutePath()).getBitmap()));
+                if (colorMode != 3 && colorMode != 1 && colorize) {
+                    coloring = true;
+                }
+            } else {
+                Log.e("ActionHelper:", "can't access custom icon image");
+                return null;
+            }
+        } else if (clickAction.startsWith("**")) {
+            d = getPowerMenuSystemIcon(context, clickAction);
+            if (colorMode != 3 && colorize) {
+                coloring = true;
+            }
+        } else if (colorMode != 3 && colorMode == 0 && colorize) {
+            coloring = true;
+        }
+        if (dError == null) {
+            if (coloring) {
+                d = new BitmapDrawable(ImageHelper.getColoredBitmap(d, iconColor));
+            }
+            return ImageHelper.resize(context, d, 36);
+        } else {
+            return ImageHelper.resize(context, dError, 36);
+        }
+    }
+
+    public static Drawable getPowerMenuIconImage(Context context,
             String clickAction, String customIcon) {
         int resId = -1;
         Drawable d = null;
@@ -76,7 +190,7 @@ public class PolicyHelper {
         try {
             systemUiResources = pm.getResourcesForApplication(SYSTEMUI_METADATA_NAME);
         } catch (Exception e) {
-            Log.e("ButtonsHelper:", "can't access systemui resources",e);
+            Log.e("ActionHelper:", "can't access systemui resources",e);
             return null;
         }
 
@@ -144,7 +258,7 @@ public class PolicyHelper {
                 com.android.internal.R.drawable.ic_lock_reboot_alpha);
         } else if (clickAction.equals(PolicyConstants.ACTION_SCREENSHOT)) {
             return context.getResources().getDrawable(
-                com.android.internal.R.drawable.ic_lock_screenshot);
+                com.android.internal.R.drawable.ic_lock_screenshot_alpha);
         } else if (clickAction.equals(PolicyConstants.ACTION_AIRPLANE)) {
             return context.getResources().getDrawable(
                 com.android.internal.R.drawable.ic_lock_airplane_mode_off_am_alpha);
@@ -160,6 +274,9 @@ public class PolicyHelper {
         } else if (clickAction.equals(PolicyConstants.ACTION_LOCKDOWN)) {
             return context.getResources().getDrawable(
                 com.android.internal.R.drawable.ic_lock_lock_alpha);
+        } else if (clickAction.equals(PolicyConstants.ACTION_ONTHEGO)) {
+            return context.getResources().getDrawable(
+                com.android.internal.R.drawable.ic_lock_onthego_alpha);
         }
         return null;
     }
