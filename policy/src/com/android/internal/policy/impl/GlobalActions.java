@@ -1192,7 +1192,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
         public View create(Context context, View convertView, ViewGroup parent,
                 LayoutInflater inflater) {
-            View v = inflater.inflate(R.layout.global_actions_silent_mode, parent, false);
 
             int selectedIndex = ringerModeToIndex(mAudioManager.getRingerMode());
 
@@ -1210,21 +1209,34 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     com.android.internal.R.color.power_menu_icon_default_color);
             }
 
-            for (int i = 0; i < 3; i++) {
-                View itemView = v.findViewById(ITEM_IDS[i]);
-				itemView.setSelected(selectedIndex == i);
-                // Set up click handler
-                itemView.setTag(i);
-                if (colorMode != 3) {
-                    ImageView icon = (ImageView) itemView.findViewById(ICON_IDS[i]);
-                    if (icon != null) {
-                        icon.setImageDrawable(ImageHelper.resize(mContext, new BitmapDrawable(
-                            ImageHelper.getColoredBitmap(icon.getDrawable(), iconColor)), 36));
+            if (colorMode != 3) {
+                View cyanide = inflater.inflate(R.layout.global_actions_silent_mode_cyanide, parent, false);
+
+                for (int i = 0; i < 3; i++) {
+                    View itemView = cyanide.findViewById(ITEM_IDS[i]);
+                    itemView.setSelected(selectedIndex == i);
+                    // Set up click handler
+                    itemView.setTag(i);
+                        ImageView icon = (ImageView) itemView.findViewById(ICON_IDS[i]);
+                        if (icon != null) {
+                            icon.setImageDrawable(ImageHelper.resize(mContext, new BitmapDrawable(
+                                ImageHelper.getColoredBitmap(icon.getDrawable(), iconColor)), 36));
+                        }
+                        itemView.setOnClickListener(this);
                     }
+                return cyanide;
+            } else {
+                View v = inflater.inflate(R.layout.global_actions_silent_mode, parent, false);
+
+                for (int i = 0; i < 3; i++) {
+                    View itemView = v.findViewById(ITEM_IDS[i]);
+                    itemView.setSelected(selectedIndex == i);
+                    // Set up click handler
+                    itemView.setTag(i);
+                    itemView.setOnClickListener(this);
                 }
-                itemView.setOnClickListener(this);
+                return v;
             }
-            return v;
         }
 
         public void onPress() {

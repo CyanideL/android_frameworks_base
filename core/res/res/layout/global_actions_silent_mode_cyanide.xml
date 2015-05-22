@@ -30,6 +30,7 @@
         android:focusable="true"
         >
         <ImageView
+            android:id="@+id/icon1"
             android:layout_width="48dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -37,7 +38,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="6dp"
-            android:src="@drawable/ic_audio_ring_notif_mute_dark"
+            android:src="@drawable/ic_audio_ring_notif_mute_cyanide"
             android:scaleType="center"
             />
     </LinearLayout>
@@ -56,6 +57,7 @@
         android:focusable="true"
         >
         <ImageView
+            android:id="@+id/icon2"
             android:layout_width="48dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -63,7 +65,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="6dp"
-            android:src="@drawable/ic_audio_ring_notif_vibrate_dark"
+            android:src="@drawable/ic_audio_ring_notif_vibrate_cyanide"
             android:scaleType="center"
             />
     </LinearLayout>
@@ -83,6 +85,7 @@
         android:focusable="true"
         >
         <ImageView
+            android:id="@+id/icon3"
             android:layout_width="48dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -90,7 +93,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="6dp"
-            android:src="@drawable/ic_audio_ring_notif_dark"
+            android:src="@drawable/ic_audio_ring_notif_cyanide"
             android:scaleType="center"
             />
     </LinearLayout>
