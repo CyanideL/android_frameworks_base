@@ -1,5 +1,6 @@
 /*
 * Copyright (C) 2013 SlimRoms Project
+* Copyright (C) 2015 CyanideL && Fusion (Port/Modify text/icons colors)
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
