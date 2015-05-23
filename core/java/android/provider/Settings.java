@@ -5109,6 +5109,20 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_POWER_MENU = "status_bar_power_menu";
+        
+        /**
+         * Icon color mode for lockscreen shortcuts
+         *
+         * @hide
+         */
+        public static final String LOCKSCREEN_SHORTCUTS_ICON_COLOR_MODE = "lockscreen_shortcuts_icon_color_mode";
+
+        /**
+         * Icon color for lockscreen shortcuts
+         *
+         * @hide
+         */
+        public static final String LOCKSCREEN_SHORTCUTS_ICON_COLOR = "lockscreen_shortcuts_icon_color";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings

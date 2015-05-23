@@ -34,9 +34,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.android.internal.util.cyanide.AppHelper;
-import com.android.internal.util.cyanide.ActionHelper;
 import com.android.internal.util.cyanide.ActionConfig;
 import com.android.internal.util.cyanide.Action;
+import com.android.internal.util.cyanide.LockscreenShortcutHelper;
 import com.android.internal.widget.LockPatternUtils;
 
 import com.android.keyguard.R;
@@ -81,7 +81,7 @@ public class KeyguardShortcuts extends LinearLayout {
     }
 
     private void createShortcuts() {
-        ArrayList<ActionConfig> actionConfigs = ActionHelper.getLockscreenShortcutConfig(mContext);
+        ArrayList<ActionConfig> actionConfigs = LockscreenShortcutHelper.getLockscreenShortcutConfig(mContext);
         if (actionConfigs.size() == 0) {
             setVisibility(View.GONE);
             return;
@@ -104,7 +104,7 @@ public class KeyguardShortcuts extends LinearLayout {
                     new LinearLayout.LayoutParams(dimens, dimens);
             i.setLayoutParams(vp);
 
-            Drawable d = ActionHelper.getActionIconImage(
+            Drawable d = LockscreenShortcutHelper.getLockscreenShortcutIconImage(
                     mContext, actionConfig.getClickAction(), actionConfig.getIcon());
             i.setImageDrawable(d);
             i.setBackground(mContext.getDrawable(R.drawable.ripple_drawable));
