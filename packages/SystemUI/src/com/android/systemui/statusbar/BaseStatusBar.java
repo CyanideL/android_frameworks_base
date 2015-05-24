@@ -239,7 +239,6 @@ public abstract class BaseStatusBar extends SystemUI implements
     protected boolean mHeadsUpTicker = false;
     protected boolean mDisableNotificationAlerts = false;
     private int mHeadsUpBackground = 0x00ffffff;
-    private int mHeadsUpBackgroundPressed = 0x00ffffff;
     private int mHeadsUpTextColor;
 
     protected DevicePolicyManager mDevicePolicyManager;
@@ -2373,10 +2372,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                         int mHeadsUpBackground = Settings.System.getIntForUser(
                             mContext.getContentResolver(), Settings.System.HEADS_UP_BG_COLOR,
                             0x00ffffff, UserHandle.USER_CURRENT);
-                        int mHeadsUpBackgroundPressed = Settings.System.getIntForUser(
-                            mContext.getContentResolver(), Settings.System.HEADS_UP_BG_PRESSED_COLOR,
-                            0xff000000, UserHandle.USER_CURRENT);
-                        mHeadsUpNotificationView.showNotification(newEntry, mHeadsUpBackground, mHeadsUpBackgroundPressed);
+                        mHeadsUpNotificationView.showNotification(newEntry, mHeadsUpBackground);
                         if (alertAgain) {
                             resetHeadsUpDecayTimer();
                         }

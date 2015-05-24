@@ -4422,12 +4422,6 @@ public final class Settings {
          * @hide
          */
         public static final String HEADS_UP_BG_COLOR = "heads_up_bg_color";
-        
-        /**
-         * Heads Up background pressed color
-         * @hide
-         */
-        public static final String HEADS_UP_BG_PRESSED_COLOR = "heads_up_bg_pressed_color";
 
         /**
          * Heads Up text color

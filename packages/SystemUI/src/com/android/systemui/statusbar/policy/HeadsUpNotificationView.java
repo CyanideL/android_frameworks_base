@@ -19,11 +19,7 @@ package com.android.systemui.statusbar.policy;
 import android.content.Context;
 import android.content.ContentResolver;
 import android.content.res.Configuration;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.StateListDrawable;
-import android.graphics.Color;
-import android.graphics.PorterDuff.Mode;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Outline;
@@ -60,10 +56,7 @@ public class HeadsUpNotificationView extends FrameLayout implements SwipeHelper.
     private static final String TAG = "HeadsUpNotificationView";
     private static final boolean DEBUG = false;
     private static final boolean SPEW = DEBUG;
-    private static final int HEADSUP_DEFAULT_BACKGROUNDCOLOR = 0x00ffffff;
-    private static final int DEFAULT_BACKGROUND_PRESSED_COLOR = 0xff454545;
-    private static final int DEFAULT_ICON_COLOR = 0xffffffff;
-    private static final int FULL_OPAQUE = 255;
+    private final int HEADSUP_DEFAULT_BACKGROUNDCOLOR = 0x00ffffff;
 
     Rect mTmpRect = new Rect();
     int[] mTmpTwoArray = new int[2];
@@ -84,8 +77,6 @@ public class HeadsUpNotificationView extends FrameLayout implements SwipeHelper.
     private ContentObserver mSettingsObserver;
 
     private int mBackground;
-    private int mBackgroundPressed;
-    private int mIconColor;
 
     private NotificationData.Entry mHeadsUp;
     private int mUser;
@@ -111,9 +102,6 @@ public class HeadsUpNotificationView extends FrameLayout implements SwipeHelper.
         mBackground = Settings.System.getIntForUser(
             mContext.getContentResolver(), Settings.System.HEADS_UP_BG_COLOR,
             HEADSUP_DEFAULT_BACKGROUNDCOLOR, UserHandle.USER_CURRENT);
-        mBackgroundPressed = Settings.System.getIntForUser(
-            mContext.getContentResolver(), Settings.System.HEADS_UP_BG_PRESSED_COLOR,
-            0xff000000, UserHandle.USER_CURRENT);
     }
 
     class SettingsObserver extends ContentObserver {
@@ -164,7 +152,7 @@ public class HeadsUpNotificationView extends FrameLayout implements SwipeHelper.
         return mContentHolder;
     }
 
-    public boolean showNotification(NotificationData.Entry headsUp, int background, int backgroundpressed) {
+    public boolean showNotification(NotificationData.Entry headsUp, int background) {
         if (mHeadsUp != null && headsUp != null && !mHeadsUp.key.equals(headsUp.key)) {
             // bump any previous heads up back to the shade
             release();
@@ -172,7 +160,6 @@ public class HeadsUpNotificationView extends FrameLayout implements SwipeHelper.
 
         mHeadsUp = headsUp;
         mBackground = background;
-        mBackgroundPressed = backgroundpressed;
 
         if (mBar.isExpandedVisible() || mBar.isImeShowing()) {
             releaseAndClose();
@@ -190,7 +177,6 @@ public class HeadsUpNotificationView extends FrameLayout implements SwipeHelper.
         // set custom background
         if (mBackground != HEADSUP_DEFAULT_BACKGROUNDCOLOR) {
             setHeadsUpCustomBg();
-            setHeadsUpCustomBgPressed();
         } else {
             setHeadsUpDefaultBg();
         }
@@ -323,17 +309,6 @@ public class HeadsUpNotificationView extends FrameLayout implements SwipeHelper.
             }
     }
 
-    private void setHeadsUpCustomBgPressed() {
-            View expanded = mHeadsUp.expanded;
-            View expandedBig = mHeadsUp.getBigContentView();
-            if (expanded !=null) {
-                expanded.setBackgroundColor(mBackgroundPressed);
-            }
-            if (expandedBig != null) {
-                expandedBig.setBackgroundColor(mBackgroundPressed);
-            }
-    }
-    
     private void setHeadsUpDefaultBg() {
             View expanded = mHeadsUp.expanded;
             View expandedBig = mHeadsUp.getBigContentView();
@@ -383,11 +358,6 @@ public class HeadsUpNotificationView extends FrameLayout implements SwipeHelper.
             mContext.getContentResolver(), Settings.System.HEADS_UP_BG_COLOR,
             HEADSUP_DEFAULT_BACKGROUNDCOLOR, UserHandle.USER_CURRENT);
             
-            mBackgroundPressed = Settings.System.getIntForUser(
-            mContext.getContentResolver(), Settings.System.HEADS_UP_BG_PRESSED_COLOR,
-            DEFAULT_BACKGROUND_PRESSED_COLOR, UserHandle.USER_CURRENT);
-            
-            
             if (mSettingsObserver == null) {
                 mSettingsObserver = new SettingsObserver(new Handler());
 
@@ -395,7 +365,7 @@ public class HeadsUpNotificationView extends FrameLayout implements SwipeHelper.
 
         if (mHeadsUp != null) {
             // whoops, we're on already!
-            showNotification(mHeadsUp, mBackground, mBackgroundPressed);
+            showNotification(mHeadsUp, mBackground);
         }
 
             getViewTreeObserver().addOnComputeInternalInsetsListener(this);

@@ -395,7 +395,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     // Heads Up Custom Colors
     private int mHeadsUpCustomBg;
-    private int mHeadsUpCustomBgPressed;
     private int mHeadsUpCustomText;
 
     // battery
@@ -535,9 +534,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.HEADS_UP_BG_COLOR),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_BG_PRESSED_COLOR),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.HEADS_UP_TEXT_COLOR),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -589,12 +585,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     mHeadsUpCustomBg = Settings.System.getIntForUser(
                         mContext.getContentResolver(),
                         Settings.System.HEADS_UP_BG_COLOR, HEADSUP_DEFAULT_BACKGROUNDCOLOR,
-                        UserHandle.USER_CURRENT);
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_BG_PRESSED_COLOR))) {
-                    mHeadsUpCustomBgPressed = Settings.System.getIntForUser(
-                        mContext.getContentResolver(),
-                        Settings.System.HEADS_UP_BG_PRESSED_COLOR, 0x00000000,
                         UserHandle.USER_CURRENT);
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.HEADS_UP_TEXT_COLOR))) {
@@ -1962,7 +1952,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             // get text color value
             int mHeadsUpCustomTextColor = Settings.System.getIntForUser(
                 mContext.getContentResolver(), Settings.System.HEADS_UP_TEXT_COLOR,
-                0xff000000, UserHandle.USER_CURRENT);
+                0x00000000, UserHandle.USER_CURRENT);
 
             if (inflateViews(interruptionCandidate, holder, true, mHeadsUpCustomTextColor)) {
 
@@ -1971,14 +1961,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     mContext.getContentResolver(), Settings.System.HEADS_UP_BG_COLOR,
                     HEADSUP_DEFAULT_BACKGROUNDCOLOR, UserHandle.USER_CURRENT);
 
-                // get background value
-                int mHeadsUpCustomBgPressed = Settings.System.getIntForUser(
-                    mContext.getContentResolver(), Settings.System.HEADS_UP_BG_PRESSED_COLOR,
-                    0xff000000, UserHandle.USER_CURRENT);
-                
                 // 1. Populate mHeadsUpNotificationView
                 mHeadsUpNotificationView.showNotification(interruptionCandidate,
-                    mHeadsUpCustomBg, mHeadsUpCustomBgPressed);
+                    mHeadsUpCustomBg);
 
                 // do not show the notification in the shade, yet.
                 return;
