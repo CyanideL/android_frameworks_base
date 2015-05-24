@@ -148,6 +148,48 @@ public class Action {
                         new Intent("android.settings.SHOW_INPUT_METHOD_PICKER"),
                         new UserHandle(UserHandle.USER_CURRENT));
                 return;
+<<<<<<< HEAD:core/java/com/android/internal/util/cyanide/Action.java
+=======
+            } else if (action.equals(ActionConstants.ACTION_PIE)) {
+                boolean pieState = isPieEnabled(context);
+                if (pieState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.PIE_CONTROLS,
+                        pieState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
+            } else if (action.equals(ActionConstants.ACTION_PA_PIE)) {
+                boolean paPieState = isPaPieEnabled(context);
+                if (paPieState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.PA_PIE_STATE,
+                        paPieState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
+            } else if (action.equals(ActionConstants.ACTION_NAVBAR)) {
+                boolean navBarState = isNavBarEnabled(context);
+                if (navBarState && !isPieEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_navigation_pie_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.NAVIGATION_BAR_SHOW,
+                        navBarState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
+>>>>>>> e4f38ab... Global Menu: Add Pa Pie Control (1/2):core/java/com/android/internal/util/fusion/Action.java
             } else if (action.equals(ActionConstants.ACTION_KILL)) {
                 if (isKeyguardShowing) {
                     return;
@@ -398,7 +440,17 @@ public class Action {
                 Settings.System.PIE_CONTROLS,
                 0, UserHandle.USER_CURRENT) == 1;
     }
+<<<<<<< HEAD:core/java/com/android/internal/util/cyanide/Action.java
     
+=======
+
+    public static boolean isPaPieEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.PA_PIE_STATE,
+                0, UserHandle.USER_CURRENT) == 1;
+    }
+
+>>>>>>> e4f38ab... Global Menu: Add Pa Pie Control (1/2):core/java/com/android/internal/util/fusion/Action.java
     public static boolean isNavBarEnabled(Context context) {
         return Settings.System.getIntForUser(context.getContentResolver(),
                 Settings.System.NAVBAR_FORCE_ENABLE,

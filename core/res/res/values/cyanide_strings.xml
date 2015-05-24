@@ -98,6 +98,7 @@
 
     <string name="global_actions_toggle_expanded_desktop_mode">Expanded desktop</string>
     <string name="global_actions_toggle_pie_mode">SlimPie</string>
+    <string name="global_actions_toggle_pa_pie_mode">Pie Control</string>
     <string name="global_actions_toggle_nav_bar">Navigation bar</string>
 
     <!-- status message in phone options dialog for when expanded desktop is on -->
@@ -108,6 +109,10 @@
     <string name="global_actions_pie_mode_on_status">SlimPie is ON</string>
     <!-- status message in phone options dialog for when pie is off -->
     <string name="global_actions_pie_mode_off_status">SlimPie is OFF</string>
+    <!-- status message in phone options dialog for when pa pie is on -->
+    <string name="global_actions_pa_pie_mode_on_status">Pie control is ON</string>
+    <!-- status message in phone options dialog for when pie is off -->
+    <string name="global_actions_pa_pie_mode_off_status">Pie control is OFF</string>
     <!-- Error message if user want to try to disable all navigation options -->
     <string name="disable_pie_navigation_error">You cannot disable pie controls. No other navigation is enabled. Enable first the navigation bar to turn off pie controls.</string>
     <!-- status message in phone options dialog for when navigation bar is on -->

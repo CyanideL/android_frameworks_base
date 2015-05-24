@@ -148,6 +148,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private ToggleAction mAirplaneModeOn;
     private ToggleAction mExpandDesktopModeOn;
     private ToggleAction mPieModeOn;
+    private ToggleAction mPaPieModeOn;
     private ToggleAction mNavBarModeOn;
 
     private MyAdapter mAdapter;
@@ -157,6 +158,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private ToggleAction.State mAirplaneState = ToggleAction.State.Off;
     private ToggleAction.State mExpandDesktopState = ToggleAction.State.Off;
     private ToggleAction.State mPieState = ToggleAction.State.Off;
+    private ToggleAction.State mPaPieState = ToggleAction.State.Off;
     private ToggleAction.State mNavBarState = ToggleAction.State.Off;
     private boolean mIsWaitingForEcmExit = false;
     private boolean mHasTelephony;
@@ -339,6 +341,12 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 constructPieToggle(iconColor);
                 mItems.add(mPieModeOn);
 
+            } else if (actionKey.equals(PolicyConstants.ACTION_PA_PIE)) {
+                Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
+                mContext, actionKey, config.getIcon(), true);
+                constructPaPieToggle(iconColor);
+                mItems.add(mPaPieModeOn);
+
             } else if (actionKey.equals(PolicyConstants.ACTION_NAVBAR)) {
                 Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
                 mContext, actionKey, config.getIcon(), true);
@@ -512,6 +520,30 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             }
         };
         onPieModeChanged();
+    }
+
+    private void constructPaPieToggle(Drawable iconColor) {
+        mPaPieModeOn = new ToggleAction(
+                iconColor,
+                iconColor,
+                R.string.global_actions_toggle_pa_pie_mode,
+                R.string.global_actions_pa_pie_mode_on_status,
+                R.string.global_actions_pa_pie_mode_off_status) {
+
+            void onToggle(boolean on) {
+                com.android.internal.util.cyanide.Action.processAction(
+                    mContext, PolicyConstants.ACTION_PA_PIE, false);
+            }
+
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return false;
+            }
+        };
+        onPaPieModeChanged();
     }
 
     private void constructNavBarToggle(Drawable iconColor) {
@@ -733,6 +765,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
         if (mPieModeOn != null) {
             mPieModeOn.updateState(mPieState);
+        }
+        if (mPaPieModeOn != null) {
+            mPaPieModeOn.updateState(mPaPieState);
         }
         if (mNavBarModeOn != null) {
             mNavBarModeOn.updateState(mNavBarState);
@@ -1305,6 +1340,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     Settings.System.PIE_CONTROLS), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PA_PIE_STATE), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAVBAR_FORCE_ENABLE), false, this,
                     UserHandle.USER_ALL);
         }
@@ -1315,6 +1353,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             if (uri.equals(Settings.System.getUriFor(
                     Settings.System.PIE_CONTROLS))) {
                 onPieModeChanged();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.PA_PIE_STATE))) {
+                onPaPieModeChanged();
             } else if (uri.equals(Settings.System.getUriFor(
                 Settings.System.NAVBAR_FORCE_ENABLE))) {
                 onNavBarModeChanged();
@@ -1416,6 +1457,17 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         mPieState = pieModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
         if (mPieModeOn != null) {
             mPieModeOn.updateState(mPieState);
+        }
+    }
+
+    private void onPaPieModeChanged() {
+        boolean paPieModeOn = Settings.System.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.PA_PIE_STATE,
+                0, UserHandle.USER_CURRENT) == 1;
+        mPaPieState = paPieModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
+        if (mPaPieModeOn != null) {
+            mPaPieModeOn.updateState(mPaPieState);
         }
     }
 

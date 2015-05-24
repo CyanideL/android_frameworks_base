@@ -195,4 +195,10 @@
   <java-symbol type="id" name="icon2" />
   <java-symbol type="id" name="icon3" />
   
+  <!-- PA Pie controls -->
+  <java-symbol type="string" name="global_actions_toggle_pa_pie_mode" />
+  <java-symbol type="string" name="global_actions_pa_pie_mode_on_status" />
+  <java-symbol type="string" name="global_actions_pa_pie_mode_off_status" />
+  <java-symbol type="drawable" name="ic_lock_pa_pie" />
+  
 </resources>

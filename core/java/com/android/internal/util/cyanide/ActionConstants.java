@@ -44,6 +44,7 @@ public class ActionConstants {
     public static final String ACTION_THEME_SWITCH         = "**theme_switch**";
     public static final String ACTION_KEYGUARD_SEARCH      = "**keyguard_search**";
     public static final String ACTION_PIE                  = "**pie**";
+    public static final String ACTION_PA_PIE               = "**pa_pie**";
     public static final String ACTION_NAVBAR               = "**nav_bar**";
     public static final String ACTION_IME_NAVIGATION_LEFT  = "**ime_nav_left**";
     public static final String ACTION_IME_NAVIGATION_RIGHT = "**ime_nav_right**";

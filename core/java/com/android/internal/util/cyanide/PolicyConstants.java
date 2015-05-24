@@ -26,6 +26,7 @@ public class PolicyConstants {
     public static final String ACTION_SOUND            = "**sound**";
     public static final String ACTION_EXPANDED_DESKTOP = "**expanded_desktop**";
     public static final String ACTION_PIE              = "**pie**";
+    public static final String ACTION_PA_PIE           = "**pa_pie**";
     public static final String ACTION_NAVBAR           = "**nav_bar**";
     public static final String ACTION_USERS            = "**users**";
     public static final String ACTION_LOCKDOWN         = "**lockdown**";
