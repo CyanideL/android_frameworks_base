@@ -275,6 +275,9 @@ public class PolicyHelper {
         } else if (clickAction.equals(PolicyConstants.ACTION_NAVBAR)) {
             return context.getResources().getDrawable(
                 com.android.internal.R.drawable.ic_lock_navbar);
+        } else if (clickAction.equals(PolicyConstants.ACTION_SETTINGS)) {
+            return context.getResources().getDrawable(
+                com.android.internal.R.drawable.ic_settings);
         } else if (clickAction.equals(PolicyConstants.ACTION_LOCKDOWN)) {
             return context.getResources().getDrawable(
                 com.android.internal.R.drawable.ic_lock_lock_alpha);

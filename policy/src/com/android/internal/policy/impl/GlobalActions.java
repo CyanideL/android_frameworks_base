@@ -358,6 +358,11 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     addUsersToMenu(mItems);
                 }
 
+            } else if (actionKey.equals(PolicyConstants.ACTION_SETTINGS)) {
+                Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
+                mContext, actionKey, config.getIcon(), true);
+                mItems.add(getSettingsAction(iconColor));
+
             } else if (actionKey.equals(PolicyConstants.ACTION_LOCKDOWN)) {
                 Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
                 mContext, actionKey, config.getIcon(), true);
@@ -606,6 +611,28 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 }
                 // shutdown by making sure radio and power are handled accordingly.
                 mWindowManagerFuncs.shutdown(false /* confirm */);
+            }
+
+            @Override
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            @Override
+            public boolean showBeforeProvisioning() {
+                return true;
+            }
+        };
+    }
+
+    private Action getSettingsAction(Drawable iconColor) {
+        return new SinglePressAction(iconColor, R.string.global_action_settings) {
+
+            @Override
+            public void onPress() {
+                Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                mContext.startActivity(intent);
             }
 
             @Override
