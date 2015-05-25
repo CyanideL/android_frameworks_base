@@ -212,11 +212,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
      */
 
     public void showDialog(boolean keyguardShowing, boolean isDeviceProvisioned) {
-        showDialog(keyguardShowing, isDeviceProvisioned, false);
-    }
-
-    public void showDialog(boolean keyguardShowing, boolean isDeviceProvisioned, boolean mShowReboot) {
-        showReboot = mShowReboot;
         mKeyguardShowing = keyguardShowing;
         mDeviceProvisioned = isDeviceProvisioned;
         if (mDialog != null && mUiContext == null) {

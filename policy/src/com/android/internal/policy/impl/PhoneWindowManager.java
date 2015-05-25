@@ -735,7 +735,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         public void onReceive(Context context, Intent intent) {
            final String action = intent.getAction();
             if (action.equals(Intent.ACTION_POWERMENU)) {
-                showGlobalActionsInternal();
+                showGlobalActionsInternal(true);
             }
             if (action.equals(Intent.ACTION_POWERMENU_REBOOT)) {
                 mWindowManagerFuncs.rebootTile();
@@ -782,7 +782,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     showRecentApps(false);
                     break;
                 case MSG_DISPATCH_SHOW_GLOBAL_ACTIONS:
-                    showGlobalActionsInternal();
+                    showGlobalActionsInternal(true);
                     break;
                 case MSG_KEYGUARD_DRAWN_COMPLETE:
                     if (DEBUG_WAKEUP) Slog.w(TAG, "Setting mKeyguardDrawComplete");
@@ -1368,7 +1368,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (!performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, false)) {
                 performAuditoryFeedbackForAccessibilityIfNeed();
             }
-            showGlobalActionsInternal();
+            showGlobalActionsInternal(true);
             break;
         case LONG_PRESS_POWER_SHUT_OFF:
         case LONG_PRESS_POWER_SHUT_OFF_NO_CONFIRM:
@@ -1494,7 +1494,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (!performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, false)) {
                 performAuditoryFeedbackForAccessibilityIfNeed();
             }
-            showGlobalActionsInternal();
+            showGlobalActionsInternal(true);
         }
     };
 
@@ -1541,18 +1541,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     };
 
-    void showGlobalActionsInternal() {
-        showGlobalActionsInternal(false);
-    }
-
-    void showGlobalActionsInternal(boolean showRebootMenu) {
-        sendCloseSystemWindows(SYSTEM_DIALOG_REASON_GLOBAL_ACTIONS);
+    void showGlobalActionsInternal(boolean pokeWakeLock) {
         if (mGlobalActions == null) {
             mGlobalActions = new GlobalActions(mContext, mWindowManagerFuncs);
         }
         final boolean keyguardShowing = isKeyguardShowingAndNotOccluded();
-        mGlobalActions.showDialog(keyguardShowing, isDeviceProvisioned(), showRebootMenu);
-        if (keyguardShowing) {
+        mGlobalActions.showDialog(keyguardShowing, isDeviceProvisioned());
+        if (keyguardShowing && pokeWakeLock) {
             // since it took two seconds of long press to bring this up,
             // poke the wake lock so they have some time to see the dialog.
             mPowerManager.userActivity(SystemClock.uptimeMillis(), false);
