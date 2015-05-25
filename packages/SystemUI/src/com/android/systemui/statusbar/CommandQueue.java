@@ -66,6 +66,7 @@ public class CommandQueue extends IStatusBar.Stub {
     private static final int MSG_TOGGLE_KILL_APP                    = 24 << MSG_SHIFT;
     private static final int MSG_TOGGLE_SCREENSHOT                  = 25 << MSG_SHIFT;
     private static final int MSG_HIDE_HEADS_UP                      = 26 << MSG_SHIFT;
+    private static final int MSG_SMART_PULLDOWN                     = 27 << MSG_SHIFT;
 
     public static final int FLAG_EXCLUDE_NONE = 0;
     public static final int FLAG_EXCLUDE_SEARCH_PANEL = 1 << 0;
@@ -115,6 +116,7 @@ public class CommandQueue extends IStatusBar.Stub {
         public void showCustomIntentAfterKeyguard(Intent intent);
         public void notifyLayoutChange(int direction);
         public void setPieTriggerMask(int newMask, boolean lock);
+        public void toggleSmartPulldown();
         public void toggleLastApp();
         public void toggleKillApp();
         public void toggleScreenshot();
@@ -315,6 +317,13 @@ public class CommandQueue extends IStatusBar.Stub {
         mPaused = false;
     }
 
+    public void toggleSmartPulldown() {
+        synchronized (mList) {
+            mHandler.removeMessages(MSG_SMART_PULLDOWN);
+            mHandler.sendEmptyMessage(MSG_SMART_PULLDOWN);
+        }
+    }
+
     public void toggleLastApp() {
         synchronized (mList) {
             mHandler.removeMessages(MSG_TOGGLE_LAST_APP);
@@ -440,6 +449,9 @@ public class CommandQueue extends IStatusBar.Stub {
                     break;
                 case MSG_SET_PIE_TRIGGER_MASK:
                     mCallbacks.setPieTriggerMask(msg.arg1, msg.arg2 != 0);
+                    break;
+                case MSG_SMART_PULLDOWN:
+                    mCallbacks.toggleSmartPulldown();
                     break;
                 case MSG_TOGGLE_LAST_APP:
                     mCallbacks.toggleLastApp();
