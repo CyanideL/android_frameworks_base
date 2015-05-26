@@ -263,6 +263,9 @@ public class PolicyHelper {
         } else if (clickAction.equals(PolicyConstants.ACTION_AIRPLANE)) {
             return context.getResources().getDrawable(
                 com.android.internal.R.drawable.ic_lock_airplane_mode_off_am_alpha);
+        } else if (clickAction.equals(PolicyConstants.ACTION_SOUND)) {
+            return context.getResources().getDrawable(
+                com.android.internal.R.drawable.ic_audio_ring_notif_cyanide);
         } else if (clickAction.equals(PolicyConstants.ACTION_EXPANDED_DESKTOP)) {
             return context.getResources().getDrawable(
                 com.android.internal.R.drawable.ic_lock_expanded_desktop);
