@@ -164,10 +164,10 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private boolean mHasTelephony;
     private boolean mHasVibrator;
     private final boolean mShowSilentToggle;
-    private Profile mChosenProfile;
     private boolean showReboot;
 
     boolean mProfilesEnabled;
+    private Profile mChosenProfile;
 
     private static int mTextColor;
 
@@ -249,7 +249,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
         awakenIfNecessary();
         mDialog = createDialog();
-        checkSettings();
         updateGlobalMenuActions();
         prepareDialog();
 
@@ -1666,9 +1665,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
     }
 	
-    private void checkSettings() {
-    }
-
     /**
      * Generate a new bitmap (width x height pixels, ARGB_8888) with the input bitmap scaled
      * to fit and clipped to an inscribed circle.

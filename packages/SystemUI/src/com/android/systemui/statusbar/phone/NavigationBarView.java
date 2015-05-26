@@ -27,6 +27,7 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.ActivityManagerNative;
 import android.app.StatusBarManager;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -101,6 +102,9 @@ public class NavigationBarView extends LinearLayout {
     boolean mShowMenu;
     int mDisabledFlags = 0;
     int mNavigationIconHints = 0;
+
+    private BackButtonDrawable mBackIcon, mBackLandIcon;
+    private Drawable mHomeIcon, mHomeLandIcon;
 
     private Drawable mRecentIcon;
     private Drawable mRecentLandIcon;
@@ -248,6 +252,8 @@ public class NavigationBarView extends LinearLayout {
         final Resources res = getContext().getResources();
         final ContentResolver cr = mContext.getContentResolver();
 
+        getIcons(res);
+
         mBarSize = res.getDimensionPixelSize(R.dimen.navigation_bar_size);
         mVertical = false;
         mShowMenu = false;
@@ -359,6 +365,13 @@ public class NavigationBarView extends LinearLayout {
         return mCurrentView.findViewWithTag(constant);
     }
 
+    private void getIcons(Resources res) {
+        mBackIcon = new BackButtonDrawable(res.getDrawable(R.drawable.ic_sysbar_back));
+        mBackLandIcon = new BackButtonDrawable(res.getDrawable(R.drawable.ic_sysbar_back_land));
+        mHomeIcon = res.getDrawable(R.drawable.ic_sysbar_home);
+        mHomeLandIcon = res.getDrawable(R.drawable.ic_sysbar_home_land);
+    }
+
     public View attachedToLayoutButtonView(String constant) {
         final View child = mCurrentView.findViewWithTag(constant);
         if (child instanceof LayoutChangerButtonView) {
@@ -369,6 +382,7 @@ public class NavigationBarView extends LinearLayout {
 
     public void updateResources(Resources res) {
         mThemedResources = res;
+        getIcons(mThemedResources);
         mBarTransitions.updateResources(res);
         for (int i = 0; i < mRotatedViews.length; i++) {
             ViewGroup container = (ViewGroup) mRotatedViews[i];
@@ -384,9 +398,6 @@ public class NavigationBarView extends LinearLayout {
         for (final String k : NavbarConstants.NavbarActions()) {
             final View child = mCurrentView.findViewWithTag(k);
 
-            if (child instanceof KeyButtonView) {
-                ((KeyButtonView) child).setImage(mThemedResources);
-            }
         }
     }
 
@@ -411,6 +422,7 @@ public class NavigationBarView extends LinearLayout {
 
     @Override
     public void setLayoutDirection(int layoutDirection) {
+        getIcons(mThemedResources != null ? mThemedResources : getContext().getResources());
         super.setLayoutDirection(layoutDirection);
     }
 
@@ -520,6 +532,7 @@ public class NavigationBarView extends LinearLayout {
             if (mCurrentLayout >= mButtonLayouts) mCurrentLayout = mButtonLayouts - 1;
             setNextLayout(mCurrentLayout);
         }
+        setDisabledFlags(mDisabledFlags, true);
     }
 
     private void setNextLayout(int index) {
@@ -955,6 +968,7 @@ public class NavigationBarView extends LinearLayout {
 
         // force the low profile & disabled states into compliance
         mBarTransitions.init(mVertical);
+        setDisabledFlags(mDisabledFlags, true /* force */);
         setMenuVisibility(mShowMenu, true /* force */);
 
         if (DEBUG) {
