@@ -137,7 +137,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private Context mUiContext;
     private final AudioManager mAudioManager;
     private final IDreamManager mDreamManager;
-//    private IEdgeGestureService mEdgeGestureService;
+    private IEdgeGestureService mEdgeGestureService;
     private Object mServiceAquireLock = new Object();
 
     private ArrayList<Action> mItems;
@@ -894,7 +894,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     private void prepareDialog() {
         refreshSilentMode();
-/*
+
         // Global menu is showing. Notify EdgeGestureService.
         IEdgeGestureService edgeGestureService = getEdgeGestureService();
         try {
@@ -904,7 +904,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         } catch (RemoteException e) {
              mEdgeGestureService = null;
         }
-*/
+
         if (mAirplaneModeOn != null) {
             mAirplaneModeOn.updateState(mAirplaneState);
         }
@@ -953,14 +953,14 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             }
         }
         // Global menu dismiss. Notify EdgeGestureService.
-/*        IEdgeGestureService edgeGestureService = getEdgeGestureService();
+        IEdgeGestureService edgeGestureService = getEdgeGestureService();
         try {
             if (edgeGestureService != null) {
                 edgeGestureService.setOverwriteImeIsActive(false);
             }
         } catch (RemoteException e) {
              mEdgeGestureService = null;
-        } keep for future use*/
+        }
     }
 
     /** {@inheritDoc} */
@@ -1695,7 +1695,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     /**
      * If not set till now get EdgeGestureService.
      */
-/*    private IEdgeGestureService getEdgeGestureService() {
+    private IEdgeGestureService getEdgeGestureService() {
         synchronized (mServiceAquireLock) {
             if (mEdgeGestureService == null) {
                 mEdgeGestureService = IEdgeGestureService.Stub.asInterface(
@@ -1704,7 +1704,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             return mEdgeGestureService;
         }
     }
-*/
+
     private static final class GlobalActionsDialog extends Dialog implements DialogInterface {
         private final Context mContext;
         private final int mWindowTouchSlop;
