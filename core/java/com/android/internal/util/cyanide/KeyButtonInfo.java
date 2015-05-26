@@ -16,12 +16,12 @@
 
 package com.android.internal.util.cyanide;
 
-import static com.android.internal.util.cyanide.NavbarConstants.*;
-
 import android.text.TextUtils;
 
+import static com.android.internal.util.cyanide.NavbarConstants.*;
+
 public class KeyButtonInfo {
-    private static final String TAG = "keybuttoninfo";
+    public static final String TAG = "keybuttoninfo";
 
     public String singleAction, doubleTapAction, longPressAction, iconUri;
 

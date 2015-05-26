@@ -16,8 +16,6 @@
 
 package com.android.internal.util.cyanide;
 
-import static com.android.internal.util.cyanide.NavbarConstants.*;
-
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.ContentUris;
@@ -25,17 +23,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.hardware.TorchManager;
 import android.hardware.input.InputManager;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
-import android.os.SystemClock;
 import android.os.Vibrator;
 import android.provider.AlarmClock;
 import android.provider.CalendarContract;
@@ -52,18 +47,21 @@ import android.widget.Toast;
 import com.android.internal.R;
 import com.android.internal.statusbar.IStatusBarService;
 
-import com.android.internal.util.cm.ActionUtils;
-import com.android.internal.util.cyanide.NavbarUtils;
-
 import java.net.URISyntaxException;
 import java.util.List;
 
+//import com.android.internal.util.cm.TorchConstants;
+import static com.android.internal.util.cyanide.NavbarConstants.NavbarConstant;
+import static com.android.internal.util.cyanide.NavbarConstants.fromString;
+import com.android.internal.util.cm.ActionUtils;
+
 public class CyanideActions {
-    private static final String TAG = "VanirActions";
-    private static final boolean DEBUG = NavbarUtils.DEBUG;
+
+    public static final String TAG = "CyanideActions";
 
     private static final int LAYOUT_LEFT = -1;
     private static final int LAYOUT_RIGHT = 1;
+    private static final int LAYOUT_IME = NavbarConstants.LAYOUT_IME;
 
     private static final int STANDARD_FLAGS = KeyEvent.FLAG_FROM_SYSTEM | KeyEvent.FLAG_SOFT_KEYBOARD;
     private static final int CURSOR_FLAGS = KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE;
@@ -80,9 +78,8 @@ public class CyanideActions {
     }
 
     public static boolean launchAction(final Context mContext, final String action) {
-        if (DEBUG) Log.e(TAG, "ACTION: " + action);
-
-        switch (action) {
+        NavbarConstant AwesomeEnum = fromString(action);
+        switch (AwesomeEnum) {
             case ACTION_HOME:
                 IWindowManager mWindowManagerService = WindowManagerGlobal.getWindowManagerService();
                 try {
@@ -90,29 +87,29 @@ public class CyanideActions {
                 } catch (RemoteException e) {
                     Log.e(TAG, "HOME ACTION FAILED");
                 }
-                return true;
+                break;
 
-            case ACTION_RECENTS:
-                try {
-                    IStatusBarService.Stub.asInterface(
-                            ServiceManager.getService(mContext.STATUS_BAR_SERVICE))
-                            .toggleRecentApps();
-                } catch (RemoteException e) {
-                    Log.e(TAG, "RECENTS ACTION FAILED");
-                }
-                return true;
+			case ACTION_RECENTS:
+				try {
+					IStatusBarService.Stub.asInterface(
+							ServiceManager.getService(mContext.STATUS_BAR_SERVICE))
+							.toggleRecentApps();
+				} catch (RemoteException e) {
+					Log.e(TAG, "RECENTS ACTION FAILED");
+				}
+				break;
 
             case ACTION_BACK:
                 InputManager.triggerVirtualKeypress(KeyEvent.KEYCODE_BACK, STANDARD_FLAGS);
-                return true;
+                break;
 
             case ACTION_MENU:
                 InputManager.triggerVirtualKeypress(KeyEvent.KEYCODE_MENU, STANDARD_FLAGS);
-                return true;
+                break;
 
             case ACTION_SEARCH:
                 InputManager.triggerVirtualKeypress(KeyEvent.KEYCODE_SEARCH, STANDARD_FLAGS);
-                return true;
+                break;
 
             case ACTION_KILL:
                 mHandler.post(new Runnable() {
@@ -123,33 +120,33 @@ public class CyanideActions {
                         }
                     }
                 });
-                return true;
+                break;
 
             case ACTION_ASSIST:
                 Intent intent = new Intent(Intent.ACTION_ASSIST);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 if (isIntentAvailable(mContext, intent))
                     mContext.startActivity(intent);
-                return true;
+                break;
 
             case ACTION_VOICEASSIST:
                 Intent intentVoice = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
                 intentVoice.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intentVoice);
-                return true;
+                break;
 
             case ACTION_POWER:
                 InputManager.triggerVirtualKeypress(KeyEvent.KEYCODE_POWER, STANDARD_FLAGS);
-                return true;
+                break;
 
             case ACTION_TORCH:
-                TorchManager torchManager = (TorchManager) mContext.getSystemService(Context.TORCH_SERVICE);
-                torchManager.toggleTorch();
-                return true;
+//                Intent intentTorch = new Intent(TorchConstants.ACTION_TOGGLE_STATE);
+//                mContext.sendBroadcast(intentTorch);
+                break;
 
             case ACTION_LAST_APP:
                 ActionUtils.switchToLastApp(mContext, mCurrentUserId);
-                return true;
+                break;
 
             case ACTION_NOTIFICATIONS:
                 try {
@@ -158,32 +155,47 @@ public class CyanideActions {
                 } catch (RemoteException e) {
                     Log.e(TAG, "NOTIFICATION ACTION FAILED");
                 }
-                return true;
+                break;
 
-            case ACTION_IME_LAYOUT:
-                try {
+            case ACTION_APP:
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Intent intentapp = Intent.parseUri(action, 0);
+                            intentapp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            mContext.startActivity(intentapp);
+                        } catch (URISyntaxException e) {
+                            Log.e(TAG, "URISyntaxException: [" + action + "]");
+                        } catch (ActivityNotFoundException e) {
+                            Log.e(TAG, "ActivityNotFound: [" + action + "]");
+                        }
+                }});
+                break;
+
+			case ACTION_IME_LAYOUT:
+				try {
                     IStatusBarService.Stub.asInterface(
-                    ServiceManager.getService(mContext.STATUS_BAR_SERVICE))
-                    .notifyLayoutChange(LAYOUT_IME);
+                            ServiceManager.getService(mContext.STATUS_BAR_SERVICE)).notifyLayoutChange(LAYOUT_IME);
                 } catch (RemoteException e) {
                 }
-                return true;
+                break;
 
             case ACTION_ARROW_LEFT:
                 InputManager.triggerVirtualKeypress(KeyEvent.KEYCODE_DPAD_LEFT, CURSOR_FLAGS);
-                return true;
+                break;
 
             case ACTION_ARROW_RIGHT:
                 InputManager.triggerVirtualKeypress(KeyEvent.KEYCODE_DPAD_RIGHT, CURSOR_FLAGS);
-                return true;
+                break;
 
             case ACTION_ARROW_UP:
                 InputManager.triggerVirtualKeypress(KeyEvent.KEYCODE_DPAD_UP, CURSOR_FLAGS);
-                return true;
+                break;
 
             case ACTION_ARROW_DOWN:
                 InputManager.triggerVirtualKeypress(KeyEvent.KEYCODE_DPAD_DOWN, CURSOR_FLAGS);
-                return true;
+                break;
 
             case ACTION_RING_VIB:
                 final AudioManager rv = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
@@ -205,7 +217,7 @@ public class CyanideActions {
                         }
                     }
                 }
-                return true;
+                break;
 
             case ACTION_LAYOUT_LEFT:
                 try {
@@ -213,7 +225,7 @@ public class CyanideActions {
                             ServiceManager.getService(mContext.STATUS_BAR_SERVICE)).notifyLayoutChange(LAYOUT_LEFT);
                 } catch (RemoteException e) {
                 }
-                return true;
+                break;
 
             case ACTION_LAYOUT_RIGHT:
                 try {
@@ -221,12 +233,12 @@ public class CyanideActions {
                             ServiceManager.getService(mContext.STATUS_BAR_SERVICE)).notifyLayoutChange(LAYOUT_RIGHT);
                 } catch (RemoteException e) {
                 }
-                return true;
+                break;
 
             case ACTION_IME:
                 mContext.sendBroadcast(new Intent(
                         "android.settings.SHOW_INPUT_METHOD_PICKER"));
-                return true;
+                break;
 
             case ACTION_RING_SILENT:
                 final AudioManager rs = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
@@ -243,7 +255,7 @@ public class CyanideActions {
                         }
                     }
                 }
-                return true;
+                break;
 
             case ACTION_RING_VIB_SILENT:
                 final AudioManager rvs = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
@@ -267,27 +279,11 @@ public class CyanideActions {
                         }
                     }
                 }
-                return true;
+                break;
 
             case ACTION_NULL:
             case ACTION_BLANK:
-                return true;
-        }
-
-        if (NavbarConstants.fromString(action) == NavbarConstant.ACTION_APP) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Intent intentapp = Intent.parseUri(action, 0);
-                        intentapp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        mContext.startActivity(intentapp);
-                    } catch (URISyntaxException e) {
-                        Log.e(TAG, "URISyntaxException: [" + action + "]");
-                    } catch (ActivityNotFoundException e) {
-                        Log.e(TAG, "ActivityNotFound: [" + action + "]");
-                    }
-            }});
+                break;
         }
         return true;
     }

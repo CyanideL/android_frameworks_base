@@ -178,6 +178,11 @@ public class KeyButtonRipple extends Drawable {
     }
 
     @Override
+    public void jumpToCurrentState() {
+        cancelAnimations();
+    }
+
+    @Override
     public boolean isStateful() {
         return true;
     }
