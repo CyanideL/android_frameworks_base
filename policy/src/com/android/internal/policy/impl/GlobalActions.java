@@ -167,6 +167,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private Profile mChosenProfile;
     private boolean showReboot;
 
+    boolean mProfilesEnabled;
+    private Profile mChosenProfile;
+
     private static int mTextColor;
 
     /**
@@ -248,6 +251,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         awakenIfNecessary();
         mDialog = createDialog();
         checkSettings();
+        updateGlobalMenuActions();
         prepareDialog();
 
         // If we only have 1 item and it's a simple press action, just do this action.
@@ -375,6 +379,33 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     mItems.add(getOnTheGoAction(iconColor));
                 }
 
+            } else if (actionKey.equals(PolicyConstants.ACTION_PROFILE)) {
+                if (!mProfilesEnabled) continue;
+                mItems.add(
+                    new ProfileChooseAction() {
+                        public void onPress() {
+                            createProfileDialog();
+                        }
+
+                        public boolean onLongPress() {
+                            return true;
+                        }
+
+                        public boolean showDuringKeyguard() {
+                            return false;
+                        }
+
+                        public boolean showBeforeProvisioning() {
+                            return false;
+                        }
+
+                        public CharSequence getLabelForAccessibility(Context context) {
+                            return null;
+                        }
+                    });
+
+                addedKeys.add(actionKey);
+
             } else if (actionKey != null) {
                 // must be a screenshot, custom app or action shorcut
                 Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
@@ -427,6 +458,103 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         dialog.setOnDismissListener(this);
 
         return dialog;
+    }
+
+    private void createProfileDialog() {
+        final ProfileManager profileManager = (ProfileManager) mContext
+                .getSystemService(Context.PROFILE_SERVICE);
+
+        final Profile[] profiles = profileManager.getProfiles();
+        UUID activeProfile = profileManager.getActiveProfile().getUuid();
+        final CharSequence[] names = new CharSequence[profiles.length];
+
+        int i = 0;
+        int checkedItem = 0;
+
+        for (Profile profile : profiles) {
+            if (profile.getUuid().equals(activeProfile)) {
+                checkedItem = i;
+                mChosenProfile = profile;
+            }
+            names[i++] = profile.getName();
+        }
+
+        final AlertDialog.Builder ab = new AlertDialog.Builder(getUiContext());
+
+        AlertDialog dialog = ab.setSingleChoiceItems(names, checkedItem,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                       if (which < 0)
+                            return;
+                        mChosenProfile = profiles[which];
+                        profileManager.setActiveProfile(mChosenProfile.getUuid());
+                        dialog.cancel();
+                    }
+                }).create();
+        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_DIALOG);
+        dialog.show();
+    }
+
+     /**
+     * A single press action maintains no state, just responds to a press
+     * and takes an action.
+     */
+    private abstract class ProfileChooseAction implements Action {
+        private ProfileManager mProfileManager;
+
+        protected ProfileChooseAction() {
+            mProfileManager = (ProfileManager)mContext.getSystemService(Context.PROFILE_SERVICE);
+        }
+
+        public boolean isEnabled() {
+            return true;
+        }
+
+        abstract public void onPress();
+
+        public View create(
+                Context context, View convertView, ViewGroup parent, LayoutInflater inflater) {
+            View v = inflater.inflate(R.layout.global_actions_item, parent, false);
+
+            ImageView icon = (ImageView) v.findViewById(R.id.icon);
+            TextView messageView = (TextView) v.findViewById(R.id.message);
+
+            int iconColor = Settings.System.getIntForUser(
+                    mContext.getContentResolver(),
+                    Settings.System.POWER_MENU_ICON_COLOR, -2,
+                    UserHandle.USER_CURRENT);
+            int colorMode = Settings.System.getIntForUser(
+                    mContext.getContentResolver(),
+                    Settings.System.POWER_MENU_ICON_COLOR_MODE, 0,
+                    UserHandle.USER_CURRENT);
+
+            if (iconColor == -2) {
+                iconColor = mContext.getResources().getColor(
+                    com.android.internal.R.color.power_menu_icon_default_color);
+            }
+
+            TextView statusView = (TextView) v.findViewById(R.id.status);
+            if (statusView != null) {
+                statusView.setVisibility(View.VISIBLE);
+                statusView.setText(mProfileManager.getActiveProfile().getName());
+                statusView.setTextColor(mTextColor);
+            }
+            if (icon != null) {
+                if (colorMode != 3) {
+                    icon.setImageDrawable(mContext.getDrawable(R.drawable.ic_lock_profile_cyanide));
+                    icon.setImageDrawable(ImageHelper.resize(mContext, new BitmapDrawable(
+                        ImageHelper.getColoredBitmap(icon.getDrawable(), iconColor)), 36));
+                } else {
+                    icon.setImageDrawable(context.getDrawable(R.drawable.ic_lock_profile));
+                }
+            }
+            if (messageView != null) {
+                messageView.setText(R.string.global_action_choose_profile);
+                messageView.setTextColor(mTextColor);
+            }
+
+            return v;
+        }
     }
 
     private void constructAirPlaneModeToggle(Drawable iconColor) {
@@ -1343,6 +1471,12 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             }
         }
     };
+
+    protected void updateGlobalMenuActions() {
+        ContentResolver resolver = mContext.getContentResolver();
+        mProfilesEnabled = Settings.System.getInt(resolver,
+                Settings.System.SYSTEM_PROFILES_ENABLED, 1) != 0;
+    }
 
     private BroadcastReceiver mThemeChangeReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {

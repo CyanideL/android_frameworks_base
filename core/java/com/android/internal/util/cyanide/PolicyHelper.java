@@ -284,6 +284,9 @@ public class PolicyHelper {
         } else if (clickAction.equals(PolicyConstants.ACTION_ONTHEGO)) {
             return context.getResources().getDrawable(
                 com.android.internal.R.drawable.ic_lock_onthego_alpha);
+        } else if (clickAction.equals(PolicyConstants.ACTION_PROFILE)) {
+            return context.getResources().getDrawable(
+                com.android.internal.R.drawable.ic_lock_profile_cyanide);
         }
         return null;
     }

@@ -175,7 +175,7 @@ public class Action {
                 }
                 Settings.System.putIntForUser(
                         context.getContentResolver(),
-                        Settings.System.NAVIGATION_BAR_SHOW,
+                        Settings.System.NAVBAR_FORCE_ENABLE,
                         navBarState ? 0 : 1, UserHandle.USER_CURRENT);
                 return;
             } else if (action.equals(ActionConstants.ACTION_KILL)) {

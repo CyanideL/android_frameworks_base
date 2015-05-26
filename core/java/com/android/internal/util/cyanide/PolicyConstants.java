@@ -29,6 +29,7 @@ public class PolicyConstants {
     public static final String ACTION_PA_PIE           = "**pa_pie**";
     public static final String ACTION_NAVBAR           = "**nav_bar**";
     public static final String ACTION_USERS            = "**users**";
+    public static final String ACTION_PROFILE          = "**profiles**";
     public static final String ACTION_SETTINGS         = "**settings**";
     public static final String ACTION_LOCKDOWN         = "**lockdown**";
     public static final String ACTION_ONTHEGO          = "**onthego**";
