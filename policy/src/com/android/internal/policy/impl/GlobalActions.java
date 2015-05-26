@@ -168,7 +168,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private boolean showReboot;
 
     boolean mProfilesEnabled;
-    private Profile mChosenProfile;
 
     private static int mTextColor;
 
