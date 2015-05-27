@@ -781,7 +781,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         target.avatarX = mMultiUserSwitch.getLeft() + mMultiUserAvatar.getLeft();
         target.avatarY = mMultiUserSwitch.getTop() + mMultiUserAvatar.getTop();
         target.weatherY = mClock.getBottom() - mWeatherLine1.getHeight();
-        target.statusBarPowerMenuY = mClock.getTop();
         if (getLayoutDirection() == LAYOUT_DIRECTION_LTR) {
             target.batteryX = mSystemIconsSuperContainer.getLeft()
                     + mSystemIconsContainer.getRight();
