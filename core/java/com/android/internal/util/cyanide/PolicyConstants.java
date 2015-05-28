@@ -43,8 +43,6 @@ public class PolicyConstants {
         + ICON_EMPTY       + ACTION_DELIMITER
         + ACTION_REBOOT    + ACTION_DELIMITER
         + ICON_EMPTY       + ACTION_DELIMITER
-        + ACTION_AIRPLANE  + ACTION_DELIMITER
-        + ICON_EMPTY       + ACTION_DELIMITER
         + ACTION_SOUND     + ACTION_DELIMITER
         + ICON_EMPTY       + ACTION_DELIMITER;
 }

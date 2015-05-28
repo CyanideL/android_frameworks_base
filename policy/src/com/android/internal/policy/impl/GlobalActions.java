@@ -245,11 +245,11 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             UserHandle.USER_CURRENT);
         if (mTextColor == -2) {
             mTextColor = mContext.getResources().getColor(
-                com.android.internal.R.color.power_menu_icon_default_color);
+                com.android.internal.R.color.power_menu_text_default_color);
         }
         awakenIfNecessary();
+        onProfilesChanged();
         mDialog = createDialog();
-        updateGlobalMenuActions();
         prepareDialog();
 
         // If we only have 1 item and it's a simple press action, just do this action.
@@ -1470,12 +1470,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
     };
 
-    protected void updateGlobalMenuActions() {
-        ContentResolver resolver = mContext.getContentResolver();
-        mProfilesEnabled = Settings.System.getInt(resolver,
-                Settings.System.SYSTEM_PROFILES_ENABLED, 1) != 0;
-    }
-
     private BroadcastReceiver mThemeChangeReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             mUiContext = null;
@@ -1499,6 +1493,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAVBAR_FORCE_ENABLE), false, this,
                     UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SYSTEM_PROFILES_ENABLED), false, this,
+                    UserHandle.USER_ALL);
         }
 
         @Override
@@ -1513,6 +1510,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             } else if (uri.equals(Settings.System.getUriFor(
                 Settings.System.NAVBAR_FORCE_ENABLE))) {
                 onNavBarModeChanged();
+            } else if (uri.equals(Settings.System.getUriFor(
+                Settings.System.SYSTEM_PROFILES_ENABLED))) {
+                onProfilesChanged();
             }
             mAdapter.notifyDataSetChanged();
         }
@@ -1636,6 +1636,12 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         if (mNavBarModeOn != null) {
             mNavBarModeOn.updateState(mNavBarState);
         }
+    }
+    
+    protected void onProfilesChanged() {
+        ContentResolver resolver = mContext.getContentResolver();
+        mProfilesEnabled = Settings.System.getInt(resolver,
+                Settings.System.SYSTEM_PROFILES_ENABLED, 1) != 0;
     }
 
     /**
