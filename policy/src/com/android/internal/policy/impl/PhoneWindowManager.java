@@ -3166,6 +3166,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
         }
 
+        // Cancel any pending meta actions if we see any other keys being pressed between the down
+        // of the meta key and its corresponding up.
+        if (mPendingMetaAction && !KeyEvent.isMetaKey(keyCode)) {
+            mPendingMetaAction = false;
+        }
+
+        if (keyCode == KeyEvent.KEYCODE_BACK && !down) {
+            mHandler.removeCallbacks(mBackLongPress);
+        }
+
         // If we think we might have a volume up & power key chord on the way
         // but we're not sure, then tell the dispatcher to wait a little while and
         // try again later before dispatching.
@@ -3184,16 +3194,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 }
                 return -1;
             }
-        }
-
-        // Cancel any pending meta actions if we see any other keys being pressed between the down
-        // of the meta key and its corresponding up.
-        if (mPendingMetaAction && !KeyEvent.isMetaKey(keyCode)) {
-            mPendingMetaAction = false;
-        }
-
-        if (keyCode == KeyEvent.KEYCODE_BACK && !down) {
-            mHandler.removeCallbacks(mBackLongPress);
         }
 
         // First we always handle the home key here, so applications
@@ -3394,17 +3394,22 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 return 0;
             }
 
-            if (down) {
-                if (mPressOnAppSwitchBehavior == KEY_ACTION_APP_SWITCH
-                        || mLongPressOnAppSwitchBehavior == KEY_ACTION_APP_SWITCH) {
-                    preloadRecentApps();
-                }
-                if (repeatCount == 0) {
-                    mAppSwitchLongPressed = false;
-                } else if (longPress) {
-                    if (!keyguardOn && mLongPressOnAppSwitchBehavior != KEY_ACTION_NOTHING) {
-                        if (mLongPressOnAppSwitchBehavior != KEY_ACTION_APP_SWITCH) {
-                            cancelPreloadRecentApps();
+            if (!keyguardOn) {
+                if (down) {
+                    if (mPressOnAppSwitchBehavior == KEY_ACTION_APP_SWITCH
+                            || mLongPressOnAppSwitchBehavior == KEY_ACTION_APP_SWITCH) {
+                        preloadRecentApps();
+                    }
+                    if (repeatCount == 0) {
+                        mAppSwitchLongPressed = false;
+                    } else if (longPress) {
+                        if (mLongPressOnAppSwitchBehavior != KEY_ACTION_NOTHING) {
+                            if (mLongPressOnAppSwitchBehavior != KEY_ACTION_APP_SWITCH) {
+                                cancelPreloadRecentApps();
+                            }
+                            performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, false);
+                            performKeyAction(mLongPressOnAppSwitchBehavior);
+                            mAppSwitchLongPressed = true;
                         }
                     }
                 } else {
@@ -3798,7 +3803,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     | Intent.FLAG_ACTIVITY_SINGLE_TOP
                     | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             try {
-                mContext.startActivityAsUser(intent, UserHandle.CURRENT);
+                startActivityAsUser(intent, UserHandle.CURRENT);
             } catch (ActivityNotFoundException e) {
                 Slog.w(TAG, "No activity to handle assist action.", e);
             }
@@ -5548,7 +5553,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             Intent intent = new Intent("org.codeaurora.action.QUICKBOOT");
             intent.putExtra("mode", 1);
             try {
-                startActivityAsUser(intent,UserHandle.CURRENT);
+                mContext.startActivityAsUser(intent,UserHandle.CURRENT);
             } catch (ActivityNotFoundException e) {
                 e.printStackTrace();
                 releaseQuickBootWakeLock();
@@ -6050,6 +6055,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     msg.setAsynchronous(true);
                     msg.sendToTarget();
                 }
+                break;
             }
         }
 
@@ -7628,13 +7634,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         return mHasNavigationBar || mDevForceNavbar;
     }
 
-    public boolean needsNavigationBar() {
-        return mHasNavigationBar;
-    }
-
     @Override
     public boolean hasPermanentMenuKey() {
         return !hasNavigationBar() && mHasPermanentMenuKey;
+    }
+
+    public boolean needsNavigationBar() {
+        return mHasNavigationBar;
     }
 
     @Override
