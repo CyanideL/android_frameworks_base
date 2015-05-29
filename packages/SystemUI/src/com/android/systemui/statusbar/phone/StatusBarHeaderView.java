@@ -1244,7 +1244,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     private void loadShowStatusBarPowerMenuSettings() {
         ContentResolver resolver = getContext().getContentResolver();
         mStatusBarPowerMenuStyle = Settings.System.getInt(resolver,
-                Settings.System.STATUS_BAR_POWER_MENU, 0);
+                Settings.System.STATUS_BAR_POWER_MENU, 2);
     }
  
     private void goToSleep() {
