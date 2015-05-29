@@ -463,15 +463,15 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
 
     private void updateSystemIconsLayoutParams() {
         RelativeLayout.LayoutParams lp = (LayoutParams) mSystemIconsSuperContainer.getLayoutParams();
-        int taskManager = mTaskManagerButton != null
-                ? mTaskManagerButton.getId() : mSettingsButton.getId();
         int powerMenu = mStatusBarPowerMenu != null
-                ? mStatusBarPowerMenu.getId() : mTaskManagerButton.getId();
+                ? mStatusBarPowerMenu.getId() : mSettingsButton.getId();
+        int taskManager = mTaskManagerButton != null
+                ? mTaskManagerButton.getId() : mTaskManagerButton.getId();
         int rule = mExpanded
-                ? taskManager
+                ? powerMenu
                 : mMultiUserSwitch.getId();
         int rulep = mExpanded
-                ? powerMenu
+                ? taskManager
                 : mMultiUserSwitch.getId();
         if (rule != lp.getRules()[RelativeLayout.START_OF] &&
                 rule != lp.getRules()[RelativeLayout.START_OF]) {
@@ -820,6 +820,11 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                     ? 0
                     : mSettingsButton.getLeft() - mTaskManagerButton.getLeft();
         }
+        if (mStatusBarPowerMenu != null) {
+            target.statusBarPowerMenuButton = mExpanded
+                    ? 0
+                    : mSettingsButton.getLeft() - mStatusBarPowerMenu.getLeft();
+        }
         target.signalClusterAlpha = mSignalClusterDetached ? 0f : 1f;
         target.settingsRotation = !mExpanded ? 90f : 0f;
     }
@@ -845,9 +850,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mTime.setScaleY(values.timeScale);
         mClock.setY(values.clockY - mClock.getHeight());
         mDateGroup.setY(values.dateY);
-        if (mStatusBarPowerMenuStyle != STATUS_BAR_POWER_MENU_OFF) {
-            mStatusBarPowerMenu.setY(values.statusBarPowerMenuY);
-        }
         mAlarmStatus.setY(values.dateY - mAlarmStatus.getPaddingTop());
         mWeatherContainer.setY(values.weatherY);
         mMultiUserAvatar.setScaleX(values.avatarScale);
@@ -878,12 +880,14 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mSettingsButton.setTranslationY(mSystemIconsSuperContainer.getTranslationY());
         mSettingsButton.setTranslationX(values.settingsTranslation);
         mSettingsButton.setRotation(values.settingsRotation);
-        if (mStatusBarPowerMenuStyle != STATUS_BAR_POWER_MENU_OFF) {
-            mStatusBarPowerMenu.setRotation(values.settingsRotation);
-        }
         if (mTaskManagerButton != null) {
             mTaskManagerButton.setTranslationX(values.taskManagerTranslation);
+            mTaskManagerButton.setRotation(values.settingsRotation);
         }
+        if (mStatusBarPowerMenu != null) {
+            mStatusBarPowerMenu.setTranslationX(values.statusBarPowerMenuButton);
+            mStatusBarPowerMenu.setRotation(values.settingsRotation);
+       }
         applyAlpha(mEmergencyCallsOnly, values.emergencyCallsOnlyAlpha);
         if (!mShowingDetail) {
             // Otherwise it needs to stay invisible
@@ -932,7 +936,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         float signalClusterAlpha;
         float settingsRotation;
         float weatherY;
-        float statusBarPowerMenuY;
+        float statusBarPowerMenuButton;
 		float statusBarPowerMenuAlpha;
         
         public void interpoloate(LayoutValues v1, LayoutValues v2, float t) {
@@ -948,7 +952,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                     v1.taskManagerTranslation * (1 - t) + v2.taskManagerTranslation * t;
             settingsTranslation = v1.settingsTranslation * (1 - t) + v2.settingsTranslation * t;
             weatherY = v1.weatherY * (1 - t) + v2.weatherY * t;
-            statusBarPowerMenuY = v1.statusBarPowerMenuY * (1 - t) + v2.statusBarPowerMenuY * t;
+            statusBarPowerMenuButton = v1.statusBarPowerMenuButton * (1 - t) + v2.statusBarPowerMenuButton * t;
 
             float t1 = Math.max(0, t - 0.5f) * 2;
             settingsRotation = v1.settingsRotation * (1 - t1) + v2.settingsRotation * t1;
