@@ -463,15 +463,15 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
 
     private void updateSystemIconsLayoutParams() {
         RelativeLayout.LayoutParams lp = (LayoutParams) mSystemIconsSuperContainer.getLayoutParams();
-        int powerMenu = mStatusBarPowerMenu != null
-                ? mStatusBarPowerMenu.getId() : mSettingsButton.getId();
         int taskManager = mTaskManagerButton != null
-                ? mTaskManagerButton.getId() : mTaskManagerButton.getId();
+                ? mTaskManagerButton.getId() : mSettingsButton.getId();
+        int powerMenu = mStatusBarPowerMenu != null
+                ? mStatusBarPowerMenu.getId() : mTaskManagerButton.getId();
         int rule = mExpanded
-                ? powerMenu
+                ? taskManager
                 : mMultiUserSwitch.getId();
         int rulep = mExpanded
-                ? taskManager
+                ? powerMenu
                 : mMultiUserSwitch.getId();
         if (rule != lp.getRules()[RelativeLayout.START_OF] &&
                 rule != lp.getRules()[RelativeLayout.START_OF]) {
@@ -1212,9 +1212,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 Settings.System.STATUS_BAR_EXPANDED_HEADER_ICON_COLOR, 0xffffffff);
 
         ((ImageView)mSettingsButton).setColorFilter(mIconColor, Mode.MULTIPLY);
-        if (mStatusBarPowerMenu != null) {
-            ((ImageView)mStatusBarPowerMenu).setColorFilter(mIconColor, Mode.MULTIPLY);
-        }
+        ((ImageView)mStatusBarPowerMenu).setColorFilter(mIconColor, Mode.MULTIPLY);
         if (mTaskManagerButton != null) {
             ((ImageView)mTaskManagerButton).setColorFilter(mIconColor, Mode.MULTIPLY);
         }

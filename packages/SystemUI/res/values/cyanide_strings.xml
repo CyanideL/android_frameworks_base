@@ -132,6 +132,7 @@
 	<!-- Heads up tile -->
     <string name="quick_settings_heads_up_on">Heads up enabled</string>
     <string name="quick_settings_heads_up_off">No interruptions</string>
+    <string name="quick_settings_heads_up_label">Notifications enabled</string>
     
     <!-- Heads up toast -->
     <string name="heads_up_enabled">Heads up notifications are enabled</string>
