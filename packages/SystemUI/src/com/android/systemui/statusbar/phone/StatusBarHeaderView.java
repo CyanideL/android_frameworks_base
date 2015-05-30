@@ -170,7 +170,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
 
     public StatusBarHeaderView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        loadShowStatusBarPowerMenuSettings();  
+        loadShowStatusBarPowerMenuSettings();
         mContext = context;
 
     }
@@ -722,7 +722,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         Intent intent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
         mActivityStarter.startActivity(intent, true /* dismissShade */);
     }
-    
+
     private void triggerPowerMenuDialog() {
         Intent intent = new Intent(Intent.ACTION_POWERMENU);
         mContext.sendBroadcast(intent); /* broadcast action */
@@ -905,10 +905,10 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         if (!mExpanded) {
             mTime.setScaleX(1f);
             mTime.setScaleY(1f);
-        }     
+        }
         updateAmPmTranslation();
     }
-    
+
     /**
      * Captures all layout values (position, visibility) for a certain state. This is used for
      * animations.
@@ -937,8 +937,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         float settingsRotation;
         float weatherY;
         float statusBarPowerMenuButton;
-		float statusBarPowerMenuAlpha;
-        
+        float statusBarPowerMenuAlpha;
+
         public void interpoloate(LayoutValues v1, LayoutValues v2, float t) {
             timeScale = v1.timeScale * (1 - t) + v2.timeScale * t;
             clockY = v1.clockY * (1 - t) + v2.clockY * t;
@@ -971,7 +971,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             dateExpandedAlpha = v1.dateExpandedAlpha * (1 - t3) + v2.dateExpandedAlpha * t3;
             dateCollapsedAlpha = v1.dateCollapsedAlpha * (1 - t3) + v2.dateCollapsedAlpha * t3;
             alarmStatusAlpha = v1.alarmStatusAlpha * (1 - t3) + v2.alarmStatusAlpha * t3;
-			statusBarPowerMenuAlpha = v1.statusBarPowerMenuAlpha * (1 - t3) + v2.statusBarPowerMenuAlpha * t3;       
+            statusBarPowerMenuAlpha = v1.statusBarPowerMenuAlpha * (1 - t3) + v2.statusBarPowerMenuAlpha * t3;
         }
     }
 
