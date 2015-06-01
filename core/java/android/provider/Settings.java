@@ -4144,6 +4144,12 @@ public final class Settings {
         public static final String STATUS_BAR_VPN_ICON_COLOR = "status_bar_vpn_icon_color";
 
         /**
+         * Enable double tap gesture anywhere on the lock screen put device to sleep
+         * @hide
+         */
+        public static final String DOUBLE_TAP_SLEEP_ANYWHERE = "double_tap_sleep_anywhere";
+
+        /**
          * @hide
          */
         public static final String STATUSBAR_BATTERY_BAR_THICKNESS = "statusbar_battery_bar_thickness";
