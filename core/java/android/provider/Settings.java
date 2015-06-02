@@ -3666,6 +3666,11 @@ public final class Settings {
          * @hide
          */
         public static final String ENABLE_NAVIGATION_RING = "enable_navigation_ring";
+        
+        /**
+         * @hide
+         */
+        public static final String NAVIGATION_BAR_RESTORE = "navigation_bar_restore";
 
         /**
          * Show icon when stylus is used?

@@ -28,6 +28,8 @@ import java.util.HashMap;
 public class NavbarConstants {
 	public static final int LAYOUT_IME = 666;
 
+    public static final int DEFAULT_LAYOUT = -3;
+
 	public static final String ACTION_APP = "**app**";
 	public static final String ACTION_BACK = "**back**";
 	public static final String ACTION_HOME = "**home**";

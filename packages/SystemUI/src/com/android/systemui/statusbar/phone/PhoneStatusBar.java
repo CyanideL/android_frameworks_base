@@ -3528,7 +3528,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void forceNavigationIconHints() {
-		if (mNavigationBarView != null) {
+        if (mNavigationBarView != null) {
             mNavigationBarView.setNavigationIconHints(mNavigationIconHints, true);
         }
 	}
@@ -4855,7 +4855,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     @Override
     protected boolean shouldDisableNavbarGestures() {
-		if (!mSearchPanelAllowed) return true;
+        if (!mSearchPanelAllowed) return true;
         return !isDeviceProvisioned()
                 || mExpandedVisible
                 || (mDisabled & StatusBarManager.DISABLE_SEARCH) != 0;
