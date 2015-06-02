@@ -373,6 +373,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private TaskManager mTaskManager;
     private LinearLayout mTaskManagerPanel;
     private ImageButton mTaskManagerButton;
+    private boolean mShowTaskManager;
     private boolean showTaskList = false;
 
     // top bar
@@ -545,6 +546,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.RECENT_CARD_TEXT_COLOR), false, this,
                     UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.ENABLE_TASK_MANAGER),
+                    false, this, UserHandle.USER_ALL);
+
             update();
         }
 
@@ -608,6 +613,17 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.PIE_CONTROLS))) {
                     attachPieContainer(isPieEnabled());
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.ENABLE_TASK_MANAGER))) {
+                    mShowTaskManager = Settings.System.getIntForUser(
+                            mContext.getContentResolver(),
+                            Settings.System.ENABLE_TASK_MANAGER,
+                            0, UserHandle.USER_CURRENT) == 1;
+                    recreateStatusBar();
+                    updateRowStates();
+                    updateSpeedbump();
+                    updateClearAll();
+                    updateEmptyShadeView();
             }
             update();
         }
@@ -651,6 +667,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mCyanideLogoColor = Settings.System.getIntForUser(resolver,
                     Settings.System.STATUS_BAR_CYANIDE_LOGO_COLOR, 0xFFFFFFFF, mCurrentUserId);
             showCyanideLogo(mCyanideLogo, mCyanideLogoColor);
+
+            mShowStatusBarCarrier = Settings.System.getIntForUser(resolver,
+                    Settings.System.STATUS_BAR_CARRIER, 0, mCurrentUserId) == 1;
+            showStatusBarCarrierLabel(mShowStatusBarCarrier);
+
+            mShowTaskManager = Settings.System.getIntForUser(resolver,
+                    Settings.System.ENABLE_TASK_MANAGER, 0, UserHandle.USER_CURRENT) == 1;
+        }
+    }
 
             mGreeting = Settings.System.getStringForUser(resolver,
                     Settings.System.STATUS_BAR_GREETING,
@@ -1446,22 +1471,19 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         mQSPanel.getHost().setCustomTileListenerService(mCustomTileListenerService);
 
-        // task manager
-        if (Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.ENABLE_TASK_MANAGER, 0) == 1) {
-            mTaskManagerPanel =
-                    (LinearLayout) mStatusBarWindowContent.findViewById(R.id.task_manager_panel);
-            mTaskManager = new TaskManager(mContext, mTaskManagerPanel);
-            mTaskManager.setActivityStarter(this);
-            mTaskManagerButton = (ImageButton) mHeader.findViewById(R.id.task_manager_button);
-            mTaskManagerButton.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View arg0) {
-                    showTaskList = !showTaskList;
-                    mNotificationPanel.setTaskManagerVisibility(showTaskList);
-                }
-            });
-        }
+        // Task manager
+        mTaskManagerPanel =
+                (LinearLayout) mStatusBarWindowContent.findViewById(R.id.task_manager_panel);
+        mTaskManager = new TaskManager(mContext, mTaskManagerPanel);
+        mTaskManager.setActivityStarter(this);
+        mTaskManagerButton = (ImageButton) mHeader.findViewById(R.id.task_manager_button);
+        mTaskManagerButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                showTaskList = !showTaskList;
+                mNotificationPanel.setTaskManagerVisibility(showTaskList);
+            }
+        });
 
         // User info. Trigger first load.
         mHeader.setUserInfoController(mUserInfoController);
@@ -3110,8 +3132,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mWaitingForKeyguardExit = false;
         disable(mDisabledUnmodified, !force /* animate */);
         setInteracting(StatusBarManager.WINDOW_STATUS_BAR, true);
-        if (Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.ENABLE_TASK_MANAGER, 0) == 1) {
+        if (mShowTaskManager) {
             mTaskManager.refreshTaskManagerView();
         }
     }
