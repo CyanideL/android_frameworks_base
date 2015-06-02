@@ -42,6 +42,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -918,8 +919,8 @@ public class NavigationBarView extends LinearLayout
                 changer.setVisibility(mShowMenu || (mImeLayout && showingIME) ? View.VISIBLE : View.INVISIBLE);
 
                 if (mTablet) {
-                    addSeparator(navButtons, landscape, 0,  stockThreeButtonLayout ? 1f : 0.5f);
-                    addSeparator(lightsOut, landscape, 0,  stockThreeButtonLayout ? 1f : 0.5f);
+                    addSeparator(navButtons, landscape, 0, stockThreeButtonLayout ? 1f : 0.5f);
+                    addSeparator(lightsOut, landscape, 0, stockThreeButtonLayout ? 1f : 0.5f);
                 }
                 addButton(navButtons, changer, landscape);
                 addLightsOutButton(lightsOut, changer, landscape, true);
