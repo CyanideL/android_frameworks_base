@@ -1192,8 +1192,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                     Settings.System.STATUS_BAR_EXPANDED_HEADER_ICON_COLOR),
                     false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_SHOW_STATUS_BUTTON), false, this,
-                    UserHandle.USER_ALL);
+                    Settings.System.HEADS_UP_SHOW_STATUS_BUTTON), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.ENABLE_TASK_MANAGER), false, this);
             updateSettings();
@@ -1235,8 +1234,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             mShowHeadsUpButton = Settings.System.getInt(
                     resolver, Settings.System.HEADS_UP_SHOW_STATUS_BUTTON, 0) == 1;
 
-            mShowTaskManager = Settings.System.getIntForUser(resolver,
-                    Settings.System.ENABLE_TASK_MANAGER, 0, currentUserId) == 1;
+            mShowTaskManager = Settings.System.getInt(resolver,
+                    Settings.System.ENABLE_TASK_MANAGER, 0) == 1;
 
             updateBatteryPercentageSettings();
             updateWeatherSettings();
