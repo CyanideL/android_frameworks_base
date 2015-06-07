@@ -67,13 +67,10 @@
     
     <string name="quick_settings_usb_tether">USB tethering</string>
 
-    <!-- PieControl tile -->
-    <string name="quick_settings_pie_on">PieControl On</string>
-    <string name="quick_settings_pie_off">PieControl Off</string>
-
-    <!-- PieControl tile -->
-    <string name="quick_settings_pa_pie_on">PA PieControl On</string>
-    <string name="quick_settings_pa_pie_off">PA PieControl Off</string>
+    <!-- Off/On/Toggle -->
+    <string name="off">Off</string>
+    <string name="on">On</string>
+    <string name="toggle">Toggle</string>
 
     <!-- Dialog Cancel/OK -->
     <string name="cancel">Cancel</string>
@@ -173,12 +170,6 @@
     <string name="quick_settings_appsidebar_on">AppSideBar On</string>
     <string name="quick_settings_appsidebar_off">AppSideBar Off</string>
 
-    <!-- PA Pie controls -->
-    <string name="pie_date_format">ccc, dd MMM yyyy</string>
-    <string name="pie_hour_format_12">hh:mm</string>
-    <string name="pie_hour_format_24">HH:mm</string>
-    <string name="pie_am_pm">a</string>
-    
     <string name="gestures_message">Draw your gesture here</string>
     
     <!-- On The Go -->
