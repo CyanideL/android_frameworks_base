@@ -113,6 +113,7 @@ import com.android.internal.util.cm.SpamFilter.SpamContract.PackageTable;
 import com.android.internal.util.NotificationColorUtil;
 import com.android.internal.util.cyanide.OmniSwitchConstants;
 import com.android.internal.util.cyanide.ColorHelper;
+import com.android.internal.util.cyanide.DeviceUtils;
 import com.android.internal.util.cyanide.NotificationColorHelper;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.systemui.R;
@@ -1465,6 +1466,11 @@ public abstract class BaseStatusBar extends SystemUI implements
         LinearLayout tmpRoot = new LinearLayout(mContext);
         mSearchPanelView = (SearchPanelView) LayoutInflater.from(mContext).inflate(
                  R.layout.status_bar_search_panel, tmpRoot, false);
+
+        boolean navbarCanMove = Settings.System.getIntForUser(mContext.getContentResolver(),
+                   Settings.System.NAVIGATION_BAR_CAN_MOVE,
+                   DeviceUtils.isPhone(mContext) ? 1 : 0, UserHandle.USER_CURRENT) == 1;
+
         mSearchPanelView.setOnTouchListener(
                  new TouchOutsideListener(MSG_CLOSE_SEARCH_PANEL, mSearchPanelView));
         mSearchPanelView.setVisibility(View.GONE);

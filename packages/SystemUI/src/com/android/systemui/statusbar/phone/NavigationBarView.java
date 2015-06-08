@@ -59,6 +59,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Space;
 
+import com.android.internal.util.cyanide.DeviceUtils;
 import com.android.internal.util.cyanide.KeyButtonInfo;
 import com.android.internal.util.cyanide.NavbarConstants;
 import static com.android.internal.util.cyanide.NavbarConstants.*;
@@ -985,7 +986,13 @@ public class NavigationBarView extends LinearLayout
         for (int i=0; i<4; i++) {
             mRotatedViews[i].setVisibility(View.GONE);
         }
-        mCurrentView = mRotatedViews[rot];
+        if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.NAVIGATION_BAR_CAN_MOVE,
+                DeviceUtils.isPhone(mContext) ? 1 : 0) != 1) {
+            mCurrentView = mRotatedViews[Surface.ROTATION_0];
+        } else {
+            mCurrentView = mRotatedViews[rot];
+        }
         mCurrentView.setVisibility(View.VISIBLE);
 
         mDeadZone = (DeadZone) mCurrentView.findViewById(R.id.deadzone);

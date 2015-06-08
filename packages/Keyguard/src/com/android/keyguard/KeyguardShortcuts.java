@@ -104,10 +104,8 @@ public class KeyguardShortcuts extends LinearLayout {
                     new LinearLayout.LayoutParams(dimens, dimens);
             i.setLayoutParams(vp);
 
-            Drawable d = LockscreenShortcutHelper.getLockscreenShortcutIconImage(
-                    mContext, actionConfig.getClickAction(), actionConfig.getIcon());
-            i.setImageDrawable(d);
-            i.setBackground(mContext.getDrawable(R.drawable.ripple_drawable));
+            i.setImageDrawable(LockscreenShortcutHelper.getLockscreenShortcutIconImage(
+                    mContext, actionConfig.getClickAction(), actionConfig.getIcon()));
             i.setContentDescription(AppHelper.getFriendlyNameForUri(
                     mContext, mPackageManager, actionConfig.getClickAction()));
             i.setClickable(true);
