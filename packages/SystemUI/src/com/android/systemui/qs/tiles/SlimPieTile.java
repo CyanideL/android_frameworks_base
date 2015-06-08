@@ -83,10 +83,10 @@ public class SlimPieTile extends QSTile<QSTile.BooleanState> {
     protected void handleUpdateState(BooleanState state, Object arg) {
         state.visible = true;
 	if (PieEnabled()) {
-        state.icon = ResourceIcon.get(R.drawable.ic_qs_pie_on);
+        state.icon = ResourceIcon.get(R.drawable.ic_qs_pie_global_on);
         state.label = mContext.getString(R.string.quick_settings_slimpie_on);
 	} else {
-        state.iconId = R.drawable.ic_qs_pie_off;
+        state.icon = ResourceIcon.get(R.drawable.ic_qs_pie_global_on);
 		state.label = mContext.getString(R.string.quick_settings_slimpie_off);
 	    }
 	}
