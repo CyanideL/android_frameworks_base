@@ -1271,25 +1271,37 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mHandlerThread.start();
 
         // Other icons
-        mLocationController = new LocationControllerImpl(mContext); // will post a notification
-        mBatteryController = new BatteryController(mContext);
-        mBatteryController.addStateChangedCallback(new BatteryStateChangeCallback() {
-            @Override
-            public void onPowerSaveChanged() {
-                mHandler.post(mCheckBarModes);
-                if (mDozeServiceHost != null) {
-                    mDozeServiceHost.firePowerSaveChanged(mBatteryController.isPowerSave());
+        if (mLocationController == null) {
+            mLocationController = new LocationControllerImpl(mContext); // will post a notification
+        }
+        if (mBatteryController == null) {
+            mBatteryController = new BatteryController(mContext);
+            mBatteryController.addStateChangedCallback(new BatteryStateChangeCallback() {
+                @Override
+                public void onPowerSaveChanged() {
+                    mHandler.post(mCheckBarModes);
+                    if (mDozeServiceHost != null) {
+                        mDozeServiceHost.firePowerSaveChanged(mBatteryController.isPowerSave());
+                    }
                 }
-            }
-            @Override
-            public void onBatteryLevelChanged(int level, boolean pluggedIn, boolean charging) {
-                // noop
-            }
-        });
-        mHotspotController = new HotspotControllerImpl(mContext);
-        mBluetoothController = new BluetoothControllerImpl(mContext, mHandlerThread.getLooper());
-        mSecurityController = new SecurityControllerImpl(mContext);
-        if (mContext.getResources().getBoolean(R.bool.config_showRotationLock)) {
+
+                @Override
+                public void onBatteryLevelChanged(int level, boolean pluggedIn, boolean charging) {
+                    // noop
+                }
+            });
+        }
+        if (mHotspotController == null) {
+            mHotspotController = new HotspotControllerImpl(mContext);
+        }
+        if (mBluetoothController == null) {
+            mBluetoothController = new BluetoothControllerImpl(mContext, mHandlerThread.getLooper());
+        }
+        if (mSecurityController == null) {
+            mSecurityController = new SecurityControllerImpl(mContext);
+        }
+        if (mContext.getResources().getBoolean(R.bool.config_showRotationLock)
+                && mRotationLockController == null) {
             mRotationLockController = new RotationLockControllerImpl(mContext);
         }
         if (mUserInfoController == null) {
@@ -1489,6 +1501,22 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
         mBroadcastReceiver.onReceive(mContext,
                 new Intent(pm.isScreenOn() ? Intent.ACTION_SCREEN_ON : Intent.ACTION_SCREEN_OFF));
+                
+        // receive broadcasts
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
+        filter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_KEYGUARD_WALLPAPER_CHANGED);
+        if (DEBUG_MEDIA_FAKE_ARTWORK) {
+            filter.addAction("fake_artwork");
+        }
+        filter.addAction(ACTION_DEMO);
+        context.registerReceiver(mBroadcastReceiver, filter);
+
+        // listen for USER_SETUP_COMPLETE setting (per-user)
+        resetUserSetupObserver();
 
         startGlyphRasterizeHack();
         setKeyguardTextAndIconColors();
@@ -2261,9 +2289,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void handleUpdateNotifications() {
-        // TODO: Move this into updateNotificationIcons()?
-        if (mNotificationIcons == null) return;
-
         mNotificationData.filterAndSort();
 
         updateNotificationShade();
@@ -2763,30 +2788,30 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (DEBUG) {
             Log.d(TAG, String.format("disable: 0x%08x -> 0x%08x (diff: 0x%08x)",
                 old, state, diff));
-        }
 
-        StringBuilder flagdbg = new StringBuilder();
-        flagdbg.append("disable: < ");
-        flagdbg.append(((state & StatusBarManager.DISABLE_EXPAND) != 0) ? "EXPAND" : "expand");
-        flagdbg.append(((diff  & StatusBarManager.DISABLE_EXPAND) != 0) ? "* " : " ");
-        flagdbg.append(((state & StatusBarManager.DISABLE_NOTIFICATION_ICONS) != 0) ? "ICONS" : "icons");
-        flagdbg.append(((diff  & StatusBarManager.DISABLE_NOTIFICATION_ICONS) != 0) ? "* " : " ");
-        flagdbg.append(((state & StatusBarManager.DISABLE_NOTIFICATION_ALERTS) != 0) ? "ALERTS" : "alerts");
-        flagdbg.append(((diff  & StatusBarManager.DISABLE_NOTIFICATION_ALERTS) != 0) ? "* " : " ");
-        flagdbg.append(((state & StatusBarManager.DISABLE_SYSTEM_INFO) != 0) ? "SYSTEM_INFO" : "system_info");
-        flagdbg.append(((diff  & StatusBarManager.DISABLE_SYSTEM_INFO) != 0) ? "* " : " ");
-        flagdbg.append(((state & StatusBarManager.DISABLE_BACK) != 0) ? "BACK" : "back");
-        flagdbg.append(((diff  & StatusBarManager.DISABLE_BACK) != 0) ? "* " : " ");
-        flagdbg.append(((state & StatusBarManager.DISABLE_HOME) != 0) ? "HOME" : "home");
-        flagdbg.append(((diff  & StatusBarManager.DISABLE_HOME) != 0) ? "* " : " ");
-        flagdbg.append(((state & StatusBarManager.DISABLE_RECENT) != 0) ? "RECENT" : "recent");
-        flagdbg.append(((diff  & StatusBarManager.DISABLE_RECENT) != 0) ? "* " : " ");
-        flagdbg.append(((state & StatusBarManager.DISABLE_CLOCK) != 0) ? "CLOCK" : "clock");
-        flagdbg.append(((diff  & StatusBarManager.DISABLE_CLOCK) != 0) ? "* " : " ");
-        flagdbg.append(((state & StatusBarManager.DISABLE_SEARCH) != 0) ? "SEARCH" : "search");
-        flagdbg.append(((diff  & StatusBarManager.DISABLE_SEARCH) != 0) ? "* " : " ");
-        flagdbg.append(">");
-        Log.d(TAG, flagdbg.toString());
+            StringBuilder flagdbg = new StringBuilder();
+            flagdbg.append("disable: < ");
+            flagdbg.append(((state & StatusBarManager.DISABLE_EXPAND) != 0) ? "EXPAND" : "expand");
+            flagdbg.append(((diff  & StatusBarManager.DISABLE_EXPAND) != 0) ? "* " : " ");
+            flagdbg.append(((state & StatusBarManager.DISABLE_NOTIFICATION_ICONS) != 0) ? "ICONS" : "icons");
+            flagdbg.append(((diff  & StatusBarManager.DISABLE_NOTIFICATION_ICONS) != 0) ? "* " : " ");
+            flagdbg.append(((state & StatusBarManager.DISABLE_NOTIFICATION_ALERTS) != 0) ? "ALERTS" : "alerts");
+            flagdbg.append(((diff  & StatusBarManager.DISABLE_NOTIFICATION_ALERTS) != 0) ? "* " : " ");
+            flagdbg.append(((state & StatusBarManager.DISABLE_SYSTEM_INFO) != 0) ? "SYSTEM_INFO" : "system_info");
+            flagdbg.append(((diff  & StatusBarManager.DISABLE_SYSTEM_INFO) != 0) ? "* " : " ");
+            flagdbg.append(((state & StatusBarManager.DISABLE_BACK) != 0) ? "BACK" : "back");
+            flagdbg.append(((diff  & StatusBarManager.DISABLE_BACK) != 0) ? "* " : " ");
+            flagdbg.append(((state & StatusBarManager.DISABLE_HOME) != 0) ? "HOME" : "home");
+            flagdbg.append(((diff  & StatusBarManager.DISABLE_HOME) != 0) ? "* " : " ");
+            flagdbg.append(((state & StatusBarManager.DISABLE_RECENT) != 0) ? "RECENT" : "recent");
+            flagdbg.append(((diff  & StatusBarManager.DISABLE_RECENT) != 0) ? "* " : " ");
+            flagdbg.append(((state & StatusBarManager.DISABLE_CLOCK) != 0) ? "CLOCK" : "clock");
+            flagdbg.append(((diff  & StatusBarManager.DISABLE_CLOCK) != 0) ? "* " : " ");
+            flagdbg.append(((state & StatusBarManager.DISABLE_SEARCH) != 0) ? "SEARCH" : "search");
+            flagdbg.append(((diff  & StatusBarManager.DISABLE_SEARCH) != 0) ? "* " : " ");
+            flagdbg.append(">");
+            Log.d(TAG, flagdbg.toString());
+        }
 
         if ((diff & StatusBarManager.DISABLE_SYSTEM_INFO) != 0) {
             mSystemIconArea.animate().cancel();
@@ -3947,7 +3972,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
-    Animation.AnimationListener mTickingDoneListener = new Animation.AnimationListener() {;
+    Animation.AnimationListener mTickingDoneListener = new Animation.AnimationListener() {
         public void onAnimationEnd(Animation animation) {
             mTicking = false;
         }
@@ -4140,15 +4165,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
         filter.addAction(ACTION_DEMO);
         mContext.registerReceiver(mBroadcastReceiver, filter);
-
-        // receive broadcasts for packages
-        IntentFilter packageFilter = new IntentFilter();
-        packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
-        packageFilter.addAction(Intent.ACTION_PACKAGE_CHANGED);
-        packageFilter.addAction(Intent.ACTION_PACKAGE_FULLY_REMOVED);
-        packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-        packageFilter.addDataScheme("package");
-        mContext.registerReceiver(mPackageBroadcastReceiver, packageFilter);
     }
 
     private void addStatusBarWindow() {
@@ -4444,7 +4460,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         } else {
             mHeadsUpNotificationView.dismiss();
         }
-     }
+    }
 
     private static void copyNotifications(ArrayList<Pair<String, StatusBarNotification>> dest,
             NotificationData source) {

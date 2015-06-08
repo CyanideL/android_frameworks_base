@@ -430,13 +430,13 @@ public class StatusBarIconView extends AnimatedImageView {
         mShowNotifCount = Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_SHOW_NOTIF_COUNT,
                     mContext.getResources().getBoolean(
-                    R.bool.config_statusBarShowNumber) ? 1 : 0) == 1;
+                    R.bool.config_statusBarShowNumber) ? 0 : 0) == 1;
         mIconColor = Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_NOTIF_SYSTEM_ICON_COLOR,
                 0xffffffff);
         mNotifCountColor = Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_NOTIF_COUNT_ICON_COLOR,
-                0xffE5350D);
+                0xffffffff);
         mNotifCountTextColor = Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_NOTIF_COUNT_TEXT_COLOR,
                 0xffffffff);

@@ -282,8 +282,9 @@ public class SignalClusterView
 
     @Override
     public void setWifiIndicators(boolean visible, int strengthIcon, int inetCondition,
-            int activityIcon, String contentDescription) {
+        int activityIcon, String contentDescription) {
         boolean updateColors = false;
+
         mWifiVisible = visible;
         mWifiStrengthId = strengthIcon;
         if (mInetCondition != inetCondition) {
@@ -305,6 +306,7 @@ public class SignalClusterView
             boolean isTypeIconWide, int noSimIcon) {
         boolean updateColors = false;
         mMobileVisible = visible;
+        mInetCondition = inetCondition;
         mMobileStrengthId = strengthIcon;
         if (mInetCondition != inetCondition) {
             mInetCondition = inetCondition;

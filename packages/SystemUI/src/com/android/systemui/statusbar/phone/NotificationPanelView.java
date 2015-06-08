@@ -483,13 +483,8 @@ public class NotificationPanelView extends PanelView implements
         requestLayout();
     }
 
-    private boolean isQSEventBlocked() {
-        return mLockPatternUtils.isSecure()
-            && mStatusBarLockedOnSecureKeyguard && mKeyguardShowing;
-    }
-
     public void setQsExpansionEnabled(boolean qsExpansionEnabled) {
-        mQsExpansionEnabled = qsExpansionEnabled && !isQSEventBlocked();
+        mQsExpansionEnabled = qsExpansionEnabled;
         mHeader.setClickable(qsExpansionEnabled);
     }
 
@@ -714,9 +709,12 @@ public class NotificationPanelView extends PanelView implements
             return true;
         }
 
+        boolean isQSEventBlocked = mLockPatternUtils.isSecure()
+                && mStatusBarLockedOnSecureKeyguard && mKeyguardShowing;
+
         if (event.getActionMasked() == MotionEvent.ACTION_DOWN && getExpandedFraction() == 1f
                 && mStatusBar.getBarState() != StatusBarState.KEYGUARD && !mQsExpanded
-                && mQsExpansionEnabled) {
+                && mQsExpansionEnabled && !isQSEventBlocked) {
 
             // Down in the empty area while fully expanded - go to QS.
             mQsTracking = true;
@@ -726,7 +724,7 @@ public class NotificationPanelView extends PanelView implements
             mInitialTouchY = event.getX();
             mInitialTouchX = event.getY();
         }
-        if (mExpandedHeight != 0) {
+        if (mExpandedHeight != 0 && !isQSEventBlocked) {
             handleQsDown(event);
         }
         if (!mQsExpandImmediate && mQsTracking) {
@@ -753,15 +751,17 @@ public class NotificationPanelView extends PanelView implements
                 || mQsSmartPullDown == 2 && !mStatusBar.hasActiveVisibleNotifications()
                 || (mQsSmartPullDown == 3 && !mStatusBar.hasActiveVisibleNotifications()
                         && !mStatusBar.hasActiveClearableNotifications())) {
-            if (!isQSEventBlocked()) {
-                oneFingerQsOverride = true;
-            }
+            oneFingerQsOverride = true;
         }
 
         if ((twoFingerQsEvent || oneFingerQsOverride)
                 && event.getY(event.getActionIndex()) < mStatusBarMinHeight) {
             mQsExpandImmediate = true;
             requestPanelHeightUpdate();
+
+            // Normally, we start listening when the panel is expanded, but here we need to start
+            // earlier so the state is already up to date when dragging down.
+            setListening(true);
         }
         super.onTouchEvent(event);
         return true;
@@ -1671,6 +1671,8 @@ public class NotificationPanelView extends PanelView implements
         mScrollYOverride = -1;
         if (mExpandedHeight == 0f) {
             setListening(false);
+        } else {
+            setListening(true);
         }
         mQsExpandImmediate = false;
         mTwoFingerQsExpandPossible = false;
@@ -1715,7 +1717,6 @@ public class NotificationPanelView extends PanelView implements
                 || mStatusBar.getBarState() == StatusBarState.SHADE_LOCKED) {
             mAfforanceHelper.animateHideLeftRightIcon();
         }
-        setListening(true);
     }
 
     @Override
