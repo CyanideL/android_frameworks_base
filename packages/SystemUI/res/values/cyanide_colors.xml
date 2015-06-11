@@ -69,5 +69,9 @@
     <color name="battery_juice_critical">#ff4444</color>
     <color name="battery_background">#ffffff</color>
     <color name="status">#ffffff</color>
+    
+    <!-- Floating action button -->
+    <color name="fab_background_color">#ffffffff</color>
+    <color name="floating_action_button_icon_color">#4dffffff</color>
 
 </resources>

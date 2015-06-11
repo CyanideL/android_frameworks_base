@@ -4404,6 +4404,18 @@ public final class Settings {
 		 * @hide
 		 */
 		public static final String RECENTS_CLEAR_ALL_LOCATION = "recents_clear_all_location";
+		
+		/**
+         * Color of the clear all button background in the recent apps panel
+         * @hide
+         */
+        public static final String RECENT_APPS_CLEAR_ALL_BG_COLOR = "recent_apps_clear_all_bg_color";
+
+        /**
+         * Color of the clear all button icon in the recent apps panel
+         * @hide
+         */
+        public static final String RECENT_APPS_CLEAR_ALL_ICON_COLOR = "recent_apps_clear_all_icon_color";
         
         /**
           * Volume keys control cursor in text fields (default is 0)
