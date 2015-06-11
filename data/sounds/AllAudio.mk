@@ -202,7 +202,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/ringtones/Vespa.ogg:system/media/audio/ringtones/Vespa.ogg \
     $(LOCAL_PATH)/newwavelabs/World.ogg:system/media/audio/ringtones/World.ogg \
     $(LOCAL_PATH)/ringtones/ogg/Zeta.ogg:system/media/audio/ringtones/Zeta.ogg \
-<<<<<<< HEAD
     $(LOCAL_PATH)/cyanide/ui/Dock.ogg:system/media/audio/ui/Dock.ogg \
     $(LOCAL_PATH)/cyanide/ui/Effect_Tick.ogg:system/media/audio/ui/Effect_Tick.ogg \
     $(LOCAL_PATH)/cyanide/ui/KeypressDelete.ogg:system/media/audio/ui/KeypressDelete.ogg \
