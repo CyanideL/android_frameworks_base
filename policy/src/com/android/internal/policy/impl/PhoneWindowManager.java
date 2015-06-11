@@ -3238,8 +3238,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         // timeout.
         if (keyCode == KeyEvent.KEYCODE_HOME) {
 
+            // Disable home key if hw keys is set to off
             if (scanCode != 0 && !hasHwKeysEnabled()) {
-                Log.i(TAG, "Ignoring Home Key: we have navbar on");
+                Log.i(TAG, "Ignoring Home Key: we have hw keys disabled");
                 return 0;
             }
 
@@ -3337,9 +3338,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             return -1;
         } else if (keyCode == KeyEvent.KEYCODE_MENU) {
 
-            // Disable menu key if navbar is set to on
+            // Disable menu key if hw keys is set to off
             if (scanCode != 0 && !hasHwKeysEnabled()) {
-                Log.i(TAG, "Ignoring Menu Key: we have navbar on");
+                Log.i(TAG, "Ignoring Menu Key: we have hw keys disabled");
                 return 0;
             }
 
@@ -3403,9 +3404,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             return -1;
         } else if (keyCode == KeyEvent.KEYCODE_SEARCH) {
 
-            // Disable search key if navbar is set to on
+            // Disable search key if hw keys is set to off
             if (scanCode != 0 && !hasHwKeysEnabled()) {
-                Log.i(TAG, "Ignoring Search Key: we have navbar on");
+                Log.i(TAG, "Ignoring Search Key: we have hw keys disabled");
                 return 0;
             }
 
@@ -3424,9 +3425,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             return 0;
         } else if (keyCode == KeyEvent.KEYCODE_APP_SWITCH) {
 
-            // Disable app switch key if navbar is set to on
+            // Disable app switch key if hw keys is set to off
             if (scanCode != 0 && !hasHwKeysEnabled()) {
-                Log.i(TAG, "Ignoring App Switch Key: we have navbar on");
+                Log.i(TAG, "Ignoring App Switch Key: we have hw keys disabled");
                 return 0;
             }
 
@@ -3464,9 +3465,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             return -1;
         } else if (keyCode == KeyEvent.KEYCODE_ASSIST) {
 
-            // Disable assist key if navbar is set to on
+            // Disable assist key if hw keys is set to off
             if (scanCode != 0 && !hasHwKeysEnabled()) {
-                Log.i(TAG, "Ignoring Assist Key: we have navbar on");
+                Log.i(TAG, "Ignoring Assist Key: we have hw keys disabled");
                 return 0;
             }
 
@@ -3562,9 +3563,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             return -1;
         } else if (keyCode == KeyEvent.KEYCODE_BACK) {
 
-            // Disable back key if navbar is set to on
+            // Disable back key if navbar hw keys is set to off
             if (scanCode != 0 && !hasHwKeysEnabled()) {
-                Log.i(TAG, "Ignoring Back Key: we have navbar on");
+                Log.i(TAG, "Ignoring Back Key: we have hw keys disabled");
                 return 0;
             }
 
@@ -5738,30 +5739,30 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                                                 isKeyguardShowingAndNotOccluded() :
                                                 mKeyguardDelegate.isShowing()));
 
-        // If we have nav bar on let's disable all hw keys actions
+        // Disable all hw keys actions but let home key wake on if it's enabled
         if (!hasHwKeysEnabled()) {
-            if (scanCode != 0 && keyCode == KeyEvent.KEYCODE_HOME) {
-                Log.i(TAG, "Ignoring Home Key: we have navbar on");
+            if (scanCode != 0 && keyCode == KeyEvent.KEYCODE_HOME && !mHomeWakeScreen) {
+                Log.i(TAG, "Ignoring Home Key: we have hw keys and also home key wake disabled");
                 return 0;
             }
             if (scanCode != 0 && keyCode == KeyEvent.KEYCODE_MENU) {
-                Log.i(TAG, "Ignoring Menu Key: we have navbar on");
+                Log.i(TAG, "Ignoring Menu Key: we have hw keys disabled");
                 return 0;
             }
             if (scanCode != 0 && keyCode == KeyEvent.KEYCODE_BACK) {
-                Log.i(TAG, "Ignoring Back Key: we have navbar on");
+                Log.i(TAG, "Ignoring Back Key: we have hw keys disabled");
                 return 0;
             }
             if (scanCode != 0 && keyCode == KeyEvent.KEYCODE_SEARCH) {
-                Log.i(TAG, "Ignoring Search Key: we have navbar on");
+                Log.i(TAG, "Ignoring Search Key: we have hw keys disabled");
                 return 0;
             }
             if (scanCode != 0 && keyCode == KeyEvent.KEYCODE_APP_SWITCH) {
-                Log.i(TAG, "Ignoring App Switch Key: we have navbar on");
+                Log.i(TAG, "Ignoring App Switch Key: we have hw keys disabled");
                 return 0;
             }
             if (scanCode != 0 && keyCode == KeyEvent.KEYCODE_ASSIST) {
-                Log.i(TAG, "Ignoring Assist Key: we have navbar on");
+                Log.i(TAG, "Ignoring Assist Key: we have hw keys disabled");
                 return 0;
             }
         }
