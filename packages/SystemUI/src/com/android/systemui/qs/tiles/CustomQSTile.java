@@ -121,7 +121,7 @@ public class CustomQSTile extends QSTile<QSTile.State> {
         state.visible = true;
         final int iconId = customTile.icon;
         if (iconId != 0) {
-            final String iconPackage = mTile.getPackage();
+            final String iconPackage = mTile.getResPkg();
             if (!TextUtils.isEmpty(iconPackage)) {
                 state.icon = new ExternalIcon(iconPackage, iconId);
             } else {
