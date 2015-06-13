@@ -5497,6 +5497,12 @@ public final class Settings {
         public static final String HEADS_UP_FLOATING = "heads_up_floating";
 
         /**
+         * Recents empty style
+         * @hide
+         */
+        public static final String RECENTS_EMPTY_CYANIDE_LOGO = "recents_empty_cyanide_logo";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

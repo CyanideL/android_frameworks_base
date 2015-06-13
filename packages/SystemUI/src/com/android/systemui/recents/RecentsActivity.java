@@ -23,6 +23,7 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -74,6 +75,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
     RecentsView mRecentsView;
     SystemBarScrimViews mScrimViews;
     ViewStub mEmptyViewStub;
+    ViewStub mEmptyViewStubCyanide;
     ViewStub mDebugOverlayStub;
     View mEmptyView;
     DebugOverlayView mDebugOverlay;
@@ -242,7 +244,13 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
         // Update the top level view's visibilities
         if (mConfig.launchedWithNoRecentTasks) {
             if (mEmptyView == null) {
-                mEmptyView = mEmptyViewStub.inflate();
+            boolean cyanideLogo = Settings.System.getInt(getContentResolver(),
+                    Settings.System.RECENTS_EMPTY_CYANIDE_LOGO, 0) == 1;
+
+                if (cyanideLogo)
+                    mEmptyView = mEmptyViewStubCyanide.inflate();
+                else
+                    mEmptyView = mEmptyViewStub.inflate();
             }
             mEmptyView.setVisibility(View.VISIBLE);
             mEmptyView.setOnClickListener(new View.OnClickListener() {
@@ -264,6 +272,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
                     View.VISIBLE : View.GONE);
             boolean showSearchBar = Settings.System.getInt(getContentResolver(),
                        Settings.System.ANDROID_RECENTS_SHOW_SEARCH_BAR, 0) == 1;
+
             if (mRecentsView.hasSearchBar()) {
                 if (showSearchBar) {
                     mRecentsView.setSearchBarVisibility(View.VISIBLE);
@@ -402,6 +411,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         mEmptyViewStub = (ViewStub) findViewById(R.id.empty_view_stub);
+        mEmptyViewStubCyanide = (ViewStub) findViewById(R.id.empty_view_stub_cyanide);
         mDebugOverlayStub = (ViewStub) findViewById(R.id.debug_overlay_stub);
         mScrimViews = new SystemBarScrimViews(this, mConfig);
         mStatusBar = ((SystemUIApplication) getApplication())
