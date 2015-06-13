@@ -351,6 +351,9 @@ public class ActionHelper {
         } else if (clickAction.equals(ActionConstants.ACTION_NAVBAR)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_navbar", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_PA_PIE)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_lock_pa_pie", null, null);
         } else {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_null", null, null);
