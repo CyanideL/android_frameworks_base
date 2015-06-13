@@ -105,8 +105,8 @@
     <!-- Kill app toast -->
     <string name="app_killed_message">App Killed</string>
     
-    <string name="quick_settings_slimpie_on">Pie Enabled</string>
-	<string name="quick_settings_slimpie_off">Pie Disabled</string>
+    <string name="quick_settings_slimpie_on">SlimPie Enabled</string>
+	<string name="quick_settings_slimpie_off">SlimPie Disabled</string>
 	<string name="quick_settings_gesture_anywhere_on">Gestures Enabled</string>
 	<string name="quick_settings_gesture_anywhere_off">Gestures Disabled</string>
     
