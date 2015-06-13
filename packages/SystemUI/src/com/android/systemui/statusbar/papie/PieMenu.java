@@ -197,12 +197,14 @@ public class PieMenu extends FrameLayout {
     private boolean mUseKillTask;
     private boolean mUseNotifications;
     private boolean mSettingsPanel;
-    private boolean mUsePower;
+    private boolean mUseScreenOff;
     private boolean mUseScreenshot;
     private boolean mUseTorch;
     private boolean mUsePowerMenu;
     private boolean mExpandedDesktop;
     private boolean mThemeSwitch;
+    private boolean mNavbar;
+    private boolean mSlimPie;
 
     private int mGlowOffset = 150;
 
@@ -266,8 +268,8 @@ public class PieMenu extends FrameLayout {
                 Settings.System.PA_PIE_NOTIFICATIONS, 0) == 1;
         mSettingsPanel = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PA_PIE_SETTINGS_PANEL, 0) == 1;
-        mUsePower = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.PA_PIE_POWER, 1) == 1;
+        mUseScreenOff = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PA_PIE_SCREEN_OFF, 1) == 1;
         mUseTorch = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PA_PIE_TORCH, 1) == 1;
         mUseScreenshot = Settings.System.getInt(mContext.getContentResolver(),
@@ -278,6 +280,10 @@ public class PieMenu extends FrameLayout {
                 Settings.System.PA_PIE_EXPANDED_DESKTOP, 0) == 1;
         mThemeSwitch = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PA_PIE_THEME_SWITCH, 0) == 1;
+        mNavbar = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PA_PIE_NAVBAR, 0) == 1;
+        mSlimPie = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PA_PIE_SLIMPIE, 0) == 1;
         mHasAssistant = mPieHelper.isAssistantAvailable();
 
         // snap
@@ -580,12 +586,14 @@ public class PieMenu extends FrameLayout {
                !(item.getName().equals(PAPieController.SETTINGS_PANEL_BUTTON) && !mSettingsPanel) &&
                !(item.getName().equals(PAPieController.KILL_TASK_BUTTON) && !mUseKillTask) &&
                !(item.getName().equals(PAPieController.LAST_APP_BUTTON) && !mUseLastApp) &&
-               !(item.getName().equals(PAPieController.POWER_BUTTON) && !mUsePower) &&
+               !(item.getName().equals(PAPieController.SCREEN_OFF_BUTTON) && !mUseScreenOff) &&
                !(item.getName().equals(PAPieController.TORCH_BUTTON) && !mUseTorch) &&
                !(item.getName().equals(PAPieController.SCREENSHOT_BUTTON) && !mUseScreenshot) &&
                !(item.getName().equals(PAPieController.POWER_MENU_BUTTON) && !mUsePowerMenu) &&
                !(item.getName().equals(PAPieController.EXPANDED_DESKTOP_BUTTON) && !mExpandedDesktop) &&
-               !(item.getName().equals(PAPieController.THEME_SWITCH_BUTTON) && !mThemeSwitch);
+               !(item.getName().equals(PAPieController.THEME_SWITCH_BUTTON) && !mThemeSwitch) &&
+               !(item.getName().equals(PAPieController.NAVBAR_BUTTON) && !mNavbar) &&
+               !(item.getName().equals(PAPieController.SLIMPIE_BUTTON) && !mSlimPie);
     }
 
     private void layoutPie() {
@@ -604,7 +612,7 @@ public class PieMenu extends FrameLayout {
             itemCount--;
         if (!mUseKillTask)
             itemCount--;
-        if (!mUsePower)
+        if (!mUseScreenOff)
             itemCount--;
         if (!mUseTorch)
             itemCount--;
@@ -615,6 +623,10 @@ public class PieMenu extends FrameLayout {
         if (!mExpandedDesktop)
             itemCount--;
         if (!mThemeSwitch)
+            itemCount--;
+        if (!mNavbar)
+            itemCount--;
+        if (!mSlimPie)
             itemCount--;
 
         int lesserSweepCount = 0;

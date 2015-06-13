@@ -28,12 +28,14 @@ public class PieConstants {
     public static final String KILL_TASK_BUTTON = "##killtask##";
     public static final String NOTIFICATIONS_BUTTON = "##notifications##";
     public static final String SETTINGS_PANEL_BUTTON = "##settings_panel##";
-    public static final String POWER_BUTTON = "##power##";
+    public static final String SCREEN_OFF_BUTTON = "##screen_off##";
     public static final String TORCH_BUTTON = "##torch##";
     public static final String SCREENSHOT_BUTTON = "##screenshot##";
     public static final String POWER_MENU_BUTTON = "##power_menu##";
     public static final String EXPANDED_DESKTOP_BUTTON = "##expanded_desktop##";
     public static final String THEME_SWITCH_BUTTON = "##theme_switch##";
+    public static final String NAVBAR_BUTTON = "##navbar##";
+    public static final String SLIMPIE_BUTTON = "##slimpie##";
 
     // no action
     public static final String NULL_BUTTON            = "**null**";
@@ -51,7 +53,7 @@ public class PieConstants {
           BACK_BUTTON + DELIMITER_BUTTON
         + HOME_BUTTON + DELIMITER_BUTTON
         + RECENT_BUTTON + DELIMITER_BUTTON
-        + POWER_BUTTON + DELIMITER_BUTTON
+        + SCREEN_OFF_BUTTON + DELIMITER_BUTTON
         + TORCH_BUTTON + DELIMITER_BUTTON
         + NULL_BUTTON + DELIMITER_BUTTON
         + NULL_BUTTON + DELIMITER_BUTTON

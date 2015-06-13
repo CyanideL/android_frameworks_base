@@ -119,9 +119,35 @@ public class PieAction {
                 } catch (RemoteException e) {
                 }
                 return;
-            } else if (action.equals(PieConstants.POWER_BUTTON)) {
+            } else if (action.equals(PieConstants.SCREEN_OFF_BUTTON)) {
                 PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
                 pm.goToSleep(SystemClock.uptimeMillis());
+                return;
+            } else if (action.equals(PieConstants.SLIMPIE_BUTTON)) {
+                boolean pieState = isPieEnabled(context);
+                if (pieState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.PIE_CONTROLS,
+                        pieState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
+            } else if (action.equals(PieConstants.NAVBAR_BUTTON)) {
+                boolean navBarState = isNavBarEnabled(context);
+                if (navBarState && !isPieEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_navigation_pie_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.NAVBAR_FORCE_ENABLE,
+                        navBarState ? 0 : 1, UserHandle.USER_CURRENT);
                 return;
             } else if (action.equals(PieConstants.KILL_TASK_BUTTON)) {
                 if (isKeyguardShowing) {
@@ -234,6 +260,23 @@ public class PieAction {
                 return;
             }
 
+    }
+    
+    public static boolean isPieEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.PIE_CONTROLS,
+                0, UserHandle.USER_CURRENT) == 1;
+    }
+
+    public static boolean isNavBarEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.NAVBAR_FORCE_ENABLE,
+                isNavBarDefault(context) ? 1 : 0, UserHandle.USER_CURRENT) == 1;
+    }
+
+    public static boolean isNavBarDefault(Context context) {
+        return context.getResources().getBoolean(
+                com.android.internal.R.bool.config_showNavigationBar);
     }
 
     public static boolean isActionKeyEvent(String action) {

@@ -322,7 +322,7 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
         } else if (buttonName.equals(PAPieController.KILL_TASK_BUTTON)) {
             KillTask mKillTask = new KillTask(mContext);
             mHandler.post(mKillTask);
-        } else if (buttonName.equals(PAPieController.POWER_BUTTON)) {
+        } else if (buttonName.equals(PAPieController.SCREEN_OFF_BUTTON)) {
             injectKeyDelayed(KeyEvent.KEYCODE_POWER);
         } else if (buttonName.equals(PAPieController.TORCH_BUTTON)) {
             PieAction.processAction(mContext, PieConstants.TORCH_BUTTON, false);
@@ -334,8 +334,10 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
             PieAction.processAction(mContext, PieConstants.SETTINGS_PANEL_BUTTON, false);
         } else if (buttonName.equals(PAPieController.EXPANDED_DESKTOP_BUTTON)) {
             PieAction.processAction(mContext, PieConstants.EXPANDED_DESKTOP_BUTTON, false);
-        } else if (buttonName.equals(PAPieController.THEME_SWITCH_BUTTON)) {
-            PieAction.processAction(mContext, PieConstants.THEME_SWITCH_BUTTON, false);
+        } else if (buttonName.equals(PAPieController.NAVBAR_BUTTON)) {
+            PieAction.processAction(mContext, PieConstants.NAVBAR_BUTTON, false);
+        } else if (buttonName.equals(PAPieController.SLIMPIE_BUTTON)) {
+            PieAction.processAction(mContext, PieConstants.SLIMPIE_BUTTON, false);
         } else if (buttonName.equals(PAPieController.NOTIFICATIONS_BUTTON)) {
             try {
                 IStatusBarService.Stub.asInterface(

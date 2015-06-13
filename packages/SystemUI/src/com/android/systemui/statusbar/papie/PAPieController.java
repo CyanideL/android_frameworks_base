@@ -57,12 +57,14 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
     public static final String KILL_TASK_BUTTON = "##killtask##";
     public static final String NOTIFICATIONS_BUTTON = "##notifications##";
     public static final String SETTINGS_PANEL_BUTTON = "##settings_panel##";
-    public static final String POWER_BUTTON = "##power##";
+    public static final String SCREEN_OFF_BUTTON = "##screen_off##";
     public static final String TORCH_BUTTON = "##torch##";
     public static final String SCREENSHOT_BUTTON = "##screenshot##";
     public static final String POWER_MENU_BUTTON = "##power_menu##";
     public static final String EXPANDED_DESKTOP_BUTTON = "##expanded_desktop##";
     public static final String THEME_SWITCH_BUTTON = "##theme_switch##";
+    public static final String NAVBAR_BUTTON = "##navbar##";
+    public static final String SLIMPIE_BUTTON = "##slimpie##";
 
     private static PAPieController mInstance;
     private static PieHelper mPieHelper;
@@ -87,12 +89,14 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
     private PieItem mKillTask;
     private PieItem mNotificatons;
     private PieItem mSettingsPanel;
-    private PieItem mPower;
+    private PieItem mScreenOff;
     private PieItem mTorch;
     private PieItem mScreenshot;
     private PieItem mPowerMenu;
     private PieItem mExpandedDesktop;
     private PieItem mThemeSwitch;
+    private PieItem mNavbar;
+    private PieItem mSlimPie;
 
     protected PieMenu mPie;
     protected int mItemSize;
@@ -256,12 +260,14 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
         mKillTask = makeItem(R.drawable.ic_sysbar_killtask_land, 1, KILL_TASK_BUTTON, true);
         mNotificatons = makeItem(R.drawable.ic_sysbar_notifications_land, 1, NOTIFICATIONS_BUTTON, true);
         mSettingsPanel = makeItem(R.drawable.ic_sysbar_quicksettings, 1, SETTINGS_PANEL_BUTTON, true);
-        mPower = makeItem(R.drawable.ic_sysbar_power, 1, POWER_BUTTON, true);
+        mScreenOff = makeItem(R.drawable.ic_sysbar_power, 1, SCREEN_OFF_BUTTON, true);
         mTorch = makeItem(R.drawable.ic_sysbar_torch, 1, TORCH_BUTTON, true);
         mScreenshot = makeItem(R.drawable.ic_sysbar_screenshot, 1, SCREENSHOT_BUTTON, true);
         mPowerMenu = makeItem(R.drawable.ic_sysbar_power, 1, POWER_MENU_BUTTON, true);
         mExpandedDesktop = makeItem(R.drawable.ic_sysbar_expanded_desktop, 1, EXPANDED_DESKTOP_BUTTON, true);
         mThemeSwitch = makeItem(R.drawable.ic_sysbar_theme_switch, 1, THEME_SWITCH_BUTTON, true);
+        mNavbar = makeItem(R.drawable.ic_sysbar_navbar, 1, NAVBAR_BUTTON, true);
+        mSlimPie = makeItem(R.drawable.ic_sysbar_pie, 1, SLIMPIE_BUTTON, true);
 
         mPie.addItem(mMenu);
         mPie.addItem(mRecent);
@@ -271,12 +277,14 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
         mPie.addItem(mLastApp);
         mPie.addItem(mNotificatons);
         mPie.addItem(mSettingsPanel);
-        mPie.addItem(mPower);
+        mPie.addItem(mScreenOff);
         mPie.addItem(mTorch);
         mPie.addItem(mScreenshot);
         mPie.addItem(mPowerMenu);
         mPie.addItem(mExpandedDesktop);
         mPie.addItem(mThemeSwitch);
+        mPie.addItem(mNavbar);
+        mPie.addItem(mSlimPie);
     }
 
     public void setNavigationIconHints(int hints) {

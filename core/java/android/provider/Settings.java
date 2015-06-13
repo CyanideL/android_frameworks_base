@@ -4893,7 +4893,7 @@ public final class Settings {
          * PA Pie power, should default to 0 (no, show only when needed)
          * @hide
          */
-        public static final String PA_PIE_POWER = "pa_pie_power";
+        public static final String PA_PIE_SCREEN_OFF = "pa_pie_screen_off";
 
         /**
          * Pie screenshot
@@ -4924,6 +4924,18 @@ public final class Settings {
          * @hide
          */
         public static final String PA_PIE_THEME_SWITCH = "pa_pie_theme_switch";
+        
+        /**
+         * Pie Navbar Switch
+         * @hide
+         */
+        public static final String PA_PIE_NAVBAR = "pa_pie_navbar";
+        
+        /**
+         * Pie SlimPie Switch
+         * @hide
+         */
+        public static final String PA_PIE_SLIMPIE = "pa_pie_slimpie";
 
        // PIE COLORS EVERYWHERE! //
 
