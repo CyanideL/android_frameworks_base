@@ -334,6 +334,8 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
             PieAction.processAction(mContext, PieConstants.SETTINGS_PANEL_BUTTON, false);
         } else if (buttonName.equals(PAPieController.EXPANDED_DESKTOP_BUTTON)) {
             PieAction.processAction(mContext, PieConstants.EXPANDED_DESKTOP_BUTTON, false);
+        } else if (buttonName.equals(PAPieController.THEME_SWITCH_BUTTON)) {
+            PieAction.processAction(mContext, PieConstants.THEME_SWITCH_BUTTON, false);
         } else if (buttonName.equals(PAPieController.NAVBAR_BUTTON)) {
             PieAction.processAction(mContext, PieConstants.NAVBAR_BUTTON, false);
         } else if (buttonName.equals(PAPieController.SLIMPIE_BUTTON)) {
