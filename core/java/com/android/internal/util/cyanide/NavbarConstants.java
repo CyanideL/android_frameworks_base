@@ -26,8 +26,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class NavbarConstants {
-	public static final int LAYOUT_IME = 666;
 
+    public static final String ASSIST_ICON_METADATA_NAME = "com.android.systemui.action_assist_icon";
+
+    public static final int LAYOUT_IME = -2;
     public static final int DEFAULT_LAYOUT = -3;
 
 	public static final String ACTION_APP = "**app**";
@@ -79,7 +81,7 @@ public class NavbarConstants {
         ACTION_LAST_APP       ("**last_app**",        com.android.internal.R.string.action_last_app,      "com.android.systemui:drawable/ic_sysbar_lastapp"),
         ACTION_MENU           ("**menu**",            com.android.internal.R.string.action_menu,          "com.android.systemui:drawable/ic_sysbar_menu_big"),
         ACTION_NOTIFICATIONS  ("**notifications**",   com.android.internal.R.string.action_notifications, "com.android.systemui:drawable/ic_sysbar_notifications"),
-        ACTION_IME            ("**ime**",             com.android.internal.R.string.action_ime,           "com.android.systemui:drawable/ic_sysbar_ime_switcher"),        
+        ACTION_IME            ("**ime**",             com.android.internal.R.string.action_ime,           "com.android.systemui:drawable/ic_sysbar_ime_switcher"),
         ACTION_TORCH          ("**torch**",           com.android.internal.R.string.action_torch,         "com.android.systemui:drawable/ic_sysbar_torch"),
         ACTION_ASSIST         ("**assist**",          com.android.internal.R.string.action_assist,        "com.android.systemui:drawable/ic_sysbar_assist"),
         ACTION_SEARCH         ("**search**",          com.android.internal.R.string.action_search,        "com.android.systemui:drawable/ic_sysbar_search"),
@@ -216,8 +218,6 @@ public class NavbarConstants {
     public static NavbarConstant fromString(String actionstring) {
         return NavbarConstant.fromAction(actionstring);
     }
-
-    public static final String ASSIST_ICON_METADATA_NAME = "com.android.systemui.action_assist_icon";
 
     public static String defaultNavbarLayout(Context context) {
         Resources res = context.getResources();
