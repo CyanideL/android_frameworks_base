@@ -5264,12 +5264,6 @@ public final class Settings {
          * @hide
          */
         public static final String HEADS_UP_SHOW_STATUS_BUTTON = "heads_up_show_status_button";
-        
-        /**
-         * Whether to use slim recents
-         * @hide
-         */
-        public static final String USE_SLIM_RECENTS = "use_slim_recents";
 
         /**
          * Whether to only show actually running tasks
@@ -5336,6 +5330,13 @@ public final class Settings {
          * @hide
          */
         public static final String RECENT_CARD_TEXT_COLOR = "recent_card_text_color";
+        
+        /**
+         * Custom Recent Control
+         *
+         * @hide
+         */
+        public static final String CUSTOM_RECENT = "custom_recent";
 
         /**
          * Whether to disable the torch when the screen turns off
