@@ -5266,18 +5266,6 @@ public final class Settings {
         public static final String HEADS_UP_SHOW_STATUS_BUTTON = "heads_up_show_status_button";
 
         /**
-         * Whether to only show actually running tasks
-         * @hide
-         */
-        public static final String RECENT_SHOW_RUNNING_TASKS = "show_running_tasks";
-
-        /**
-         * Amount of apps to show in recents
-         * @hide
-         */
-        public static final String RECENTS_MAX_APPS = "recents_max_apps";
-
-        /**
          * Whether recent panel gravity is left or right (default = Gravity.RIGHT).
          * @hide
          */
@@ -5330,9 +5318,9 @@ public final class Settings {
          * @hide
          */
         public static final String RECENT_CARD_TEXT_COLOR = "recent_card_text_color";
-        
+
         /**
-         * Custom Recent Control
+         * Custom Recents Toggle
          *
          * @hide
          */

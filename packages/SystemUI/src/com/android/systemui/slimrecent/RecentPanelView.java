@@ -68,6 +68,9 @@ public class RecentPanelView {
     private static final String TAG = "RecentPanelView";
     private static final boolean DEBUG = false;
 
+    private static final int DISPLAY_TASKS = 20;
+    public static final int MAX_TASKS = DISPLAY_TASKS + 1; // allow extra for non-apps
+
     public static final String TASK_PACKAGE_IDENTIFIER = "#ident:";
 
     private static final int EXPANDED_STATE_UNKNOWN  = 0;
@@ -117,7 +120,6 @@ public class RecentPanelView {
     private float mScaleFactor;
     private int mExpandedMode = EXPANDED_MODE_AUTO;
     private boolean mShowTopTask;
-    private boolean mOnlyShowRunningTasks;
 
     private PopupMenu mPopup;
 
@@ -623,18 +625,11 @@ public class RecentPanelView {
         final ActivityManager am = (ActivityManager)
         mContext.getSystemService(Context.ACTIVITY_SERVICE);
 
-        int maxNumTasksToLoad = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.RECENTS_MAX_APPS, ActivityManager.getMaxRecentTasksStatic(),
-                UserHandle.USER_CURRENT);
-
         final List<ActivityManager.RecentTaskInfo> recentTasks =
-                am.getRecentTasksForUser(maxNumTasksToLoad,
-                ActivityManager.RECENT_IGNORE_HOME_STACK_TASKS
+                am.getRecentTasksForUser(MAX_TASKS, ActivityManager.RECENT_IGNORE_HOME_STACK_TASKS
                         | ActivityManager.RECENT_IGNORE_UNAVAILABLE
-                        | ActivityManager.RECENT_INCLUDE_PROFILES,
-                        UserHandle.CURRENT.getIdentifier());
-        final List<ActivityManager.RunningTaskInfo> runningTasks =
-                am.getRunningTasks(Integer.MAX_VALUE);
+                        | ActivityManager.RECENT_INCLUDE_PROFILES
+                        | ActivityManager.RECENT_WITH_EXCLUDED, UserHandle.CURRENT.getIdentifier());
         final int numTasks = recentTasks.size();
         ActivityInfo homeInfo = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME).resolveActivityInfo(pm, 0);
@@ -643,24 +638,13 @@ public class RecentPanelView {
         final int firstExpandedItems =
                 mContext.getResources().getInteger(R.integer.expanded_items_default);
         // Get current task list. We do not need to do it in background. We only load MAX_TASKS.
-        for (int i = 0, index = 0; i < numTasks && (index < numTasks); ++i) {
+        for (int i = 0, index = 0; i < numTasks && (index < MAX_TASKS); ++i) {
             if (mCancelledByUser) {
                 if (DEBUG) Log.v(TAG, "loading tasks cancelled");
                 mIsLoading = false;
                 return;
             }
             final ActivityManager.RecentTaskInfo recentInfo = recentTasks.get(i);
-            boolean isRunning = false;
-            if (mOnlyShowRunningTasks) {
-                for (ActivityManager.RunningTaskInfo task : runningTasks) {
-                    if (task.numRunning <= 0) continue;
-                    if (recentInfo.baseIntent.getComponent().getPackageName().equals(
-                            task.baseActivity.getPackageName())) {
-                        isRunning = true;
-                    }
-                }
-            }
-            if (isRunning) continue;
 
             final Intent intent = new Intent(recentInfo.baseIntent);
             if (recentInfo.origActivity != null) {
@@ -862,10 +846,6 @@ public class RecentPanelView {
 
     protected void setShowTopTask(boolean enabled) {
         mShowTopTask = enabled;
-    }
-
-    protected void setShowOnlyRunningTasks(boolean enabled) {
-        mOnlyShowRunningTasks = enabled;
     }
 
     protected boolean hasFavorite() {

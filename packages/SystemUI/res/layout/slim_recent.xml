@@ -21,9 +21,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
-    android:paddingStart="@dimen/slim_recents_elevation"
-    android:elevation="@dimen/slim_recents_elevation"
-    android:clipToPadding="false"
     android:layout_width="@dimen/recent_width"
     android:layout_height="match_parent" >
 
@@ -32,7 +29,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center" >
+        android:gravity="center"
+        android:background="@drawable/recent_bg_dropshadow" >
 
         <com.android.cards.view.CardListView
             android:id="@+id/recent_list"
@@ -65,7 +63,7 @@
         android:gravity="top|center_horizontal"
         android:orientation="vertical"
         android:visibility="gone"
-        android:background="#ffff0000" >
+        android:background="@drawable/recent_warning_bg_dropshadow" >
 
         <ImageView
             android:layout_width="wrap_content"

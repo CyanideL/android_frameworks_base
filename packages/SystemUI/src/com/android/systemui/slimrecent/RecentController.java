@@ -31,7 +31,6 @@ import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.VectorDrawable;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.RemoteException;
@@ -57,7 +56,6 @@ import android.widget.RelativeLayout;
 import com.android.cards.view.CardListView;
 
 import com.android.systemui.R;
-import com.android.systemui.recents.misc.Utilities;
 import com.android.systemui.statusbar.BaseStatusBar;
 
 /**
@@ -257,45 +255,33 @@ public class RecentController implements RecentPanelView.OnExitListener,
         mEmptyRecentView.setImageResource(0);
 
         // Set correct backgrounds based on calculated main gravity.
-        mRecentWarningContent.setBackgroundColor(Color.RED);
-        VectorDrawable vd = (VectorDrawable)
-                mContext.getResources().getDrawable(R.drawable.ic_empty_recent);
-        vd.setTint(getEmptyRecentColor());
-        mEmptyRecentView.setImageDrawable(vd);
-        int padding = mContext.getResources().getDimensionPixelSize(R.dimen.slim_recents_elevation);
         if (mMainGravity == Gravity.LEFT) {
-            mRecentContainer.setPadding(0, 0, padding, 0);
-            mEmptyRecentView.setRotation(180);
+            mRecentContent.setBackgroundResource(R.drawable.recent_bg_dropshadow_left);
+            mRecentWarningContent.setBackgroundResource(
+                    R.drawable.recent_warning_bg_dropshadow_left);
+            mEmptyRecentView.setImageResource(R.drawable.ic_empty_recent_left);
         } else {
-            mRecentContainer.setPadding(padding, 0, 0, 0);
-            mEmptyRecentView.setRotation(0);
+            mRecentContent.setBackgroundResource(R.drawable.recent_bg_dropshadow);
+            mRecentWarningContent.setBackgroundResource(
+                    R.drawable.recent_warning_bg_dropshadow);
+            mEmptyRecentView.setImageResource(R.drawable.ic_empty_recent);
         }
-
         // Notify panel view about new main gravity.
         if (mRecentPanelView != null) {
             mRecentPanelView.setMainGravity(mMainGravity);
         }
-
+        
         // Set custom background color (or reset to default, as the case may be
         if (mRecentContent != null) {
-            mRecentContent.setElevation(50);
             if (mPanelColor != 0x00ffffff) {
                 mRecentContent.setBackgroundColor(mPanelColor);
             } else {
-                mRecentContent.setBackgroundColor(
-                        mContext.getResources().getColor(R.color.recent_background));
+                if (mMainGravity == Gravity.LEFT) {
+                    mRecentContent.setBackgroundResource(R.drawable.recent_bg_dropshadow_left);
+                } else {
+                    mRecentContent.setBackgroundResource(R.drawable.recent_bg_dropshadow);
+                }
             }
-        }
-    }
-
-    private int getEmptyRecentColor() {
-        if (Utilities.computeContrastBetweenColors(mPanelColor,
-                Color.WHITE) < 3f) {
-            return mContext.getResources().getColor(
-                    R.color.recents_empty_dark_color);
-        } else {
-            return mContext.getResources().getColor(
-                    R.color.recents_empty_light_color);
         }
     }
 
@@ -547,9 +533,6 @@ public class RecentController implements RecentPanelView.OnExitListener,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.RECENT_PANEL_BG_COLOR),
                     false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.RECENT_SHOW_RUNNING_TASKS),
-                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -593,21 +576,23 @@ public class RecentController implements RecentPanelView.OnExitListener,
                 mRecentPanelView.setShowTopTask(Settings.System.getIntForUser(
                     resolver, Settings.System.RECENT_PANEL_SHOW_TOPMOST, 1,
                     UserHandle.USER_CURRENT) == 1);
-                mRecentPanelView.setShowOnlyRunningTasks(Settings.System.getIntForUser(
-                    resolver, Settings.System.RECENT_SHOW_RUNNING_TASKS, 0,
-                    UserHandle.USER_CURRENT) == 1);
             }
 
             // Update colors in RecentPanelView
             mPanelColor = Settings.System.getIntForUser(resolver,
                     Settings.System.RECENT_PANEL_BG_COLOR, 0x00ffffff, UserHandle.USER_CURRENT);
 
-            mRecentContent.setElevation(50);
-            if (mPanelColor != 0x00ffffff) {
-                mRecentContent.setBackgroundColor(mPanelColor);
+            if (mPanelColor == Integer.MIN_VALUE
+                || mPanelColor == -2
+                || mPanelColor == 0x00ffffff) {
+                    // Flag to reset recent panel background color
+                    if (mMainGravity == Gravity.LEFT) {
+                        mRecentContent.setBackgroundResource(R.drawable.recent_bg_dropshadow_left);
+                    } else {
+                        mRecentContent.setBackgroundResource(R.drawable.recent_bg_dropshadow);
+                    }
             } else {
-                mRecentContent.setBackgroundColor(
-                        mContext.getResources().getColor(R.color.recent_background));
+                    mRecentContent.setBackgroundColor(mPanelColor);
             }
         }
     }

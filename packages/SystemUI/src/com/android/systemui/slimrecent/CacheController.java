@@ -17,7 +17,6 @@
 
 package com.android.systemui.slimrecent;
 
-import android.app.ActivityManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.BroadcastReceiver;
@@ -150,10 +149,6 @@ public class CacheController {
 
         final Resources res = context.getResources();
 
-        int maxNumTasksToLoad = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.RECENTS_MAX_APPS, ActivityManager.getMaxRecentTasksStatic(),
-                UserHandle.USER_CURRENT);
-
         // Gets the dimensions of the device's screen
         DisplayMetrics dm = res.getDisplayMetrics();
         final int screenWidth = dm.widthPixels;
@@ -169,14 +164,14 @@ public class CacheController {
                 (screenWidth / thumbnailWidth) * (screenHeight / thumbnailHeight);
 
         // Needed screen pages for max thumbnails we can get.
-        float neededPages = maxNumTasksToLoad / thumbnailsPerPage;
+        float neededPages = RecentPanelView.MAX_TASKS / thumbnailsPerPage;
 
         // Calculate how much app icons we can put per screen page
         final int iconSize = res.getDimensionPixelSize(R.dimen.recent_app_icon_size);
         final float iconsPerPage = (screenWidth / iconSize) * (screenHeight / iconSize);
 
         // Needed screen pages for max thumbnails and max app icons we can get.
-        neededPages += maxNumTasksToLoad / iconsPerPage;
+        neededPages += RecentPanelView.MAX_TASKS / iconsPerPage;
 
         // Calculate final cache size, stored in kilobytes.
         int cacheSize = (int) (size * neededPages / 1024);

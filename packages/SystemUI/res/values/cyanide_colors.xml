@@ -36,13 +36,9 @@
     <color name="task_item_view_background">#808080</color>
     <color name="task_item_background">#0000</color>
     <color name="task_item_text">#ffffffff</color>
-
-    <!-- Recents -->
-    <color name="recents_empty_dark_color">#ff4d4d4d</color>
-    <color name="recents_empty_light_color">#ffb3b3b3</color>
-
+    
     <!-- Slim recent -->
-    <color name="recent_background">#80000000</color>
+    <color name="recent_background">#80f5f5f5</color>
 
     <!-- Card Color -->
     <color name="card_background">#ffffffff</color>
