@@ -434,8 +434,9 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
             }
             if (positionVertical == 0) {
                 gravityVertical = Gravity.TOP;
-                marginTop = taskStackBounds.top + res.getDimensionPixelSize(
-                    R.dimen.recents_fab_margin_top);
+                params.topMargin = mContext.getResources().
+                    getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height)
+                        + searchBarSpaceBounds.height();
             } else if (positionVertical == 1) {
                 gravityVertical = Gravity.CENTER_VERTICAL;
             } else {
@@ -488,7 +489,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
 
     private boolean showMemDisplay() {
         boolean enableMemDisplay = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.SYSTEMUI_RECENTS_MEM_DISPLAY, 0) == 1;
+                Settings.System.SYSTEMUI_RECENTS_MEM_DISPLAY, 1) == 1;
 
         if (!enableMemDisplay) {
             mMemText.setVisibility(View.GONE);

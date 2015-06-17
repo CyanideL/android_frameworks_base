@@ -609,8 +609,8 @@ public class RecentController implements RecentPanelView.OnExitListener,
 
             // Get user scale factor.
             float scaleFactor = Settings.System.getIntForUser(
-                    resolver, Settings.System.SLIM_RECENTS_SCALE_FACTOR, 100,
-                    UserHandle.USER_CURRENT) / 100.0f;
+                    resolver, Settings.System.SLIM_RECENTS_SCALE_FACTOR, 85,
+                    UserHandle.USER_CURRENT) / 85.0f;
 
             // If changed set new scalefactor, rebuild the recent panel
             // and notify RecentPanelView about new value.
@@ -628,7 +628,7 @@ public class RecentController implements RecentPanelView.OnExitListener,
                         mRecentPanelView.EXPANDED_MODE_AUTO,
                         UserHandle.USER_CURRENT));
                 mRecentPanelView.setShowTopTask(Settings.System.getIntForUser(
-                        resolver, Settings.System.SLIM_RECENTS_SHOW_TOPMOST, 0,
+                        resolver, Settings.System.SLIM_RECENTS_SHOW_TOPMOST, 1,
                         UserHandle.USER_CURRENT) == 1);
             }
 

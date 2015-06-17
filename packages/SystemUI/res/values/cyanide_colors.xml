@@ -62,10 +62,10 @@
     <!-- Background  colors -->
 
     <!-- The default color of the recents panel background -->
-    <color name="panel_background">#80000000</color>
+    <color name="panel_background">#44000000</color>
 
     <!-- The default color of the recents card background -->
-    <color name="card_background">#ff1b1f23</color>
+    <color name="card_background">#52000000</color>
 
     <!-- The color of the recents expand card content- and app icon background (fully transparent) -->
     <color name="card_backgroundExpand">#00ffffff</color>

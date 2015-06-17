@@ -259,11 +259,11 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
                 mEmptyView.setOnClickListener(null);
             }
             boolean showClearRecents = Settings.System.getInt(getContentResolver(),
-                       Settings.System.ANDROID_RECENTS_SHOW_CLEAR_ALL, 0) == 1;
+                       Settings.System.ANDROID_RECENTS_SHOW_CLEAR_ALL, 1) == 1;
             findViewById(R.id.clear_recents_layout).setVisibility(showClearRecents ?
                     View.VISIBLE : View.GONE);
             boolean showSearchBar = Settings.System.getInt(getContentResolver(),
-                       Settings.System.ANDROID_RECENTS_SHOW_SEARCH_BAR, 1) == 1;
+                       Settings.System.ANDROID_RECENTS_SHOW_SEARCH_BAR, 0) == 1;
             if (mRecentsView.hasSearchBar()) {
                 if (showSearchBar) {
                     mRecentsView.setSearchBarVisibility(View.VISIBLE);
