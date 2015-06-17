@@ -4399,28 +4399,55 @@ public final class Settings {
         public static final String STATUS_BAR_EXPANDED_HEADER_SHOW_WEATHER_LOCATION = "status_bar_expanded_header_show_weather_location";
 
         /**
-		 * show clear all recents button
-		 * @hide
-		 */
-		public static final String SHOW_CLEAR_ALL_RECENTS = "show_clear_all_recents";
+         * Whether to show the search bar in the recent apps panel
+         * @hide
+         */
+        public static final String ANDROID_RECENTS_SHOW_SEARCH_BAR = "android_recents_show_search_bar";
+
+        /**
+         * Whether to show the clear all button in the recent apps panel
+         * @hide
+         */
+        public static final String ANDROID_RECENTS_SHOW_CLEAR_ALL = "android_recents_show_clear_all";
 	
 		/**
-		 * location of the clear all rectents button
-		 * @hide
-		 */
-		public static final String RECENTS_CLEAR_ALL_LOCATION = "recents_clear_all_location";
-		
-		/**
+         * Horizontal position of the clear all button in the recent apps panel
+         * 0: Left
+         * 1: Center
+         * 2: Right
+         * default: 2
+         * @hide
+         */
+        public static final String ANDROID_RECENTS_CLEAR_ALL_POSITION_HORIZONTAL = "android_recents_clear_all_position_horizontal";
+
+        /**
+         * Vertical position of the clear all button in the recent apps panel
+         * 0: Top
+         * 1: Center
+         * 2: Bottom
+         * default: 0
+         * @hide
+         */
+        public static final String ANDROID_RECENTS_CLEAR_ALL_POSITION_VERTICAL = "android_recents_clear_all_position_vertical";
+
+        /**
+         * Wether to use a custom color for the clear all button icon
+         *
+         * @hide
+         */
+        public static final String ANDROID_RECENTS_CLEAR_ALL_USE_ICON_COLOR = "android_recents_clear_all_use_icon_color";
+
+        /**
          * Color of the clear all button background in the recent apps panel
          * @hide
          */
-        public static final String RECENT_APPS_CLEAR_ALL_BG_COLOR = "recent_apps_clear_all_bg_color";
+        public static final String ANDROID_RECENTS_CLEAR_ALL_BG_COLOR = "android_recents_clear_all_bg_color";
 
         /**
          * Color of the clear all button icon in the recent apps panel
          * @hide
          */
-        public static final String RECENT_APPS_CLEAR_ALL_ICON_COLOR = "recent_apps_clear_all_icon_color";
+        public static final String ANDROID_RECENTS_CLEAR_ALL_ICON_COLOR = "android_recents_clear_all_icon_color";
         
         /**
           * Volume keys control cursor in text fields (default is 0)
@@ -4430,12 +4457,6 @@ public final class Settings {
           * @hide
           */
          public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
-
-        /**
-         * Show search bar in recents
-         * @hide
-         */
-        public static final String RECENTS_SHOW_SEARCH_BAR = "recents_show_search_bar";
         
         /**
 		 * Whether to dismiss all recents tasks

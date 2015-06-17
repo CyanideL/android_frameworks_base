@@ -94,5 +94,13 @@
 
     <!-- Network traffic monitor multi-line text size -->
     <dimen name="net_traffic_multi_text_size">10dp</dimen>
+    
+    <!--Recents floating action button -->
+    <dimen name="recents_fab_height">56dp</dimen>
+    <dimen name="recents_fab_width">56dp</dimen>
+    <dimen name="recents_fab_translation_z">12dp</dimen>
+    <dimen name="recents_fab_no_margin">0dp</dimen>
+    <dimen name="recents_fab_margin_top">8dp</dimen>
+    <dimen name="recents_fab_margin_bottom">56dp</dimen>
 
 </resources>
