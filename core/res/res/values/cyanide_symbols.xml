@@ -185,6 +185,8 @@
   <java-symbol type="drawable" name="ic_lock_lock_alpha" />
   <java-symbol type="drawable" name="ic_lock_user" />
   <java-symbol type="drawable" name="ic_lock_profile_cyanide" />
+  <java-symbol type="string" name="global_action_restart" />
+  <java-symbol type="drawable" name="ic_lock_restart" />
   <java-symbol type="drawable" name="ic_audio_ring_notif_cyanide" />
   <java-symbol type="string" name="global_action_current_user" />
   <java-symbol type="dimen" name="max_avatar_size" />

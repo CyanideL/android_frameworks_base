@@ -290,6 +290,9 @@ public class PolicyHelper {
         } else if (clickAction.equals(PolicyConstants.ACTION_PROFILE)) {
             return context.getResources().getDrawable(
                 com.android.internal.R.drawable.ic_lock_profile_cyanide);
+        } else if (clickAction.equals(PolicyConstants.ACTION_RESTARTUI)) {
+            return context.getResources().getDrawable(
+                com.android.internal.R.drawable.ic_lock_restart);
         }
         return null;
     }

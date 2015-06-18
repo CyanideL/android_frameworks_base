@@ -128,5 +128,7 @@
     <!-- Flashlight notification -->
     <string name="notification_flashlight_on_title">Flashlight is on</string>
     <string name="notification_flashlight_on_summary">Tap to turn off</string>
+    
+    <string name="global_action_restart">Restart SystemUI</string>
 
 </resources>

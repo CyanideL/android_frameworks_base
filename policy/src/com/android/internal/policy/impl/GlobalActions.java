@@ -110,6 +110,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.android.internal.util.cyanide.OnTheGoActions;
+import com.cyanide.util.Helpers;
 
 /**
  * Helper to show the global actions dialog.  Each item is an {@link Action} that
@@ -370,6 +371,11 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 mContext, actionKey, config.getIcon(), true);
                 mItems.add(getLockdownAction(iconColor));
                 
+            } else if (actionKey.equals(PolicyConstants.ACTION_RESTARTUI)) {
+                Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
+                mContext, actionKey, config.getIcon(), true);
+                mItems.add(getRestartAction(iconColor));
+            
             } else if (actionKey.equals(PolicyConstants.ACTION_ONTHEGO)) {
                 Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
                 mContext, actionKey, config.getIcon(), true);
@@ -773,6 +779,27 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         };
     }
 
+    private Action getRestartAction(Drawable iconColor) {
+        return new SinglePressAction(iconColor, R.string.global_action_restart) {
+
+             public void onPress() {
+                 Helpers.restartSystemUI();
+             }
+
+             public boolean onLongPress() {
+                 return false;
+             }
+
+             public boolean showDuringKeyguard() {
+                 return true;
+             }
+
+             public boolean showBeforeProvisioning() {
+                 return true;
+             }
+        };
+    }
+    
     private Action getLockdownAction(Drawable iconColor) {
         return new SinglePressAction(iconColor, R.string.global_action_lockdown) {
 
