@@ -165,19 +165,6 @@ public class Action {
                         Settings.System.PA_PIE_STATE,
                         paPieState ? 0 : 1, UserHandle.USER_CURRENT);
                 return;
-            } else if (action.equals(ActionConstants.ACTION_NAVBAR)) {
-                boolean navBarState = isNavBarEnabled(context);
-                if (navBarState && !isPieEnabled(context) && isNavBarDefault(context)) {
-                    Toast.makeText(context,
-                            com.android.internal.R.string.disable_navigation_pie_error,
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
-                Settings.System.putIntForUser(
-                        context.getContentResolver(),
-                        Settings.System.NAVBAR_FORCE_ENABLE,
-                        navBarState ? 0 : 1, UserHandle.USER_CURRENT);
-                return;
             } else if (action.equals(ActionConstants.ACTION_KILL)) {
                 if (isKeyguardShowing) {
                     return;
