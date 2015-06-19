@@ -68,6 +68,7 @@ import com.android.systemui.qs.tiles.PowerMenuTile;
 import com.android.systemui.qs.tiles.RoamingTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.SlimActionTile;
+import com.android.systemui.qs.tiles.SystemUIRestartTile;
 import com.android.systemui.qs.tiles.VisualizerTile;
 import com.android.systemui.qs.tiles.ScreenOffTile;
 import com.android.systemui.qs.tiles.ScreenshotTile;
@@ -411,6 +412,8 @@ public class QSTileHost implements QSTile.Host {
                 return new AppSideBarTile(this);
             case QSConstants.TILE_PA_PIE_CONTROL:
                 return new PAPieControlTile(this);
+            case QSConstants.TILE_SYSTEMUI_RESTART:
+                return new SystemUIRestartTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }

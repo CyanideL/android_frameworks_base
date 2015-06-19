@@ -67,6 +67,7 @@ public class QSConstants {
     public static final String TILE_TRDS = "trds";
     public static final String TILE_APPSIDEBAR = "toggleAppSideBar";
     public static final String TILE_PA_PIE_CONTROL = "togglePAPieControl";
+    public static final String TILE_SYSTEMUI_RESTART = "reboot_systemui";
 
     // Order matters
     protected static final ArrayList<String> TILES_DEFAULT = new ArrayList<String>();
@@ -124,5 +125,6 @@ public class QSConstants {
         TILES_AVAILABLE.add(TILE_TRDS);
         TILES_AVAILABLE.add(TILE_APPSIDEBAR);
         TILES_AVAILABLE.add(TILE_PA_PIE_CONTROL);
+        TILES_AVAILABLE.add(TILE_SYSTEMUI_RESTART);
     }
 }
