@@ -165,6 +165,45 @@ public class Action {
                         Settings.System.PA_PIE_STATE,
                         paPieState ? 0 : 1, UserHandle.USER_CURRENT);
                 return;
+            } else if (action.equals(ActionConstants.ACTION_APP_CIRCLE_BAR)) {
+                boolean circleBarState = isCircleBarEnabled(context);
+                if (circleBarState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.ENABLE_APP_CIRCLE_BAR,
+                        circleBarState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
+            } else if (action.equals(ActionConstants.ACTION_APP_SIDEBAR)) {
+                boolean sideBarState = isSideBarEnabled(context);
+                if (sideBarState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.APP_SIDEBAR_ENABLED,
+                        sideBarState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
+            } else if (action.equals(ActionConstants.ACTION_GESTURE_ANYWHERE)) {
+                boolean gestureAnywhereState = isGestureAnywhereEnabled(context);
+                if (gestureAnywhereState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.GESTURE_ANYWHERE_ENABLED,
+                        gestureAnywhereState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
             } else if (action.equals(ActionConstants.ACTION_KILL)) {
                 if (isKeyguardShowing) {
                     return;
@@ -428,6 +467,24 @@ public class Action {
     public static boolean isPaPieEnabled(Context context) {
         return Settings.System.getIntForUser(context.getContentResolver(),
                 Settings.System.PA_PIE_STATE,
+                0, UserHandle.USER_CURRENT) == 1;
+    }
+    
+    public static boolean isCircleBarEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.ENABLE_APP_CIRCLE_BAR,
+                0, UserHandle.USER_CURRENT) == 1;
+    }
+    
+    public static boolean isSideBarEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.APP_SIDEBAR_ENABLED,
+                0, UserHandle.USER_CURRENT) == 1;
+    }
+    
+    public static boolean isGestureAnywhereEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.GESTURE_ANYWHERE_ENABLED,
                 0, UserHandle.USER_CURRENT) == 1;
     }
 

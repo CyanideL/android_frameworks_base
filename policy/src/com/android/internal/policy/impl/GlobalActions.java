@@ -151,6 +151,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private ToggleAction mPieModeOn;
     private ToggleAction mPaPieModeOn;
     private ToggleAction mNavBarModeOn;
+    private ToggleAction mAppCircleBarModeOn;
+    private ToggleAction mAppSideBarModeOn;
+    private ToggleAction mGestureAnywhereModeOn;
 
     private MyAdapter mAdapter;
 
@@ -161,6 +164,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private ToggleAction.State mPieState = ToggleAction.State.Off;
     private ToggleAction.State mPaPieState = ToggleAction.State.Off;
     private ToggleAction.State mNavBarState = ToggleAction.State.Off;
+    private ToggleAction.State mAppCircleBarState = ToggleAction.State.Off;
+    private ToggleAction.State mAppSideBarState = ToggleAction.State.Off;
+    private ToggleAction.State mGestureAnywhereState = ToggleAction.State.Off;
     private boolean mIsWaitingForEcmExit = false;
     private boolean mHasTelephony;
     private boolean mHasVibrator;
@@ -351,6 +357,24 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 constructNavBarToggle(iconColor);
                 mItems.add(mNavBarModeOn);
 
+            } else if (actionKey.equals(PolicyConstants.ACTION_APP_CIRCLE_BAR)) {
+                Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
+                mContext, actionKey, config.getIcon(), true);
+                constructAppCircleBarToggle(iconColor);
+                mItems.add(mAppCircleBarModeOn);
+            
+            } else if (actionKey.equals(PolicyConstants.ACTION_APP_SIDEBAR)) {
+                Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
+                mContext, actionKey, config.getIcon(), true);
+                constructAppSideBarToggle(iconColor);
+                mItems.add(mAppSideBarModeOn);
+            
+            } else if (actionKey.equals(PolicyConstants.ACTION_GESTURE_ANYWHERE)) {
+                Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
+                mContext, actionKey, config.getIcon(), true);
+                constructGestureAnywhereToggle(iconColor);
+                mItems.add(mGestureAnywhereModeOn);
+            
             } else if ((actionKey.equals(PolicyConstants.ACTION_SOUND)) && (mShowSilentToggle)) {
                 mItems.add(mSilentModeAction);
 
@@ -701,6 +725,78 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         };
         onNavBarModeChanged();
     }
+    
+    private void constructAppCircleBarToggle(Drawable iconColor) {
+        mAppCircleBarModeOn = new ToggleAction(
+                iconColor,
+                iconColor,
+                R.string.global_actions_toggle_appcirclebar_mode,
+                R.string.global_actions_appcirclebar_mode_on_status,
+                R.string.global_actions_appcirclebar_mode_off_status) {
+
+            void onToggle(boolean on) {
+                com.android.internal.util.cyanide.Action.processAction(
+                    mContext, PolicyConstants.ACTION_APP_CIRCLE_BAR, false);
+            }
+
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return false;
+            }
+        };
+        onAppCircleBarModeChanged();
+    }
+    
+    private void constructAppSideBarToggle(Drawable iconColor) {
+        mAppSideBarModeOn = new ToggleAction(
+                iconColor,
+                iconColor,
+                R.string.global_actions_toggle_appsidebar_mode,
+                R.string.global_actions_appsidebar_mode_on_status,
+                R.string.global_actions_appsidebar_mode_off_status) {
+
+            void onToggle(boolean on) {
+                com.android.internal.util.cyanide.Action.processAction(
+                    mContext, PolicyConstants.ACTION_APP_SIDEBAR, false);
+            }
+
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return false;
+            }
+        };
+        onAppSideBarModeChanged();
+    }
+    
+    private void constructGestureAnywhereToggle(Drawable iconColor) {
+        mGestureAnywhereModeOn = new ToggleAction(
+                iconColor,
+                iconColor,
+                R.string.global_actions_toggle_gesture_anywhere_mode,
+                R.string.global_actions_gesture_anywhere_mode_on_status,
+                R.string.global_actions_gesture_anywhere_mode_off_status) {
+
+            void onToggle(boolean on) {
+                com.android.internal.util.cyanide.Action.processAction(
+                    mContext, PolicyConstants.ACTION_GESTURE_ANYWHERE, false);
+            }
+
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return false;
+            }
+        };
+        onGestureAnywhereModeChanged();
+    }
 
     private final class RebootAction extends SinglePressAction implements LongPressAction {
         private RebootAction(Drawable iconColor) {
@@ -946,6 +1042,15 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
         if (mNavBarModeOn != null) {
             mNavBarModeOn.updateState(mNavBarState);
+        }
+        if (mAppCircleBarModeOn != null) {
+            mAppCircleBarModeOn.updateState(mAppCircleBarState);
+        }
+        if (mAppSideBarModeOn != null) {
+            mAppSideBarModeOn.updateState(mAppSideBarState);
+        }
+        if (mGestureAnywhereModeOn != null) {
+            mGestureAnywhereModeOn.updateState(mGestureAnywhereState);
         }
 
         // Start observing setting changes during
@@ -1521,6 +1626,15 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     Settings.System.NAVBAR_FORCE_ENABLE), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.ENABLE_APP_CIRCLE_BAR), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.APP_SIDEBAR_ENABLED), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.GESTURE_ANYWHERE_ENABLED), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SYSTEM_PROFILES_ENABLED), false, this,
                     UserHandle.USER_ALL);
         }
@@ -1537,6 +1651,15 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             } else if (uri.equals(Settings.System.getUriFor(
                 Settings.System.NAVBAR_FORCE_ENABLE))) {
                 onNavBarModeChanged();
+            } else if (uri.equals(Settings.System.getUriFor(
+                Settings.System.ENABLE_APP_CIRCLE_BAR))) {
+                onAppCircleBarModeChanged();
+            } else if (uri.equals(Settings.System.getUriFor(
+                Settings.System.APP_SIDEBAR_ENABLED))) {
+                onAppSideBarModeChanged();
+            } else if (uri.equals(Settings.System.getUriFor(
+                Settings.System.GESTURE_ANYWHERE_ENABLED))) {
+                onGestureAnywhereModeChanged();
             } else if (uri.equals(Settings.System.getUriFor(
                 Settings.System.SYSTEM_PROFILES_ENABLED))) {
                 onProfilesChanged();
@@ -1662,6 +1785,39 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         mNavBarState = navBarModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
         if (mNavBarModeOn != null) {
             mNavBarModeOn.updateState(mNavBarState);
+        }
+    }
+    
+    private void onAppCircleBarModeChanged() {
+        boolean appCircleBarModeOn = Settings.System.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.ENABLE_APP_CIRCLE_BAR,
+                0, UserHandle.USER_CURRENT) == 1;
+        mAppCircleBarState = appCircleBarModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
+        if (mAppCircleBarModeOn != null) {
+            mAppCircleBarModeOn.updateState(mAppCircleBarState);
+        }
+    }
+    
+    private void onAppSideBarModeChanged() {
+        boolean appSideBarModeOn = Settings.System.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.APP_SIDEBAR_ENABLED,
+                0, UserHandle.USER_CURRENT) == 1;
+        mAppSideBarState = appSideBarModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
+        if (mAppSideBarModeOn != null) {
+            mAppSideBarModeOn.updateState(mAppSideBarState);
+        }
+    }
+    
+    private void onGestureAnywhereModeChanged() {
+        boolean gestureAnywhereModeOn = Settings.System.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.GESTURE_ANYWHERE_ENABLED,
+                0, UserHandle.USER_CURRENT) == 1;
+        mGestureAnywhereState = gestureAnywhereModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
+        if (mGestureAnywhereModeOn != null) {
+            mGestureAnywhereModeOn.updateState(mGestureAnywhereState);
         }
     }
     

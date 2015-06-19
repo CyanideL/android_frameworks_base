@@ -34,6 +34,9 @@ public class PolicyConstants {
     public static final String ACTION_LOCKDOWN         = "**lockdown**";
     public static final String ACTION_ONTHEGO          = "**onthego**";
     public static final String ACTION_RESTARTUI          = "**restartui**";
+    public static final String ACTION_APP_CIRCLE_BAR       = "**appcirclebar**";
+    public static final String ACTION_APP_SIDEBAR          = "**appsidebar**";
+    public static final String ACTION_GESTURE_ANYWHERE     = "**gesture_anywhere**";
 
     public static final String ACTION_DELIMITER  = "|";
     public static final String ICON_EMPTY = "empty";
