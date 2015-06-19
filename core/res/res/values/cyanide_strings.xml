@@ -133,6 +133,9 @@
     <string name="global_actions_toggle_appcirclebar_mode">AppCircleBar</string>
     <string name="global_actions_toggle_appsidebar_mode">AppSideBar</string>
     <string name="global_actions_toggle_gesture_anywhere_mode">Gesture Anywhere</string>
+    <string name="global_actions_toggle_hwkeys_mode">HWKeys</string>
+    <string name="global_actions_toggle_heads_up_mode">Heads Up</string>
+    <string name="global_actions_toggle_ambient_display_mode">Ambient Display</string>
     
     <!-- status message in phone options dialog for when AppCircleBar is on -->
     <string name="global_actions_appcirclebar_mode_on_status">AppCircleBar is ON</string>
@@ -148,5 +151,20 @@
     <string name="global_actions_gesture_anywhere_mode_on_status">Gesture Anywhere is ON</string>
     <!-- status message in phone options dialog for when pie is off -->
     <string name="global_actions_gesture_anywhere_mode_off_status">Gesture Anywhere is OFF</string>
+    
+    <!-- status message in phone options dialog for when hweys is on -->
+    <string name="global_actions_hwkeys_mode_on_status">HWKeys are ON</string>
+    <!-- status message in phone options dialog for when hwkeys is off -->
+    <string name="global_actions_hwkeys_mode_off_status">HWKeys are OFF</string>
+    
+    <!-- status message in phone options dialog for when heads up is on -->
+    <string name="global_actions_heads_up_mode_on_status">Heads Up is ON</string>
+    <!-- status message in phone options dialog for when heads up is off -->
+    <string name="global_actions_heads_up_mode_off_status">Heads Up is OFF</string>
+    
+    <!-- status message in phone options dialog for when ambient display is on -->
+    <string name="global_actions_ambient_display_mode_on_status">Ambient Display is ON</string>
+    <!-- status message in phone options dialog for when ambient display is off -->
+    <string name="global_actions_ambient_display_mode_off_status">Ambient Display is OFF</string>
 
 </resources>

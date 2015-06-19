@@ -286,4 +286,22 @@
   <java-symbol type="string" name="global_actions_gesture_anywhere_mode_off_status" />
   <java-symbol type="drawable" name="ic_lock_gestures" />
   
+  <!-- HWKeys controls -->
+  <java-symbol type="string" name="global_actions_toggle_hwkeys_mode" />
+  <java-symbol type="string" name="global_actions_hwkeys_mode_on_status" />
+  <java-symbol type="string" name="global_actions_hwkeys_mode_off_status" />
+  <java-symbol type="drawable" name="ic_lock_buttons" />
+  
+  <!-- Heads Up controls -->
+  <java-symbol type="string" name="global_actions_toggle_heads_up_mode" />
+  <java-symbol type="string" name="global_actions_heads_up_mode_on_status" />
+  <java-symbol type="string" name="global_actions_heads_up_mode_off_status" />
+  <java-symbol type="drawable" name="ic_lock_heads_up" />
+  
+  <!-- Ambient Display controls -->
+  <java-symbol type="string" name="global_actions_toggle_ambient_display_mode" />
+  <java-symbol type="string" name="global_actions_ambient_display_mode_on_status" />
+  <java-symbol type="string" name="global_actions_ambient_display_mode_off_status" />
+  <java-symbol type="drawable" name="ic_lock_doze" />
+  
 </resources>

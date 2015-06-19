@@ -205,6 +205,45 @@ public class Action {
                         Settings.System.GESTURE_ANYWHERE_ENABLED,
                         gestureAnywhereState ? 0 : 1, UserHandle.USER_CURRENT);
                 return;
+            } else if (action.equals(ActionConstants.ACTION_HWKEYS)) {
+                boolean hWKeysState = isHWKeysEnabled(context);
+                if (hWKeysState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.ENABLE_HW_KEYS,
+                        hWKeysState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
+            } else if (action.equals(ActionConstants.ACTION_HEADS_UP)) {
+                boolean headsUpState = isHeadsUpEnabled(context);
+                if (headsUpState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.HEADS_UP_USER_ENABLED,
+                        headsUpState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
+            } else if (action.equals(ActionConstants.ACTION_AMBIENT_DISPLAY)) {
+                boolean ambientDisplayState = isAmbientDisplayEnabled(context);
+                if (ambientDisplayState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.Secure.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.Secure.DOZE_ENABLED,
+                        ambientDisplayState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
             } else if (action.equals(ActionConstants.ACTION_KILL)) {
                 if (isKeyguardShowing) {
                     return;
@@ -498,6 +537,24 @@ public class Action {
         return Settings.System.getIntForUser(context.getContentResolver(),
                 Settings.System.NAVBAR_FORCE_ENABLE,
                 isNavBarDefault(context) ? 1 : 0, UserHandle.USER_CURRENT) == 1;
+    }
+                
+    public static boolean isHWKeysEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.ENABLE_HW_KEYS,
+                0, UserHandle.USER_CURRENT) == 1;
+    }
+    
+    public static boolean isHeadsUpEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.HEADS_UP_USER_ENABLED,
+                0, UserHandle.USER_CURRENT) == 1;
+    }
+    
+    public static boolean isAmbientDisplayEnabled(Context context) {
+        return Settings.Secure.getIntForUser(context.getContentResolver(),
+                Settings.Secure.DOZE_ENABLED,
+                0, UserHandle.USER_CURRENT) == 1;
     }
 
     public static boolean isNavBarDefault(Context context) {

@@ -342,6 +342,7 @@ public class ActionHelper {
         } else if (clickAction.equals(ActionConstants.ACTION_THEME_SWITCH)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_theme_switch", null, null);
+<<<<<<< HEAD:core/java/com/android/internal/util/cyanide/ActionHelper.java
         } else if (clickAction.equals(ActionConstants.ACTION_LAST_APP)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_lastapp", null, null);
@@ -366,6 +367,15 @@ public class ActionHelper {
         } else if (clickAction.equals(ActionConstants.ACTION_GESTURE_ANYWHERE)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_gestures_on", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_HWKEYS)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_buttons_on", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_HEADS_UP)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_heads_up_on", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_AMBIENT_DISPLAY)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_doze", null, null);
         } else {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_null", null, null);

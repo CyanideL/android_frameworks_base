@@ -302,6 +302,15 @@ public class PolicyHelper {
         } else if (clickAction.equals(PolicyConstants.ACTION_GESTURE_ANYWHERE)) {
             return context.getResources().getDrawable(
                 com.android.internal.R.drawable.ic_lock_gestures);
+        } else if (clickAction.equals(PolicyConstants.ACTION_HWKEYS)) {
+            return context.getResources().getDrawable(
+                com.android.internal.R.drawable.ic_lock_buttons);
+        } else if (clickAction.equals(PolicyConstants.ACTION_HEADS_UP)) {
+            return context.getResources().getDrawable(
+                com.android.internal.R.drawable.ic_lock_heads_up);
+        } else if (clickAction.equals(PolicyConstants.ACTION_AMBIENT_DISPLAY)) {
+            return context.getResources().getDrawable(
+                com.android.internal.R.drawable.ic_lock_doze);
         }
         return null;
     }

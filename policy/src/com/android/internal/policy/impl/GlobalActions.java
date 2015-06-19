@@ -154,6 +154,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private ToggleAction mAppCircleBarModeOn;
     private ToggleAction mAppSideBarModeOn;
     private ToggleAction mGestureAnywhereModeOn;
+    private ToggleAction mHWKeysModeOn;
+    private ToggleAction mHeadsUpModeOn;
+    private ToggleAction mAmbientDisplayModeOn;
 
     private MyAdapter mAdapter;
 
@@ -167,6 +170,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private ToggleAction.State mAppCircleBarState = ToggleAction.State.Off;
     private ToggleAction.State mAppSideBarState = ToggleAction.State.Off;
     private ToggleAction.State mGestureAnywhereState = ToggleAction.State.Off;
+    private ToggleAction.State mHWKeysState = ToggleAction.State.Off;
+    private ToggleAction.State mHeadsUpState = ToggleAction.State.Off;
+    private ToggleAction.State mAmbientDisplayState = ToggleAction.State.Off;
     private boolean mIsWaitingForEcmExit = false;
     private boolean mHasTelephony;
     private boolean mHasVibrator;
@@ -374,7 +380,25 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 mContext, actionKey, config.getIcon(), true);
                 constructGestureAnywhereToggle(iconColor);
                 mItems.add(mGestureAnywhereModeOn);
-            
+
+            } else if (actionKey.equals(PolicyConstants.ACTION_HWKEYS)) {
+                Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
+                mContext, actionKey, config.getIcon(), true);
+                constructHWKeysToggle(iconColor);
+                mItems.add(mHWKeysModeOn);
+
+            } else if (actionKey.equals(PolicyConstants.ACTION_HEADS_UP)) {
+                Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
+                mContext, actionKey, config.getIcon(), true);
+                constructHeadsUpToggle(iconColor);
+                mItems.add(mHeadsUpModeOn);
+
+            } else if (actionKey.equals(PolicyConstants.ACTION_AMBIENT_DISPLAY)) {
+                Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
+                mContext, actionKey, config.getIcon(), true);
+                constructAmbientDisplayToggle(iconColor);
+                mItems.add(mAmbientDisplayModeOn);
+
             } else if ((actionKey.equals(PolicyConstants.ACTION_SOUND)) && (mShowSilentToggle)) {
                 mItems.add(mSilentModeAction);
 
@@ -798,6 +822,78 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         onGestureAnywhereModeChanged();
     }
 
+    private void constructHWKeysToggle(Drawable iconColor) {
+        mHWKeysModeOn = new ToggleAction(
+                iconColor,
+                iconColor,
+                R.string.global_actions_toggle_hwkeys_mode,
+                R.string.global_actions_hwkeys_mode_on_status,
+                R.string.global_actions_hwkeys_mode_off_status) {
+
+            void onToggle(boolean on) {
+                com.android.internal.util.cyanide.Action.processAction(
+                    mContext, PolicyConstants.ACTION_HWKEYS, false);
+            }
+
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return false;
+            }
+        };
+        onHWKeysModeChanged();
+    }
+
+    private void constructHeadsUpToggle(Drawable iconColor) {
+        mHeadsUpModeOn = new ToggleAction(
+                iconColor,
+                iconColor,
+                R.string.global_actions_toggle_heads_up_mode,
+                R.string.global_actions_heads_up_mode_on_status,
+                R.string.global_actions_heads_up_mode_off_status) {
+
+            void onToggle(boolean on) {
+                com.android.internal.util.cyanide.Action.processAction(
+                    mContext, PolicyConstants.ACTION_HEADS_UP, false);
+            }
+
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return false;
+            }
+        };
+        onHeadsUpModeChanged();
+    }
+
+    private void constructAmbientDisplayToggle(Drawable iconColor) {
+        mAmbientDisplayModeOn = new ToggleAction(
+                iconColor,
+                iconColor,
+                R.string.global_actions_toggle_ambient_display_mode,
+                R.string.global_actions_ambient_display_mode_on_status,
+                R.string.global_actions_ambient_display_mode_off_status) {
+
+            void onToggle(boolean on) {
+                com.android.internal.util.cyanide.Action.processAction(
+                    mContext, PolicyConstants.ACTION_AMBIENT_DISPLAY, false);
+            }
+
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return false;
+            }
+        };
+        onAmbientDisplayModeChanged();
+    }
+
     private final class RebootAction extends SinglePressAction implements LongPressAction {
         private RebootAction(Drawable iconColor) {
             super(iconColor, R.string.global_action_reboot);
@@ -1051,6 +1147,15 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
         if (mGestureAnywhereModeOn != null) {
             mGestureAnywhereModeOn.updateState(mGestureAnywhereState);
+        }
+        if (mHWKeysModeOn != null) {
+            mHWKeysModeOn.updateState(mHWKeysState);
+        }
+        if (mHeadsUpModeOn != null) {
+            mHeadsUpModeOn.updateState(mHeadsUpState);
+        }
+        if (mAmbientDisplayModeOn != null) {
+            mAmbientDisplayModeOn.updateState(mAmbientDisplayState);
         }
 
         // Start observing setting changes during
@@ -1635,6 +1740,15 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     Settings.System.GESTURE_ANYWHERE_ENABLED), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.ENABLE_HW_KEYS), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_USER_ENABLED), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.DOZE_ENABLED), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SYSTEM_PROFILES_ENABLED), false, this,
                     UserHandle.USER_ALL);
         }
@@ -1660,6 +1774,15 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             } else if (uri.equals(Settings.System.getUriFor(
                 Settings.System.GESTURE_ANYWHERE_ENABLED))) {
                 onGestureAnywhereModeChanged();
+            } else if (uri.equals(Settings.System.getUriFor(
+                Settings.System.ENABLE_HW_KEYS))) {
+                onHWKeysModeChanged();
+            } else if (uri.equals(Settings.System.getUriFor(
+                Settings.System.HEADS_UP_USER_ENABLED))) {
+                onHeadsUpModeChanged();
+            } else if (uri.equals(Settings.Secure.getUriFor(
+                Settings.Secure.DOZE_ENABLED))) {
+                onAmbientDisplayModeChanged();
             } else if (uri.equals(Settings.System.getUriFor(
                 Settings.System.SYSTEM_PROFILES_ENABLED))) {
                 onProfilesChanged();
@@ -1825,6 +1948,39 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         ContentResolver resolver = mContext.getContentResolver();
         mProfilesEnabled = Settings.System.getInt(resolver,
                 Settings.System.SYSTEM_PROFILES_ENABLED, 1) != 0;
+    }
+
+    private void onHWKeysModeChanged() {
+        boolean hWKeysModeOn = Settings.System.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.ENABLE_HW_KEYS,
+                0, UserHandle.USER_CURRENT) == 1;
+        mHWKeysState = hWKeysModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
+        if (mHWKeysModeOn != null) {
+            mHWKeysModeOn.updateState(mHWKeysState);
+        }
+    }
+
+    private void onHeadsUpModeChanged() {
+        boolean headsUpModeOn = Settings.System.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.HEADS_UP_USER_ENABLED,
+                0, UserHandle.USER_CURRENT) == 1;
+        mHeadsUpState = headsUpModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
+        if (mHeadsUpModeOn != null) {
+            mHeadsUpModeOn.updateState(mHeadsUpState);
+        }
+    }
+
+    private void onAmbientDisplayModeChanged() {
+        boolean ambientDisplayModeOn = Settings.Secure.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.Secure.DOZE_ENABLED,
+                0, UserHandle.USER_CURRENT) == 1;
+        mAmbientDisplayState = ambientDisplayModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
+        if (mAmbientDisplayModeOn != null) {
+            mAmbientDisplayModeOn.updateState(mAmbientDisplayState);
+        }
     }
 
     /**
