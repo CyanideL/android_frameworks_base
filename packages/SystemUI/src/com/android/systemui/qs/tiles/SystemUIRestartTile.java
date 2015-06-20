@@ -25,7 +25,7 @@ import android.provider.Settings;
 import com.android.systemui.R;
 import com.android.systemui.qs.QSTile;
 
-import com.android.internal.util.aicp.Helpers;
+import com.cyanide.util.Helpers;
 
 /** Quick settings tile: Heads Up **/
 public class SystemUIRestartTile extends QSTile<QSTile.BooleanState> {
