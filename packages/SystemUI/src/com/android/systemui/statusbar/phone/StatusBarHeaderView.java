@@ -1246,7 +1246,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                     resolver, Settings.System.HEADS_UP_SHOW_STATUS_BUTTON, 0) == 1;
 
             mShowTaskManager = Settings.System.getInt(resolver,
-                    Settings.System.ENABLE_TASK_MANAGER, 0) == 1;
+                    Settings.System.ENABLE_TASK_MANAGER, 1) == 1;
 
             updateBatteryPercentageSettings();
             updateWeatherSettings();
