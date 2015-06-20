@@ -39,6 +39,8 @@
             android:layout_marginBottom="6dp"
             android:src="@drawable/ic_audio_ring_notif_mute_dark"
             android:scaleType="center"
+            android:duplicateParentState="true"
+            android:background="@drawable/silent_mode_indicator"
             />
     </LinearLayout>
     <!-- Spacer -->
@@ -65,6 +67,8 @@
             android:layout_marginBottom="6dp"
             android:src="@drawable/ic_audio_ring_notif_vibrate_dark"
             android:scaleType="center"
+            android:duplicateParentState="true"
+            android:background="@drawable/silent_mode_indicator"
             />
     </LinearLayout>
 
@@ -92,6 +96,8 @@
             android:layout_marginBottom="6dp"
             android:src="@drawable/ic_audio_ring_notif_dark"
             android:scaleType="center"
+            android:duplicateParentState="true"
+            android:background="@drawable/silent_mode_indicator"
             />
     </LinearLayout>
 </LinearLayout>
