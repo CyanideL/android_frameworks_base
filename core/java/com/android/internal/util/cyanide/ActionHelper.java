@@ -353,7 +353,7 @@ public class ActionHelper {
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_lock_pa_pie", null, null);
         } else if (clickAction.equals(ActionConstants.ACTION_RESTARTUI)) {
             resId = systemUiResources.getIdentifier(
-                        SYSTEMUI_METADATA_NAME + ":drawable/ic_lock_restart", null, null);
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_systemui_restart", null, null);
         } else if (clickAction.equals(ActionConstants.ACTION_APP_CIRCLE_BAR)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_appcirclebar_on", null, null);
