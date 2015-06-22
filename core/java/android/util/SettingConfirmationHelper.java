@@ -36,15 +36,15 @@ public class SettingConfirmationHelper {
     private static final int DISABLED = 2;
     private static final int ASK_LATER = 3;
 
-    public static interface OnSelectListener {
-        void onSelect(boolean enabled);
+    private int mCurrentStatus;
+    private Context mContext;
+
+    public SettingConfirmationHelper(Context context) {
+        mContext = context;
     }
 
-    public static void showConfirmationDialogForSetting(final Context mContext, String title, String msg, Drawable hint,
-                                                        final String setting, final OnSelectListener mListener) {
-        int mCurrentStatus = Settings.System.getInt(mContext.getContentResolver(), setting, NOT_SET);
-        if (mCurrentStatus == ENABLED || mCurrentStatus == DISABLED) return;
-
+    public void showConfirmationDialogForSetting(String title, String msg, Drawable hint, final String setting) {
+        mCurrentStatus = Settings.System.getInt(mContext.getContentResolver(), setting, NOT_SET);
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
         View dialogLayout = layoutInflater.inflate(R.layout.setting_confirmation_dialog, null);
@@ -56,37 +56,33 @@ public class SettingConfirmationHelper {
         builder.setMessage(msg);
         builder.setPositiveButton(R.string.setting_confirmation_yes,
                 new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Settings.System.putInt(mContext.getContentResolver(), setting, ENABLED);
-                        if (mListener == null) return;
-                        mListener.onSelect(true);
-                    }
-                }
-        );
+            public void onClick(DialogInterface dialog, int which) {
+                mCurrentStatus = ENABLED;
+                Settings.System.putInt(mContext.getContentResolver(), setting, mCurrentStatus);
+            }
+        });
         builder.setNeutralButton(R.string.setting_confirmation_ask_me_later,
                 new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Settings.System.putInt(mContext.getContentResolver(), setting, ASK_LATER);
-                        if (mListener == null) return;
-                        mListener.onSelect(false);
-                    }
-                }
-        );
+            public void onClick(DialogInterface dialog, int which) {
+                mCurrentStatus = ASK_LATER;
+                Settings.System.putInt(mContext.getContentResolver(), setting, mCurrentStatus);
+            }
+        });
         builder.setNegativeButton(R.string.setting_confirmation_no,
                 new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Settings.System.putInt(mContext.getContentResolver(), setting, DISABLED);
-                        if (mListener == null) return;
-                        mListener.onSelect(false);
-                    }
-                }
-        );
+            public void onClick(DialogInterface dialog, int which) {
+                mCurrentStatus = DISABLED;
+                Settings.System.putInt(mContext.getContentResolver(), setting, mCurrentStatus);
+            }
+        });
         builder.setCancelable(false);
         AlertDialog dialog = builder.create();
         Window dialogWindow = dialog.getWindow();
         dialogWindow.setType(WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL);
 
-        dialog.show();
+        if(mCurrentStatus == NOT_SET || mCurrentStatus == ASK_LATER) {
+            dialog.show();
+        }
     }
 
 }

@@ -5418,18 +5418,6 @@ public final class Settings {
          * @hide
          */
         public static final String SLIM_ACTION_FLOATS = "slim_action_floats";
-        
-        /**
-         * Swipe recents for floating windows option
-         * @hide
-         */
-        public static final String RECENTS_SWIPE_FLOATING = "recents_swipe_floating";
-
-        /**
-         * Swipe notification for floating window option
-         * @hide
-         */
-        public static final String STATUS_BAR_NOTIFICATION_SWIPE_FLOATING = "status_bar_notification_swipe_floating";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
@@ -5512,9 +5500,7 @@ public final class Settings {
             DISPLAY_TEMPERATURE_DAY,
             DISPLAY_TEMPERATURE_MODE,
             DISPLAY_AUTO_OUTDOOR_MODE,
-            LIVE_DISPLAY_HINTED,
-            RECENTS_SWIPE_FLOATING,
-            STATUS_BAR_NOTIFICATION_SWIPE_FLOATING
+            LIVE_DISPLAY_HINTED
         };
 
         /**
