@@ -84,17 +84,6 @@
             android:src="#FFF"
             android:tag="floating_window_more" />
 
-         <View
-            android:id="@+id/floating_window_line"
-            android:layout_width="wrap_content"
-            android:layout_height="2dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:background="#fff"
-            android:minHeight="5dp"
-            android:tag="floating_window_line" />
-
     </RelativeLayout>
 
 </RelativeLayout>

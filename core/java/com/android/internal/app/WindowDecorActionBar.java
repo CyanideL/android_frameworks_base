@@ -67,6 +67,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.android.internal.util.cyanide.ColorUtils;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -471,98 +473,78 @@ public class WindowDecorActionBar extends ActionBar implements
     /**
      * @hide
      */
-    public void setFloatingWindowBar(FloatingWindowView floatingWindowView) {
-        mFloatingWindowView = floatingWindowView;
-    }
+    public void changeColorFromActionBar(Drawable drawable) {
+        int textColor = -3;
+        int iconTint = Color.WHITE;
 
-    private void changeFloatingWindowColor(int bg_color, int ic_color) {
-        mFloatingWindowView.setFloatingBackgroundColor(bg_color);
-        mFloatingWindowView.setFloatingColorFilter(ic_color);
-    }
-
-    /**
-     * @hide
-     */
-    public void changeColorFromActionBar() {
-        if (mFloatingWindowView != null) {
-            int textColor = -2;
-            int iconTint = Color.WHITE;
-            int color = Color.TRANSPARENT;
-            if (mActionView != null) {
-                TextView titleView = mActionView.getTitleViewActionBar();
-                if (titleView != null) {
-                    if (titleView.getVisibility() == View.VISIBLE) {
-                        textColor = titleView.getCurrentTextColor();
-                    }
+        if (mActionMode != null) {
+            if (drawable == null) {
+                View viewAM = mActionMode.getCustomView();
+                if (viewAM != null) {
+                    drawable = viewAM.getBackground();
                 }
             }
-            if (textColor != -2) {
-                iconTint = textColor;
-            }
-            if (mContainerView != null) {
-                Drawable drawable = mContainerView.getPrimaryBackground();
+        }
+
+        if (mContainerView != null) {
+            if (drawable == null) {
+                drawable = mContainerView.getPrimaryBackground();
                 if (drawable == null) {
                     drawable = mContainerView.getStackedBackground();
                     if (drawable == null) {
-                        drawable = mContainerView.getBackground();
+                        drawable = mContainerView.getSplitBackground();
                     }
                 }
-                color = getMainColorFromActionBarDrawable(drawable);
             }
-            changeFloatingWindowColor(color, iconTint);
         }
-    }
-
-    private int getMainColorFromActionBarDrawable(Drawable drawable) {
-        if (drawable == null) {
-            return Color.TRANSPARENT;
-        }
-
-        Drawable copyDrawable = drawable.getConstantState().newDrawable();
-        if (copyDrawable instanceof ColorDrawable) {
-            return ((ColorDrawable) drawable).getColor();
-        }
-        Bitmap bitmap = drawableToBitmap(copyDrawable);
-        int pixel = bitmap.getPixel(0, 5);
-        int red = Color.red(pixel);
-        int blue = Color.blue(pixel);
-        int green = Color.green(pixel);
-        int alpha = Color.alpha(pixel);
-        return Color.argb(alpha, red, green, blue);
-    }
-
-    private Bitmap drawableToBitmap(Drawable drawable) {
-        if (drawable == null) {
-            return null;
+        if (mActionView != null) {
+            TextView titleView = mActionView.getTitleViewActionBar();
+            if (titleView != null) {
+                if (titleView.getVisibility() == View.VISIBLE) {
+                    textColor = titleView.getCurrentTextColor();
+                }
+            }
+            if ((drawable == null) && (textColor != -3)) {
+                drawable = mActionView.getBackgroundActionBar();
+                if (drawable == null) {
+                    View viewAV = getCustomView();
+                    if (viewAV != null) {
+                        drawable = viewAV.getBackground();
+                    }
+                }
+            }
         }
 
-        if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable) drawable).getBitmap();
+        int color = ColorUtils.getMainColorFromDrawable(drawable);
+
+        if (textColor != -3) {
+            iconTint = textColor;
         }
 
-        Bitmap bitmap;
-        int width = drawable.getIntrinsicWidth();
-        int height = drawable.getIntrinsicHeight();
-        if (width > 0 && height > 0) {
-            bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
+        if (ColorUtils.isBrightColor(color)) {
+            iconTint = Color.BLACK;
+        }
+
+        if (color == -3) {
+            iconTint = -3;
+        }
+
+        if (color != -3) {
+            mActivity.changeFloatingWindowColor(color, iconTint);
         } else {
-            bitmap = null;
+            mActivity.changeFloatingWindowColor(Color.TRANSPARENT, iconTint);
         }
-
-        return bitmap;
     }
 
     public void setBackgroundDrawable(Drawable d) {
         mContainerView.setPrimaryBackground(d);
-        changeColorFromActionBar();
+        changeColorFromActionBar(d);
     }
 
     public void setStackedBackgroundDrawable(Drawable d) {
         mContainerView.setStackedBackground(d);
     }
+
 
     public void setSplitBackgroundDrawable(Drawable d) {
         if (mSplitView != null) {
@@ -751,7 +733,6 @@ public class WindowDecorActionBar extends ActionBar implements
             mHiddenByApp = false;
             updateVisibility(false);
         }
-        changeColorFromActionBar();        
     }
 
     private void showForActionMode() {
@@ -788,7 +769,7 @@ public class WindowDecorActionBar extends ActionBar implements
             updateVisibility(false);
         }
         if (mFloatingWindowView != null) {
-            changeFloatingWindowColor(Color.TRANSPARENT, Color.WHITE);
+            mActivity.changeFloatingWindowColor(Color.TRANSPARENT, Color.WHITE);
         }        
     }
 

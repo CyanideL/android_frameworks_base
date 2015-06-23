@@ -315,7 +315,6 @@
   <java-symbol type="id" name="floating_window_max" />
   <java-symbol type="id" name="floating_window_min" />
   <java-symbol type="id" name="floating_window_more" />
-  <java-symbol type="id" name="floating_window_line" />
   <java-symbol type="layout" name="floating_window_layout" />
   <java-symbol type="string" name="floating_window_snap_top"/>
   <java-symbol type="string" name="floating_window_snap_bottom"/>

@@ -1304,8 +1304,10 @@ public class Activity extends ContextThemeWrapper
         if (decorFloatingView == null) {
             return;
         }
+
         if (!reload) {
             decorFloatingView.setFitsSystemWindows(true);
+            decorFloatingView.hackTurnOffWindowResizeAnim(true);
             mFloatingWindowView = new FloatingWindowView(this, getActionBarHeight(true));
             decorFloatingView.addView(mFloatingWindowView, -1, FloatingWindowView.getParams());
             decorFloatingView.setTagInternal(android.R.id.extractArea, mFloatingWindowView);
@@ -1313,13 +1315,26 @@ public class Activity extends ContextThemeWrapper
             mFloatingWindowView = (FloatingWindowView) decorFloatingView.getTag(android.R.id.extractArea);
             decorFloatingView.bringChildToFront(mFloatingWindowView);
         }
-        if (mDecorActionBar != null) {
-            mDecorActionBar.setFloatingWindowBar(mFloatingWindowView);
-            if (reload && mDecorActionBar.isShowing()) {
-                mDecorActionBar.changeColorFromActionBar();
-            }
+        reloadAppColor(reload);
+    }
+
+    private void reloadAppColor(boolean reload) {
+		if (mActionBar != null) {
+			if (reload && mActionBar.isShowing()) {
+				mDecorActionBar.changeColorFromActionBar(null);
+			}
         }
     }
+
+   /**
+     * @hide
+     */
+    public void changeFloatingWindowColor(int bg_color, int ic_color) {
+        if (mFloatingWindowView != null) {
+            mFloatingWindowView.setFloatingBackgroundColor(bg_color);
+            mFloatingWindowView.setFloatingColorFilter(ic_color);
+        }
+	}
 
     /**
      * Called after {@link #onStop} when the current activity is being

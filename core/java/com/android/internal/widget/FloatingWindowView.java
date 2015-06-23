@@ -40,7 +40,6 @@ public class FloatingWindowView extends RelativeLayout {
     private ImageButton mTitleBarClose;
     private ImageButton mTitleBarMore;
     private View mContentViews;
-    private View mDividerViews;
 
     public FloatingWindowView(final Activity activity, int height) {
         super(activity);
@@ -76,15 +75,12 @@ public class FloatingWindowView extends RelativeLayout {
                                                "floating_window_max");
         mTitleBarMin = (ImageButton) findViewByIdHelper(mTitleBarHeader, R.id.floating_window_min,
                                                "floating_window_min");
-        mDividerViews = findViewByIdHelper(mTitleBarHeader, R.id.floating_window_line,
-                                               "floating_window_line");
 
         if (mTitleBarHeader == null
             || mTitleBarClose == null
             || mTitleBarMore == null
             || mTitleBarMax == null
-            || mTitleBarMin == null
-            || mDividerViews == null) {
+            || mTitleBarMin == null) {
             return;
         }
 
@@ -185,10 +181,6 @@ public class FloatingWindowView extends RelativeLayout {
                       return view.onTouchEvent(event);
                  }
         });
-
-        ViewGroup.LayoutParams divider_param = mDividerViews.getLayoutParams();
-        divider_param.height = 2;
-        mDividerViews.setLayoutParams(divider_param);
     }
 
     private View findViewByIdHelper(View view, int id, String tag) {
@@ -231,15 +223,13 @@ public class FloatingWindowView extends RelativeLayout {
         if (mTitleBarClose == null
             || mTitleBarMax == null
             || mTitleBarMin == null
-            || mTitleBarMore == null
-            || mDividerViews == null) {
+            || mTitleBarMore == null) {
             return;
         }
         mTitleBarMore.setColorFilter(color, Mode.SRC_ATOP);
         mTitleBarMax.setColorFilter(color, Mode.SRC_ATOP);
         mTitleBarMin.setColorFilter(color, Mode.SRC_ATOP);
         mTitleBarClose.setColorFilter(color, Mode.SRC_ATOP);
-        mDividerViews.setBackgroundColor(color);
     }
 
     private ShapeDrawable makeOutline(int color, int thickness) {
