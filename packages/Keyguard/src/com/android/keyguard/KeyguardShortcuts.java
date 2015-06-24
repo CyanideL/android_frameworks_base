@@ -93,6 +93,20 @@ public class KeyguardShortcuts extends LinearLayout {
 
         ActionConfig actionConfig;
 
+        int iconColor = Settings.System.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_SHORTCUTS_ICON_COLOR, -2,
+                UserHandle.USER_CURRENT);
+        int colorMode = Settings.System.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_SHORTCUTS_ICON_COLOR_MODE, 0,
+                UserHandle.USER_CURRENT);
+
+        if (iconColor == -2) {
+            iconColor = mContext.getResources().getColor(
+                com.android.internal.R.color.power_menu_icon_default_color);
+        }
+
         for (int j = 0; j < actionConfigs.size(); j++) {
             actionConfig = actionConfigs.get(j);
 
@@ -104,8 +118,14 @@ public class KeyguardShortcuts extends LinearLayout {
                     new LinearLayout.LayoutParams(dimens, dimens);
             i.setLayoutParams(vp);
 
-            i.setImageDrawable(LockscreenShortcutHelper.getLockscreenShortcutIconImage(
-                    mContext, actionConfig.getClickAction(), actionConfig.getIcon()));
+            if (colorMode != 3) {
+                i.setImageDrawable(LockscreenShortcutHelper.getLockscreenShortcutIconImage(
+                        mContext, actionConfig.getClickAction(), actionConfig.getIcon(), true));
+            } else {
+                i.setImageDrawable(LockscreenShortcutHelper.getLockscreenShortcutIconImage(
+                        mContext, actionConfig.getClickAction(), actionConfig.getIcon(), false));
+            }
+
             i.setContentDescription(AppHelper.getFriendlyNameForUri(
                     mContext, mPackageManager, actionConfig.getClickAction()));
             i.setClickable(true);
@@ -185,6 +205,12 @@ public class KeyguardShortcuts extends LinearLayout {
                     false, this, UserHandle.USER_ALL);
             mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_SHORTCUTS_LONGPRESS),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_SHORTCUTS_ICON_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_SHORTCUTS_ICON_COLOR_MODE),
                     false, this, UserHandle.USER_ALL);
             update();
         }

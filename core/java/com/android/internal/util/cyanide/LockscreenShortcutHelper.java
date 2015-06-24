@@ -68,10 +68,9 @@ public class LockscreenShortcutHelper {
     }
 
     public static Drawable getLockscreenShortcutIconImage(Context context,
-            String clickAction, String customIcon) {
+            String clickAction, String customIcon, boolean colorize) {
         int resId = -1;
-        int defaultIconColor = 0xffffffff;
-        int iconColor = defaultIconColor;
+        int iconColor = -2;
         int colorMode = 3;
         Drawable d = null;
         Drawable dError = null;
@@ -88,15 +87,22 @@ public class LockscreenShortcutHelper {
             return null;
         }
 
-		colorMode = Settings.System.getIntForUser(
-				context.getContentResolver(),
-				Settings.System.LOCKSCREEN_SHORTCUTS_ICON_COLOR_MODE, 3,
-				UserHandle.USER_CURRENT);
-		iconColor = Settings.System.getIntForUser(
-				context.getContentResolver(),
-				Settings.System.LOCKSCREEN_SHORTCUTS_ICON_COLOR, defaultIconColor,
-				UserHandle.USER_CURRENT);
-        
+        if (colorize) {
+            colorMode = Settings.System.getIntForUser(
+                    context.getContentResolver(),
+                    Settings.System.LOCKSCREEN_SHORTCUTS_ICON_COLOR_MODE, 3,
+                    UserHandle.USER_CURRENT);
+            iconColor = Settings.System.getIntForUser(
+                    context.getContentResolver(),
+                    Settings.System.LOCKSCREEN_SHORTCUTS_ICON_COLOR, -2,
+                    UserHandle.USER_CURRENT);
+
+            if (iconColor == -2) {
+                iconColor = context.getResources().getColor(
+                    com.android.internal.R.color.power_menu_icon_default_color);
+            }
+        }
+
         if (!clickAction.startsWith("**")) {
             try {
                 String extraIconPath = clickAction.replaceAll(".*?hasExtraIcon=", "");
@@ -115,8 +121,8 @@ public class LockscreenShortcutHelper {
                 resId = systemUiResources.getIdentifier(
                     SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_null", null, null);
                 if (resId > 0) {
-                    dError = systemUiResources.getDrawable(resId);
-                    if (colorMode != 3 && colorMode == 0) {
+                    d = systemUiResources.getDrawable(resId);
+                    if (colorMode != 3 && colorMode == 0 && colorize) {
                         dError = new BitmapDrawable(
                             ImageHelper.getColoredBitmap(dError, iconColor));
                     }
@@ -140,7 +146,7 @@ public class LockscreenShortcutHelper {
                         ActionConstants.SYSTEM_ICON_IDENTIFIER.length()), "drawable", "android");
             if (resId > 0) {
                 d = systemUiResources.getDrawable(resId);
-                if (colorMode != 3) {
+                if (colorMode != 3 && colorize) {
                     coloring = true;
                 }
             }
@@ -149,9 +155,9 @@ public class LockscreenShortcutHelper {
             if (f.exists()) {
                  d = new BitmapDrawable(context.getResources(),
                     ImageHelper.getRoundedCornerBitmap(
-                    new BitmapDrawable(context.getResources(),
-                    f.getAbsolutePath()).getBitmap()));
-                if (colorMode != 3 && colorMode != 1) {
+                        new BitmapDrawable(context.getResources(),
+                        f.getAbsolutePath()).getBitmap()));
+                if (colorMode != 3 && colorMode != 1 && colorize) {
                     coloring = true;
                 }
             } else {
@@ -160,10 +166,10 @@ public class LockscreenShortcutHelper {
             }
         } else if (clickAction.startsWith("**")) {
             resId = getLockscreenShortcutSystemIcon(systemUiResources, clickAction);
-            if (colorMode != 3) {
+            if (colorMode != 3 && colorize) {
                 coloring = true;
             }
-        } else if (colorMode != 3 && colorMode == 0) {
+        } else if (colorMode != 3 && colorMode == 0 && colorize) {
             coloring = true;
         }
         if (dError == null) {
