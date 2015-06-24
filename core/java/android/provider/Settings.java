@@ -5428,6 +5428,14 @@ public final class Settings {
         public static final String UI_OVERFLOW_BUTTON = "ui_overflow_button";
 
         /**
+         * Control the display of the action overflow button within app UI.
+         * 0 = use system default
+         * 1 = force on
+         * @hide
+         */
+        public static final String FLOATING_WINDOW_MODE = "floating_window_mode";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
