@@ -223,8 +223,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         DragDownHelper.DragDownCallback, ActivityStarter, OnUnlockMethodChangedListener {
     static final String TAG = "PhoneStatusBar";
     public static final boolean DEBUG = BaseStatusBar.DEBUG;
+    public static final boolean DEBUGS = false;
     public static final boolean SPEW = false;
-    public static final boolean DUMPTRUCK = true; // extra dumpsys info
+    public static final boolean DUMPTRUCK = false; // extra dumpsys info
     public static final boolean DEBUG_GESTURES = false;
     public static final boolean DEBUG_MEDIA = false;
     public static final boolean DEBUG_MEDIA_FAKE_ARTWORK = false;
@@ -579,6 +580,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+
             if (uri.equals(Settings.System.getUriFor(
 					Settings.System.LOCK_SCREEN_TEXT_COLOR))
                 || uri.equals(Settings.System.getUriFor(
@@ -731,9 +734,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     private void forceAddNavigationBar() {
         // If we have no Navbar view and we should have one, create it
-        if (mNavigationBarView != null) {
-            return;
-        }
+        if (mNavigationBarView != null) return;
+        if (DEBUGS) Log.v(TAG, "forceAddNavigationBar()");
 
         mNavigationBarView =
                 (NavigationBarView) View.inflate(mContext, R.layout.navigation_bar, null);
@@ -1828,22 +1830,33 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void prepareNavigationBarView(boolean forceReset) {
+        if (mNavigationBarView == null) return;
         mNavigationBarView.reorient();
 
-		if (mNavigationBarView.getRecentsButton() != null) {
-			mNavigationBarView.getRecentsButton().setOnClickListener(mRecentsClickListener);
-			mNavigationBarView.getRecentsButton().setOnTouchListener(mRecentsPreloadOnTouchListener);
-			mNavigationBarView.getRecentsButton().setLongClickable(true);
-			mNavigationBarView.getRecentsButton().setOnLongClickListener(mLongPressBackRecentsListener);
-		}
+        View button = mNavigationBarView.getRecentsButton();
+        if (button != null) {
+            boolean slimrecents = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.USE_SLIM_RECENTS, 0, UserHandle.USER_CURRENT) == 1;
+            if (slimrecents) {
+                button.setOnClickListener(mRecentsClickListener);
+                button.setLongClickable(true);
+                button.setOnLongClickListener(mLongPressBackRecentsListener);
+            } else {
+                button.setOnClickListener(mRecentsClickListener);
+                button.setOnTouchListener(mRecentsPreloadOnTouchListener);
+                button.setLongClickable(true);
+                button.setOnLongClickListener(mLongPressBackRecentsListener);
+            }
+        }
 
-		if (mNavigationBarView.getBackButton() != null) {
-			mNavigationBarView.getBackButton().setLongClickable(true);
-			mNavigationBarView.getBackButton().setOnLongClickListener(mLongPressBackRecentsListener);
-		}
-		setHomeActionListener();
-		
-		if (forceReset) {
+        button = mNavigationBarView.getBackButton();
+        if (button != null) {
+            button.setLongClickable(true);
+            button.setOnLongClickListener(mLongPressBackRecentsListener);
+        }
+        setHomeActionListener();
+
+        if (forceReset) {
             // Nav Bar was added dynamically - we need to reset the mSystemUiVisibility and call
             // setSystemUiVisibility so that mNavigationBarMode is set to the correct value
             int newVal = mSystemUiVisibility;
@@ -1928,7 +1941,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         lp.windowAnimations = 0;
         return lp;
     }
-
+/*
     private Resources getNavbarThemedResources() {
         String pkgName = mCurrentTheme.getOverlayPkgNameForApp(ThemeConfig.SYSTEMUI_NAVBAR_PKG);
         Resources res = null;
@@ -1939,6 +1952,26 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             res = mContext.getResources();
         }
         return res;
+    }
+*/
+    public Resources getNavbarThemedResources() {
+        ThemeConfig themeConfig = mContext.getResources().getConfiguration().themeConfig;
+        Resources res = null;
+        if (themeConfig != null) {
+            try {
+                final String navbarThemePkgName = themeConfig.getOverlayForNavBar();
+                final String sysuiThemePkgName = themeConfig.getOverlayForStatusBar();
+                // Check if the same theme is applied for systemui, if so we can skip this
+                if (navbarThemePkgName != null && !navbarThemePkgName.equals(sysuiThemePkgName)) {
+                    res = mContext.getPackageManager().getThemedResourcesForApplication(
+                            mContext.getPackageName(), navbarThemePkgName);
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                // don't care since we'll handle res being null below
+            }
+        }
+
+        return res != null ? res : mContext.getResources();
     }
 
     private void addHeadsUpView() {
@@ -3158,9 +3191,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mStatusBarWindowManager.setStatusBarExpanded(true);
         mStatusBarView.setFocusable(false);
 
-        if (!force) {
-            visibilityChanged(true);
-        }
+        visibilityChanged(true);
         mWaitingForKeyguardExit = false;
         disable(mDisabledUnmodified, !force /* animate */);
         setInteracting(StatusBarManager.WINDOW_STATUS_BAR, true);
@@ -5554,6 +5585,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 if ((time - mLastLockToAppLongPress) < LOCK_TO_APP_GESTURE_TOLERENCE) {
                     activityManager.stopLockTaskModeOnCurrent();
                 } else if ((v.getId() == R.id.back)
+                        && mNavigationBarView != null
                         && !mNavigationBarView.getRecentsButton().isPressed()) {
                     // If we aren't pressing recents right now then they presses
                     // won't be together, so send the standard long-press action.

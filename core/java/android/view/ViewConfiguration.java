@@ -183,12 +183,12 @@ public class ViewConfiguration {
      * Maximum velocity to initiate a fling, as measured in dips per second
      */
     private static int MAXIMUM_FLING_VELOCITY = 16000;
-    
+
     /**
      * Maximum velocity to initiate a fling, as measured in dips per second
      * @hide
      */
-    public static final int DEFAULT_MAXIMUM_FLING_VELOCITY = 16000;    
+    public static final int DEFAULT_MAXIMUM_FLING_VELOCITY = 16000;
 
     /**
      * Delay before dispatching a recurring accessibility event in milliseconds.
@@ -208,23 +208,23 @@ public class ViewConfiguration {
     /**
      * The coefficient of friction applied to flings/scrolls.
      */
-    private static float SCROLL_FRICTION = 0.007f;
-    
+    private static float SCROLL_FRICTION = 0.011f;
+
     /**
      * The coefficient of friction applied to flings/scrolls.
      * @hide
      */
-    public static final float DEFAULT_SCROLL_FRICTION = 0.007f;    
+    public static final float DEFAULT_SCROLL_FRICTION = 0.007f;
 
     /**
      * Max distance in dips to overscroll for edge effects
      */
     private static int OVERSCROLL_DISTANCE = 0;
-    
+
     /**
      * Max distance in dips to overscroll for edge effects
      */
-    public static final int DEFAULT_OVERSCROLL_DISTANCE = 0;    
+    public static final int DEFAULT_OVERSCROLL_DISTANCE = 0;
 
     /**
      * Max distance in dips to overfling for edge effects
@@ -333,7 +333,7 @@ public class ViewConfiguration {
             } else {
                 OVERFLING_DISTANCE = overFlingDistance;
             }
-        }		
+        }
 
         mContext = context;
         final Resources res = context.getResources();
@@ -364,21 +364,25 @@ public class ViewConfiguration {
         mOverflingDistance = (int) (sizeAndDensity * OVERFLING_DISTANCE + 0.5f);
 
         if (!sHasPermanentMenuKeySet) {
+            // The action overflow button within app UI can
+            // be controlled with a system setting
             final int configVal = res.getInteger(
-                    com.android.internal.R.integer.config_overrideHasPermanentMenuKey);
+                            com.android.internal.R.integer.config_overrideHasPermanentMenuKey);
+            final int overflowButtonOption = Settings.System.getInt(context.getContentResolver(),
+                            Settings.System.UI_OVERFLOW_BUTTON, configVal);
 
-            switch (configVal) {
-                default:
-                case HAS_PERMANENT_MENU_KEY_AUTODETECT: {
-                    IWindowManager wm = WindowManagerGlobal.getWindowManagerService();
-                    try {
-                        sHasPermanentMenuKey = wm.hasPermanentMenuKey();
-                        sHasPermanentMenuKeySet = true;
-                    } catch (RemoteException ex) {
-                        sHasPermanentMenuKey = false;
-                    }
-                }
-                break;
+            switch (overflowButtonOption) {
+		default:
+		case HAS_PERMANENT_MENU_KEY_AUTODETECT: {
+		    IWindowManager wm = WindowManagerGlobal.getWindowManagerService();
+		    try {
+		        sHasPermanentMenuKey = !wm.hasNavigationBar();
+		        sHasPermanentMenuKeySet = true;
+		    } catch (RemoteException ex) {
+		        sHasPermanentMenuKey = false;
+		    }
+		}
+		break;
 
                 case HAS_PERMANENT_MENU_KEY_TRUE:
                     sHasPermanentMenuKey = true;

@@ -44,6 +44,8 @@ import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
+import android.os.UserHandle;
+import android.os.UserManager;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -69,6 +71,7 @@ import java.util.ArrayList;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.util.cyanide.CyanideActions;
 import com.android.internal.util.cyanide.KeyButtonInfo;
+import com.android.internal.util.cyanide.NavbarConstants;
 import com.android.internal.util.cyanide.NavbarUtils;
 import com.android.systemui.R;
 
@@ -208,6 +211,7 @@ public class KeyButtonView extends ImageView {
             }
         } else if (mHasSingleAction) {
             if (mIsLandscape && !mTablet) {
+                NavbarConstants.useSystemUI = false;
                 setImageDrawable(NavbarUtils.getLandscapeIconImage(mContext, mActions.singleAction));
             } else {
                 setImageDrawable(NavbarUtils.getIconImage(mContext, mActions.singleAction));
@@ -428,14 +432,16 @@ public class KeyButtonView extends ImageView {
 
     public void setTint(boolean tint) {
         setColorFilter(null);
-        if (tint) {
-            int color = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.NAVIGATION_BAR_TINT, -1);
-            if (color != -1) {
-                setColorFilter(color, PorterDuff.Mode.MULTIPLY);
-            } else {
-                tint = false;
-            }
+        int color = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.NAVIGATION_BAR_TINT, -1);
+        boolean hasTint = (color != 0xff000000 && color != -1);
+        if (hasTint) {
+            tint = true;
+            setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+        } else {
+            tint = false;
+            Settings.System.putInt(mContext.getContentResolver(),
+                Settings.System.NAVIGATION_BAR_TINT, -1);
         }
         mShouldTintIcons = tint;
     }
@@ -448,7 +454,8 @@ public class KeyButtonView extends ImageView {
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAVIGATION_BAR_TINT), false, this);
+                    Settings.System.NAVIGATION_BAR_TINT),
+                    false, this, UserHandle.USER_ALL);
             updateSettings();
         }
 

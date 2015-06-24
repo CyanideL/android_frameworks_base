@@ -5420,6 +5420,14 @@ public final class Settings {
         public static final String SLIM_ACTION_FLOATS = "slim_action_floats";
 
         /**
+         * Control the display of the action overflow button within app UI.
+         * 0 = use system default
+         * 1 = force on
+         * @hide
+         */
+        public static final String UI_OVERFLOW_BUTTON = "ui_overflow_button";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

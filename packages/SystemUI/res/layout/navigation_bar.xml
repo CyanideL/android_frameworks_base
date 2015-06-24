@@ -24,14 +24,14 @@
     xmlns:systemui="http://schemas.android.com/apk/res/com.android.systemui"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:background="@color/navigation_bar_background_opaque"
+    android:background="@drawable/system_bar_background"
     >
     <!-- android:background="@drawable/system_bar_background" -->
 
     <FrameLayout android:id="@+id/rot0"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        >  
+        >
 
         <RelativeLayout
             android:layout_height="match_parent"
@@ -50,10 +50,9 @@
                 android:visibility="gone"
                 systemui:viewLocation="3"
                 android:layout_alignParentBottom="true" />
-
         </RelativeLayout>
-		
-		<!-- layout for custom navbar -->
+
+        <!-- layout for custom navbar -->
         <LinearLayout
             android:layout_height="match_parent"
             android:layout_width="match_parent"
