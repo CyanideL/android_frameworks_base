@@ -43,6 +43,7 @@ import android.view.WindowManagerGlobal;
 import android.view.WindowManagerPolicyControl;
 import android.widget.Toast;
 
+import com.cyanide.util.Helpers;
 import com.android.internal.statusbar.IStatusBarService;
 
 import java.net.URISyntaxException;
@@ -149,6 +150,97 @@ public class PieAction {
                         Settings.System.NAVBAR_FORCE_ENABLE,
                         navBarState ? 0 : 1, UserHandle.USER_CURRENT);
                 return;
+            } else if (action.equals(PieConstants.APP_CIRCLE_BAR_BUTTON)) {
+                boolean circleBarState = isCircleBarEnabled(context);
+                if (circleBarState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.ENABLE_APP_CIRCLE_BAR,
+                        circleBarState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
+            } else if (action.equals(PieConstants.APP_SIDEBAR_BUTTON)) {
+                boolean sideBarState = isSideBarEnabled(context);
+                if (sideBarState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.APP_SIDEBAR_ENABLED,
+                        sideBarState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
+            } else if (action.equals(PieConstants.GESTURE_ANYWHERE_BUTTON)) {
+                boolean gestureAnywhereState = isGestureAnywhereEnabled(context);
+                if (gestureAnywhereState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.GESTURE_ANYWHERE_ENABLED,
+                        gestureAnywhereState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
+            } else if (action.equals(PieConstants.HWKEYS_BUTTON)) {
+                boolean hWKeysState = isHWKeysEnabled(context);
+                if (hWKeysState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.ENABLE_HW_KEYS,
+                        hWKeysState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
+            } else if (action.equals(PieConstants.HEADS_UP_BUTTON)) {
+                boolean headsUpState = isHeadsUpEnabled(context);
+                if (headsUpState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.HEADS_UP_USER_ENABLED,
+                        headsUpState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
+            } else if (action.equals(PieConstants.AMBIENT_DISPLAY_BUTTON)) {
+                boolean ambientDisplayState = isAmbientDisplayEnabled(context);
+                if (ambientDisplayState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.Secure.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.Secure.DOZE_ENABLED,
+                        ambientDisplayState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
+            } else if (action.equals(PieConstants.FLOATING_WINDOWS_BUTTON)) {
+                boolean floatingWindowsState = isFloatingWindowsEnabled(context);
+                if (floatingWindowsState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.FLOATING_WINDOW_MODE,
+                        floatingWindowsState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
             } else if (action.equals(PieConstants.KILL_TASK_BUTTON)) {
                 if (isKeyguardShowing) {
                     return;
@@ -167,6 +259,11 @@ public class PieAction {
                 } catch (RemoteException e) {
                 }
                 return;
+            } else if (action.equals(ActionConstants.ACTION_RESTARTUI)) {
+                if (isKeyguardShowing && isKeyguardSecure) {
+                    return;
+                }
+                Helpers.restartSystemUI();
             } else if (action.equals(PieConstants.SETTINGS_PANEL_BUTTON)) {
                 if (isKeyguardShowing && isKeyguardSecure) {
                     return;
@@ -272,6 +369,48 @@ public class PieAction {
         return Settings.System.getIntForUser(context.getContentResolver(),
                 Settings.System.NAVBAR_FORCE_ENABLE,
                 isNavBarDefault(context) ? 1 : 0, UserHandle.USER_CURRENT) == 1;
+    }
+    
+    public static boolean isCircleBarEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.ENABLE_APP_CIRCLE_BAR,
+                0, UserHandle.USER_CURRENT) == 1;
+    }
+
+    public static boolean isSideBarEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.APP_SIDEBAR_ENABLED,
+                0, UserHandle.USER_CURRENT) == 1;
+    }
+
+    public static boolean isGestureAnywhereEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.GESTURE_ANYWHERE_ENABLED,
+                0, UserHandle.USER_CURRENT) == 1;
+    }
+
+    public static boolean isHWKeysEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.ENABLE_HW_KEYS,
+                0, UserHandle.USER_CURRENT) == 1;
+    }
+
+    public static boolean isHeadsUpEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.HEADS_UP_USER_ENABLED,
+                0, UserHandle.USER_CURRENT) == 1;
+    }
+
+    public static boolean isAmbientDisplayEnabled(Context context) {
+        return Settings.Secure.getIntForUser(context.getContentResolver(),
+                Settings.Secure.DOZE_ENABLED,
+                0, UserHandle.USER_CURRENT) == 1;
+    }
+
+    public static boolean isFloatingWindowsEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.FLOATING_WINDOW_MODE,
+                0, UserHandle.USER_CURRENT) == 1;
     }
 
     public static boolean isNavBarDefault(Context context) {

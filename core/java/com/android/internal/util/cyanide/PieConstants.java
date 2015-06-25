@@ -19,23 +19,31 @@ package com.android.internal.util.cyanide;
 
 public class PieConstants {
 
-    public static final String BACK_BUTTON = "##back##";
-    public static final String HOME_BUTTON = "##home##";
-    public static final String MENU_BUTTON = "##menu##";
-    public static final String MENU_BIG_BUTTON = "**menu_big**";
-    public static final String RECENT_BUTTON = "##recent##";
-    public static final String LAST_APP_BUTTON = "##lastapp##";
-    public static final String KILL_TASK_BUTTON = "##killtask##";
-    public static final String NOTIFICATIONS_BUTTON = "##notifications##";
-    public static final String SETTINGS_PANEL_BUTTON = "##settings_panel##";
-    public static final String SCREEN_OFF_BUTTON = "##screen_off##";
-    public static final String TORCH_BUTTON = "##torch##";
-    public static final String SCREENSHOT_BUTTON = "##screenshot##";
-    public static final String POWER_MENU_BUTTON = "##power_menu##";
-    public static final String EXPANDED_DESKTOP_BUTTON = "##expanded_desktop##";
-    public static final String THEME_SWITCH_BUTTON = "##theme_switch##";
-    public static final String NAVBAR_BUTTON = "##navbar##";
-    public static final String SLIMPIE_BUTTON = "##slimpie##";
+    public static final String BACK_BUTTON                 = "##back##";
+    public static final String HOME_BUTTON                 = "##home##";
+    public static final String MENU_BUTTON                 = "##menu##";
+    public static final String MENU_BIG_BUTTON             = "**menu_big**";
+    public static final String RECENT_BUTTON               = "##recent##";
+    public static final String LAST_APP_BUTTON             = "##lastapp##";
+    public static final String KILL_TASK_BUTTON            = "##killtask##";
+    public static final String NOTIFICATIONS_BUTTON        = "##notifications##";
+    public static final String SETTINGS_PANEL_BUTTON       = "##settings_panel##";
+    public static final String SCREEN_OFF_BUTTON           = "##screen_off##";
+    public static final String TORCH_BUTTON                = "##torch##";
+    public static final String SCREENSHOT_BUTTON           = "##screenshot##";
+    public static final String POWER_MENU_BUTTON           = "##power_menu##";
+    public static final String EXPANDED_DESKTOP_BUTTON     = "##expanded_desktop##";
+    public static final String THEME_SWITCH_BUTTON         = "##theme_switch##";
+    public static final String NAVBAR_BUTTON               = "##navbar##";
+    public static final String SLIMPIE_BUTTON              = "##slimpie##";
+    public static final String RESTARTUI_BUTTON            = "**restartui**";
+    public static final String APP_CIRCLE_BAR_BUTTON       = "**appcirclebar**";
+    public static final String APP_SIDEBAR_BUTTON          = "**appsidebar**";
+    public static final String GESTURE_ANYWHERE_BUTTON     = "**gesture_anywhere**";
+    public static final String HWKEYS_BUTTON               = "**hwkeys**";
+    public static final String HEADS_UP_BUTTON             = "**heads_up**";
+    public static final String AMBIENT_DISPLAY_BUTTON      = "**ambient_display**";
+    public static final String FLOATING_WINDOWS_BUTTON     = "**floating_windows**";
 
     // no action
     public static final String NULL_BUTTON            = "**null**";

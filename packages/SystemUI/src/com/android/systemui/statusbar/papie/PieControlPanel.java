@@ -340,6 +340,22 @@ public class PieControlPanel extends FrameLayout implements OnNavButtonPressedLi
             PieAction.processAction(mContext, PieConstants.NAVBAR_BUTTON, false);
         } else if (buttonName.equals(PAPieController.SLIMPIE_BUTTON)) {
             PieAction.processAction(mContext, PieConstants.SLIMPIE_BUTTON, false);
+        } else if (buttonName.equals(PAPieController.RESTARTUI_BUTTON)) {
+            PieAction.processAction(mContext, PieConstants.RESTARTUI_BUTTON, false);
+        } else if (buttonName.equals(PAPieController.APP_CIRCLE_BAR_BUTTON)) {
+            PieAction.processAction(mContext, PieConstants.APP_CIRCLE_BAR_BUTTON, false);
+        } else if (buttonName.equals(PAPieController.APP_SIDEBAR_BUTTON)) {
+            PieAction.processAction(mContext, PieConstants.APP_SIDEBAR_BUTTON, false);
+        } else if (buttonName.equals(PAPieController.GESTURE_ANYWHERE_BUTTON)) {
+            PieAction.processAction(mContext, PieConstants.GESTURE_ANYWHERE_BUTTON, false);
+        } else if (buttonName.equals(PAPieController.HWKEYS_BUTTON)) {
+            PieAction.processAction(mContext, PieConstants.HWKEYS_BUTTON, false);
+        } else if (buttonName.equals(PAPieController.HEADS_UP_BUTTON)) {
+            PieAction.processAction(mContext, PieConstants.HEADS_UP_BUTTON, false);
+        } else if (buttonName.equals(PAPieController.AMBIENT_DISPLAY_BUTTON)) {
+            PieAction.processAction(mContext, PieConstants.AMBIENT_DISPLAY_BUTTON, false);
+            } else if (buttonName.equals(PAPieController.FLOATING_WINDOWS_BUTTON)) {
+            PieAction.processAction(mContext, PieConstants.FLOATING_WINDOWS_BUTTON, false);
         } else if (buttonName.equals(PAPieController.NOTIFICATIONS_BUTTON)) {
             try {
                 IStatusBarService.Stub.asInterface(

@@ -4964,6 +4964,54 @@ public final class Settings {
          */
         public static final String PA_PIE_SLIMPIE = "pa_pie_slimpie";
 
+        /**
+         * Pie restartui
+         * @hide
+         */
+        public static final String PA_PIE_RESTARTUI = "pa_pie_restartui";
+
+        /**
+         * Pie app circle bar
+         * @hide
+         */
+        public static final String PA_PIE_APP_CIRCLE_BAR = "pa_pie_app_circle_bar";
+
+        /**
+         * Pie app sidebar
+         * @hide
+         */
+        public static final String PA_PIE_APP_SIDEBAR = "pa_pie_app_sidebar";
+
+        /**
+         * Pie Gesture Anywhere Switch
+         * @hide
+         */
+        public static final String PA_PIE_GESTURE_ANYWHERE = "pa_pie_gesture_anywhere";
+
+        /**
+         * Pie HWKeys Switch
+         * @hide
+         */
+        public static final String PA_PIE_HWKEYS = "pa_pie_hwkeys";
+
+        /**
+         * Pie Heads Up Switch
+         * @hide
+         */
+        public static final String PA_PIE_HEADS_UP = "pa_pie_heads_up";
+
+        /**
+         * Pie Ambient Switch
+         * @hide
+         */
+        public static final String PA_PIE_AMBIENT_DISPLAY = "pa_pie_ambient_display";
+
+        /**
+         * Pie Floating Windows Switch
+         * @hide
+         */
+        public static final String PA_PIE_FLOATING_WINDOWS = "pa_pie_floating_windows";
+
        // PIE COLORS EVERYWHERE! //
 
         /**

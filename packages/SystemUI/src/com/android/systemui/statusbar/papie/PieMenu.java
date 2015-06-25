@@ -205,6 +205,14 @@ public class PieMenu extends FrameLayout {
     private boolean mThemeSwitch;
     private boolean mNavbar;
     private boolean mSlimPie;
+    private boolean mRestartui;
+    private boolean mAppcirclesidebar;
+    private boolean mAppsidebar;
+    private boolean mGestureAnywhere;
+    private boolean mHWKeys;
+    private boolean mHeadsUp;
+    private boolean mAmbientDisplay;
+    private boolean mFloatingWindows;
 
     private int mGlowOffset = 150;
 
@@ -284,6 +292,22 @@ public class PieMenu extends FrameLayout {
                 Settings.System.PA_PIE_NAVBAR, 0) == 1;
         mSlimPie = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PA_PIE_SLIMPIE, 0) == 1;
+        mRestartui = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PA_PIE_RESTARTUI, 1) == 1;
+        mAppcirclesidebar = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PA_PIE_APP_CIRCLE_BAR, 1) == 1;
+        mAppsidebar = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PA_PIE_APP_SIDEBAR, 0) == 1;
+        mGestureAnywhere = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PA_PIE_GESTURE_ANYWHERE, 0) == 1;
+        mHWKeys = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PA_PIE_HWKEYS, 0) == 1;
+        mHeadsUp = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PA_PIE_HEADS_UP, 0) == 1;
+        mAmbientDisplay = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PA_PIE_AMBIENT_DISPLAY, 0) == 1;
+        mFloatingWindows = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PA_PIE_FLOATING_WINDOWS, 0) == 1;
         mHasAssistant = mPieHelper.isAssistantAvailable();
 
         // snap
@@ -593,7 +617,15 @@ public class PieMenu extends FrameLayout {
                !(item.getName().equals(PAPieController.EXPANDED_DESKTOP_BUTTON) && !mExpandedDesktop) &&
                !(item.getName().equals(PAPieController.THEME_SWITCH_BUTTON) && !mThemeSwitch) &&
                !(item.getName().equals(PAPieController.NAVBAR_BUTTON) && !mNavbar) &&
-               !(item.getName().equals(PAPieController.SLIMPIE_BUTTON) && !mSlimPie);
+               !(item.getName().equals(PAPieController.SLIMPIE_BUTTON) && !mSlimPie) &&
+               !(item.getName().equals(PAPieController.RESTARTUI_BUTTON) && !mRestartui) &&
+               !(item.getName().equals(PAPieController.APP_CIRCLE_BAR_BUTTON) && !mAppcirclesidebar) &&
+               !(item.getName().equals(PAPieController.APP_SIDEBAR_BUTTON) && !mAppsidebar) &&
+               !(item.getName().equals(PAPieController.GESTURE_ANYWHERE_BUTTON) && !mGestureAnywhere) &&
+               !(item.getName().equals(PAPieController.HWKEYS_BUTTON) && !mHWKeys) &&
+               !(item.getName().equals(PAPieController.HEADS_UP_BUTTON) && !mHeadsUp) &&
+               !(item.getName().equals(PAPieController.AMBIENT_DISPLAY_BUTTON) && !mAmbientDisplay) &&
+               !(item.getName().equals(PAPieController.FLOATING_WINDOWS_BUTTON) && !mFloatingWindows);
     }
 
     private void layoutPie() {
@@ -627,6 +659,22 @@ public class PieMenu extends FrameLayout {
         if (!mNavbar)
             itemCount--;
         if (!mSlimPie)
+            itemCount--;
+        if (!mRestartui)
+            itemCount--;
+        if (!mAppcirclesidebar)
+            itemCount--;
+        if (!mAppsidebar)
+            itemCount--;
+        if (!mGestureAnywhere)
+            itemCount--;
+        if (!mHWKeys)
+            itemCount--;
+        if (!mHeadsUp)
+            itemCount--;
+        if (!mAmbientDisplay)
+            itemCount--;
+        if (!mFloatingWindows)
             itemCount--;
 
         int lesserSweepCount = 0;

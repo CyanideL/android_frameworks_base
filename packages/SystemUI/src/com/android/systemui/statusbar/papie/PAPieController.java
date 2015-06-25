@@ -65,6 +65,14 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
     public static final String THEME_SWITCH_BUTTON = "##theme_switch##";
     public static final String NAVBAR_BUTTON = "##navbar##";
     public static final String SLIMPIE_BUTTON = "##slimpie##";
+    public static final String RESTARTUI_BUTTON            = "**restartui**";
+    public static final String APP_CIRCLE_BAR_BUTTON       = "**appcirclebar**";
+    public static final String APP_SIDEBAR_BUTTON          = "**appsidebar**";
+    public static final String GESTURE_ANYWHERE_BUTTON     = "**gesture_anywhere**";
+    public static final String HWKEYS_BUTTON               = "**hwkeys**";
+    public static final String HEADS_UP_BUTTON             = "**heads_up**";
+    public static final String AMBIENT_DISPLAY_BUTTON      = "**ambient_display**";
+    public static final String FLOATING_WINDOWS_BUTTON     = "**floating_windows**";
 
     private static PAPieController mInstance;
     private static PieHelper mPieHelper;
@@ -97,6 +105,14 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
     private PieItem mThemeSwitch;
     private PieItem mNavbar;
     private PieItem mSlimPie;
+    private PieItem mRestartui;
+    private PieItem mAppcirclesidebar;
+    private PieItem mAppsidebar;
+    private PieItem mGestureAnywhere;
+    private PieItem mHWKeys;
+    private PieItem mHeadsUp;
+    private PieItem mAmbientDisplay;
+    private PieItem mFloatingWindows;
 
     protected PieMenu mPie;
     protected int mItemSize;
@@ -268,6 +284,14 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
         mThemeSwitch = makeItem(R.drawable.ic_sysbar_theme_switch, 1, THEME_SWITCH_BUTTON, true);
         mNavbar = makeItem(R.drawable.ic_sysbar_navbar, 1, NAVBAR_BUTTON, true);
         mSlimPie = makeItem(R.drawable.ic_sysbar_pie, 1, SLIMPIE_BUTTON, true);
+        mRestartui = makeItem(R.drawable.ic_qs_systemui_restart, 1, RESTARTUI_BUTTON, true);
+        mAppcirclesidebar = makeItem(R.drawable.ic_qs_appcirclebar_on, 1, APP_CIRCLE_BAR_BUTTON, true);
+        mAppsidebar = makeItem(R.drawable.ic_qs_sidebar_on, 1, APP_SIDEBAR_BUTTON, true);
+        mGestureAnywhere = makeItem(R.drawable.ic_qs_gestures_on, 1, GESTURE_ANYWHERE_BUTTON, true);
+        mHWKeys = makeItem(R.drawable.ic_qs_buttons_on, 1, HWKEYS_BUTTON, true);
+        mHeadsUp = makeItem(R.drawable.ic_headsup_toggle_on, 1, HEADS_UP_BUTTON, true);
+        mAmbientDisplay = makeItem(R.drawable.ic_qs_doze, 1, AMBIENT_DISPLAY_BUTTON, true);
+        mFloatingWindows = makeItem(R.drawable.ic_qs_floating_on, 1, FLOATING_WINDOWS_BUTTON, true);
 
         mPie.addItem(mMenu);
         mPie.addItem(mRecent);
@@ -285,6 +309,14 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
         mPie.addItem(mThemeSwitch);
         mPie.addItem(mNavbar);
         mPie.addItem(mSlimPie);
+        mPie.addItem(mRestartui);
+        mPie.addItem(mAppcirclesidebar);
+        mPie.addItem(mAppsidebar);
+        mPie.addItem(mGestureAnywhere);
+        mPie.addItem(mHWKeys);
+        mPie.addItem(mHeadsUp);
+        mPie.addItem(mAmbientDisplay);
+        mPie.addItem(mFloatingWindows);
     }
 
     public void setNavigationIconHints(int hints) {

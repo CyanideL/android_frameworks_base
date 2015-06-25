@@ -169,12 +169,33 @@ public class PaPieHelper {
         if (clickAction.equals(PieConstants.BACK_BUTTON)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_back", null, null);
+        } else if (clickAction.equals(PieConstants.AMBIENT_DISPLAY_BUTTON)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_doze", null, null);
+        } else if (clickAction.equals(PieConstants.APP_CIRCLE_BAR_BUTTON)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_appcirclebar_on", null, null);
+        } else if (clickAction.equals(PieConstants.APP_SIDEBAR_BUTTON)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_sidebar_on", null, null);
         } else if (clickAction.equals(PieConstants.EXPANDED_DESKTOP_BUTTON)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_expanded_desktop", null, null);
+        } else if (clickAction.equals(PieConstants.FLOATING_WINDOWS_BUTTON)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_floating_on", null, null);
+        } else if (clickAction.equals(PieConstants.GESTURE_ANYWHERE_BUTTON)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_gestures_on", null, null);
+        } else if (clickAction.equals(PieConstants.HEADS_UP_BUTTON)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_headsup_toggle_on", null, null);
         } else if (clickAction.equals(PieConstants.HOME_BUTTON)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_home", null, null);
+        } else if (clickAction.equals(PieConstants.HWKEYS_BUTTON)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_buttons_on", null, null);
         } else if (clickAction.equals(PieConstants.KILL_TASK_BUTTON)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_killtask", null, null);
@@ -202,6 +223,9 @@ public class PaPieHelper {
         } else if (clickAction.equals(PieConstants.RECENT_BUTTON)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_recent", null, null);
+        } else if (clickAction.equals(PieConstants.RESTARTUI_BUTTON)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_systemui_restart", null, null);
         } else if (clickAction.equals(PieConstants.SCREEN_OFF_BUTTON)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_power", null, null);
