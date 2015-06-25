@@ -157,6 +157,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private ToggleAction mHWKeysModeOn;
     private ToggleAction mHeadsUpModeOn;
     private ToggleAction mAmbientDisplayModeOn;
+    private ToggleAction mFloatingWindowsModeOn;
 
     private MyAdapter mAdapter;
 
@@ -173,6 +174,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private ToggleAction.State mHWKeysState = ToggleAction.State.Off;
     private ToggleAction.State mHeadsUpState = ToggleAction.State.Off;
     private ToggleAction.State mAmbientDisplayState = ToggleAction.State.Off;
+    private ToggleAction.State mFloatingWindowsState = ToggleAction.State.Off;
     private boolean mIsWaitingForEcmExit = false;
     private boolean mHasTelephony;
     private boolean mHasVibrator;
@@ -398,6 +400,12 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 mContext, actionKey, config.getIcon(), true);
                 constructAmbientDisplayToggle(iconColor);
                 mItems.add(mAmbientDisplayModeOn);
+
+            } else if (actionKey.equals(PolicyConstants.ACTION_FLOATING_WINDOWS)) {
+                Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
+                mContext, actionKey, config.getIcon(), true);
+                constructFloatingWindowsToggle(iconColor);
+                mItems.add(mFloatingWindowsModeOn);
 
             } else if ((actionKey.equals(PolicyConstants.ACTION_SOUND)) && (mShowSilentToggle)) {
                 mItems.add(mSilentModeAction);
@@ -894,6 +902,30 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         onAmbientDisplayModeChanged();
     }
 
+    private void constructFloatingWindowsToggle(Drawable iconColor) {
+        mFloatingWindowsModeOn = new ToggleAction(
+                iconColor,
+                iconColor,
+                R.string.global_actions_toggle_floating_windows_mode,
+                R.string.global_actions_floating_windows_mode_on_status,
+                R.string.global_actions_floating_windows_mode_off_status) {
+
+            void onToggle(boolean on) {
+                com.android.internal.util.cyanide.Action.processAction(
+                    mContext, PolicyConstants.ACTION_FLOATING_WINDOWS, false);
+            }
+
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return false;
+            }
+        };
+        onFloatingWindowsModeChanged();
+    }
+
     private final class RebootAction extends SinglePressAction implements LongPressAction {
         private RebootAction(Drawable iconColor) {
             super(iconColor, R.string.global_action_reboot);
@@ -1156,6 +1188,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
         if (mAmbientDisplayModeOn != null) {
             mAmbientDisplayModeOn.updateState(mAmbientDisplayState);
+        }
+        if (mFloatingWindowsModeOn != null) {
+            mFloatingWindowsModeOn.updateState(mFloatingWindowsState);
         }
 
         // Start observing setting changes during
@@ -1749,6 +1784,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     Settings.Secure.DOZE_ENABLED), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.FLOATING_WINDOW_MODE), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SYSTEM_PROFILES_ENABLED), false, this,
                     UserHandle.USER_ALL);
         }
@@ -1783,6 +1821,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             } else if (uri.equals(Settings.Secure.getUriFor(
                 Settings.Secure.DOZE_ENABLED))) {
                 onAmbientDisplayModeChanged();
+            } else if (uri.equals(Settings.System.getUriFor(
+                Settings.System.FLOATING_WINDOW_MODE))) {
+                onFloatingWindowsModeChanged();
             } else if (uri.equals(Settings.System.getUriFor(
                 Settings.System.SYSTEM_PROFILES_ENABLED))) {
                 onProfilesChanged();
@@ -1980,6 +2021,17 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         mAmbientDisplayState = ambientDisplayModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
         if (mAmbientDisplayModeOn != null) {
             mAmbientDisplayModeOn.updateState(mAmbientDisplayState);
+        }
+    }
+
+    private void onFloatingWindowsModeChanged() {
+        boolean floatingWindowsModeOn = Settings.System.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.FLOATING_WINDOW_MODE,
+                0, UserHandle.USER_CURRENT) == 1;
+        mFloatingWindowsState = floatingWindowsModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
+        if (mFloatingWindowsModeOn != null) {
+            mFloatingWindowsModeOn.updateState(mFloatingWindowsState);
         }
     }
 

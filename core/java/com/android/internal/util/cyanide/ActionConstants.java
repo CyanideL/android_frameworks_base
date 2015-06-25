@@ -63,6 +63,7 @@ public class ActionConstants {
     public static final String ACTION_HWKEYS               = "**hwkeys**";
     public static final String ACTION_HEADS_UP             = "**heads_up**";
     public static final String ACTION_AMBIENT_DISPLAY      = "**ambient_display**";
+    public static final String ACTION_FLOATING_WINDOWS     = "**floating_windows**";
 
     // no action
     public static final String ACTION_NULL            = "**null**";

@@ -136,6 +136,7 @@
     <string name="global_actions_toggle_hwkeys_mode">HWKeys</string>
     <string name="global_actions_toggle_heads_up_mode">Heads Up</string>
     <string name="global_actions_toggle_ambient_display_mode">Ambient Display</string>
+    <string name="global_actions_toggle_floating_windows_mode">Floating Windows</string>
     
     <!-- status message in phone options dialog for when AppCircleBar is on -->
     <string name="global_actions_appcirclebar_mode_on_status">AppCircleBar is ON</string>
@@ -181,5 +182,10 @@
     <string name="setting_confirmation_ask_me_later">Ask later</string>
     <string name="setting_confirmation_yes">Yes</string>
     <string name="setting_confirmation_no">No</string>
+
+    <!-- status message in phone options dialog for when floating windows are on -->
+    <string name="global_actions_floating_windows_mode_on_status">Floating Windows are ON</string>
+    <!-- status message in phone options dialog for when floating windows are off -->
+    <string name="global_actions_floating_windows_mode_off_status">Floating Windows are OFF</string>
 
 </resources>

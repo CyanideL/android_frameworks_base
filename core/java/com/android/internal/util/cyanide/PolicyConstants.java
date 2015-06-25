@@ -40,6 +40,7 @@ public class PolicyConstants {
     public static final String ACTION_HWKEYS           = "**hwkeys**";
     public static final String ACTION_HEADS_UP         = "**heads_up**";
     public static final String ACTION_AMBIENT_DISPLAY  = "**ambient_display**";
+    public static final String ACTION_FLOATING_WINDOWS = "**floating_windows**";
 
     public static final String ACTION_DELIMITER  = "|";
     public static final String ICON_EMPTY = "empty";

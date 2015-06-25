@@ -372,6 +372,9 @@ public class ActionHelper {
         } else if (clickAction.equals(ActionConstants.ACTION_AMBIENT_DISPLAY)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_doze", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_FLOATING_WINDOWS)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_floating_on", null, null);
         } else {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_null", null, null);
