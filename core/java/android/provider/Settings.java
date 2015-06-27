@@ -5490,6 +5490,13 @@ public final class Settings {
         public static final String FLOATING_WINDOW_MODE = "floating_window_mode";
 
         /**
+         * Launch headsup in floating window or not
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_FLOATING = "heads_up_floating";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
