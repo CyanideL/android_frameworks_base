@@ -174,13 +174,10 @@
     <string name="floating_window_snap_left">Snap left</string>
     <string name="floating_window_snap_right">Snap right</string>
     <string name="floating_window_minimize">Minimize</string>
-    
-    <!-- Title shown in recents popup for showing app in floating mode -->
-    <string name="status_bar_recent_floating_item_title">Floating mode</string>
 
     <!-- status message in phone options dialog for when floating windows are on -->
-    <string name="global_actions_floating_windows_mode_on_status">Floating Windows are ON</string>
+    <string name="global_actions_floating_windows_mode_on_status">Float Mode Enabled</string>
     <!-- status message in phone options dialog for when floating windows are off -->
-    <string name="global_actions_floating_windows_mode_off_status">Floating Windows are OFF</string>
+    <string name="global_actions_floating_windows_mode_off_status">Float Mode Disabled</string>
 
 </resources>
