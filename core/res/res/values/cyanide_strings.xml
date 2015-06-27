@@ -178,11 +178,6 @@
     <!-- Title shown in recents popup for showing app in floating mode -->
     <string name="status_bar_recent_floating_item_title">Floating mode</string>
 
-    <!-- Setting confirmation dialog strings. Shown when any UI interaction can be modified by user input -->
-    <string name="setting_confirmation_ask_me_later">Ask later</string>
-    <string name="setting_confirmation_yes">Yes</string>
-    <string name="setting_confirmation_no">No</string>
-
     <!-- status message in phone options dialog for when floating windows are on -->
     <string name="global_actions_floating_windows_mode_on_status">Floating Windows are ON</string>
     <!-- status message in phone options dialog for when floating windows are off -->
