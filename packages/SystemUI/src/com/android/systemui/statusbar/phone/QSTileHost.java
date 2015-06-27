@@ -78,6 +78,7 @@ import com.android.systemui.qs.tiles.GestureAnywhereTile;
 import com.android.systemui.qs.tiles.NavBarTile;
 import com.android.systemui.qs.tiles.PAPieControlTile;
 import com.android.systemui.qs.tiles.FloatingWindowsTile;
+import com.android.systemui.qs.tiles.SlimFloatsTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.CyanideTile;
 import com.android.systemui.qs.tiles.TrdsTile;
@@ -429,6 +430,8 @@ public class QSTileHost implements QSTile.Host {
                 return new SystemUIRestartTile(this);
             case QSConstants.TILE_FLOATING_WINDOWS:
                 return new FloatingWindowsTile(this);
+            case QSConstants.TILE_SLIM_FLOATS:
+                return new SlimFloatsTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
