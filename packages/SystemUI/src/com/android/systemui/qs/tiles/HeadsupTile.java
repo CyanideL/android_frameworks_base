@@ -71,7 +71,7 @@ public class HeadsupTile extends QSTile<QSTile.BooleanState> {
             state.contentDescription =  mContext.getString(
                     R.string.accessibility_quick_settings_heads_up_on);
         } else {
-            state.icon = ResourceIcon.get(R.drawable.ic_headsup_toggle_on);
+            state.icon = ResourceIcon.get(R.drawable.ic_headsup_toggle_off);
             state.contentDescription =  mContext.getString(
                     R.string.accessibility_quick_settings_heads_up_off);
         }

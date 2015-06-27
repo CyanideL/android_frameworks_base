@@ -368,7 +368,7 @@ public class ActionHelper {
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_buttons_on", null, null);
         } else if (clickAction.equals(ActionConstants.ACTION_HEADS_UP)) {
             resId = systemUiResources.getIdentifier(
-                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_heads_up_on", null, null);
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_headsup_toggle_on", null, null);
         } else if (clickAction.equals(ActionConstants.ACTION_AMBIENT_DISPLAY)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_doze", null, null);
