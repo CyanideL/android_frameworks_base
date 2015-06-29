@@ -3181,7 +3181,7 @@ final class ActivityStack {
                 if (r.finishing) {
                     continue;
                 }
-                if (r.fullscreen) {
+                if (r.fullscreen && !r.floatingWindow) {
                     lastIsOpaque = true;
                 }
                 if (owner != null && r.app != owner) {
