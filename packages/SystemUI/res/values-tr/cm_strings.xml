@@ -145,4 +145,12 @@
   <string name="navring_choose_action_title">Eylem seçin</string>
   <string name="select_application">Uygulama seçin</string>
   <string name="lockscreen_target_empty">Boş</string>
+  <string name="screen_pinning_description_no_navbar">Ekrandan kaldırana kadar görünümde tutar. Kaldırmak için Geri tuşuna dokunun ve tutun.</string>
+  <string name="interruption_level_silent">Sessiz</string>
+  <string name="zen_silent_with_warning">Alarmlar dışında rahatsız etme.</string>
+  <string name="quick_settings_remove">Kareyi kaldır</string>
+  <string name="quick_settings_dynamic_tile_detail_title">Dinamik kare</string>
+  <string name="dynamic_qs_tile_next_alarm_label">Sonraki alarm</string>
+  <string name="dynamic_qs_tile_ime_selector_label">IME seçici</string>
+  <string name="dynamic_qs_tile_su_label">Root erişimi</string>
 </resources>

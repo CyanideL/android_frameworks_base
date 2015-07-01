@@ -145,4 +145,12 @@
   <string name="navring_choose_action_title">Valitse tehtävä</string>
   <string name="select_application">Valitse sovellus</string>
   <string name="lockscreen_target_empty">Tyhjä</string>
+  <string name="screen_pinning_description_no_navbar">Tämä pitää sen näkyvissä, kunnes poistat kiinnityksen. Paina ja pidä Takasin-näppäintä pohjassa irrottaaksesi.</string>
+  <string name="interruption_level_silent">Äänetön</string>
+  <string name="zen_silent_with_warning">Ei keskeytysiä, paitsi herätykset.</string>
+  <string name="quick_settings_remove">Poista tiili</string>
+  <string name="quick_settings_dynamic_tile_detail_title">Dynaamiset tiilet</string>
+  <string name="dynamic_qs_tile_next_alarm_label">Seuraava hälytys</string>
+  <string name="dynamic_qs_tile_ime_selector_label">Syöttötavan valitsin</string>
+  <string name="dynamic_qs_tile_su_label">Root-oikeudet</string>
 </resources>
