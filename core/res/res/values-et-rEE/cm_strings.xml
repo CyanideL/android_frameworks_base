@@ -218,7 +218,6 @@ muuta juba olemasolevaid.</string>
   <string name="live_display_hint">LiveDisplay võimaldab vähendada silmade pinget ja lasta sul öösel magada. Kliki siin et seda proovida!</string>
   <string name="lock_to_app_toast_no_navbar">Ekraani vabastamiseks puuduta ja hoia Menüü nuppu.</string>
   <string name="lock_to_app_description_no_navbar">Ekraani kinnitus lukustab kuva ühele vaatele.\n\nEkraani vabastamiseks puuduta ja hoia Menüü nuppu.</string>
-  <string name="lock_to_app_toast_no_navbar">Selle ekraani vabastamiseks puudutage ja hoidke all Tagasi nuppu.</string>
   <string name="quick_settings_tile_flashlight_not_title">Taskulamp põleb</string>
   <string name="quick_settings_tile_flashlight_not_summary">Väljalülitamiseks koputage</string>
   <string name="storage_sd_dock_card">Doki SD-kaart</string>

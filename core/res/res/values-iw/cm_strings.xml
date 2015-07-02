@@ -214,7 +214,6 @@
   <string name="live_display_hint">LiveDisplay יכולה למזער את עייפות העין ולעזור לך לישון בלילה. לחץ כאן כדי לנסות!</string>
   <string name="lock_to_app_toast_no_navbar">כדי לבטל נעיצת מסך זה, לחץ והחזק את מקש התפריט.</string>
   <string name="lock_to_app_description_no_navbar">נעיצת מסך נועלת את המסך על תצוגה יחידה.\n\nכדי לבטל נעיצה, לחץ והחזק את מקש התפריט.</string>
-  <string name="lock_to_app_toast_no_navbar">כדי לבטל נעיצת מסך זה, לחץ על כפתור \"חזור\" והחזק אותו.</string>
   <string name="quick_settings_tile_flashlight_not_title">הפנס מופעל</string>
   <string name="quick_settings_tile_flashlight_not_summary">לחץ לכיבוי</string>
   <string name="storage_sd_dock_card">כרטיס זיכרון של תחנת עגינה</string>
