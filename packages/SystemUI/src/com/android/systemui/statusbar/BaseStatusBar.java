@@ -1149,6 +1149,41 @@ public abstract class BaseStatusBar extends SystemUI implements
         startNotificationGutsIntent(intent, appUid);
     }
 
+    private void launchFloating(PendingIntent pIntent) {
+        Intent overlay = new Intent();
+        overlay.addFlags(Intent.FLAG_FLOATING_WINDOW | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        try {
+            ActivityManagerNative.getDefault().resumeAppSwitches();
+        } catch (RemoteException e) {
+        }
+        try {
+            pIntent.send(mContext, 0, overlay);
+        } catch (PendingIntent.CanceledException e) {
+            // the stack trace isn't very helpful here.  Just log the exception message.
+            Slog.w(TAG, "Sending contentIntent failed: " + e);
+        }
+        final boolean keyguardShowing = mStatusBarKeyguardViewManager.isShowing();
+        dismissKeyguardThenExecute(new OnDismissAction() {
+            @Override
+            public boolean onDismiss() {
+                AsyncTask.execute(new Runnable() {
+                    public void run() {
+                        try {
+                            if (keyguardShowing) {
+                                ActivityManagerNative.getDefault()
+                                        .keyguardWaitingForActivityDrawn();
+                            }
+                            overrideActivityPendingAppTransition(keyguardShowing);
+                        } catch (RemoteException e) {
+                        }
+                    }
+                });
+                animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_RECENTS_PANEL, true /* force */);
+                return true;
+            }
+        }, false /* afterKeyguardGone */);
+    }
+
     private void startNotificationGutsIntent(final Intent intent, final int appUid) {
         final boolean keyguardShowing = mStatusBarKeyguardViewManager.isShowing();
         dismissKeyguardThenExecute(new OnDismissAction() {
@@ -1188,6 +1223,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         row.setTag(sbn.getPackageName());
         final View guts = row.findViewById(R.id.notification_guts);
         final String pkg = sbn.getPackageName();
+        final PendingIntent contentIntent = sbn.getNotification().contentIntent;
         String appname = pkg;
         Drawable pkgicon = null;
         int appUid = -1;
@@ -1219,6 +1255,8 @@ public abstract class BaseStatusBar extends SystemUI implements
         TextView appnameText = (TextView) row.findViewById(R.id.pkgname);
         appnameText.setText(appname);
         setNotificationTextColor(appnameText, customTextColor, 255);
+        final View floatButton = guts.findViewById(R.id.notification_float_item);
+        ((ImageView) floatButton).setColorFilter(customIconColor, Mode.MULTIPLY);
         final View settingsButton = guts.findViewById(R.id.notification_inspect_item);
         ((ImageView) settingsButton).setColorFilter(customIconColor, Mode.MULTIPLY);
         final View appSettingsButton
@@ -1233,6 +1271,12 @@ public abstract class BaseStatusBar extends SystemUI implements
                 }
             });
 
+            floatButton.setVisibility(View.VISIBLE);
+            floatButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    launchFloating(contentIntent);
+                }
+            });
             filterButton.setVisibility(View.VISIBLE);
             filterButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -1274,6 +1318,7 @@ public abstract class BaseStatusBar extends SystemUI implements
             }
         } else {
             settingsButton.setVisibility(View.GONE);
+            floatButton.setVisibility(View.GONE);
             appSettingsButton.setVisibility(View.GONE);
             filterButton.setVisibility(View.GONE);
         }
