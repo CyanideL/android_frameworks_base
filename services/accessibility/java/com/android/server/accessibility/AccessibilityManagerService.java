@@ -110,6 +110,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.NoSuchElementException;
 
 /**
  * This class is instantiated by the system as a system level service and can be
@@ -3100,8 +3101,9 @@ public class AccessibilityManagerService extends IAccessibilityManager.Stub {
         }
 
         public void unlinkToOwnDeathLocked() {
-            if (mService != null) {
+            try {
                 mService.unlinkToDeath(this, 0);
+            } catch (NoSuchElementException ex) {
             }
         }
 
