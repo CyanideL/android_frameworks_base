@@ -5534,6 +5534,12 @@ public final class Settings {
         public static final String RECENTS_EMPTY_CYANIDE_LOGO = "recents_empty_cyanide_logo";
 
         /**
+         * Launch gesture anywhere in floating window or not
+         * @hide
+         */
+        public static final String GESTURE_ANYWHERE_FLOATING = "gesture_anywhere_floating";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
