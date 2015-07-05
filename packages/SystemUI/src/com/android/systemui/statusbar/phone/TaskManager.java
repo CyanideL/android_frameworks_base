@@ -45,11 +45,13 @@ import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -196,6 +198,7 @@ public class TaskManager {
         });
         TextView taskNameTextView = (TextView) itemView.findViewById(R.id.task_name);
         taskNameTextView.setText(taskName);
+        Intent intent = new Intent();
         taskNameTextView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -445,9 +448,17 @@ public class TaskManager {
             }
             if (intent != null) {
                 try {
+				    if (Settings.System.getInt(mContext.getContentResolver(),
+				                Settings.System.TASK_MANAGER_FLOATING, 0) == 1) {
+				    intent.setFlags((intent.getFlags()&~Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+                            | Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_FLOATING_WINDOW);
+                    mActivityStarter.startActivity(intent, true);
+                    } else {
                     intent.setFlags((intent.getFlags()&~Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
                             | Intent.FLAG_ACTIVITY_NEW_TASK);
                     mActivityStarter.startActivity(intent, true);
+                    }
                     success = true;
                 } catch (Exception ee) {
                     Log.d(TAG,"start activity meets exception " + ee.getMessage());
