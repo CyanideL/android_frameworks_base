@@ -16,6 +16,7 @@
 
 package com.android.internal.util.cyanide;
 
+import android.app.ActivityManagerNative;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.ContentUris;
@@ -281,6 +282,16 @@ public class CyanideActions {
                     }
                 }
                 break;
+
+            case ACTION_UNPIN:
+                try {
+                    if (ActivityManagerNative.getDefault().isInLockTaskMode()) {
+                            ActivityManagerNative.getDefault().stopLockTaskModeOnCurrent(); //don't die!!
+                    }
+                } catch (RemoteException e) {
+                    // blah
+                }
+                break;	
 
             case ACTION_NULL:
             case ACTION_BLANK:

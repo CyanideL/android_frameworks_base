@@ -198,4 +198,9 @@
     <!-- Battery Saver Dismiss -->
     <string name="battery_saver_dismiss_title">Dismiss</string>
 
+    <!-- Screen pinning dialog description. -->
+    <string name="custom_screen_pinning_description">This keeps it in view until you unpin. Assign the Unpin App action in Navigation Bar settings, then use the Unpin App action to unpin.</string>
+    <!-- Screen pinning dialog description when in accessibility mode. -->
+    <string name="custom_screen_pinning_description_accessible">This keeps it in view until you unpin. Use the Unpin App action in Navigation Bar settings to unpin.</string>
+
 </resources>

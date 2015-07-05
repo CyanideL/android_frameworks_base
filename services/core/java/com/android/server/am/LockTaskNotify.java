@@ -54,9 +54,9 @@ public class LockTaskNotify {
     public void handleShowToast(boolean isLocked) {
         final int textResId;
         if (isLocked) {
-            textResId = R.string.lock_to_app_toast_locked;
+            textResId = R.string.custom_lock_to_app_toast;
         } else if (mAccessibilityManager.isEnabled()) {
-            textResId = R.string.lock_to_app_toast_accessible;
+            textResId = R.string.custom_lock_to_app_toast_accessible;
         } else {
             textResId = mPolicy.hasNavigationBar()
                     ? R.string.lock_to_app_toast : R.string.lock_to_app_toast_no_navbar;

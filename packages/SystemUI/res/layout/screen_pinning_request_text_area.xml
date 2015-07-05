@@ -42,7 +42,7 @@
         android:paddingEnd="48dp"
         android:paddingStart="48dp"
         android:paddingTop="12.6dp"
-        android:text="@string/screen_pinning_description"
+        android:text="@string/custom_screen_pinning_description"
         android:textColor="@color/screen_pinning_primary_text"
         android:textSize="16sp" />
 

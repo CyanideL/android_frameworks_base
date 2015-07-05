@@ -123,6 +123,7 @@ public class NavbarUtils {
 				case ACTION_LAYOUT_LEFT:
 				case ACTION_LAYOUT_RIGHT:
 				case ACTION_NULL:
+                case ACTION_UNPIN:
 				case ACTION_BLANK:
                     return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_null");
             }

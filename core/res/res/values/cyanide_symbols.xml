@@ -119,6 +119,7 @@
   <java-symbol type="string" name="action_silent"/>
   <java-symbol type="string" name="action_vib"/>
   <java-symbol type="string" name="action_silent_vib"/>
+  <java-symbol type="string" name="action_unpin" />
   <java-symbol type="string" name="action_robocop" />
   <java-symbol type="string" name="action_null"/>
   <java-symbol type="string" name="action_app"/>
@@ -336,5 +337,8 @@
   <java-symbol type="string" name="global_actions_floating_windows_mode_on_status" />
   <java-symbol type="string" name="global_actions_floating_windows_mode_off_status" />
   <java-symbol type="drawable" name="ic_lock_floating" />
+
+  <java-symbol type="string" name="custom_lock_to_app_toast" />
+  <java-symbol type="string" name="custom_lock_to_app_toast_accessible" />
 
 </resources>

@@ -65,6 +65,7 @@ public class NavbarConstants {
     public static final String ACTION_IME_LAYOUT = "**ime_layout**";
     public static final String ACTION_POWER = "**power**";
     public static final String ACTION_NULL = "**null**";
+    public static final String ACTION_UNPIN = "**unpin**";
 
     //not presently utilized, but gives the gist of NavbarConstants' methods without scrolling down (YAY)
     public interface AwesomeGuts {
@@ -109,6 +110,7 @@ public class NavbarConstants {
 
         /* disabled or special actions?? */
         ACTION_POWER          ("**power**",           com.android.internal.R.string.action_null,          null),
+        ACTION_UNPIN          ("**unpin**",           com.android.internal.R.string.action_unpin,         null),
         ACTION_NULL           ("**null**",            com.android.internal.R.string.action_null,          null);
 
         private final String SYSUI_PKG = "com.android.systemui";
