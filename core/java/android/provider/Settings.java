@@ -3116,10 +3116,14 @@ public final class Settings {
         public static final String STATUS_BAR_SHOW_NOTIF_COUNT = "status_bar_show_notif_count";
 
         /**
-         * Wether to colorize the notification icons on the status bar
+         * Colorize the notification and system icons on the status bar
+         * 0: never
+         * 1: if the icon is an greyscale icon
+         * 2: always
+         * default: 0
          * @hide
          */
-        public static final String STATUS_BAR_COLORIZE_NOTIF_ICONS = "status_bar_colorize_notif_icons";
+        public static final String STATUS_BAR_NOTIF_SYSTEM_ICONS_COLOR_MODE = "status_bar_notif_system_icons_color_mode";
 
         /**
          * Color of the status bar notification icons

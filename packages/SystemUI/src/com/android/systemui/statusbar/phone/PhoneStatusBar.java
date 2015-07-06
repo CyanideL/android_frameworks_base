@@ -566,6 +566,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SLIM_RECENTS_EXPAND_ICON_COLOR),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_NOTIF_SYSTEM_ICONS_COLOR_MODE),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_NOTIF_SYSTEM_ICON_COLOR),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_ICON_COLOR),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -644,6 +653,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     || uri.equals(Settings.System.getUriFor(
                     Settings.System.SLIM_RECENTS_EXPAND_ICON_COLOR))) {
                 rebuildRecentsScreen();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_NOTIF_SYSTEM_ICONS_COLOR_MODE))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_NOTIF_SYSTEM_ICON_COLOR))) {
+                updateMoreIconColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_ICON_COLOR))) {
+                updateOverflowMoreIconColor();
             update();
             }
         }
@@ -1539,6 +1556,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         setKeyguardTextAndIconColors();
         updateBatteryLevelTextColor();
         UpdateNotifPanelClearAllIconColor();
+        updateMoreIconColor();
+        updateOverflowMoreIconColor();
         return mStatusBarView;
     }
 
@@ -2807,6 +2826,18 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
         if (mKeyguardStatusBar != null) {
             mKeyguardStatusBar.setBatteryLevelTextColor();
+        }
+    }
+
+    private void updateMoreIconColor() {
+        if (mNotificationIcons != null) {
+            mNotificationIcons.setMoreIconColor();
+        }
+    }
+
+    private void updateOverflowMoreIconColor() {
+        if (mKeyguardIconOverflowContainer != null) {
+            mKeyguardIconOverflowContainer.updateOverflowMoreIconColor();
         }
     }
 

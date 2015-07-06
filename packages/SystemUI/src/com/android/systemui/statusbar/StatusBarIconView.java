@@ -30,6 +30,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.DrawableContainer;
+import android.graphics.drawable.InsetDrawable;
 import android.graphics.PorterDuff.Mode;
 import android.os.UserHandle;
 import android.os.Handler;
@@ -42,6 +43,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 
 import com.android.internal.statusbar.StatusBarIcon;
+import com.android.internal.util.NotificationColorUtil;
 import com.android.systemui.R;
 
 import java.text.NumberFormat;
@@ -58,7 +60,7 @@ public class StatusBarIconView extends AnimatedImageView {
     private int mNumberY;
     private String mNumberText;
     private Notification mNotification;
-    private boolean mColorizeNotifIcons;
+    private int mIconColorMode;
     private boolean mShowNotifCount;
     private int mIconColor;
     private int mNotifCountColor;
@@ -369,10 +371,20 @@ public class StatusBarIconView extends AnimatedImageView {
             }
             mIconViews.add(sbiv);
             sbiv.setColorFilter(null);
-            if (sbiv.mNotification == null) {
-                sbiv.setColorFilter(sbiv.mIconColor, Mode.MULTIPLY);
-            } else if (sbiv.mColorizeNotifIcons) {
-                sbiv.setColorFilter(sbiv.mIconColor, Mode.MULTIPLY);
+            Drawable icon = sbiv.getIcon(sbiv.mIcon);
+            if (icon != null) {
+                if (icon instanceof InsetDrawable) {
+                    Drawable d = ((InsetDrawable) icon).getDrawable();
+                    if (d != null) {
+                        if (sbiv.colorizeIcon(d)) {
+                            sbiv.setColorFilter(sbiv.mIconColor, Mode.MULTIPLY);
+                        }
+                    }
+                } else {
+                    if (sbiv.colorizeIcon(icon)) {
+                        sbiv.setColorFilter(sbiv.mIconColor, Mode.MULTIPLY);
+                    }
+                }
             }
             sbiv.mNumberPaint.setColor(sbiv.mNotifCountTextColor);
         }
@@ -388,7 +400,7 @@ public class StatusBarIconView extends AnimatedImageView {
             ContentResolver resolver = mContext.getContentResolver();
 
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_COLORIZE_NOTIF_ICONS),
+                    Settings.System.STATUS_BAR_NOTIF_SYSTEM_ICONS_COLOR_MODE),
                     false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_SHOW_NOTIF_COUNT),
@@ -412,10 +424,20 @@ public class StatusBarIconView extends AnimatedImageView {
                 sbiv.updateIconsAndText();
                 sbiv.set(sbiv.mIcon, true);
                 sbiv.setColorFilter(null);
-                if (sbiv.mNotification == null) {
-                    sbiv.setColorFilter(sbiv.mIconColor, Mode.MULTIPLY);
-                } else if (sbiv.mColorizeNotifIcons) {
-                    sbiv.setColorFilter(sbiv.mIconColor, Mode.MULTIPLY);
+                Drawable icon = sbiv.getIcon(sbiv.mIcon);
+                if (icon != null) {
+                    if (icon instanceof InsetDrawable) {
+                        Drawable d = ((InsetDrawable) icon).getDrawable();
+                        if (d != null) {
+                            if (sbiv.colorizeIcon(d)) {
+                                sbiv.setColorFilter(sbiv.mIconColor, Mode.MULTIPLY);
+                            }
+                        }
+                    } else {
+                        if (sbiv.colorizeIcon(icon)) {
+                            sbiv.setColorFilter(sbiv.mIconColor, Mode.MULTIPLY);
+                        }
+                    }
                 }
                 sbiv.mNumberPaint.setColor(sbiv.mNotifCountTextColor);
             }
@@ -425,8 +447,8 @@ public class StatusBarIconView extends AnimatedImageView {
     private void updateIconsAndText() {
         ContentResolver resolver = mContext.getContentResolver();
 
-        mColorizeNotifIcons = Settings.System.getInt(resolver,
-                Settings.System.STATUS_BAR_COLORIZE_NOTIF_ICONS, 0) == 1;
+        mIconColorMode = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_NOTIF_SYSTEM_ICONS_COLOR_MODE, 1);
         mShowNotifCount = Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_SHOW_NOTIF_COUNT,
                     mContext.getResources().getBoolean(
@@ -440,5 +462,22 @@ public class StatusBarIconView extends AnimatedImageView {
         mNotifCountTextColor = Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_NOTIF_COUNT_TEXT_COLOR,
                 0xffffffff);
+    }
+
+    private boolean colorizeIcon(Drawable d) {
+        if (d == null) {
+            return false;
+        }
+
+        NotificationColorUtil cu = NotificationColorUtil.getInstance(mContext);
+        final boolean isGreyscale = cu.isGrayscaleIcon(d);
+
+        if (mIconColorMode == 0) {
+            return false;
+        } else if (mIconColorMode == 1) {
+            return isGreyscale;
+        } else {
+            return true;
+        }
     }
 }
