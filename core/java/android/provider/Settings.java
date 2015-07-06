@@ -5121,7 +5121,7 @@ public final class Settings {
          *
          * @hide
          */
-        public static final String HEADS_UP_NOTIFCATION_DECAY = "heads_up_notification_decay";
+        public static final String HEADS_UP_NOTIFICATION_DECAY = "heads_up_notification_decay";
         
         /**
          * Defines the global heads up notification snooze
