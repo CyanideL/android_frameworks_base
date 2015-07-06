@@ -2347,7 +2347,7 @@
     <bool name="config_dozeUseAccelerometer">false</bool>
 
     <!-- Default, comma-delimited, quick settings tiles. See QSConstants.java for a list of all available tiles -->
-    <string name="config_defaultQuickSettingsTiles">wifi,bt,cell,airplane,rotation,flashlight,location,cyanide</string>
+    <string name="config_defaultQuickSettingsTiles">wifi,bt,cell,rotation,flashlight,location,cyanide_settings,toggleSlimPie</string>
 
     <string-array name="config_externalCMServices"></string-array>
 </resources>
