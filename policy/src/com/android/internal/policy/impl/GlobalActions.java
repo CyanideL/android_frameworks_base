@@ -59,6 +59,7 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.PorterDuff.Mode;
+import android.hardware.TorchManager;
 import android.Manifest;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
@@ -426,12 +427,17 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
                 mContext, actionKey, config.getIcon(), true);
                 mItems.add(getLockdownAction(iconColor));
-                
+
             } else if (actionKey.equals(PolicyConstants.ACTION_RESTARTUI)) {
                 Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
                 mContext, actionKey, config.getIcon(), true);
                 mItems.add(getRestartAction(iconColor));
-            
+
+            } else if (actionKey.equals(PolicyConstants.ACTION_TORCH)) {
+                Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
+                mContext, actionKey, config.getIcon(), true);
+                mItems.add(getTorchAction(iconColor));
+
             } else if (actionKey.equals(PolicyConstants.ACTION_ONTHEGO)) {
                 Drawable iconColor = PolicyHelper.getPowerMenuIconImage(
                 mContext, actionKey, config.getIcon(), true);
@@ -1023,7 +1029,36 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
              }
         };
     }
-    
+
+    private Action getTorchAction(Drawable iconColor) {
+        return new SinglePressAction(iconColor, R.string.global_action_torch) {
+
+             public void onPress() {
+                // toggle torch the new way
+                TorchManager torchManager =
+                        (TorchManager) mContext.getSystemService(Context.TORCH_SERVICE);
+                if (!torchManager.isTorchOn()) {
+                    torchManager.setTorchEnabled(true);
+                } else {
+                    torchManager.setTorchEnabled(false);
+                }
+                return;
+            }
+
+             public boolean onLongPress() {
+                 return false;
+             }
+
+             public boolean showDuringKeyguard() {
+                 return true;
+             }
+
+             public boolean showBeforeProvisioning() {
+                 return true;
+             }
+        };
+    }
+
     private Action getLockdownAction(Drawable iconColor) {
         return new SinglePressAction(iconColor, R.string.global_action_lockdown) {
 

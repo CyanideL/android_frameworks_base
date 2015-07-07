@@ -314,6 +314,9 @@ public class PolicyHelper {
         } else if (clickAction.equals(PolicyConstants.ACTION_FLOATING_WINDOWS)) {
             return context.getResources().getDrawable(
                 com.android.internal.R.drawable.ic_lock_floating);
+        } else if (clickAction.equals(PolicyConstants.ACTION_TORCH)) {
+            return context.getResources().getDrawable(
+                com.android.internal.R.drawable.ic_lock_torch);
         }
         return null;
     }

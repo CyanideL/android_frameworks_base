@@ -131,6 +131,7 @@
     <string name="notification_flashlight_on_summary">Tap to turn off</string>
     
     <string name="global_action_restart">Restart SystemUI</string>
+    <string name="global_action_torch">Torch</string>
     <string name="global_actions_toggle_appcirclebar_mode">AppCircleBar</string>
     <string name="global_actions_toggle_appsidebar_mode">AppSideBar</string>
     <string name="global_actions_toggle_gesture_anywhere_mode">Gesture Anywhere</string>
