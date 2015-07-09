@@ -1179,11 +1179,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         updateShowSearchHoldoff();
 
-        if (mNavigationBarView == null) {
-                mNavigationBarView =
-                    (NavigationBarView) View.inflate(context, R.layout.navigation_bar, null);
-                mNavigationBarView.updateResources(getNavbarThemedResources());
+        if (mNavigationBarView == null && !mRecreating) {
+            mNavigationBarView =
+                (NavigationBarView) View.inflate(context, R.layout.navigation_bar, null);
+				mNavigationBarView.updateResources(getNavbarThemedResources());
         }
+		
+        addAppCircleSidebar();
+        addSidebarView();
+        addGestureAnywhereView();
 
         mNavigationBarView.setDisabledFlags(mDisabled);
         mNavigationBarView.setBar(this);
@@ -1207,14 +1211,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         // Setup pie container if enabled
         attachPieContainer(isPieEnabled());
-
-        if (mRecreating) {
-            removeSidebarView();
-        } else {
-            addAppCircleSidebar();
-            addSidebarView();
-            addGestureAnywhereView();
-        }
 
         try {
             boolean showNav = mWindowManagerService.hasNavigationBar();
@@ -4737,6 +4733,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mContext.recreateTheme();
             recreateStatusBar();
             observer.update();
+			addSidebarView();
 
         } else {
             loadDimens();
