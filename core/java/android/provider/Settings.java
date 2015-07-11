@@ -4338,7 +4338,13 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_CARRIER_COLOR = "status_bar_carrier_color";
-        
+
+        /**
+         * show carrier in statusbae while on lockscreen. The value is
+         * int (1: Show or 0: Hide).
+         */
+        public static final String LOCK_SCREEN_HIDE_CARRIER = "lock_screen_hide_carrier";
+
         /**
          * Height of the gesture anywhere trigger.
          * Force expanded notifications on all apps that support it.
@@ -4373,13 +4379,13 @@ public final class Settings {
          */
         @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_FIELD)
         public static final String GESTURE_ANYWHERE_SHOW_TRIGGER = "gesture_anywhere_show_trigger";
-		
+
 		/**
          *  Enable statusbar double tap gesture on to put device to sleep
          * @hide
          */
         public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
-        
+
         /**
          * Show/hide network speed indicator
          * @hide
@@ -4468,7 +4474,7 @@ public final class Settings {
          * @hide
          */
         public static final String ANDROID_RECENTS_SHOW_CLEAR_ALL = "android_recents_show_clear_all";
-	
+
 		/**
          * Horizontal position of the clear all button in the recent apps panel
          * 0: Left
@@ -4507,16 +4513,16 @@ public final class Settings {
          * @hide
          */
         public static final String ANDROID_RECENTS_CLEAR_ALL_ICON_COLOR = "android_recents_clear_all_icon_color";
-        
+
         /**
-          * Volume keys control cursor in text fields (default is 0)
-          * 0 - Disabled
-          * 1 - Volume up/down moves cursor left/right
-          * 2 - Volume up/down moves cursor right/left
-          * @hide
-          */
-         public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
-        
+         * Volume keys control cursor in text fields (default is 0)
+         * 0 - Disabled
+         * 1 - Volume up/down moves cursor left/right
+         * 2 - Volume up/down moves cursor right/left
+         * @hide
+         */
+        public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
+
         /**
 		 * Whether to dismiss all recents tasks
 		 * @hide
@@ -4548,7 +4554,7 @@ public final class Settings {
          * @hide
          */
         public static final String VOICE_LAUNCH_INTENT = "voice_launch_intent";
-		
+
 		/**
          * Whether or not to use the app sidebar
          *
