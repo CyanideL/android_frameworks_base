@@ -62,7 +62,6 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
     public static final String SCREENSHOT_BUTTON = "##screenshot##";
     public static final String POWER_MENU_BUTTON = "##power_menu##";
     public static final String EXPANDED_DESKTOP_BUTTON = "##expanded_desktop##";
-    public static final String THEME_SWITCH_BUTTON = "##theme_switch##";
     public static final String NAVBAR_BUTTON = "##navbar##";
     public static final String SLIMPIE_BUTTON = "##slimpie##";
     public static final String RESTARTUI_BUTTON            = "**restartui**";
@@ -102,7 +101,6 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
     private PieItem mScreenshot;
     private PieItem mPowerMenu;
     private PieItem mExpandedDesktop;
-    private PieItem mThemeSwitch;
     private PieItem mNavbar;
     private PieItem mSlimPie;
     private PieItem mRestartui;
@@ -281,7 +279,6 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
         mScreenshot = makeItem(R.drawable.ic_sysbar_screenshot, 1, SCREENSHOT_BUTTON, true);
         mPowerMenu = makeItem(R.drawable.ic_sysbar_power, 1, POWER_MENU_BUTTON, true);
         mExpandedDesktop = makeItem(R.drawable.ic_sysbar_expanded_desktop, 1, EXPANDED_DESKTOP_BUTTON, true);
-        mThemeSwitch = makeItem(R.drawable.ic_sysbar_theme_switch, 1, THEME_SWITCH_BUTTON, true);
         mNavbar = makeItem(R.drawable.ic_sysbar_navbar, 1, NAVBAR_BUTTON, true);
         mSlimPie = makeItem(R.drawable.ic_sysbar_pie, 1, SLIMPIE_BUTTON, true);
         mRestartui = makeItem(R.drawable.ic_qs_systemui_restart, 1, RESTARTUI_BUTTON, true);
@@ -306,7 +303,6 @@ public class PAPieController extends EdgeGestureManager.EdgeGestureActivationLis
         mPie.addItem(mScreenshot);
         mPie.addItem(mPowerMenu);
         mPie.addItem(mExpandedDesktop);
-        mPie.addItem(mThemeSwitch);
         mPie.addItem(mNavbar);
         mPie.addItem(mSlimPie);
         mPie.addItem(mRestartui);

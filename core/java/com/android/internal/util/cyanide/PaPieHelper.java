@@ -235,9 +235,6 @@ public class PaPieHelper {
         } else if (clickAction.equals(PieConstants.SLIMPIE_BUTTON)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_pie", null, null);
-        } else if (clickAction.equals(PieConstants.THEME_SWITCH_BUTTON)) {
-            resId = systemUiResources.getIdentifier(
-                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_theme_switch", null, null);
         } else if (clickAction.equals(PieConstants.TORCH_BUTTON)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_torch", null, null);

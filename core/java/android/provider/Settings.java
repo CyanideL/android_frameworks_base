@@ -5000,12 +5000,6 @@ public final class Settings {
         public static final String PA_PIE_EXPANDED_DESKTOP = "pa_pie_expanded_desktop";
         
         /**
-         * Pie TRDS Switch
-         * @hide
-         */
-        public static final String PA_PIE_THEME_SWITCH = "pa_pie_theme_switch";
-        
-        /**
          * Pie Navbar Switch
          * @hide
          */
@@ -7792,21 +7786,6 @@ public final class Settings {
         public static final String UI_NIGHT_MODE = "ui_night_mode";
 
         /**
-         * The current theme mode that has been selected by the user.  Owned
-         * and controlled by UiModeManagerService.
-         * @hide
-         */
-        public static final String UI_THEME_MODE = "ui_theme_mode";
-
-        /**
-         * Auto theme mode which switches either based on daytime or lightsensor
-         * values: 0 = manual (default), 1 = auto twilight (based on daytime)
-         * 2 = auto lightsensor (based on light conditions)
-         * @hide
-         */
-        public static final String UI_THEME_AUTO_MODE = "ui_theme_auto_mode";
-
-        /**
          * Whether screensavers are enabled.
          * @hide
          */
@@ -8166,8 +8145,6 @@ public final class Settings {
             MOUNT_UMS_NOTIFY_ENABLED,
             UI_NIGHT_MODE,
             SLEEP_TIMEOUT,
-            UI_THEME_MODE,
-            UI_THEME_AUTO_MODE,
             PRIVACY_GUARD_DEFAULT,
             ADVANCED_REBOOT,
             DEVELOPMENT_SHORTCUT,

@@ -33,7 +33,6 @@ public class PieConstants {
     public static final String SCREENSHOT_BUTTON           = "##screenshot##";
     public static final String POWER_MENU_BUTTON           = "##power_menu##";
     public static final String EXPANDED_DESKTOP_BUTTON     = "##expanded_desktop##";
-    public static final String THEME_SWITCH_BUTTON         = "##theme_switch##";
     public static final String NAVBAR_BUTTON               = "##navbar##";
     public static final String SLIMPIE_BUTTON              = "##slimpie##";
     public static final String RESTARTUI_BUTTON            = "**restartui**";

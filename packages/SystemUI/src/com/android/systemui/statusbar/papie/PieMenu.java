@@ -202,7 +202,6 @@ public class PieMenu extends FrameLayout {
     private boolean mUseTorch;
     private boolean mUsePowerMenu;
     private boolean mExpandedDesktop;
-    private boolean mThemeSwitch;
     private boolean mNavbar;
     private boolean mSlimPie;
     private boolean mRestartui;
@@ -286,8 +285,6 @@ public class PieMenu extends FrameLayout {
                 Settings.System.PA_PIE_POWER_MENU, 0) == 1;
         mExpandedDesktop = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PA_PIE_EXPANDED_DESKTOP, 0) == 1;
-        mThemeSwitch = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.PA_PIE_THEME_SWITCH, 0) == 1;
         mNavbar = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PA_PIE_NAVBAR, 0) == 1;
         mSlimPie = Settings.System.getInt(mContext.getContentResolver(),
@@ -615,7 +612,6 @@ public class PieMenu extends FrameLayout {
                !(item.getName().equals(PAPieController.SCREENSHOT_BUTTON) && !mUseScreenshot) &&
                !(item.getName().equals(PAPieController.POWER_MENU_BUTTON) && !mUsePowerMenu) &&
                !(item.getName().equals(PAPieController.EXPANDED_DESKTOP_BUTTON) && !mExpandedDesktop) &&
-               !(item.getName().equals(PAPieController.THEME_SWITCH_BUTTON) && !mThemeSwitch) &&
                !(item.getName().equals(PAPieController.NAVBAR_BUTTON) && !mNavbar) &&
                !(item.getName().equals(PAPieController.SLIMPIE_BUTTON) && !mSlimPie) &&
                !(item.getName().equals(PAPieController.RESTARTUI_BUTTON) && !mRestartui) &&
@@ -653,8 +649,6 @@ public class PieMenu extends FrameLayout {
         if (!mUsePowerMenu)
             itemCount--;
         if (!mExpandedDesktop)
-            itemCount--;
-        if (!mThemeSwitch)
             itemCount--;
         if (!mNavbar)
             itemCount--;
