@@ -1091,8 +1091,7 @@ public class BatteryMeterView extends View implements DemoMode,
      */
     private void updateChargeAnim(BatteryTracker tracker) {
         // Stop animation when battery is full or
-        // after the meter animated back to 0 after unplugging or
-        // after the meter animated back to 0 after disabling charge animation
+        // after the meter animated back to 0 after unplugging.
         if ((!tracker.shouldIndicateCharging() && mAnimValue == 0)
                 || (mChargeAnimDisabled && mAnimValue == 0)
                 || tracker.status == BatteryManager.BATTERY_STATUS_FULL) {
