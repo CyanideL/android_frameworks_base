@@ -938,9 +938,6 @@ public class MediaScanner
             }
             Uri result = null;
             boolean needToSetSettings = false;
-            boolean needToCustomizeMmsNotification = false;
-            boolean needToCustomizeRingtone2 = false;
-            boolean needToCustomizeRingtone3 = false;
             if (rowId == 0) {
                 if (mMtpObjectHandle != 0) {
                     values.put(MediaStore.MediaColumns.MEDIA_SCANNER_NEW_OBJECT_ID, mMtpObjectHandle);
@@ -984,10 +981,7 @@ public class MediaScanner
                 // get priority when bulk inserting.
                 // If the rowId of the inserted file is needed, it gets inserted immediately,
                 // bypassing the bulk inserter.
-                if (inserter == null || needToSetSettings
-                        || needToCustomizeMmsNotification
-                        || needToCustomizeRingtone2
-                        || needToCustomizeRingtone3) {
+                if (inserter == null || needToSetSettings) {
                     if (inserter != null) {
                         inserter.flushAll();
                     }
@@ -1091,11 +1085,6 @@ public class MediaScanner
                 Settings.System.putString(mContext.getContentResolver(), settingName,
                         ContentUris.withAppendedId(uri, rowId).toString());
             }
-        }
-
-        private void overrideSetting(String settingName, Uri uri, long rowId) {
-            Settings.System.putString(mContext.getContentResolver(), settingName,
-                    ContentUris.withAppendedId(uri, rowId).toString());
         }
 
         private int getFileTypeFromDrm(String path) {
