@@ -249,6 +249,15 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         }
     };
 
+    // provides a listener for the empty space in the navbar
+    private final OnTouchListener mNavButtonsTouchListener = new OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+                onNavButtonTouched();
+            return true;
+        }
+    };
+
     public void onNavButtonTouched() {
         mHandler.removeCallbacks(mNavButtonDimmer);
         if (getNavButtons() != null) {
@@ -829,6 +838,11 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
         mCurrentView = mRotatedViews[Surface.ROTATION_0];
 
+        if (mDimNavButtons) {
+            if (getNavButtons() != null)
+                getNavButtons().setOnTouchListener(mNavButtonsTouchListener);
+        }
+
         updateRTLOrder();
         loadButtonLayoutsFromSettings(mContext.getContentResolver());
         loadButtonArrays();
@@ -1130,6 +1144,11 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             mCurrentView = mRotatedViews[rot];
         }
         mCurrentView.setVisibility(View.VISIBLE);
+
+        if (mDimNavButtons) {
+            if (getNavButtons() != null)
+                getNavButtons().setOnTouchListener(mNavButtonsTouchListener);
+        }
 
         mDeadZone = (DeadZone) mCurrentView.findViewById(R.id.deadzone);
         mDeadZone.setStartFromRight(mLeftInLandscape);
