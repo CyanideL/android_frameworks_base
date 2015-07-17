@@ -92,4 +92,6 @@
     <!-- The default color for the clear recents button icon on light background  -->
     <color name="fab_icon_dark_color">#8a000000</color>
 
+    <color name="status_bar_temp_text_color">#ff1976D2</color>
+
 </resources>

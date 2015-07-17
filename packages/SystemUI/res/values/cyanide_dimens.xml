@@ -96,4 +96,7 @@
     <dimen name="recents_fab_margin_top">8dp</dimen>
     <dimen name="recents_fab_margin_bottom">56dp</dimen>
 
+    <!-- The font size for the temperature text -->
+    <dimen name="status_bar_temp_text_size">14sp</dimen>
+
 </resources>
