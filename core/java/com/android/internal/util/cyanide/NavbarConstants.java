@@ -66,11 +66,13 @@ public class NavbarConstants {
     public static final String ACTION_POWER = "**power**";
     public static final String ACTION_NULL = "**null**";
     public static final String ACTION_UNPIN = "**unpin**";
+    public static final String ACTION_SCREENSHOT = "**screenshot**";
+    public static final String ACTION_SLEEP = "**sleep**";
 
     //not presently utilized, but gives the gist of NavbarConstants' methods without scrolling down (YAY)
     public interface AwesomeGuts {
 
-        int getStringId();                         //returns the resource id of this NavbarConstant's user-facing name
+        int getStringId();                               //returns the resource id of this NavbarConstant's user-facing name
         String getProperName(Context mContext);          //getStrings ^
 
         Resources getMyPackageResources(Context context); //gets a Resources where the drawable can be found (i.e. from mDrawablePackage)
@@ -92,9 +94,11 @@ public class NavbarConstants {
         ACTION_NOTIFICATIONS  ("**notifications**",   com.android.internal.R.string.action_notifications, "com.android.systemui:drawable/ic_sysbar_notifications"),
         ACTION_IME            ("**ime**",             com.android.internal.R.string.action_ime,           "com.android.systemui:drawable/ic_sysbar_ime_switcher"),
         ACTION_TORCH          ("**torch**",           com.android.internal.R.string.action_torch,         "com.android.systemui:drawable/ic_sysbar_torch"),
+        ACTION_SCREENSHOT     ("**screenshot**",      com.android.internal.R.string.action_screenshot,    "com.android.systemui:drawable/ic_sysbar_screenshot"),
         ACTION_ASSIST         ("**assist**",          com.android.internal.R.string.action_assist,        "com.android.systemui:drawable/ic_sysbar_assist"),
         ACTION_SEARCH         ("**search**",          com.android.internal.R.string.action_search,        "com.android.systemui:drawable/ic_sysbar_search"),
         ACTION_VOICEASSIST    ("**voiceassist**",     com.android.internal.R.string.action_voiceassist,   "com.android.systemui:drawable/ic_sysbar_voiceassist"),
+        ACTION_SLEEP          ("**sleep**",           com.android.internal.R.string.action_sleep,         "com.android.systemui:drawable/ic_sysbar_power"),
         ACTION_RING_SILENT    ("**ring_silent**",     com.android.internal.R.string.action_silent,        "com.android.systemui:drawable/ic_sysbar_silent"),
         ACTION_RING_VIB_SILENT("**ring_vib_silent**", com.android.internal.R.string.action_silent_vib,    "com.android.systemui:drawable/ic_sysbar_silent_vib"),
         ACTION_RING_VIB       ("**ring_vib**",        com.android.internal.R.string.action_vib,           "com.android.systemui:drawable/ic_sysbar_vib"),

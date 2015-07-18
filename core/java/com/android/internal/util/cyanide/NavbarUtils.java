@@ -98,31 +98,35 @@ public class NavbarUtils {
 				    return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_search_land");
 				case ACTION_KILL:
                     return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_killtask_land");
-				case ACTION_ASSIST:
-				    return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_assist_land");
-				case ACTION_VOICEASSIST:
-				    return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_voiceassist_land");
-				case ACTION_POWER:
-				    return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_power_land");
-				case ACTION_TORCH:
-				    return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_torch_land");
-				case ACTION_LAST_APP:
-				    return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_lastapp_land");
-				case ACTION_NOTIFICATIONS:
-				    return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_notifications_land");
-				case ACTION_IME:
-				    return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_ime_switcher_land");
-				case ACTION_RING_VIB:
-				case ACTION_RING_SILENT:
-				case ACTION_RING_VIB_SILENT:
-				case ACTION_IME_LAYOUT:
-				case ACTION_ARROW_LEFT:
-				case ACTION_ARROW_RIGHT:
-				case ACTION_ARROW_UP:
-				case ACTION_ARROW_DOWN:
-				case ACTION_LAYOUT_LEFT:
-				case ACTION_LAYOUT_RIGHT:
-				case ACTION_NULL:
+                case ACTION_ASSIST:
+                    return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_assist_land");
+                case ACTION_VOICEASSIST:
+                    return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_voiceassist_land");
+                case ACTION_POWER:
+                    return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_power_land");
+                case ACTION_TORCH:
+                    return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_torch_land");
+                case ACTION_LAST_APP:
+                    return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_lastapp_land");
+                case ACTION_NOTIFICATIONS:
+                    return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_notifications_land");
+                case ACTION_IME:
+                    return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_ime_switcher_land");
+                case ACTION_SCREENSHOT:
+                    return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_screenshot_land");
+                case ACTION_SLEEP:
+                    return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_power_land");
+                case ACTION_RING_VIB:
+                case ACTION_RING_SILENT:
+                case ACTION_RING_VIB_SILENT:
+                case ACTION_IME_LAYOUT:
+                case ACTION_ARROW_LEFT:
+                case ACTION_ARROW_RIGHT:
+                case ACTION_ARROW_UP:
+                case ACTION_ARROW_DOWN:
+                case ACTION_LAYOUT_LEFT:
+                case ACTION_LAYOUT_RIGHT:
+                case ACTION_NULL:
                 case ACTION_UNPIN:
 				case ACTION_BLANK:
                     return getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_null");
