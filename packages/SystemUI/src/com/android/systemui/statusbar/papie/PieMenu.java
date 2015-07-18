@@ -292,7 +292,7 @@ public class PieMenu extends FrameLayout {
         mRestartui = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PA_PIE_RESTARTUI, 1) == 1;
         mAppcirclesidebar = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.PA_PIE_APP_CIRCLE_BAR, 1) == 1;
+                Settings.System.PA_PIE_APP_CIRCLE_BAR, 0) == 1;
         mAppsidebar = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PA_PIE_APP_SIDEBAR, 0) == 1;
         mGestureAnywhere = Settings.System.getInt(mContext.getContentResolver(),
