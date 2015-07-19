@@ -360,6 +360,24 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             Settings.System.NAVIGATION_BAR_ARROWS, 0) == 1;
         mButtonLayouts = Settings.System.getInt(resolver,
             Settings.System.NAVIGATION_BAR_ALTERNATE_LAYOUTS, 1);
+        mDimNavButtons = (Settings.System.getIntForUser(resolver,
+            Settings.System.DIM_NAV_BUTTONS, 0,
+            UserHandle.USER_CURRENT) == 1);
+        mDimNavButtonsTimeout = Settings.System.getIntForUser(resolver,
+            Settings.System.DIM_NAV_BUTTONS_TIMEOUT, 3000,
+            UserHandle.USER_CURRENT);
+        mDimNavButtonsAlpha = (float) Settings.System.getIntForUser(resolver,
+            Settings.System.DIM_NAV_BUTTONS_ALPHA, 50,
+            UserHandle.USER_CURRENT) / 100.0f;
+        mDimNavButtonsAnimate = (Settings.System.getIntForUser(resolver,
+            Settings.System.DIM_NAV_BUTTONS_ANIMATE, 0,
+            UserHandle.USER_CURRENT) == 1);
+        mDimNavButtonsAnimateDuration = Settings.System.getIntForUser(resolver,
+            Settings.System.DIM_NAV_BUTTONS_ANIMATE_DURATION, 2000,
+            UserHandle.USER_CURRENT);
+        mDimNavButtonsTouchAnywhere = (Settings.System.getIntForUser(resolver,
+            Settings.System.DIM_NAV_BUTTONS_TOUCH_ANYWHERE, 0,
+            UserHandle.USER_CURRENT) == 1);
         if (mButtonLayouts > mMaxButtonsIndex+1) {
             mButtonLayouts = mMaxButtonsIndex+1;
         }
@@ -897,6 +915,24 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             r.registerContentObserver(Settings.System.getUriFor(
                 Settings.System.SOFTKEY_LONG_PRESS_CONFIGURATION),
                 false, mSettingsObserver);
+            r.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.DIM_NAV_BUTTONS),
+                false, mSettingsObserver);
+            r.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.DIM_NAV_BUTTONS_TIMEOUT),
+                false, mSettingsObserver);
+            r.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.DIM_NAV_BUTTONS_ALPHA),
+                false, mSettingsObserver);
+            r.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.DIM_NAV_BUTTONS_ANIMATE),
+                false, mSettingsObserver);
+            r.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.DIM_NAV_BUTTONS_ANIMATE_DURATION),
+                false, mSettingsObserver);
+            r.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.DIM_NAV_BUTTONS_TOUCH_ANYWHERE),
+                false, mSettingsObserver);
         }
     }
 
@@ -1348,67 +1384,6 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         }
         if (mRot90 != null) {
             mRot90.setForeground(drawable);
-        }
-    }
-
-    private class SettingsObserver extends ContentObserver {
-
-        SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-        void observe() {
-            ContentResolver resolver = mContext.getContentResolver();
-
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.DIM_NAV_BUTTONS), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.DIM_NAV_BUTTONS_TIMEOUT), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.DIM_NAV_BUTTONS_ALPHA), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.DIM_NAV_BUTTONS_ANIMATE), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.DIM_NAV_BUTTONS_ANIMATE_DURATION), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.DIM_NAV_BUTTONS_TOUCH_ANYWHERE), false, this);
-
-            onChange(false);
-        }
-
-        void unobserve() {
-            mContext.getContentResolver().unregisterContentObserver(this);
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            super.onChange(selfChange);
-            update();
-            onNavButtonTouched();
-            setNavigationIconHints(mNavigationIconHints, true);
-        }
-
-        public void update() {
-            ContentResolver resolver = mContext.getContentResolver();
-
-            mDimNavButtons = (Settings.System.getIntForUser(resolver,
-                    Settings.System.DIM_NAV_BUTTONS, 0,
-                    UserHandle.USER_CURRENT) == 1);
-            mDimNavButtonsTimeout = Settings.System.getIntForUser(resolver,
-                    Settings.System.DIM_NAV_BUTTONS_TIMEOUT, 3000,
-                    UserHandle.USER_CURRENT);
-            mDimNavButtonsAlpha = (float) Settings.System.getIntForUser(resolver,
-                    Settings.System.DIM_NAV_BUTTONS_ALPHA, 50,
-                    UserHandle.USER_CURRENT) / 100.0f;
-            mDimNavButtonsAnimate = (Settings.System.getIntForUser(resolver,
-                    Settings.System.DIM_NAV_BUTTONS_ANIMATE, 0,
-                    UserHandle.USER_CURRENT) == 1);
-            mDimNavButtonsAnimateDuration = Settings.System.getIntForUser(resolver,
-                    Settings.System.DIM_NAV_BUTTONS_ANIMATE_DURATION, 2000,
-                    UserHandle.USER_CURRENT);
-            mDimNavButtonsTouchAnywhere = (Settings.System.getIntForUser(resolver,
-                    Settings.System.DIM_NAV_BUTTONS_TOUCH_ANYWHERE, 0,
-                    UserHandle.USER_CURRENT) == 1);
         }
     }
 
