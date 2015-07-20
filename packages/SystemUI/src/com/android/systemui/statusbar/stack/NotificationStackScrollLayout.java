@@ -578,9 +578,6 @@ public class NotificationStackScrollLayout extends ViewGroup
         return mPhoneStatusBar.isScreenOnComingFromTouch() ? 1.5f : 1.0f;
     }
 
-    public void onChildTriggered(View v) {
-    }
-
     public void onBeginDrag(View v) {
         setSwipingInProgress(true);
         mAmbientState.onBeginDrag(v);
