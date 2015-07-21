@@ -404,6 +404,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // Default display does not rotate, apps that require non-default orientation will have to
     // have the orientation emulated.
     private boolean mForceDefaultOrientation = false;
+    private boolean mDefaultLandscape;
 
     int mUserRotationMode = WindowManagerPolicy.USER_ROTATION_FREE;
     int mUserRotation = Surface.ROTATION_0;
@@ -2183,6 +2184,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
             hasHwKeysEnabled();
             updateKeyAssignments();
+
+            mDefaultLandscape = Settings.System.getInt(resolver,
+                    Settings.System.DEFAULT_LANDSCAPE_ORIENTATION, 0) == 1;
 
             // Configure rotation lock.
             int userRotation = Settings.System.getIntForUser(resolver,
@@ -7069,7 +7073,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     if (preferredRotation >= 0) {
                         return preferredRotation;
                     }
-                    return mPanelOrientation;
+                    return mDefaultLandscape ? Surface.ROTATION_90 : mPanelOrientation;
             }
         }
     }
