@@ -407,7 +407,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private int mStatusBarHeaderHeight;
 
     private boolean mShowCarrierInPanel = false;
-    private boolean mShowLabel;
+    private boolean mShowLabel = true;
     private int mShowLabelTimeout;
 
     // battery
@@ -721,7 +721,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mGreeting = Settings.System.getStringForUser(resolver,
                     Settings.System.STATUS_BAR_GREETING,
                     UserHandle.USER_CURRENT);
-            if (mGreeting != null && !TextUtils.isEmpty(mGreeting)) {
+            if (mGreeting != null && !TextUtils.isEmpty(mGreeting) && mCyanideLabel != null) {
                 mCyanideLabel.setText(mGreeting);
             }
 
@@ -2988,9 +2988,17 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 if (mTicking) {
                     haltTicker();
                 }
+                if (mGreeting != null && !TextUtils.isEmpty(mGreeting)) {
+                    mCyanideLabel.animate().cancel();
+                    mCyanideLabel.setVisibility(View.GONE);
+                }
                 animateStatusBarHide(mNotificationIconArea, animate);
             } else {
                 if (mGreeting != null && !TextUtils.isEmpty(mGreeting) && mShowLabel) {
+                    if (mNotificationIconArea.getVisibility() != View.INVISIBLE) {
+                        mNotificationIconArea.setAlpha(0f);
+                        mNotificationIconArea.setVisibility(View.INVISIBLE);
+                    }
                     if (animate) {
                         mCyanideLabel.setVisibility(View.VISIBLE);
                         mCyanideLabel.animate().cancel();
@@ -3008,7 +3016,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     } else {
                         labelAnimatorFadeOut(animate);
                     }
-                    mShowLabel = false;
                 } else {
                     animateStatusBarShow(mNotificationIconArea, animate);
                 }
@@ -3086,6 +3093,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 .withEndAction(new Runnable() {
             @Override
             public void run() {
+				mShowLabel = false;
                 mCyanideLabel.setVisibility(View.GONE);
                 animateStatusBarShow(mNotificationIconArea, animate);
             }
