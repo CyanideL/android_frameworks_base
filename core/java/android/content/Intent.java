@@ -741,7 +741,13 @@ public class Intent implements Parcelable, Cloneable {
      *  @hide
      */
     public static final String ACTION_POWERMENU_REBOOT = "android.intent.action.POWERMENU_REBOOT";
-
+    /**
+     * PhoneWindowManager: Take Screenshot via takeScreenshot()
+     *  <p>Input: nothing
+     *  <p>Output: nothing
+     *  @hide
+     */
+    public static final String ACTION_SCREENSHOT = "android.intent.action.SCREENSHOT";
     /**
      * PhoneWindowManager: register updates to hardware key rebinding
      * <p>Input: nothing
