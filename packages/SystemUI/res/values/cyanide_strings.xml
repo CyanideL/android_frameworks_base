@@ -200,4 +200,6 @@
     <!-- Screen pinning dialog description when in accessibility mode. -->
     <string name="custom_screen_pinning_description_accessible">This keeps it in view until you unpin. Use the Unpin App action in Navigation Bar settings to unpin.</string>
 
+    <string name="quick_settings_themes">Themes</string>
+
 </resources>
