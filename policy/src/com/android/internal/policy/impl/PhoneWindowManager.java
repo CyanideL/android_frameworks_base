@@ -44,12 +44,14 @@ import android.database.ContentObserver;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.hardware.input.InputManager;
+import android.hardware.TorchManager;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.IAudioService;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.media.session.MediaSessionLegacyHelper;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.FactoryTest;
@@ -1616,6 +1618,78 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case KEY_ACTION_IME:
                 mContext.sendBroadcast(new Intent(
                         "android.settings.SHOW_INPUT_METHOD_PICKER"));
+                break;
+            case KEY_ACTION_NOTIFICATIONS:
+                try {
+                    IStatusBarService.Stub.asInterface(
+                        ServiceManager.getService(mContext.STATUS_BAR_SERVICE)).animateNotificationsOrSettingsPanel();
+                } catch (RemoteException e) {
+                    Log.e(TAG, "NOTIFICATION ACTION FAILED");
+                }
+                break;
+            case KEY_ACTION_TORCH:
+                TorchManager torchManager = (TorchManager) mContext.getSystemService(Context.TORCH_SERVICE);
+                torchManager.toggleTorch();
+                break;
+            case KEY_ACTION_RING_VIB:
+                final AudioManager rv = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+                if (rv != null) {
+                    if (rv.getRingerMode() != AudioManager.RINGER_MODE_VIBRATE) {
+                        rv.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                        Vibrator vib = (Vibrator) mContext
+                                .getSystemService(Context.VIBRATOR_SERVICE);
+                        if (vib != null) {
+                            vib.vibrate(50);
+                        }
+                    } else {
+                        rv.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                        ToneGenerator tg = new ToneGenerator(
+                                AudioManager.STREAM_NOTIFICATION,
+                                (int) (ToneGenerator.MAX_VOLUME * 0.85));
+                        if (tg != null) {
+                            tg.startTone(ToneGenerator.TONE_PROP_BEEP);
+                        }
+                    }
+                }
+                break;
+            case KEY_ACTION_RING_SILENT:
+                final AudioManager rs = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+                if (rs != null) {
+                    if (rs.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
+                        rs.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                    } else {
+                        rs.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                        ToneGenerator tg = new ToneGenerator(
+                                AudioManager.STREAM_NOTIFICATION,
+                                (int) (ToneGenerator.MAX_VOLUME * 0.85));
+                        if (tg != null) {
+                            tg.startTone(ToneGenerator.TONE_PROP_BEEP);
+                        }
+                    }
+                }
+                break;
+            case KEY_ACTION_RING_VIB_SILENT:
+                final AudioManager rvs = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+                if (rvs != null) {
+                    if (rvs.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
+                        rvs.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                        Vibrator vib = (Vibrator) mContext
+                                .getSystemService(Context.VIBRATOR_SERVICE);
+                        if (vib != null) {
+                            vib.vibrate(50);
+                        }
+                    } else if (rvs.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) {
+                        rvs.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                    } else {
+                        rvs.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                        ToneGenerator tg = new ToneGenerator(
+                                AudioManager.STREAM_NOTIFICATION,
+                                (int) (ToneGenerator.MAX_VOLUME * 0.85));
+                        if (tg != null) {
+                            tg.startTone(ToneGenerator.TONE_PROP_BEEP);
+                        }
+                    }
+                }
                 break;
             case KEY_ACTION_POWERMENU:
                 mContext.sendBroadcast(new Intent(Intent.ACTION_POWERMENU));

@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 Exodus/Vanir
+ *               2015 CyanideL
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +34,11 @@ public class HardwareButtonConstants {
     public static final int KEY_ACTION_POWERMENU = 11;
     public static final int KEY_ACTION_HOME = 12;
     public static final int KEY_ACTION_BACK = 13;
+    public static final int KEY_ACTION_NOTIFICATIONS = 14;
+    public static final int KEY_ACTION_TORCH = 15;
+    public static final int KEY_ACTION_RING_VIB = 16;
+    public static final int KEY_ACTION_RING_SILENT = 17;
+    public static final int KEY_ACTION_RING_VIB_SILENT = 18;
 
     // Masks for checking presence of hardware keys.
     // Must match values in core/res/res/values/config.xml
