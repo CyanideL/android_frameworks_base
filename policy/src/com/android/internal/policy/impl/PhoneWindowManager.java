@@ -200,13 +200,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     static public final String SYSTEM_DIALOG_REASON_HOME_KEY = "homekey";
     static public final String SYSTEM_DIALOG_REASON_ASSIST = "assist";
 
-    // Hardware key on/off toggles
-    private boolean mHomeKeyEnabled;
-    private boolean mBackKeyEnabled;
-    private boolean mMenuKeyEnabled;
-    private boolean mAssistKeyEnabled;
-    private boolean mAppSwitchKeyEnabled;
-
     /**
      * These are the system UI flags that, when changing, can cause the layout
      * of the screen to change.
@@ -955,6 +948,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.CAMERA_LAUNCH), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.VOLUME_WAKE_SCREEN), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.VOLBTN_MUSIC_CONTROLS), false, this,
@@ -1975,9 +1971,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         // Check for custom assignments and whether KEY_ACTION_MENU is assigned.
         if (hasHome) {
-            mHomeKeyEnabled = Settings.System.getIntForUser(resolver,
-                    Settings.System.KEY_HOME_ENABLED, 1, UserHandle.USER_CURRENT) == 1;
-            if (mHomeKeyEnabled) {
                 mPressOnHomeBehavior = Settings.System.getIntForUser(resolver,
                         Settings.System.KEY_HOME_ACTION,
                         KEY_ACTION_HOME, UserHandle.USER_CURRENT);
@@ -1990,100 +1983,64 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 mHasMenuKeyEnabled = mLongPressOnHomeBehavior == KEY_ACTION_MENU
                         || mDoubleTapOnHomeBehavior == KEY_ACTION_MENU
                         || mPressOnHomeBehavior == KEY_ACTION_MENU;
-            } else {
-                mPressOnHomeBehavior = KEY_ACTION_NOTHING;
-                mLongPressOnHomeBehavior = KEY_ACTION_NOTHING;
-                mDoubleTapOnHomeBehavior = KEY_ACTION_NOTHING;
-            }
         }
         if (hasMenu) {
-            mMenuKeyEnabled = Settings.System.getIntForUser(resolver,
-                    Settings.System.KEY_MENU_ENABLED, 1, UserHandle.USER_CURRENT) == 1;
-            if (mMenuKeyEnabled) {
-                mPressOnMenuBehavior = Settings.System.getIntForUser(resolver,
-                        Settings.System.KEY_MENU_ACTION,
-                        KEY_ACTION_MENU, UserHandle.USER_CURRENT);
-                mLongPressOnMenuBehavior = Settings.System.getIntForUser(resolver,
-                        Settings.System.KEY_MENU_LONG_PRESS_ACTION,
-                        KEY_ACTION_APP_SWITCH, UserHandle.USER_CURRENT);
-                mDoubleTapOnMenuBehavior = Settings.System.getIntForUser(resolver,
-                        Settings.System.KEY_MENU_DOUBLE_TAP_ACTION,
-                        KEY_ACTION_NOTHING, UserHandle.USER_CURRENT);
-                mHasMenuKeyEnabled |= mPressOnMenuBehavior == KEY_ACTION_MENU
-                        || mLongPressOnMenuBehavior == KEY_ACTION_MENU
-                        || mDoubleTapOnMenuBehavior == KEY_ACTION_MENU;
-            } else {
-                mPressOnMenuBehavior = KEY_ACTION_NOTHING;
-                mLongPressOnMenuBehavior = KEY_ACTION_NOTHING;
-                mDoubleTapOnMenuBehavior = KEY_ACTION_NOTHING;
-            }
+            mPressOnMenuBehavior = Settings.System.getIntForUser(resolver,
+                    Settings.System.KEY_MENU_ACTION,
+                    KEY_ACTION_MENU, UserHandle.USER_CURRENT);
+            mLongPressOnMenuBehavior = Settings.System.getIntForUser(resolver,
+                    Settings.System.KEY_MENU_LONG_PRESS_ACTION,
+                    KEY_ACTION_APP_SWITCH, UserHandle.USER_CURRENT);
+            mDoubleTapOnMenuBehavior = Settings.System.getIntForUser(resolver,
+                    Settings.System.KEY_MENU_DOUBLE_TAP_ACTION,
+                    KEY_ACTION_NOTHING, UserHandle.USER_CURRENT);
+            mHasMenuKeyEnabled |= mPressOnMenuBehavior == KEY_ACTION_MENU
+                    || mLongPressOnMenuBehavior == KEY_ACTION_MENU
+                    || mDoubleTapOnMenuBehavior == KEY_ACTION_MENU;
         }
 
         if (hasBack) {
-            mBackKeyEnabled = Settings.System.getIntForUser(resolver,
-                    Settings.System.KEY_BACK_ENABLED, 1, UserHandle.USER_CURRENT) == 1;
-            if (mBackKeyEnabled) {
-                mPressOnBackBehavior = Settings.System.getIntForUser(resolver,
-                        Settings.System.KEY_BACK_ACTION,
-                        KEY_ACTION_BACK, UserHandle.USER_CURRENT);
-                mLongPressOnBackBehavior = Settings.System.getIntForUser(resolver,
-                        Settings.System.KEY_BACK_LONG_PRESS_ACTION,
-                        KEY_ACTION_LAST_APP, UserHandle.USER_CURRENT);
-                mDoubleTapOnBackBehavior = Settings.System.getIntForUser(resolver,
-                        Settings.System.KEY_BACK_DOUBLE_TAP_ACTION,
-                        KEY_ACTION_NOTHING, UserHandle.USER_CURRENT);
-                mHasMenuKeyEnabled |= mPressOnBackBehavior == KEY_ACTION_MENU
-                        || mLongPressOnBackBehavior == KEY_ACTION_MENU
-                        || mDoubleTapOnBackBehavior == KEY_ACTION_MENU;
-            } else {
-                mPressOnBackBehavior = KEY_ACTION_NOTHING;
-                mLongPressOnBackBehavior = KEY_ACTION_NOTHING;
-                mDoubleTapOnBackBehavior = KEY_ACTION_NOTHING;
-            }
+            mPressOnBackBehavior = Settings.System.getIntForUser(resolver,
+                    Settings.System.KEY_BACK_ACTION,
+                    KEY_ACTION_BACK, UserHandle.USER_CURRENT);
+            mLongPressOnBackBehavior = Settings.System.getIntForUser(resolver,
+                    Settings.System.KEY_BACK_LONG_PRESS_ACTION,
+                    KEY_ACTION_LAST_APP, UserHandle.USER_CURRENT);
+            mDoubleTapOnBackBehavior = Settings.System.getIntForUser(resolver,
+                    Settings.System.KEY_BACK_DOUBLE_TAP_ACTION,
+                    KEY_ACTION_NOTHING, UserHandle.USER_CURRENT);
+            mHasMenuKeyEnabled |= mPressOnBackBehavior == KEY_ACTION_MENU
+                    || mLongPressOnBackBehavior == KEY_ACTION_MENU
+                    || mDoubleTapOnBackBehavior == KEY_ACTION_MENU;
+
         }
         if (hasAssist) {
-            mAssistKeyEnabled = Settings.System.getIntForUser(resolver,
-                    Settings.System.KEY_ASSIST_ENABLED, 1, UserHandle.USER_CURRENT) == 1;
-            if (mAssistKeyEnabled) {
-                mPressOnAssistBehavior = Settings.System.getIntForUser(resolver,
-                        Settings.System.KEY_ASSIST_ACTION,
-                        KEY_ACTION_SEARCH, UserHandle.USER_CURRENT);
-                mLongPressOnAssistBehavior = Settings.System.getIntForUser(resolver,
-                        Settings.System.KEY_ASSIST_LONG_PRESS_ACTION,
-                        mLongPressOnAssistBehavior, UserHandle.USER_CURRENT);
-                mDoubleTapOnAssistBehavior = Settings.System.getIntForUser(resolver,
-                        Settings.System.KEY_ASSIST_DOUBLE_TAP_ACTION,
-                        KEY_ACTION_NOTHING, UserHandle.USER_CURRENT);
-                mHasMenuKeyEnabled |= mPressOnAssistBehavior == KEY_ACTION_MENU
-                        || mLongPressOnAssistBehavior == KEY_ACTION_MENU
-                        || mDoubleTapOnAssistBehavior == KEY_ACTION_MENU;
-            } else {
-                mPressOnAssistBehavior = KEY_ACTION_NOTHING;
-                mLongPressOnAssistBehavior = KEY_ACTION_NOTHING;
-                mDoubleTapOnAssistBehavior = KEY_ACTION_NOTHING;
-            }
+            mPressOnAssistBehavior = Settings.System.getIntForUser(resolver,
+                    Settings.System.KEY_ASSIST_ACTION,
+                    KEY_ACTION_SEARCH, UserHandle.USER_CURRENT);
+            mLongPressOnAssistBehavior = Settings.System.getIntForUser(resolver,
+                    Settings.System.KEY_ASSIST_LONG_PRESS_ACTION,
+                    mLongPressOnAssistBehavior, UserHandle.USER_CURRENT);
+            mDoubleTapOnAssistBehavior = Settings.System.getIntForUser(resolver,
+                    Settings.System.KEY_ASSIST_DOUBLE_TAP_ACTION,
+                    KEY_ACTION_NOTHING, UserHandle.USER_CURRENT);
+            mHasMenuKeyEnabled |= mPressOnAssistBehavior == KEY_ACTION_MENU
+                    || mLongPressOnAssistBehavior == KEY_ACTION_MENU
+                    || mDoubleTapOnAssistBehavior == KEY_ACTION_MENU;
         }
         if (hasAppSwitch) {
-            mAppSwitchKeyEnabled = Settings.System.getIntForUser(resolver,
-                    Settings.System.KEY_APPSWITCH_ENABLED, 1, UserHandle.USER_CURRENT) == 1;
-            if (mAppSwitchKeyEnabled) {
-                mPressOnAppSwitchBehavior = Settings.System.getIntForUser(resolver,
-                        Settings.System.KEY_APP_SWITCH_ACTION,
-                        KEY_ACTION_APP_SWITCH, UserHandle.USER_CURRENT);
-                mLongPressOnAppSwitchBehavior = Settings.System.getIntForUser(resolver,
-                        Settings.System.KEY_APP_SWITCH_LONG_PRESS_ACTION,
-                        mLongPressOnAppSwitchBehavior, UserHandle.USER_CURRENT);
-                mDoubleTapOnAppSwitchBehavior = Settings.System.getIntForUser(resolver,
-                        Settings.System.KEY_APP_SWITCH_DOUBLE_TAP_ACTION,
-                        KEY_ACTION_NOTHING, UserHandle.USER_CURRENT);
-                mHasMenuKeyEnabled |= mPressOnAppSwitchBehavior == KEY_ACTION_MENU
-                        || mLongPressOnAppSwitchBehavior == KEY_ACTION_MENU
-                        || mDoubleTapOnAppSwitchBehavior == KEY_ACTION_MENU;
-            } else {
-                mPressOnAppSwitchBehavior = KEY_ACTION_NOTHING;
-                mLongPressOnAppSwitchBehavior = KEY_ACTION_NOTHING;
-                mDoubleTapOnAppSwitchBehavior = KEY_ACTION_NOTHING;
-            }
+            mPressOnAppSwitchBehavior = Settings.System.getIntForUser(resolver,
+                    Settings.System.KEY_APP_SWITCH_ACTION,
+                    KEY_ACTION_APP_SWITCH, UserHandle.USER_CURRENT);
+            mLongPressOnAppSwitchBehavior = Settings.System.getIntForUser(resolver,
+                    Settings.System.KEY_APP_SWITCH_LONG_PRESS_ACTION,
+                    mLongPressOnAppSwitchBehavior, UserHandle.USER_CURRENT);
+            mDoubleTapOnAppSwitchBehavior = Settings.System.getIntForUser(resolver,
+                    Settings.System.KEY_APP_SWITCH_DOUBLE_TAP_ACTION,
+                    KEY_ACTION_NOTHING, UserHandle.USER_CURRENT);
+            mHasMenuKeyEnabled |= mPressOnAppSwitchBehavior == KEY_ACTION_MENU
+                    || mLongPressOnAppSwitchBehavior == KEY_ACTION_MENU
+                    || mDoubleTapOnAppSwitchBehavior == KEY_ACTION_MENU;
         }
 
         mHasPermanentMenuKey = mHasMenuKeyEnabled;
@@ -6171,7 +6128,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
 
             case KeyEvent.KEYCODE_HOME:
-                if (down && !interactive && mHomeWakeScreen && mHomeKeyEnabled) {
+                if (down && !interactive && mHomeWakeScreen) {
                     isWakeKey = true;
                 }
                 break;
@@ -6348,11 +6305,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
         }
 
-        if ((keyCode == KeyEvent.KEYCODE_HOME && mHomeKeyEnabled)
-                || (keyCode == KeyEvent.KEYCODE_BACK && mBackKeyEnabled)
-                || (keyCode == KeyEvent.KEYCODE_MENU && mMenuKeyEnabled)
-                || (keyCode == KeyEvent.KEYCODE_ASSIST && mAssistKeyEnabled)
-                || (keyCode == KeyEvent.KEYCODE_APP_SWITCH && mAppSwitchKeyEnabled)) {
+        if ((keyCode == KeyEvent.KEYCODE_HOME)
+                || (keyCode == KeyEvent.KEYCODE_BACK)
+                || (keyCode == KeyEvent.KEYCODE_MENU)
+                || (keyCode == KeyEvent.KEYCODE_ASSIST)
+                || (keyCode == KeyEvent.KEYCODE_APP_SWITCH)) {
             if (useHapticFeedback) {
                 performHapticFeedbackLw(null, HapticFeedbackConstants.VIRTUAL_KEY, false);
             }
@@ -6406,29 +6363,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 // Volume keys are still wake keys if the device is docked.
                 return mVolumeWakeScreen || mDockMode != Intent.EXTRA_DOCK_STATE_UNDOCKED;
             case KeyEvent.KEYCODE_BACK:
-                if (mBackKeyEnabled) {
                     return mBackWakeScreen;
-                } else {
-                    return false;
-                }
             case KeyEvent.KEYCODE_MENU:
-                if (mMenuKeyEnabled) {
                     return mMenuWakeScreen;
-                } else {
-                    return false;
-                }
             case KeyEvent.KEYCODE_ASSIST:
-                if (mAssistKeyEnabled) {
                     return mAssistWakeScreen;
-                } else {
-                    return false;
-                }
             case KeyEvent.KEYCODE_APP_SWITCH:
-                if (mAppSwitchKeyEnabled) {
                     return mAppSwitchWakeScreen;
-                } else {
-                    return false;
-                }
             case KeyEvent.KEYCODE_CAMERA:
             case KeyEvent.KEYCODE_FOCUS:
                 return mCameraWakeScreen;

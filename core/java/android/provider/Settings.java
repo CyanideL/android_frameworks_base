@@ -3897,36 +3897,6 @@ public final class Settings {
         public static final String KEY_HOME_DOUBLE_TAP_ACTION = "key_home_double_tap_action";
 
         /**
-         * On/off for back key
-         * @hide
-         */
-        public static final String KEY_BACK_ENABLED = "key_back_enabled";
-
-        /**
-         * On/off for home key
-         * @hide
-         */
-        public static final String KEY_HOME_ENABLED = "key_home_enabled";
-
-        /**
-         * On/off for menu key
-         * @hide
-         */
-        public static final String KEY_MENU_ENABLED = "key_menu_enabled";
-
-        /**
-         * On/off for assist key
-         * @hide
-         */
-        public static final String KEY_ASSIST_ENABLED = "key_assist_enabled";
-
-        /**
-         * On/off for app switch key
-         * @hide
-         */
-        public static final String KEY_APPSWITCH_ENABLED = "key_appswitch_enabled";
-
-        /**
          * Action to perform when the menu key is pressed. (Default is 1)
          * (See KEY_HOME_LONG_PRESS_ACTION for valid values)
          * @hide
