@@ -1687,6 +1687,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     }
                 }
                 break;
+            case KEY_ACTION_UNPIN:
+                try {
+                    if (ActivityManagerNative.getDefault().isInLockTaskMode()) {
+                            ActivityManagerNative.getDefault().stopLockTaskModeOnCurrent();
+                    }
+                } catch (RemoteException e) {
+
+                }
+                break;
             case KEY_ACTION_POWERMENU:
                 mContext.sendBroadcast(new Intent(Intent.ACTION_POWERMENU));
             default:

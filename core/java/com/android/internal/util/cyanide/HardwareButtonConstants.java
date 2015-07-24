@@ -39,6 +39,7 @@ public class HardwareButtonConstants {
     public static final int KEY_ACTION_RING_VIB = 16;
     public static final int KEY_ACTION_RING_SILENT = 17;
     public static final int KEY_ACTION_RING_VIB_SILENT = 18;
+    public static final int KEY_ACTION_UNPIN = 19;
 
     // Masks for checking presence of hardware keys.
     // Must match values in core/res/res/values/config.xml
@@ -55,5 +56,5 @@ public class HardwareButtonConstants {
     public static final int[] ASSIST_DEFAULTS = new int[] { KEY_ACTION_SEARCH,  KEY_ACTION_NOTHING,    KEY_ACTION_NOTHING };
     public static final int[] HOME_DEFAULTS = new int[]   { KEY_ACTION_HOME,    KEY_ACTION_SEARCH,    KEY_ACTION_NOTHING };
     public static final int[] MENU_DEFAULTS = new int[]   { KEY_ACTION_MENU,    KEY_ACTION_APP_SWITCH, KEY_ACTION_NOTHING };
-    public static final int[] BACK_DEFAULTS = new int[]   { KEY_ACTION_BACK,    KEY_ACTION_LAST_APP,   KEY_ACTION_NOTHING };
+    public static final int[] BACK_DEFAULTS = new int[]   { KEY_ACTION_BACK,    KEY_ACTION_UNPIN,   KEY_ACTION_NOTHING };
 }
