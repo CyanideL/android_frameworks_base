@@ -81,6 +81,7 @@ import com.android.systemui.qs.tiles.FloatingWindowsTile;
 import com.android.systemui.qs.tiles.SlimFloatsTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.CyanideTile;
+import com.android.systemui.qs.tiles.TrdsTile;
 import com.android.systemui.qs.tiles.AppSideBarTile;
 import com.android.systemui.qs.tiles.ThemesTile;
 import com.android.systemui.settings.CurrentUserTracker;
@@ -419,7 +420,9 @@ public class QSTileHost implements QSTile.Host {
             case QSConstants.TILE_HEADS_UP:
                 return new HeadsupTile(this);
             case QSConstants.TILE_MUSIC:
-                return new MusicTile(this);	
+                return new MusicTile(this);
+            case QSConstants.TILE_TRDS:
+                return new TrdsTile(this);	
             case QSConstants.TILE_APPSIDEBAR:
                 return new AppSideBarTile(this);
             case QSConstants.TILE_PA_PIE_CONTROL:
@@ -432,7 +435,6 @@ public class QSTileHost implements QSTile.Host {
                 return new SlimFloatsTile(this);
             case QSConstants.TILE_THEMES:
                 return new ThemesTile(this);
-
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
