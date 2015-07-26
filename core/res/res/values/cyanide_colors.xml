@@ -33,4 +33,14 @@
     <color name="global_actions_ripple_color">@color/ripple_material_dark</color>
     <color name="global_actions_text_color">@color/global_actions_color_normal</color>
 
+    <!-- TRDS: SystemUI colors -->
+    <color name="sysui_system_primary_color">#00000000</color>
+    <color name="sysui_notif_material_bg_color">#fffafafa</color>
+    <color name="sysui_notif_material_bg_dimmed_color">#d4ffffff</color>
+    <color name="sysui_notif_material_bg_low_priority_color">#ffe0e0e0</color>
+    <color name="sysui_notif_material_bg_media_default_color">#ff424242</color>
+    <color name="sysui_notif_ripple_untinted_color">#28000000</color>
+    <color name="sysui_notif_ripple_color_low_priority">#30000000</color>
+    <color name="sysui_material_notification">#60000000</color>
+
 </resources>

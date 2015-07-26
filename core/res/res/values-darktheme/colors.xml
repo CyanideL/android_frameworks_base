@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+     Copyright (C) 2015 The Fusion Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+    <!-- Base -->
+    <color name="dslv_icon_dark">#ff009688</color>
+    <color name="dark_material_dialog_background">#ff212021</color>
+    <drawable name="dark_material_bg">@color/dark_material_dialog_background</drawable>
+    <color name="material_blue_grey">#ff1b1f23</color>
+    <drawable name="material_bg_blue_grey">@color/material_blue_grey</drawable>
+    <color name="notification_icon_bg_color">#4d000000</color>
+    <color name="notification_action_color_filter">@color/primary_text_material_dark</color>
+    <color name="accent_material_light">@color/material_deep_teal_500</color>
+    <color name="accent_material_dark">#ff009688</color>
+    <color name="material_deep_teal_200">#ff80cbc4</color>
+    <color name="material_deep_teal_500">#ff009688</color>
+    <color name="material_blue_grey_800">#ff37474f</color>
+    <color name="material_blue_grey_900">#ff263238</color>
+    <color name="material_blue_grey_950">#ff21272b</color>
+    <color name="background_material_dark">#ff1b1f23</color>
+    <color name="background_floating_material_dark">#ff009688</color>
+    <color name="background_dark">#ff1b1f23</color>
+    <color name="power_menu_icon_default_color">#ff009688</color>
+    <color name="power_menu_text_default_color">#ffffffff</color>
+    <color name="resolver_list_bg">#ff1b1f23</color>
+
+    <!-- SystemUI -->
+    <color name="sysui_system_primary_color">#ff1b1f23</color>
+    <color name="sysui_notif_material_bg_color">#ff1b1f23</color>
+    <color name="sysui_notif_material_bg_dimmed_color">#d41b1f23</color>
+    <color name="sysui_notif_material_bg_low_priority_color">#ff1b1f23</color>
+    <color name="sysui_notif_material_bg_media_default_color">#ff1b1f23</color>
+    <color name="sysui_notif_ripple_untinted_color">#28ffffff</color>
+    <color name="sysui_notif_ripple_color_low_priority">#30ffffff</color>
+    <color name="sysui_material_notification">#60ffffff</color>
+</resources>
