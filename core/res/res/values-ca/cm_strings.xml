@@ -210,6 +210,15 @@
   <string name="live_display_outdoor">Exterior (sol intens)</string>
   <string name="live_display_outdoor_summary">Utilitza només la configuració d\'exterior</string>
   <string name="live_display_hint">LiveDisplay pot ajudar-te a reduir la fatiga ocular i ajudar-te a dormir a la nit. Fes clic aquí per provar-ho!</string>
-  <string name="lock_to_app_toast_no_navbar">Per alliberar aquesta pantalla, toca i aguanta el botó Menú.</string>
-  <string name="lock_to_app_description_no_navbar">La fixació de pantalla bloqueja la pantalla en una única vista.\n\nPer alliberar aquesta pantalla, toca i aguanta el botó de Menú.</string>
+  <string name="lock_to_app_toast_no_navbar">Per desancorar aquesta pantalla, toca i aguanta el botó Enrera.</string>
+  <string name="quick_settings_tile_flashlight_not_title">La llanterna està encesa</string>
+  <string name="quick_settings_tile_flashlight_not_summary">Pica per apagar-la</string>
+  <string name="storage_sd_dock_card">Acopla la targeta SD</string>
+  <string name="fingerprint_default_name">Empremta digital <xliff:g id="number">%d</xliff:g></string>
+  <string name="permlab_accessFingerprintService">Accés al servei d\'empremtes dactilars</string>
+  <string name="permdesc_accessFingerprintService">Permet a una aplicació accedir al servei d\'empremtes dactilars. L\'aplicació pot afegir, esborrar, canviar el nom i autenticar-se amb empremtes dactilars</string>
+  <string name="permlab_resetBatteryStats">reinicia estadítiques de la bateria</string>
+  <string name="permdesc_resetBatteryStats">Permet a una aplicació reiniciar les dades actuals de baix nivell d\'us de la bateria.</string>
+  <string name="silent_mode_priority">Prioritat</string>
+  <string name="silent_mode_none">Cap</string>
 </resources>

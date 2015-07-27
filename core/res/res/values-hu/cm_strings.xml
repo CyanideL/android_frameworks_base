@@ -212,6 +212,13 @@
   <string name="live_display_outdoor">Kültéri (erős napfény)</string>
   <string name="live_display_outdoor_summary">Csak a kültéri beállítások használata</string>
   <string name="live_display_hint">A LiveDisplay segíthet a szemek terhelésének csökkentésében és a jobb éjszakai alvásban. Kattintson ide, hogy kipróbálja!</string>
-  <string name="lock_to_app_toast_no_navbar">Képernyő feloldásához érintse meg és tartsa nyomva a Menü gombot.</string>
-  <string name="lock_to_app_description_no_navbar">Egyszerű nézetben PIN zárolja a kijelzőt.\n\nFeloldáshoz érintse meg és tartsa nyomva a Menü gombot.</string>
+  <string name="lock_to_app_toast_no_navbar">Képernyő rögzítésének feloldásához érintse meg és tartsa nyomva a Vissza gombot.</string>
+  <string name="quick_settings_tile_flashlight_not_title">Zseblámpa bekapcsolva</string>
+  <string name="quick_settings_tile_flashlight_not_summary">Kikapcsoláshoz érintse meg</string>
+  <string name="storage_sd_dock_card">Dokkoló SD-kártyája</string>
+  <string name="fingerprint_default_name">Ujjlenyomat <xliff:g id="number">%d</xliff:g></string>
+  <string name="permlab_accessFingerprintService">hozzáférés az ujjlenyomat szolgáltatáshoz</string>
+  <string name="permdesc_accessFingerprintService">Lehetővé teszi az alkalmazás számára, hogy hozzáférjen az ujjlenyomat szolgáltatáshoz. Az alkalmazás hozzáadhat, törölhet, átnevezhet és újra hitelesíthet ujjlenyomatokat</string>
+  <string name="permlab_resetBatteryStats">akkumulátor használati statisztika törlése</string>
+  <string name="permdesc_resetBatteryStats">Lehetővé teszi az alkalmazás számára, hogy törölhesse alacsony szintű akkumulátor használatára vonatkozó adatokat.</string>
 </resources>

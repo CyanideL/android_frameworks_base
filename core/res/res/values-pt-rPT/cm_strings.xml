@@ -212,6 +212,15 @@
   <string name="live_display_outdoor">Exterior (sol brilhante)</string>
   <string name="live_display_outdoor_summary">Usar apenas as definições de exterior</string>
   <string name="live_display_hint">LiveDisplay pode ajudar a reduzir a fadiga ocular e ajudar-te a dormir à noite. Clique aqui para experimentar!</string>
-  <string name="lock_to_app_toast_no_navbar">Para desafixar este ecrã, toque e mantenha pressionado o botão Menu.</string>
-  <string name="lock_to_app_description_no_navbar">A fixação do ecrã, fixa o visor numa vista única.\n\nPara desafixar, toque e mantenha pressionado o botão Menu.</string>
+  <string name="lock_to_app_toast_no_navbar">Para soltar este ecrã, toque e segure o botão Voltar.</string>
+  <string name="quick_settings_tile_flashlight_not_title">A lanterna está ligada</string>
+  <string name="quick_settings_tile_flashlight_not_summary">Toque para desligar</string>
+  <string name="storage_sd_dock_card">Cartão SD da Dock</string>
+  <string name="fingerprint_default_name">Impressão digital <xliff:g id="number">%d</xliff:g></string>
+  <string name="permlab_accessFingerprintService">aceder ao serviço de impressões digitais</string>
+  <string name="permdesc_accessFingerprintService">Permite que uma aplicação aceda ao serviço de impressão digital. A aplicação pode adicionar, eliminar, mudar o nome e autenticar ao comparar impressões digitais</string>
+  <string name="permlab_resetBatteryStats">reiniciar estatísticas da bateria</string>
+  <string name="permdesc_resetBatteryStats">Permite a uma aplicação reiniciar os dados de utilização de baixo nível da bateria.</string>
+  <string name="silent_mode_priority">Prioridade</string>
+  <string name="silent_mode_none">Nenhum</string>
 </resources>

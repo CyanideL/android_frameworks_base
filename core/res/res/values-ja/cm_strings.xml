@@ -211,7 +211,16 @@
   <string name="live_display_night_summary">夜の設定のみを使用する</string>
   <string name="live_display_outdoor">屋外（日光）</string>
   <string name="live_display_outdoor_summary">屋外の設定のみを使用する</string>
-  <string name="live_display_hint">LiveDisplayは目を疲れにくくし、夜の睡眠を邪魔しません。ここをクリックして試してみてください。</string>
-  <string name="lock_to_app_toast_no_navbar">この画面の固定を解除するには、メニューボタンを長押ししてください。</string>
-  <string name="lock_to_app_description_no_navbar">画面の固定はディスプレイを一つの表示にロックします。\n\n固定を解除するには、メニューボタンを長押ししてください。</string>
+  <string name="live_display_hint">LiveDisplayは目を疲れにくくし、夜の睡眠を邪魔しません。ここをタップして試してみてください。</string>
+  <string name="lock_to_app_toast_no_navbar">この画面の固定を解除するには、戻るボタンを長押しします。</string>
+  <string name="quick_settings_tile_flashlight_not_title">フラッシュライトはONになっています</string>
+  <string name="quick_settings_tile_flashlight_not_summary">タップしてOFFにする</string>
+  <string name="storage_sd_dock_card">ホルダーのSDカード</string>
+  <string name="fingerprint_default_name">指紋<xliff:g id="number">%d</xliff:g></string>
+  <string name="permlab_accessFingerprintService">指紋サービスへのアクセス</string>
+  <string name="permdesc_accessFingerprintService">指紋サービスへのアクセスをアプリに許可します。アプリは指紋を追加、削除および認証することができます。</string>
+  <string name="permlab_resetBatteryStats">電池統計情報のリセット</string>
+  <string name="permdesc_resetBatteryStats">現在の電池消費量の低レベルデータをリセットすることをアプリに許可します。</string>
+  <string name="silent_mode_priority">優先順位</string>
+  <string name="silent_mode_none">なし</string>
 </resources>

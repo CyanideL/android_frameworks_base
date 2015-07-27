@@ -220,4 +220,10 @@
   <string name="quick_settings_tile_flashlight_not_summary">Πιέστε για απενεργοποίηση</string>
   <string name="storage_sd_dock_card">Κάρτα SD βάσης σύνδεσης</string>
   <string name="fingerprint_default_name">Δακτυλικό αποτύπωμα <xliff:g id="number">%d</xliff:g></string>
+  <string name="permlab_accessFingerprintService">πρόσβαση στην υπηρεσία δακτυλικών αποτυπωμάτων</string>
+  <string name="permdesc_accessFingerprintService">Επιτρέπει σε μια εφαρμογή την πρόσβαση στην υπηρεσία δακτυλικών αποτυπωμάτων. Η εφαρμογή μπορεί να προσθέσει, να διαγράψει, να μετονομάσει και να ταυτοποιήσει δακτυλικά αποτυπώματα</string>
+  <string name="permlab_resetBatteryStats">επαναφορά στατιστικών μπαταρίας</string>
+  <string name="permdesc_resetBatteryStats">Επιτρέπει σε μια εφαρμογή να κάνει επαναφορά τα χαμηλού επιπέδου δεδομένα χρήσης μπαταρίας.</string>
+  <string name="silent_mode_priority">Προτεραιότητα</string>
+  <string name="silent_mode_none">Κανένα</string>
 </resources>

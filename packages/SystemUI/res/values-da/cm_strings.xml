@@ -83,4 +83,14 @@
   <string name="navring_choose_action_title">Vælg handling</string>
   <string name="select_application">Vælg applikation</string>
   <string name="lockscreen_target_empty">Tom</string>
+  <string name="screen_pinning_description_no_navbar">Dette fastholder det i visningen indtil du frigører det. Tryk og hold tilbage-knappen nede for at frigøre.</string>
+  <string name="interruption_level_silent">Lydløs</string>
+  <string name="zen_silent_with_warning">Ingen afbrydelser, undtagen alarmer.</string>
+  <string name="quick_settings_remove">Fjern flise</string>
+  <string name="quick_settings_dynamic_tile_detail_title">Dynamisk flise</string>
+  <string name="dynamic_qs_tile_next_alarm_label">Næste alarm</string>
+  <string name="dynamic_qs_tile_ime_selector_label">IME-vælger</string>
+  <string name="dynamic_qs_tile_su_label">Root-adgang</string>
+  <string name="fingerprint_try_again_hint">Scan venligst igen</string>
+  <string name="accessibility_dock_battery_level">Dockingstations batteri <xliff:g id="number">%d</xliff:g> procent.</string>
 </resources>

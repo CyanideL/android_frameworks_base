@@ -214,4 +214,11 @@
   <string name="quick_settings_tile_flashlight_not_title">Linterna piztuta dago</string>
   <string name="quick_settings_tile_flashlight_not_summary">Sakatu itzaltzeko</string>
   <string name="storage_sd_dock_card">Oinarriaren SD txartela</string>
+  <string name="fingerprint_default_name"><xliff:g id="number">%d</xliff:g>. hatz-marka</string>
+  <string name="permlab_accessFingerprintService">atzitu hatz-marka zerbitzua</string>
+  <string name="permdesc_accessFingerprintService">Hatz-marka zerbitzua atzitzea ahalbidetzen dio aplikazioari. Aplikazioak hatz-markak gehitu, ezabatu edo izenez aldatu ahal izango ditu eta hauek erabilita identifikatu</string>
+  <string name="permlab_resetBatteryStats">leheneratu bateria estatistikak</string>
+  <string name="permdesc_resetBatteryStats">Bateriaren maila baxuko erabilera datuak leheneratzea ahalbidetzen dio aplikazioari.</string>
+  <string name="silent_mode_priority">Lehentasuna</string>
+  <string name="silent_mode_none">Bat ere ez</string>
 </resources>

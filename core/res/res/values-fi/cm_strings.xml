@@ -214,6 +214,15 @@
   <string name="live_display_outdoor">Ulkoilma (kirkas aurinko)</string>
   <string name="live_display_outdoor_summary">Käytä vain ulkoilma-asetusta</string>
   <string name="live_display_hint">LiveDisplay voi vähentää silmien rasitusta ja auttaa nukkumaan öisin. Kokeile sitä painamalla tästä!</string>
-  <string name="lock_to_app_toast_no_navbar">Irrottaaksesi tämän näytön, napauta ja pidä valikkonäppäintä pohjassa.</string>
-  <string name="lock_to_app_description_no_navbar">Näytön kiinnittäminen lukitsee näytön yhteen näkymään.\n\nIrrottaaksesi näytön, napauta ja pitä valikkonäppäintä pohjassa.</string>
+  <string name="lock_to_app_toast_no_navbar">Irrottaaksesi tämän näytön, paina ja pidä Takasin-näppäintä pohjassa.</string>
+  <string name="quick_settings_tile_flashlight_not_title">Taskulamppu on päällä</string>
+  <string name="quick_settings_tile_flashlight_not_summary">Paina sammuttaaksesi</string>
+  <string name="storage_sd_dock_card">Telakoi SD-kortti</string>
+  <string name="fingerprint_default_name">Sormenjälki <xliff:g id="number">%d</xliff:g></string>
+  <string name="permlab_accessFingerprintService">käytä sormenjälkipalvelua</string>
+  <string name="permdesc_accessFingerprintService">Sallii sovelluksen käyttää sormenjälkipalvelua. Sovellus voi lisätä, poistaa, uudelleennimetä ja todentaa sormenjälkiä</string>
+  <string name="permlab_resetBatteryStats">nollaa akun tilastot</string>
+  <string name="permdesc_resetBatteryStats">Sallii sovelluksen nollata nykyiset alemman tason akun käytön tilastot.</string>
+  <string name="silent_mode_priority">Prioriteetti</string>
+  <string name="silent_mode_none">Ei mitään</string>
 </resources>
