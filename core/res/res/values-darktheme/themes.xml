@@ -377,17 +377,7 @@
         <item name="colorSwitchThumbNormal">@color/switch_thumb_material_dark</item>
     </style>
 
-    <style name="Theme.Material.FusionDark.Dialog" parent="Theme.Material.BaseDialog">
-        <item name="colorBackground">@drawable/dark_material_bg</item>
-        <item name="windowBackground">@drawable/dialog_background_material</item>
-        <item name="colorControlActivated">@color/white</item>
-    </style>
-
-    <style name="Theme.Material.FusionDark.Dialog.Alert" parent="Theme.Material.Dialog.BaseAlert">
-        <item name="colorBackground">@drawable/dark_material_bg</item>
-        <item name="colorAccent">@color/white</item>
-    </style>
-
+    <!-- Material dark dialog theme -->
     <style name="Theme.Material.Dialog.Dark" parent="Theme.Material.BaseDialog">
         <item name="colorBackground">@drawable/material_bg_blue_grey</item>
         <item name="windowBackground">@drawable/dialog_background_material</item>
