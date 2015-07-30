@@ -40,6 +40,7 @@ public class HardwareButtonConstants {
     public static final int KEY_ACTION_RING_SILENT = 17;
     public static final int KEY_ACTION_RING_VIB_SILENT = 18;
     public static final int KEY_ACTION_UNPIN = 19;
+    public static final int KEY_ACTION_RESTART = 20;
 
     // Masks for checking presence of hardware keys.
     // Must match values in core/res/res/values/config.xml

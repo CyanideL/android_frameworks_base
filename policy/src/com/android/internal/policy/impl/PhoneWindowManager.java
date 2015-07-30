@@ -127,6 +127,8 @@ import com.android.internal.util.gesture.EdgeServiceConstants;
 import com.android.internal.widget.PointerLocationView;
 import com.android.server.LocalServices;
 
+import com.cyanide.util.Helpers;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -1695,6 +1697,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 } catch (RemoteException e) {
 
                 }
+                break;
+            case KEY_ACTION_RESTART:
+                Helpers.restartSystemUI();
                 break;
             case KEY_ACTION_POWERMENU:
                 mContext.sendBroadcast(new Intent(Intent.ACTION_POWERMENU));
