@@ -256,8 +256,11 @@ public class QSPanel extends ViewGroup {
             case 5:
                 dimen = R.dimen.qs_tile_five_column_scale;
                 break;
+            case 6:
+                dimen = R.dimen.qs_tile_six_column_scale;
+                break;
             default:
-                dimen = R.dimen.qs_tile_three_column_scale;
+                dimen = R.dimen.qs_tile_four_column_scale;
         }
         res.getValue(dimen, tileScaleFactor, true);
         return tileScaleFactor.getFloat();
