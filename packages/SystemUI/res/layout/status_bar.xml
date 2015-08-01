@@ -85,6 +85,15 @@
                     android:visibility="gone"
                     />
 
+                <com.android.systemui.statusbar.widget.CarrierLabel
+                    android:id="@+id/status_bar_carrier_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textAppearance="@style/TextAppearance.StatusBar.Clock"
+                    android:singleLine="true"
+                    android:ellipsize="end"/>
+
                 <TextView
                     android:id="@+id/left_weather_temp"
                     android:layout_width="wrap_content"
@@ -95,15 +104,6 @@
                     android:visibility="gone"
                     android:paddingStart="4dp"
                     android:paddingEnd="4dp" />
-
-                <com.android.systemui.statusbar.widget.CarrierLabel
-                    android:id="@+id/status_bar_carrier_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textAppearance="@style/TextAppearance.StatusBar.Clock"
-                    android:singleLine="true"
-                    android:ellipsize="end"/>
 
                 <com.android.keyguard.AlphaOptimizedLinearLayout
                     android:id="@+id/left_clock_layout"
@@ -121,8 +121,7 @@
                         android:layout_height="fill_parent"
                         android:paddingEnd="4dip"
                         android:visibility="gone"
-                        android:singleLine="true"
-                    />
+                        android:singleLine="true" />
 
                 </com.android.keyguard.AlphaOptimizedLinearLayout>
 
