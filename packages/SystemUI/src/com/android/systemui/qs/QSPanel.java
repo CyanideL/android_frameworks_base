@@ -67,8 +67,11 @@ public class QSPanel extends ViewGroup {
     private final H mHandler = new H();
 
     private int mColumns;
+<<<<<<< HEAD
     private int mNumberOfColumns;
     private boolean mUseFourColumns;
+=======
+>>>>>>> 7d964a4... Revert "QS: Option to show four tiles per row (1/2)"
     private int mCellWidth;
     private int mCellHeight;
     private int mLargeCellWidth;
@@ -166,22 +169,6 @@ public class QSPanel extends ViewGroup {
             if (mVibrator.hasVibrator()) { mVibrator.vibrate(duration); }
         }
     }
-	
-    /**
-     * Use three or four columns.
-     */
-    private int useFourColumns() {
-        final Resources res = mContext.getResources();
-        mUseFourColumns = Settings.Secure.getInt(
-            mContext.getContentResolver(), Settings.Secure.QS_USE_FOUR_COLUMNS,
-                1) == 1;
-        if (mUseFourColumns) {
-            mNumberOfColumns = 4;
-        } else {
-            mNumberOfColumns = res.getInteger(R.integer.quick_settings_num_columns);
-        }
-        return mNumberOfColumns;
-    }
 
     private void updateDetailText() {
         int textColor = Settings.System.getInt(mContext.getContentResolver(),
@@ -224,7 +211,7 @@ public class QSPanel extends ViewGroup {
 
     public void updateResources() {
         final Resources res = mContext.getResources();
-        final int columns = Math.max(1, useFourColumns());
+        final int columns = Math.max(1, res.getInteger(R.integer.quick_settings_num_columns));
         mCellHeight = res.getDimensionPixelSize(R.dimen.qs_tile_height);
         if (mUseFourColumns) {
             mCellWidth = (int)(mCellHeight * 0.8f);
