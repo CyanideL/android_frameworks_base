@@ -3,6 +3,8 @@
 **
 ** Copyright 2014, SlimRoms Project
 **
+** Copyright (C) 2015 DarkKat
+**
 ** Licensed under the Apache License, Version 2.0 (the "License")
 ** you may not use this file except in compliance with the License.
 ** You may obtain a copy of the License at
@@ -22,11 +24,12 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-        <com.android.keyguard.KeyguardShortcuts
-            android:id="@+id/shortcuts"
+        <com.android.keyguard.KeyguardButtonsBar
+            android:id="@+id/buttons_bar"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/shortcut_margin_top" />
+            android:layout_marginTop="@dimen/buttons_bar_margin_top" />
 
 </LinearLayout>
+

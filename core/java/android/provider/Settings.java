@@ -2407,25 +2407,11 @@ public final class Settings {
         public static final String BUTTON_BACKLIGHT_TIMEOUT = "button_backlight_timeout";
         
         /**
-         * Defines the shortcuts to be shown on lockscreen
-         * Usage is like this: target:icon|target:icon|target:icon
-         * if :icon is not set, default application icon will be used
-         * @hide
-         */
-        public static final String LOCKSCREEN_SHORTCUTS = "lockscreen_shortcuts";
-        
-        /**
 		 * Whether to colorize shortcuts custom target icons on the lock screen
 		 * @hide
 		 */
 		public static final String LOCK_SCREEN_SHORTCUTS_COLORIZE_CUSTOM_ICONS = "lockscreen_shortcuts_colorize_custom_icons";
 
-        /**
-         * Whether shorcuts open with normal or longpress
-         * @hide
-         */
-        public static final String LOCKSCREEN_SHORTCUTS_LONGPRESS =
-                "lockscreen_shortcuts_longpress";
          /**
           * Whether to allow one finger quick settings expansion on the right side of the statusbar.
 -         * @deprecated Use {@link android.provider.Settings.System#QS_QUICK_PULLDOWN} instead
@@ -3801,6 +3787,16 @@ public final class Settings {
         public static final String LOCK_SCREEN_WEATHER_NUMBER_OF_NOTIFICATIONS = "lock_screen_weather_number_of_notifications";
 
         /**
+         * Icon size for lockscreen buttons bar action icons
+         * 0: 24dp
+         * 1: 36dp
+         * 2: 48dp
+         * default: 2
+         * @hide
+         */
+        public static final String LOCK_SCREEN_BUTTONS_BAR_ICON_SIZE = "lock_screen_buttons_bar_icon_size";
+
+        /**
          * Number of notifications visible on the lockscreen including the overflow container
          * @hide
          */
@@ -3813,6 +3809,51 @@ public final class Settings {
         public static final String LOCK_SCREEN_MAX_NOTIFICATIONS = "lock_screen_max_notifications";
 
         /**
+         * Defines the actions to be shown on lockscreen
+         * Usage is like this: target:icon|target:icon|target:icon
+         * if :icon is not set, default application icon will be used
+         * @hide
+         */
+        public static final String LOCK_SCREEN_BUTTON_BAR_ACTIONS = "lock_screen_buttons_bar_actions";
+
+        /**
+         * Launch type for lockscreen buttons bar actions
+         * 0: Normal click
+         * 1: Double click
+         * 2: Lonpress
+         * default: 2
+         * @hide
+         */
+        public static final String LOCK_SCREEN_BUTTONS_BAR_LAUNCH_TYPE = "lock_screen_buttons_bar_launch_type";
+
+
+        /**
+         * Colorize lockscreen buttons bar icon
+         * 0: never
+         * 1: if the icon is an greyscale icon
+         * 2: always
+         * default: 0
+         * @hide
+         */
+        public static final String LOCK_SCREEN_BUTTONS_BAR_ICON_COLOR_MODE = "lock_screen_buttons_bar_icon_color_mode";
+
+        /**
+         * How to colorize the lockscreen buttons bar ripple
+         * 0: Auto
+         * 1: Custom color
+         * 2: Disabled
+         * default: 2
+         * @hide
+         */
+        public static final String LOCK_SCREEN_BUTTONS_BAR_RIPPLE_COLOR_MODE = "lock_screen_buttons_bar_ripple_color_mode";
+
+        /**
+         * Lockscreen buttons bar ripple color
+         * @hide
+         */
+        public static final String LOCK_SCREEN_BUTTONS_BAR_RIPPLE_COLOR = "lock_screen_buttons_bar_ripple_color";
+
+        /**
          * Color of the text on the lock screen
          * @hide
          */
@@ -3823,6 +3864,29 @@ public final class Settings {
          * @hide
          */
         public static final String LOCK_SCREEN_ICON_COLOR = "lock_screen_icon_color";
+
+        /**
+         * When to hide the buttons bar if notifications are visible on the lock screen
+         * 0: Auto, (when the visible notifications will reach the maximum allowed notifications on the lock screen)
+         * 1: Custom number of notifications
+         * 2: Never
+         * default: 1
+         * @hide
+         */
+        public static final String LOCK_SCREEN_BUTTONS_BAR_HIDE_BAR = "lock_screen_buttons_bar_hide_bar";
+
+        /**
+         * Hide the buttons bar when the visible lockscreen notifications will reach this number
+         * 1: 1 notification (always)
+         * 2: 2 notifications
+         * 3: 3 notifications
+         * 4: 4 notifications
+         * 5: 5 notifications
+         * 6: 6 notifications
+         * default: 4
+         * @hide
+         */
+        public static final String LOCK_SCREEN_BUTTONS_BAR_NUMBER_OF_NOTIFICATIONS = "lock_screen_buttons_bar_number_of_notifications";
 
         /**
          * Enable looking up of information of phone numbers not in the contacts
@@ -5341,20 +5405,6 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_POWER_MENU = "status_bar_power_menu";
-        
-        /**
-         * Icon color mode for lockscreen shortcuts
-         *
-         * @hide
-         */
-        public static final String LOCKSCREEN_SHORTCUTS_ICON_COLOR_MODE = "lockscreen_shortcuts_icon_color_mode";
-
-        /**
-         * Icon color for lockscreen shortcuts
-         *
-         * @hide
-         */
-        public static final String LOCKSCREEN_SHORTCUTS_ICON_COLOR = "lockscreen_shortcuts_icon_color";
         
         /** 
          * Colorize the media notifications background
