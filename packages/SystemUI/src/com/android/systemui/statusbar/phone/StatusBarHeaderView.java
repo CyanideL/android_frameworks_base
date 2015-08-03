@@ -489,12 +489,14 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     private void updateSystemIconsLayoutParams() {
         RelativeLayout.LayoutParams lp = (LayoutParams) mSystemIconsSuperContainer.getLayoutParams();
         int taskManager = mTaskManagerButton != null
-                ? mTaskManagerButton.getId() : mSettingsButton.getId();
+                ? mTaskManagerButton.getId()
+                : mSettingsButton.getId();
         int cyanide = mCyanideButton != null
                 ? mCyanideButton.getId()
                 : mMultiUserSwitch.getId();
         int powerMenu = mStatusBarPowerMenu != null
-                ? mStatusBarPowerMenu.getId() : mTaskManagerButton.getId();
+                ? mStatusBarPowerMenu.getId()
+                : mTaskManagerButton.getId();
         int rule = mExpanded
                 ? taskManager
                 : mMultiUserSwitch.getId();
@@ -690,8 +692,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             startForecastActivity();
         } else if (v == mHeadsUpButton) {
             startHeadsUpActivity();
-        } else if (v == mMultiUserSwitch) {
-            startMultiUserActivity();
         } else if (v == mCyanideButton) {
             startCyanideActivity();
         }
@@ -716,6 +716,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             goToSleep();
         } else if (v == mTaskManagerButton) {
             startTaskManagerLongClickActivity();
+        } else if (v == mMultiUserSwitch) {
+            startMultiUserActivity();
         }
         mQSPanel.vibrateTile(20);
         return false;
@@ -1378,7 +1380,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 Settings.System.STATUS_BAR_EXPANDED_HEADER_ICON_COLOR, 0xffffffff);
 
         ((ImageView)mSettingsButton).setColorFilter(mIconColor, Mode.MULTIPLY);
-        ((ImageView)mStatusBarPowerMenu).setColorFilter(mIconColor, Mode.MULTIPLY);
+        if (mStatusBarPowerMenu != null) {
+            ((ImageView)mStatusBarPowerMenu).setColorFilter(mIconColor, Mode.MULTIPLY);
+        }
         if (mHeadsUpButton != null) {
             ((ImageView)mHeadsUpButton).setColorFilter(mIconColor, Mode.MULTIPLY);
         }
