@@ -434,9 +434,8 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
             }
             if (positionVertical == 0) {
                 gravityVertical = Gravity.TOP;
-                params.topMargin = mContext.getResources().
-                    getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height)
-                        + searchBarSpaceBounds.height();
+                marginTop = taskStackBounds.top + res.getDimensionPixelSize(
+                    R.dimen.recents_fab_margin_top);
             } else if (positionVertical == 1) {
                 gravityVertical = Gravity.CENTER_VERTICAL;
             } else {
@@ -453,15 +452,6 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
 
             mClearRecentsLayout.getBackground().setColorFilter(bgColor, Mode.MULTIPLY);
             mClearRecents.getDrawable().setTint(getClearRecentsIconColor(bgColor));
-
-            if (mSearchBar != null && (searchBarSpaceBounds.width() > taskViewWidth)) {
-                // Adjust to the search bar
-                params.rightMargin = width - searchBarSpaceBounds.right;
-            } else {
-                // Adjust to task views
-                params.rightMargin = (width / 2) - (taskViewWidth / 2);
-            }
-
         }
 
         setMeasuredDimension(width, height);
