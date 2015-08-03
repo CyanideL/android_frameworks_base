@@ -266,8 +266,8 @@ public class NetworkControllerImpl extends BroadcastReceiver
         mShowAtLeastThreeGees = res.getBoolean(R.bool.config_showMin3G);
         mAlwaysShowCdmaRssi = res.getBoolean(
                 com.android.internal.R.bool.config_alwaysUseCdmaRssi);
-        mShow4GforLTE = mContext.getResources().getBoolean(
-                R.bool.config_show4GForLTE);
+        mShow4GforLTE = Settings.System.getInt(mContext.getContentResolver(),
+                                    Settings.System.SHOW_FOURG, 0) == 1;
         mShowRsrpSignalLevelforLTE = mContext.getResources().getBoolean(
                 R.bool.config_showRsrpSignalLevelforLTE);
         // set up the default wifi icon, used when no radios have ever appeared
