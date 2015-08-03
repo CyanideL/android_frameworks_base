@@ -106,6 +106,7 @@ public class KeyButtonView extends ImageView {
 
     private static AudioManager mAudioManager;
     static PowerManager mPm;
+    private final Handler mHandler = new Handler();
 
     private KeyButtonRipple mRipple;
     KeyButtonInfo mActions;
@@ -369,15 +370,22 @@ public class KeyButtonView extends ImageView {
                 break;
         }
 
-        ViewParent parent = getParent();
-        while (parent != null && !(parent instanceof NavigationBarView)) {
-            parent = parent.getParent();
-        }
-        if (parent != null) {
-            ((NavigationBarView) parent).onNavButtonTouched();
-        }
+        mHandler.post(mNavButtonDimActivator);
         return true;
     }
+
+    private final Runnable mNavButtonDimActivator = new Runnable() {
+        @Override
+        public void run() {
+            ViewParent parent = getParent();
+            while (parent != null && !(parent instanceof NavigationBarView)) {
+                parent = parent.getParent();
+            }
+            if (parent != null) {
+                ((NavigationBarView) parent).onNavButtonTouched();
+            }
+        }
+    };
 
     protected void doSinglePress() {
         if (callOnClick()) {
