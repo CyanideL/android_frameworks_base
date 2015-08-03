@@ -93,7 +93,7 @@
     <dimen name="recents_fab_width">56dp</dimen>
     <dimen name="recents_fab_translation_z">12dp</dimen>
     <dimen name="recents_fab_no_margin">0dp</dimen>
-    <dimen name="recents_fab_margin_top">8dp</dimen>
+    <dimen name="recents_fab_margin_top">36dp</dimen>
     <dimen name="recents_fab_margin_bottom">56dp</dimen>
 
     <!-- The font size for the temperature text -->
