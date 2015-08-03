@@ -247,6 +247,9 @@ public class QSPanel extends ViewGroup {
         TypedValue tileScaleFactor = new TypedValue();
         int dimen;
         switch (numColumns) {
+            case 2:
+                dimen = R.dimen.qs_tile_three_column_scale;
+                break;
             case 3:
                 dimen = R.dimen.qs_tile_three_column_scale;
                 break;
