@@ -212,6 +212,16 @@
   <string name="live_display_outdoor">Na zewnątrz (jasne światło)</string>
   <string name="live_display_outdoor_summary">Używaj ustawienia tylko na zewnątrz</string>
   <string name="live_display_hint">LiveDisplay może pomóc w zredukowaniu efektu zmęczenia oczu oraz pomaga zasnąć w nocy. Kliknij tutaj, aby wypróbować!</string>
-  <string name="lock_to_app_toast_no_navbar">Aby odpiąć ten ekran, dotknij i przytrzymaj przycisk Menu.</string>
   <string name="lock_to_app_description_no_navbar">Przypinanie blokuje ekran w jednym widoku\n\nAby odpiąć, dotknij i przytrzymaj przycisk Menu.</string>
+  <string name="lock_to_app_toast_no_navbar">Aby odpiąć ekran, dotknij i przytrzymaj przycisk Wstecz.</string>
+  <string name="quick_settings_tile_flashlight_not_title">Latarka jest włączona</string>
+  <string name="quick_settings_tile_flashlight_not_summary">Dotknij, aby wyłączyć</string>
+  <string name="storage_sd_dock_card">Karta pamięci stacji dokującej</string>
+  <string name="fingerprint_default_name">Odcisk palca <xliff:g id="number">%d</xliff:g></string>
+  <string name="permlab_accessFingerprintService">dostęp do usługi odcisku palca</string>
+  <string name="permdesc_accessFingerprintService">Umożliwia aplikacji dostęp do usługi odcisku palca. Aplikacja może dodać, usunąć, zmienić nazwę i uwierzytelnić odcisk palca</string>
+  <string name="permlab_resetBatteryStats">resetowanie statystyk baterii</string>
+  <string name="permdesc_resetBatteryStats">Umożliwia aplikacji na zresetowanie statystyk użycia baterii.</string>
+  <string name="silent_mode_priority">Priorytet</string>
+  <string name="silent_mode_none">Brak</string>
 </resources>

@@ -212,6 +212,16 @@
   <string name="live_display_outdoor">All\'aperto (sole)</string>
   <string name="live_display_outdoor_summary">Utilizza solo impostazioni all\'aperto</string>
   <string name="live_display_hint">LiveDisplay aiuta a ridurre l\'affaticamento degli occhi e aiuta a dormire di notte. Clicca per provarlo!</string>
-  <string name="lock_to_app_toast_no_navbar">Per sbloccare questo schermo, toccare e tenere premuto il tasto Menu.</string>
   <string name="lock_to_app_description_no_navbar">Screen pinning blocca il dispositivo in una singola visuale.\n\nPer sbloccare, tocca e tieni premuto il pulsante Menu.</string>
+  <string name="lock_to_app_toast_no_navbar">Per sbloccare questo schermo, tocca e tieni premuto il pulsante indietro.</string>
+  <string name="quick_settings_tile_flashlight_not_title">Torcia accesa</string>
+  <string name="quick_settings_tile_flashlight_not_summary">Tocca per spegnere</string>
+  <string name="storage_sd_dock_card">Scheda SD dock</string>
+  <string name="fingerprint_default_name">Impronta digitale <xliff:g id="number">%d</xliff:g></string>
+  <string name="permlab_accessFingerprintService">Accedi al servizio impronte digitali</string>
+  <string name="permdesc_accessFingerprintService">Consenti ad un\'app di accedere al servizio di impronte digitali. L\'app può aggiungere, eliminale, rinominare e riautenticare impronte digitali</string>
+  <string name="permlab_resetBatteryStats">reimposta statistiche batteria</string>
+  <string name="permdesc_resetBatteryStats">Consente all\'applicazione di reimpostare gli attuali dati di utilizzo della batteria a basso livello.</string>
+  <string name="silent_mode_priority">Priorità</string>
+  <string name="silent_mode_none">Nessuno</string>
 </resources>

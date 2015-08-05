@@ -208,6 +208,16 @@
   <string name="live_display_outdoor">Al aire libre (luz del sol)</string>
   <string name="live_display_outdoor_summary">Utilizar solo los ajustes al aire libre</string>
   <string name="live_display_hint">LiveDisplay puede reducir la fatiga visual y ayudar a dormir por la noche. ¡Toca aquí para probarlo!</string>
-  <string name="lock_to_app_toast_no_navbar">Para liberar esta pantalla, deja pulsado el botón Menú.</string>
   <string name="lock_to_app_description_no_navbar">La fijación de pantalla mantiene visible una única pantalla.\n\nPara liberar esta pantalla, deja pulsado el botón Menú.</string>
+  <string name="lock_to_app_toast_no_navbar">Para liberar esta pantalla, mantén pulsado el botón Atrás.</string>
+  <string name="quick_settings_tile_flashlight_not_title">La linterna está encendida</string>
+  <string name="quick_settings_tile_flashlight_not_summary">Toca para apagarla</string>
+  <string name="storage_sd_dock_card">Tarjeta SD de la base</string>
+  <string name="fingerprint_default_name">Huella digital <xliff:g id="number">%d </xliff:g></string>
+  <string name="permlab_accessFingerprintService">acceder al servicio de huella digital</string>
+  <string name="permdesc_accessFingerprintService">Permite a una aplicación acceder al servicio de huella digital. La aplicación puede agregar, eliminar, renombrar y autenticar contra las huellas digitales</string>
+  <string name="permlab_resetBatteryStats">restablecer estadísticas de batería</string>
+  <string name="permdesc_resetBatteryStats">Permite que la aplicación restablezca los datos actuales de uso de la batería.</string>
+  <string name="silent_mode_priority">Prioridad</string>
+  <string name="silent_mode_none">Ninguno</string>
 </resources>

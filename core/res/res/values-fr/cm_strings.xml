@@ -183,4 +183,15 @@
   <string name="live_display_outdoor">Extérieur (plein soleil)</string>
   <string name="live_display_outdoor_summary">Utiliser uniquement les paramètres extérieurs</string>
   <string name="live_display_hint">LiveDisplay peut aider à réduire la fatigue oculaire et vous aider à dormir la nuit. Appuyez ici pour l\'essayer !</string>
+  <string name="lock_to_app_toast_no_navbar">Pour déverrouiller l\'écran, appuyez et maintenez le bouton Retour.</string>
+  <string name="quick_settings_tile_flashlight_not_title">Lampe de poche allumé</string>
+  <string name="quick_settings_tile_flashlight_not_summary">Appuyez pour éteindre</string>
+  <string name="storage_sd_dock_card">Dock carte SD</string>
+  <string name="fingerprint_default_name">Empreinte digitale <xliff:g id="number">%d</xliff:g></string>
+  <string name="permlab_accessFingerprintService">Service d\'accès par empreinte digitale</string>
+  <string name="permdesc_accessFingerprintService">Permet à une application d\'accéder au service d\'empreintes digitales. L\'application peut ajouter, supprimer, renommer et authentifier des empreintes digitales</string>
+  <string name="permlab_resetBatteryStats">réinitialiser les statistiques de la batterie</string>
+  <string name="permdesc_resetBatteryStats">Permet à une application de réinitialiser les données actuelles d\'utilisation de la batterie à faible niveau.</string>
+  <string name="silent_mode_priority">Priorité</string>
+  <string name="silent_mode_none">Aucun</string>
 </resources>
