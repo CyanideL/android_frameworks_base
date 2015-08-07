@@ -1280,6 +1280,10 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
                 cb.onKeyguardVisibilityChangedRaw(isShowing);
             }
         }
+        // Make sure if we are not showing that we stop fingerprint authentication
+        if (!isShowing && mLockPatternUtils.usingFingerprint()) {
+            stopAuthenticatingFingerprint();
+        }
     }
 
     /**
