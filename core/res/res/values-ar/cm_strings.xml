@@ -29,7 +29,6 @@
   <string name="profileGroupEmail">البريد الإلكتروني</string>
   <string name="profileGroupSMS">الرسائل القصيرة</string>
   <string name="wildcardProfile">الأخرى</string>
-  <string name="profile_none">لا شيء</string>
   <string name="profile_picker_title">الأوضاع</string>
   <string name="global_action_choose_profile">الوضع</string>
   <string name="profile_none">لا شيء</string>
