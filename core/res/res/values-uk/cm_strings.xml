@@ -216,6 +216,16 @@
   <string name="live_display_outdoor">Надворі (яскраве сонце)</string>
   <string name="live_display_outdoor_summary">Використовувати параметри для яскравого освітлення надворі</string>
   <string name="live_display_hint">LiveDisplay допоможе зменшити навантаження на зір та покращить Ваш сон. Натисніть тут, щоб спробувати його!</string>
-  <string name="lock_to_app_toast_no_navbar">Аби відкріпити екран, натисніть та утримуйте кнопку «Меню».</string>
   <string name="lock_to_app_description_no_navbar">Прикріплення екрану дозволяє користуватись лише одним додатком.\n\nАби відкріпити, натисніть та утримуйте кнопку «Меню».</string>
+  <string name="lock_to_app_toast_no_navbar">Щоб відкріпити цей екран, торкніться й утримуйте кнопку назад.</string>
+  <string name="quick_settings_tile_flashlight_not_title">Ліхтарик увімкнений</string>
+  <string name="quick_settings_tile_flashlight_not_summary">Торкніться, щоб вимкнути</string>
+  <string name="storage_sd_dock_card">SD-карта док-станції</string>
+  <string name="fingerprint_default_name">Відбиток пальця <xliff:g id="number">%d</xliff:g></string>
+  <string name="permlab_accessFingerprintService">Доступ до відбитків пальців</string>
+  <string name="permdesc_accessFingerprintService">Дозволяє додатку отримувати доступ до служби відбитків пальців. Додаток зможе додавати, видаляти, перейменовувати збережені відбитки та використовувати їх для автентифікації</string>
+  <string name="permlab_resetBatteryStats">скинути статистику акумулятора</string>
+  <string name="permdesc_resetBatteryStats">Дозволити програмі скидати дані про використання акумулятора.</string>
+  <string name="silent_mode_priority">Пріоритет</string>
+  <string name="silent_mode_none">Немає</string>
 </resources>

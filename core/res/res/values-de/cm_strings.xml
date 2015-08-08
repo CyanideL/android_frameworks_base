@@ -212,6 +212,16 @@
   <string name="live_display_outdoor">Außen (helle Sonne)</string>
   <string name="live_display_outdoor_summary">Nur Außen-Modus verwenden</string>
   <string name="live_display_hint">LiveDisplay kann gegen eine Überanstrengung der Augen und beim Schlafen in der Nacht helfen. Klicken Sie hier, um es auszuprobieren!</string>
-  <string name="lock_to_app_toast_no_navbar">Um diese Ansicht zu lösen die Menü-Taste drücken und halten.</string>
   <string name="lock_to_app_description_no_navbar">Bildschirm anheften fixiert die aktuelle Ansicht.\n\nZum Lösen die Menü-Taste drücken und halten.</string>
+  <string name="lock_to_app_toast_no_navbar">Um diese Ansicht zu lösen die Zurück-Taste drücken und halten.</string>
+  <string name="quick_settings_tile_flashlight_not_title">Taschenlampe ist angeschaltet</string>
+  <string name="quick_settings_tile_flashlight_not_summary">Zum Ausschalten berühren</string>
+  <string name="storage_sd_dock_card">SD-Karte des Docks</string>
+  <string name="fingerprint_default_name">Fingerabdruck <xliff:g id="number">%d</xliff:g></string>
+  <string name="permlab_accessFingerprintService">auf Fingerabdruck-Dienst zugreifen</string>
+  <string name="permdesc_accessFingerprintService">Ermöglicht der App, auf den Fingerabdruck-Dienst zuzugreifen. Die App kann Fingerabdrücke hinzufügen, löschen, ändern und verifizieren</string>
+  <string name="permlab_resetBatteryStats">Akku-Verlaufsdetails zurücksetzen</string>
+  <string name="permdesc_resetBatteryStats">Ermöglicht der App, die Akku-Verlaufsdetails zurückzusetzen.</string>
+  <string name="silent_mode_priority">Wichtig</string>
+  <string name="silent_mode_none">Keine</string>
 </resources>
