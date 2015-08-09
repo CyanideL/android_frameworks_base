@@ -6042,6 +6042,12 @@ public final class Settings {
                 "recent_app_sidebar_scale_factor";
 
         /**
+         * TRDS: Override custom notification and qs colors on theme change
+         * @hide
+         */
+        public static final String OVERRIDE_CUSTOM_COLORS = "override_custom_colors";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
