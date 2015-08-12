@@ -32,9 +32,9 @@
     <drawable name="dark_material_bg">@color/dark_material_dialog_background</drawable>
     <color name="material_blue_grey">#ff1b1f23</color>
     <drawable name="material_bg_blue_grey">@color/material_blue_grey</drawable>
-    <color name="material_blue_grey_800">#ff1b1f23</color>
-    <color name="material_blue_grey_900">#ff1b1f23</color>
-    <color name="material_blue_grey_950">#ff1b1f23</color>
+    <color name="material_blue_grey_800">#ff37474f</color>
+    <color name="material_blue_grey_900">#ff263238</color>
+    <color name="material_blue_grey_950">#ff21272b</color>
     <color name="material_white_normal">#ffeeeeee</color>
     <color name="material_white">#ffd7d7d7</color>
     <color name="material_grey_light">#ffc7c7c7</color>
