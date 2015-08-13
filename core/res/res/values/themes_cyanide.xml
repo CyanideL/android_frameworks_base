@@ -35,7 +35,7 @@
 
     <style name="Theme.Material.Dialog.Alert.Dark" parent="Theme.Material.Light.Dialog.BaseAlert">
         <item name="colorBackground">@drawable/material_bg_blue_grey</item>
--        <item name="colorAccent">@color/accent_material_light</item>
+-        <item name="colorAccent">@color/accent_material_dark</item>
     </style>
 
 </resources>
