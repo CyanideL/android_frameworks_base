@@ -85,6 +85,7 @@ import com.android.systemui.qs.tiles.CyanideTile;
 import com.android.systemui.qs.tiles.TrdsTile;
 import com.android.systemui.qs.tiles.AppSideBarTile;
 import com.android.systemui.qs.tiles.ThemesTile;
+import com.android.systemui.qs.tiles.KernelAdiutorTile;
 import com.android.systemui.settings.CurrentUserTracker;
 import com.android.systemui.statusbar.CustomTileData;
 import com.android.systemui.statusbar.policy.BluetoothController;
@@ -441,6 +442,8 @@ public class QSTileHost implements QSTile.Host {
                 return new SlimFloatsTile(this);
             case QSConstants.TILE_THEMES:
                 return new ThemesTile(this);
+            case QSConstants.TILE_KERNEL_ADIUTOR:
+                return new KernelAdiutorTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
