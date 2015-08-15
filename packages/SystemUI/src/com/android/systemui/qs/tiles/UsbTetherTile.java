@@ -45,6 +45,11 @@ public class UsbTetherTile extends QSTile<QSTile.BooleanState> {
         super(host);
     }
 
+    @Override
+    public boolean hasSensitiveData() {
+        return true;
+    }
+
     protected BooleanState newTileState() {
         return new BooleanState();
     }
