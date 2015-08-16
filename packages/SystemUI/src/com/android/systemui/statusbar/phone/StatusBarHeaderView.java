@@ -275,6 +275,14 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         requestCaptureValues();
     }
 
+    void setTaskManagerEnabled(boolean enabled) {
+        mShowTaskManager = enabled;
+        updateVisibilities();
+        updateSystemIconsLayoutParams();
+        updateMultiUserSwitch();
+        requestCaptureValues();
+    }
+
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
@@ -440,12 +448,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mAlarmStatus.setVisibility(mExpanded && mAlarmShowing ? View.VISIBLE : View.INVISIBLE);
         mSettingsButton.setVisibility(mExpanded ? View.VISIBLE : View.INVISIBLE);
         mWeatherContainer.setVisibility(mExpanded && mShowWeather ? View.VISIBLE : View.GONE);
-        mQsDetailHeader.setVisibility(mExpanded && mShowingDetail? View.VISIBLE : View.INVISIBLE);
+        mTaskManagerButton.setVisibility(mExpanded && mShowTaskManager ? View.VISIBLE : View.GONE);
         if (mHeadsUpButton != null) {
             mHeadsUpButton.setVisibility(mExpanded && mShowHeadsUpButton ? View.VISIBLE : View.GONE);
-        }
-        if (mTaskManagerButton != null) {
-            mTaskManagerButton.setVisibility(mExpanded && mShowTaskManager ? View.VISIBLE : View.GONE);
         }
         if (mCyanideButton != null) {
             mCyanideButton.setVisibility(mExpanded && mShowCyanideButton ? View.VISIBLE : View.GONE);
@@ -488,7 +493,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
 
     private void updateSystemIconsLayoutParams() {
         RelativeLayout.LayoutParams lp = (LayoutParams) mSystemIconsSuperContainer.getLayoutParams();
-        int taskManager = mTaskManagerButton != null
+        int taskManager = mShowTaskManager && mExpanded
                 ? mTaskManagerButton.getId()
                 : mSettingsButton.getId();
         int cyanide = mCyanideButton != null
@@ -927,11 +932,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         target.settingsTranslation = mExpanded
                 ? 0
                 : mMultiUserSwitch.getLeft() - mSettingsButton.getLeft();
-        if (mTaskManagerButton != null) {
-            target.taskManagerTranslation = mExpanded
-                    ? 0
-                    : mSettingsButton.getLeft() - mTaskManagerButton.getLeft();
-        }
+        target.taskManagerTranslation = mExpanded
+                ? 0
+                : mSettingsButton.getLeft() - mTaskManagerButton.getLeft();
         if (mStatusBarPowerMenu != null) {
             target.statusBarPowerMenuButton = mExpanded
                     ? 0
@@ -1006,11 +1009,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mSettingsButton.setTranslationY(mSystemIconsSuperContainer.getTranslationY());
         mSettingsButton.setTranslationX(values.settingsTranslation);
         mSettingsButton.setRotation(values.settingsRotation);
-        if (mTaskManagerButton != null) {
-            mTaskManagerButton.setTranslationY(mSystemIconsSuperContainer.getTranslationY());
-            mTaskManagerButton.setTranslationX(values.taskManagerTranslation);
-            mTaskManagerButton.setRotation(values.settingsRotation);
-        }
+        mTaskManagerButton.setTranslationY(mSystemIconsSuperContainer.getTranslationY());
+        mTaskManagerButton.setTranslationX(values.settingsTranslation);
+        mTaskManagerButton.setRotation(values.settingsRotation);
         if (mStatusBarPowerMenu != null) {
             mStatusBarPowerMenu.setTranslationY(mSystemIconsSuperContainer.getTranslationY());
             mStatusBarPowerMenu.setTranslationX(values.settingsTranslation);
@@ -1263,8 +1264,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.HEADS_UP_SHOW_STATUS_BUTTON), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.ENABLE_TASK_MANAGER), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SHOW_CYANIDE_BUTTON), false, this);
             updateSettings();
         }
@@ -1304,9 +1303,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
 
             mShowHeadsUpButton = Settings.System.getInt(
                     resolver, Settings.System.HEADS_UP_SHOW_STATUS_BUTTON, 0) == 1;
-
-            mShowTaskManager = Settings.System.getInt(resolver,
-                    Settings.System.ENABLE_TASK_MANAGER, 0) == 1;
 
             mShowCyanideButton = Settings.System.getInt(
                     resolver, Settings.System.SHOW_CYANIDE_BUTTON, 1) == 1;
