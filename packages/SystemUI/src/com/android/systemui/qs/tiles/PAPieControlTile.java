@@ -55,6 +55,7 @@ public class PAPieControlTile extends QSTile<QSTile.BooleanState> {
     protected void handleClick() {
         toggleState();
         refreshState();
+        qsCollapsePanel();
     }
 
      @Override

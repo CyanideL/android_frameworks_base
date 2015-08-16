@@ -81,6 +81,7 @@ public class TrdsTile extends QSTile<QSTile.BooleanState> {
         Action.processAction(mContext, ActionConstants.ACTION_THEME_SWITCH, false);
         boolean newState = !mState.value;
         refreshState(newState);
+        qsCollapsePanel();
     }
 
     @Override
