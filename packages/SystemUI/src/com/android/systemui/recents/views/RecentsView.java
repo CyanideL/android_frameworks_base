@@ -416,7 +416,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
             int positionHorizontal = Settings.System.getInt(resolver,
                     Settings.System.ANDROID_RECENTS_CLEAR_ALL_POSITION_HORIZONTAL, 2);
             int positionVertical = Settings.System.getInt(resolver,
-                    Settings.System.ANDROID_RECENTS_CLEAR_ALL_POSITION_VERTICAL, 0);
+                    Settings.System.ANDROID_RECENTS_CLEAR_ALL_POSITION_VERTICAL, 2);
             int bgColor = Settings.System.getInt(resolver,
                     Settings.System.ANDROID_RECENTS_CLEAR_ALL_BG_COLOR, 0xff009688);
 
