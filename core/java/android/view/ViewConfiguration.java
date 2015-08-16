@@ -182,7 +182,7 @@ public class ViewConfiguration {
     /**
      * Maximum velocity to initiate a fling, as measured in dips per second
      */
-    private static int MAXIMUM_FLING_VELOCITY = 16000;
+    private static int MAXIMUM_FLING_VELOCITY = 12000;
 
     /**
      * Maximum velocity to initiate a fling, as measured in dips per second
@@ -208,7 +208,7 @@ public class ViewConfiguration {
     /**
      * The coefficient of friction applied to flings/scrolls.
      */
-    private static float SCROLL_FRICTION = 0.011f;
+    private static float SCROLL_FRICTION = 0.010f;
 
     /**
      * The coefficient of friction applied to flings/scrolls.
