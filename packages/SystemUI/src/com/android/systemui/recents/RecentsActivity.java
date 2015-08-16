@@ -252,6 +252,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
                 else
                     mEmptyView = mEmptyViewStub.inflate();
             }
+            mRecentsView.enableShake(false);
             mEmptyView.setVisibility(View.VISIBLE);
             mEmptyView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -266,6 +267,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
                 mEmptyView.setVisibility(View.GONE);
                 mEmptyView.setOnClickListener(null);
             }
+            mRecentsView.enableShake(true);
             boolean showClearRecents = Settings.System.getInt(getContentResolver(),
                        Settings.System.ANDROID_RECENTS_SHOW_CLEAR_ALL, 1) == 1;
             findViewById(R.id.clear_recents_layout).setVisibility(showClearRecents ?
