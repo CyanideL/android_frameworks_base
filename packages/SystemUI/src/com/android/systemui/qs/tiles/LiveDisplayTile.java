@@ -101,6 +101,7 @@ public class LiveDisplayTile extends QSTile<LiveDisplayTile.LiveDisplayState> {
     @Override
     protected void handleClick() {
         changeToNextMode();
+        qsCollapsePanel();
     }
 
     @Override
