@@ -120,9 +120,10 @@
     <string name="quick_settings_music_play">Play</string>
     <string name="quick_settings_music_pause">Pause</string>
     <string name="quick_settings_sync_label">Sync</string>
-    <string name="quick_settings_custom_tile_detail_title">Custom tile</string>
+    <string name="quick_settings_custom_tile_detail_title">Custom Tile</string>
     <string name="quick_settings_systemui_restart_label">Restart SystemUI</string>
     <string name="quick_settings_kernel_adiutor">Kernel Adiutor</string>
+    <string name="quick_settings_stweaks">STweaks</string>
 
     <!-- Weather string format in expanded statusbar header -->
     <string name="status_bar_expanded_header_weather_format"><xliff:g id="temp">%1$s</xliff:g> - <xliff:g id="condition">%2$s</xliff:g></string>
