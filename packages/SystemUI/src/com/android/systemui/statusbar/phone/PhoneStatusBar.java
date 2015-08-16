@@ -3895,7 +3895,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     public void toggleSmartPulldown() {
         int smartPulldownMode = Settings.System.getIntForUser(
                 mContext.getContentResolver(), Settings.System.QS_SMART_PULLDOWN,
-                0, UserHandle.USER_CURRENT);
+                1, UserHandle.USER_CURRENT);
         if (smartPulldownMode == 1 && !hasActiveVisibleNotifications()) {
             animateExpandNotificationsPanel();
         } else if (smartPulldownMode == 2 && !hasActiveClearableNotifications()) {

@@ -229,7 +229,7 @@
     <bool name="def_wake_gesture_enabled">true</bool>
 
     <!-- Default for Settings.System.DOUBLE_TAP_SLEEP_GESTURE -->
-    <integer name="def_double_tap_sleep_gesture">1</integer>
+    <integer name="def_double_tap_sleep_gesture">0</integer>
 
     <!-- Default for Settings.Global.GUEST_USER_ENABLED -->
     <bool name="def_guest_user_enabled">true</bool>
@@ -266,5 +266,5 @@
          0. Off
          1. Right
          2. Left -->
-	<integer name="def_qs_quick_pulldown">0</integer>
+	<integer name="def_qs_quick_pulldown">1</integer>
 </resources>
