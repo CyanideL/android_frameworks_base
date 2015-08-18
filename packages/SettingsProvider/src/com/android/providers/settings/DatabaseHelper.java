@@ -2493,6 +2493,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             loadIntegerSetting(stmt, Settings.System.QS_QUICK_PULLDOWN,
 					R.integer.def_qs_quick_pulldown);
 
+            loadIntegerSetting(stmt, Settings.System.NOTIFICATION_LIGHT_BRIGHTNESS_LEVEL,
+                    R.integer.def_notification_brightness_level);
+
         } finally {
             if (stmt != null) stmt.close();
         }
