@@ -78,4 +78,15 @@
   <string name="navring_choose_action_title">Valige toiming</string>
   <string name="select_application">Valige rakendus</string>
   <string name="lockscreen_target_empty">Tühi</string>
+  <string name="screen_pinning_description_no_navbar">See hoiab vaate kuni vabastamiseni. Vajuta ja hoia tagasi nuppu vabastamiseks.</string>
+  <string name="interruption_level_silent">Vaikne</string>
+  <string name="zen_silent_with_warning">Mitte ühtegi segamist, välja arvatud alarmid.</string>
+  <string name="quick_settings_remove">Eemalda plaat</string>
+  <string name="quick_settings_dynamic_tile_detail_title">Dünaamiline plaat</string>
+  <string name="dynamic_qs_tile_next_alarm_label">Järgmine alarm</string>
+  <string name="dynamic_qs_tile_ime_selector_label">IME valija</string>
+  <string name="dynamic_qs_tile_su_label">Root ligipääs</string>
+  <string name="fingerprint_try_again_hint">Palun skanneeri uuesti</string>
+  <string name="accessibility_dock_battery_level">Doki aku <xliff:g id="number">%d</xliff:g> protsenti.</string>
+  <string name="quick_settings_custom_qs_detail_empty_text">Üksusi pole</string>
 </resources>
