@@ -5977,7 +5977,9 @@ public final class Settings {
             PROXIMITY_AUTO_SPEAKER,
             WAKELOCK_BLOCKING_ENABLED,
             LOCK_SCREEN_SHORTCUTS_COLORIZE_CUSTOM_ICONS,
-            PIE_CONTROLS
+            PIE_CONTROLS,
+            SAFE_HEADSET_VOLUME,
+            THREE_FINGER_GESTURE
         };
 
         // Settings moved to Settings.Secure

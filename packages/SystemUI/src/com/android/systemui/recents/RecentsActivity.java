@@ -116,6 +116,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
             if (mLaunchIntent != null) {
                 if (mLaunchOpts != null) {
                     startActivityAsUser(mLaunchIntent, mLaunchOpts.toBundle(), UserHandle.CURRENT);
+                    mRecentsView.enableShake(true);
                 } else {
                     startActivityAsUser(mLaunchIntent, UserHandle.CURRENT);
                 }
@@ -228,6 +229,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
         int taskStackCount = stacks.size();
         if (mConfig.launchedToTaskId != -1) {
             for (int i = 0; i < taskStackCount; i++) {
+				mRecentsView.enableShake(true);
                 TaskStack stack = stacks.get(i);
                 ArrayList<Task> tasks = stack.getTasks();
                 int taskCount = tasks.size();

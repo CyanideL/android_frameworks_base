@@ -84,6 +84,7 @@ import dalvik.system.DexClassLoader;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
 import android.util.Log;
+import android.util.SettingConfirmationHelper;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.view.Display;
@@ -1489,6 +1490,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         @Override
         public void run() {
             takeScreenshot();
+            SettingConfirmationHelper helper = new SettingConfirmationHelper();
+                helper.showConfirmationDialogForSetting(
+                mContext,
+                mContext.getString(R.string.three_finger_swipe_gesture_title),
+                mContext.getString(R.string.three_finger_swipe_gesture_message),
+                mContext.getResources().getDrawable(R.drawable.three_finger_swipe_gesture),
+                Settings.System.THREE_FINGER_GESTURE,
+                null);
         }
     };
 
@@ -6071,7 +6080,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             mVolumeUpKeyConsumedByScreenshotChord = false;
                             mScreenshotChordVolumeUpKeyTriggered = true;
                             cancelPendingPowerKeyAction();
-                            cancelPendingScreenshotChordAction();
                             interceptScreenshotLog();
                         }
                     } else {

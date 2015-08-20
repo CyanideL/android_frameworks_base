@@ -53,6 +53,7 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.SettingConfirmationHelper;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -341,6 +342,14 @@ public class VolumePanel extends Handler implements DemoMode {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             mAudioManager.disableSafeMediaVolume();
+                SettingConfirmationHelper helper = new SettingConfirmationHelper();
+                    helper.showConfirmationDialogForSetting(
+                    mContext,
+                    mContext.getString(R.string.safe_headset_warning_title),
+                    mContext.getString(R.string.safe_headset_warning_message),
+                    mContext.getResources().getDrawable(R.drawable.safe_headset_volume),
+                    Settings.System.SAFE_HEADSET_VOLUME,
+                    null);
         }
 
         @Override
