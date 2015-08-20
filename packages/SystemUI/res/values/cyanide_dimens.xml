@@ -106,4 +106,7 @@
     <item name="qs_tile_five_column_scale" format="float" type="dimen">0.85</item>
     <item name="qs_tile_six_column_scale" format="float" type="dimen">0.84</item>
 
+    <!-- Quick settings bar -->
+    <dimen name="qs_button_size">64dp</dimen>
+
 </resources>

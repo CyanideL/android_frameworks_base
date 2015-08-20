@@ -37,6 +37,8 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.util.TypedValue;
 
+import com.android.internal.util.cyanide.Converter;
+
 public class ImageHelper {
 
     public static Bitmap getColoredBitmap(Drawable d, int color) {
@@ -117,29 +119,28 @@ public class ImageHelper {
         
         if (image instanceof VectorDrawable) {
             return image;
+        } else {
+            int newSize = Converter.dpToPx(context, size);
+            Bitmap bitmap = ((BitmapDrawable) image).getBitmap();
+            Bitmap scaledBitmap = Bitmap.createBitmap(newSize, newSize, Config.ARGB_8888);
+
+            float ratioX = newSize / (float) bitmap.getWidth();
+            float ratioY = newSize / (float) bitmap.getHeight();
+            float middleX = newSize / 2.0f;
+            float middleY = newSize / 2.0f;
+
+            final Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG);
+            paint.setAntiAlias(true);
+
+            Matrix scaleMatrix = new Matrix();
+            scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
+
+            Canvas canvas = new Canvas(scaledBitmap);
+            canvas.setMatrix(scaleMatrix);
+            canvas.drawBitmap(bitmap, middleX - bitmap.getWidth() / 2,
+                    middleY - bitmap.getHeight() / 2, paint);
+            return new BitmapDrawable(context.getResources(), scaledBitmap);
         }
- 
-
-        int newSize = Converter.dpToPx(context, size);
-        Bitmap bitmap = ((BitmapDrawable) image).getBitmap();
-        Bitmap scaledBitmap = Bitmap.createBitmap(newSize, newSize, Config.ARGB_8888);
-
-        float ratioX = newSize / (float) bitmap.getWidth();
-        float ratioY = newSize / (float) bitmap.getHeight();
-        float middleX = newSize / 2.0f;
-        float middleY = newSize / 2.0f;
-
-        final Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG);
-        paint.setAntiAlias(true);
-
-        Matrix scaleMatrix = new Matrix();
-        scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
-
-        Canvas canvas = new Canvas(scaledBitmap);
-        canvas.setMatrix(scaleMatrix);
-        canvas.drawBitmap(bitmap, middleX - bitmap.getWidth() / 2,
-                middleY - bitmap.getHeight() / 2, paint);
-        return new BitmapDrawable(context.getResources(), scaledBitmap);
     }
 
     public static Bitmap getRoundedCornerBitmap(Bitmap bitmap) {

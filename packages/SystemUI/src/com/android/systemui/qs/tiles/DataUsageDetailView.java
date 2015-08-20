@@ -28,6 +28,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Button;
 
+import com.android.internal.util.cyanide.QSColorHelper;
+
 import com.android.systemui.FontSizeUtils;
 import com.android.systemui.R;
 import com.android.systemui.qs.DataUsageGraph;
@@ -71,8 +73,7 @@ public class DataUsageDetailView extends LinearLayout {
         final Resources res = mContext.getResources();
         final int titleId;
         final long bytes;
-        int textColor = Settings.System.getInt(getContext().getContentResolver(),
-                Settings.System.QS_TEXT_COLOR, 0xffffffff);
+        int textColor = QSColorHelper.getTextColor(mContext);
         int usageColor = R.color.system_accent_color;
         int secondaryTextColor = (179 << 24) | (textColor & 0x00ffffff); // Text color with a transparency of 70%
         final String top;
