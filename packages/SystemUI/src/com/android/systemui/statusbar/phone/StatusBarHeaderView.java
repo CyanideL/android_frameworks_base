@@ -75,6 +75,8 @@ import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.NextAlarmController;
 import com.android.systemui.statusbar.policy.UserInfoController;
 
+import java.net.URISyntaxException;
+
 /**
  * The view to manage the header area in the expanded status bar.
  */
@@ -790,21 +792,66 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     }
 
     private void startClockActivity() {
-        mActivityStarter.startActivity(new Intent(AlarmClock.ACTION_SHOW_ALARMS),
-                true /* dismissShade */);
+		Intent clockShortcutIntent = null;
+            String clockShortcutIntentUri = Settings.System.getStringForUser(
+                    mContext.getContentResolver(), Settings.System.CLOCK_SHORTCUT, UserHandle.USER_CURRENT);
+            if(clockShortcutIntentUri != null) {
+                try {
+                    clockShortcutIntent = Intent.parseUri(clockShortcutIntentUri, 0);
+                } catch (URISyntaxException e) {
+                    clockShortcutIntent = null;
+                }
+            }
+
+            if(clockShortcutIntent != null) {
+                mActivityStarter.startActivity(clockShortcutIntent, true);
+            } else {
+                mActivityStarter.startActivity(
+                        new Intent(AlarmClock.ACTION_SHOW_ALARMS), true /* dismissShade */);
+            }
     }
 
     private void startClockLongClickActivity() {
-        mActivityStarter.startActivity(new Intent(AlarmClock.ACTION_SET_ALARM),
-                true /* dismissShade */);
+        Intent clockLongShortcutIntent = null;
+            String clockLongShortcutIntentUri = Settings.System.getStringForUser(
+                    mContext.getContentResolver(), Settings.System.CLOCK_LONG_SHORTCUT, UserHandle.USER_CURRENT);
+            if(clockLongShortcutIntentUri != null) {
+                try {
+                    clockLongShortcutIntent = Intent.parseUri(clockLongShortcutIntentUri, 0);
+                } catch (URISyntaxException e) {
+                    clockLongShortcutIntent = null;
+                }
+            }
+
+            if(clockLongShortcutIntent != null) {
+                mActivityStarter.startActivity(clockLongShortcutIntent, true);
+            } else {
+                mActivityStarter.startActivity(new Intent(AlarmClock.ACTION_SET_ALARM),
+                        true /* dismissShade */);
+            }
     }
 
     private void startDateActivity() {
-        Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
-        builder.appendPath("time");
-        ContentUris.appendId(builder, System.currentTimeMillis());
-        Intent intent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
-        mActivityStarter.startActivity(intent, true /* dismissShade */);
+        Intent calendarShortcutIntent = null;
+            String calendarShortcutIntentUri = Settings.System.getStringForUser(
+                    mContext.getContentResolver(), Settings.System.CALENDAR_SHORTCUT, UserHandle.USER_CURRENT);
+            if(calendarShortcutIntentUri != null) {
+                try {
+                    calendarShortcutIntent = Intent.parseUri(calendarShortcutIntentUri, 0);
+                } catch (URISyntaxException e) {
+                    calendarShortcutIntent = null;
+                }
+            }
+
+            if(calendarShortcutIntent != null) {
+                mActivityStarter.startActivity(calendarShortcutIntent, true);
+            } else {
+                Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
+                builder.appendPath("time");
+                ContentUris.appendId(builder, System.currentTimeMillis());
+                Intent intent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
+                mActivityStarter.startActivity(intent, true /* dismissShade */);
+            }
     }
 
     private void triggerPowerMenuDialog() {
@@ -823,9 +870,24 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     }
 
     private void startDateLongClickActivity() {
-        Intent intent = new Intent(Intent.ACTION_INSERT);
-            intent.setData(Events.CONTENT_URI);
-        mActivityStarter.startActivity(intent, true /* dismissShade */);
+        Intent calendarLongShortcutIntent = null;
+            String calendarLongShortcutIntentUri = Settings.System.getStringForUser(
+                    mContext.getContentResolver(), Settings.System.CALENDAR_LONG_SHORTCUT, UserHandle.USER_CURRENT);
+            if(calendarLongShortcutIntentUri != null) {
+                try {
+                    calendarLongShortcutIntent = Intent.parseUri(calendarLongShortcutIntentUri, 0);
+                } catch (URISyntaxException e) {
+                    calendarLongShortcutIntent = null;
+                }
+            }
+
+            if(calendarLongShortcutIntent != null) {
+                mActivityStarter.startActivity(calendarLongShortcutIntent, true);
+            } else {
+                Intent intent = new Intent(Intent.ACTION_INSERT);
+                    intent.setData(Events.CONTENT_URI);
+                mActivityStarter.startActivity(intent, true /* dismissShade */);
+            }
     }
 
     private void startForecastActivity() {
@@ -836,10 +898,25 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     }
 
     private void startForecastLongClickActivity() {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.cyanogenmod.lockclock",
-            "com.cyanogenmod.lockclock.preference.Preferences");
-        mActivityStarter.startActivity(intent, true /* dismissShade */);
+        Intent weatherLongShortcutIntent = null;
+            String weatherLongShortcutIntentUri = Settings.System.getStringForUser(
+                    mContext.getContentResolver(), Settings.System.WEATHER_LONG_SHORTCUT, UserHandle.USER_CURRENT);
+            if(weatherLongShortcutIntentUri != null) {
+                try {
+                    weatherLongShortcutIntent = Intent.parseUri(weatherLongShortcutIntentUri, 0);
+                } catch (URISyntaxException e) {
+                    weatherLongShortcutIntent = null;
+                }
+            }
+
+            if(weatherLongShortcutIntent != null) {
+                mActivityStarter.startActivity(weatherLongShortcutIntent, true);
+            } else {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.setClassName("com.cyanogenmod.lockclock",
+                    "com.cyanogenmod.lockclock.preference.Preferences");
+                mActivityStarter.startActivity(intent, true /* dismissShade */);
+            }
     }
 
     private void startHeadsUpActivity() {
@@ -876,17 +953,47 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     }
 
     private void startCyanideActivity() {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.android.settings",
-            "com.android.settings.Settings$MainSettingsActivity");
-        mActivityStarter.startActivity(intent, true /* dismissShade */);
+        Intent cyanideShortcutIntent = null;
+            String cyanideShortcutIntentUri = Settings.System.getStringForUser(
+                    mContext.getContentResolver(), Settings.System.CYANIDE_SHORTCUT, UserHandle.USER_CURRENT);
+            if(cyanideShortcutIntentUri != null) {
+                try {
+                    cyanideShortcutIntent = Intent.parseUri(cyanideShortcutIntentUri, 0);
+                } catch (URISyntaxException e) {
+                    cyanideShortcutIntent = null;
+                }
+            }
+
+            if(cyanideShortcutIntent != null) {
+                mActivityStarter.startActivity(cyanideShortcutIntent, true);
+            } else {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.setClassName("com.android.settings",
+                    "com.android.settings.Settings$MainSettingsActivity");
+                mActivityStarter.startActivity(intent, true /* dismissShade */);
+            }
     }
 
     private void startCyanideLongClickActivity() {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.android.settings",
-            "com.android.settings.Settings$CyanideCentralActivity");
-        mActivityStarter.startActivity(intent, true /* dismissShade */);
+        Intent cyanideLongShortcutIntent = null;
+            String cyanideLongShortcutIntentUri = Settings.System.getStringForUser(
+                    mContext.getContentResolver(), Settings.System.CYANIDE_LONG_SHORTCUT, UserHandle.USER_CURRENT);
+            if(cyanideLongShortcutIntentUri != null) {
+                try {
+                    cyanideLongShortcutIntent = Intent.parseUri(cyanideLongShortcutIntentUri, 0);
+                } catch (URISyntaxException e) {
+                    cyanideLongShortcutIntent = null;
+                }
+            }
+
+            if(cyanideLongShortcutIntent != null) {
+                mActivityStarter.startActivity(cyanideLongShortcutIntent, true);
+            } else {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.setClassName("com.android.settings",
+                    "com.android.settings.Settings$CyanideCentralActivity");
+                mActivityStarter.startActivity(intent, true /* dismissShade */);
+            }
     }
 
     private void startMultiUserActivity() {

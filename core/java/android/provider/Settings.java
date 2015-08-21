@@ -5800,6 +5800,48 @@ public final class Settings {
         public static final String STATUS_BAR_CUSTOM_HEADER_PROVIDER = "status_bar_custom_header_provider";
 
         /**
+         * What application to launch when the user clicks the clock in the notification bar
+         * @hide
+         */
+        public static final String CLOCK_SHORTCUT = "clock_shortcut";
+
+        /**
+         * What application to launch when the user clicks the calendar in the notification bar
+         * @hide
+         */
+        public static final String CALENDAR_SHORTCUT = "calendar_shortcut";
+
+        /**
+         * What application to launch when the user long clicks the calendar in the notification bar
+         * @hide
+         */
+        public static final String CLOCK_LONG_SHORTCUT = "clock_long_shortcut";
+
+        /**
+         * What application to launch when the user long clicks the calendar in the notification bar
+         * @hide
+         */
+        public static final String CALENDAR_LONG_SHORTCUT = "calendar_long_shortcut";
+
+        /**
+         * What application to launch when the user clicks the cyanide button in the notification bar
+         * @hide
+         */
+        public static final String CYANIDE_SHORTCUT = "cyanide_shortcut";
+
+        /**
+         * What application to launch when the user long clicks the cyanide button in the notification bar
+         * @hide
+         */
+        public static final String CYANIDE_LONG_SHORTCUT = "cyanide_long_shortcut";
+
+        /**
+         * What application to launch when the user long clicks the weather in the notification bar
+         * @hide
+         */
+        public static final String WEATHER_LONG_SHORTCUT = "weather_long_shortcut";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
