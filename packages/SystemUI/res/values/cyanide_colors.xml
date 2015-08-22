@@ -94,4 +94,6 @@
 
     <color name="status_bar_temp_text_color">#ffffffff</color>
 
+    <color name="kg_carrier_text">#ffffffff</color>
+
 </resources>

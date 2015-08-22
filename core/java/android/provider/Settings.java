@@ -4442,9 +4442,12 @@ public final class Settings {
 
         /**
          * show carrier in statusbar. The value is
-         * int (1: Show or 0: Hide).
+         * 0 = Hide
+         * 1 = Show only on keyguard
+         * 2 = Show only on statusbar
+         * 3 = Show on keyguard and statusbar
          */
-        public static final String STATUS_BAR_CARRIER = "status_bar_carrier";
+        public static final String STATUS_BAR_CUSTOM_CARRIER = "status_bar_custom_carrier";
 
         /**
          * custom carrier label. The value is
@@ -6020,7 +6023,7 @@ public final class Settings {
             STATUS_BAR_NETWORK_SPEED_INDICATOR,
             FORCE_EXPANDED_NOTIFICATIONS,
             LOCK_SCREEN_HIDE_CARRIER,
-            STATUS_BAR_CARRIER,
+            STATUS_BAR_CUSTOM_CARRIER,
             GESTURE_ANYWHERE_ENABLED,
             ENABLE_APP_CIRCLE_BAR,
             IDENTICONS_ENABLED,

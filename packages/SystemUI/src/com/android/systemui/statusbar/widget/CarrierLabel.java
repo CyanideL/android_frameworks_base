@@ -48,7 +48,7 @@ public class CarrierLabel extends TextView {
     private boolean mAttached;
     private static boolean isCN;
 
-    protected int mCarrierColor = com.android.internal.R.color.white;
+    protected int mCarrierColor = getResources().getColor(R.color.kg_carrier_text);
     Handler mHandler;
 
     class SettingsObserver extends ContentObserver {
