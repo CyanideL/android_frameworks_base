@@ -2464,6 +2464,12 @@ public final class Settings {
 		 */
 		public static final String QS_ICON_COLOR = "qs_icons_color";
 
+        /**
+         * Color of the quick settings icon background ripple effect
+         * @hide
+         */
+        public static final String QS_RIPPLE_COLOR = "qs_ripple_color";
+
 		/**
 		 * Color of the quick settings text
 		 * @hide

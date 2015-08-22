@@ -2168,6 +2168,8 @@ public class NotificationPanelView extends PanelView implements
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_SMART_PULLDOWN),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_RIPPLE_COLOR), false, this);
             update();
         }
 
@@ -2186,11 +2188,11 @@ public class NotificationPanelView extends PanelView implements
             ContentResolver resolver = mContext.getContentResolver();
             if (uri.equals(Settings.System.getUriFor(
                     Settings.System.QS_BACKGROUND_COLOR))) {
-                mQSBackgroundColor = Settings.System.getInt(
-                        resolver, Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
                 setQSBackgroundColor();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.QS_ICON_COLOR))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_RIPPLE_COLOR))
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.QS_TEXT_COLOR))) {
                 setQSColors();
@@ -2212,8 +2214,6 @@ public class NotificationPanelView extends PanelView implements
             mQsSmartPullDown = Settings.System.getIntForUser(
                     resolver, Settings.System.QS_SMART_PULLDOWN, 1,
                     UserHandle.USER_CURRENT);
-			mQSBackgroundColor = Settings.System.getInt(
-                    resolver, Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
 
             setQSBackgroundColor();
             setQSColors();
@@ -2221,15 +2221,14 @@ public class NotificationPanelView extends PanelView implements
     }
 
     private void setQSBackgroundColor() {
-        ContentResolver resolver = mContext.getContentResolver();
-        mQSBackgroundColor = Settings.System.getInt(
-                resolver, Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
+        final int bgColor = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
         if (mQsContainer != null) {
             mQsContainer.getBackground().setColorFilter(
-                    mQSBackgroundColor, Mode.MULTIPLY);
+                    bgColor, Mode.MULTIPLY);
         }
         if (mQsPanel != null) {
-            mQsPanel.setDetailBackgroundColor(mQSBackgroundColor);
+            mQsPanel.setDetailBackgroundColor(bgColor);
         }
     }
 

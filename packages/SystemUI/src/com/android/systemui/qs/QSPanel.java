@@ -43,6 +43,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.internal.util.cyanide.QSColorHelper;
+
 import com.android.systemui.FontSizeUtils;
 import com.android.systemui.R;
 import com.android.systemui.qs.QSTile.DetailAdapter;
@@ -167,12 +169,10 @@ public class QSPanel extends ViewGroup {
     }
 
     private void updateDetailText() {
-        int textColor = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.QS_TEXT_COLOR, 0xffffffff);
         mDetailDoneButton.setText(R.string.quick_settings_done);
         mDetailSettingsButton.setText(R.string.quick_settings_more_settings);
-        mDetailDoneButton.setTextColor(textColor);
-        mDetailSettingsButton.setTextColor(textColor);
+        mDetailDoneButton.setTextColor(QSColorHelper.getTextColor(mContext));
+        mDetailSettingsButton.setTextColor(QSColorHelper.getTextColor(mContext));
         mDetailRemoveButton.setText(R.string.quick_settings_remove);
     }
 
@@ -325,6 +325,7 @@ public class QSPanel extends ViewGroup {
             r.tileView.setDual(mUseMainTiles && i < 2);
             r.tileView.setLabelColor();
             r.tileView.setIconColor();
+            r.tileView.setRippleColor();
             r.tile.refreshState();
         }
         mFooter.refreshState();
@@ -697,6 +698,7 @@ public class QSPanel extends ViewGroup {
 
     public void setColors() {
         refreshAllTiles();
+        mBrightnessController.setToggleSliderColors();
     }
 
     private class H extends Handler {
