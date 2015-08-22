@@ -251,7 +251,7 @@ public class QSTileView extends ViewGroup {
     protected int getIconColor() {
 		return mIconColor;
 	}
-    
+
     private void setRipple(RippleDrawable tileBackground) {
         mRipple = tileBackground;
         if (getWidth() != 0) {
