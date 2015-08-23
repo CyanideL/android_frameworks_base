@@ -91,18 +91,42 @@ public class QSBarHelper {
         if (clickAction.equals(QSBarConstants.BUTTON_AIRPLANE)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_button_airplane", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_AMBIENT)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_doze", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_APPCIRCLEBAR)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_appcirclebar_on", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_APPSIDEBAR)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_sidebar_on", null, null);
         } else if (clickAction.equals(QSBarConstants.BUTTON_BLUETOOTH)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_button_bt", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_CYANIDE)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_cyanide_on", null, null);
         } else if (clickAction.equals(QSBarConstants.BUTTON_DATA)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_button_data", null, null);
         } else if (clickAction.equals(QSBarConstants.BUTTON_FLASHLIGHT)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_button_torch", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_FLOATING)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_floating_on", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_GESTUREANYWHERE)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_gestures_on", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_HEADSUP)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_headsup_toggle_on", null, null);
         } else if (clickAction.equals(QSBarConstants.BUTTON_HOTSPOT)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_button_hotspot", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_HWKEYS)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_buttons_on", null, null);
         } else if (clickAction.equals(QSBarConstants.BUTTON_INVERSION)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_button_inversion", null, null);
@@ -112,12 +136,36 @@ public class QSBarHelper {
         } else if (clickAction.equals(QSBarConstants.BUTTON_LTE)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_button_lte", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_NAVBAR)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_navbar_on", null, null);
         } else if (clickAction.equals(QSBarConstants.BUTTON_NFC)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_button_nfc", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_PIE_CONTROL)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_pie_global_on", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_POWER_MENU)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_power", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_RESTARTUI)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_systemui_restart", null, null);
         } else if (clickAction.equals(QSBarConstants.BUTTON_ROTATION)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_button_rotation", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_SCREENOFF)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_power", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_SLIMPIE)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_pie_global_on", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_SLIM_FLOATS)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_floating_on", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_THEMES)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_themes", null, null);
         } else if (clickAction.equals(QSBarConstants.BUTTON_WIFI)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_button_wifi", null, null);

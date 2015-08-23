@@ -39,15 +39,31 @@ import com.android.internal.util.cyanide.ActionConfig;
 
 import com.android.systemui.R;
 import com.android.systemui.qs.buttons.AirplaneModeButton;
+import com.android.systemui.qs.buttons.AppCircleBarButton;
+import com.android.systemui.qs.buttons.AppSideBarButton;
+import com.android.systemui.qs.buttons.AmbientButton;
 import com.android.systemui.qs.buttons.BluetoothButton;
 import com.android.systemui.qs.buttons.ColorInversionButton;
+import com.android.systemui.qs.buttons.CyanideButton;
 import com.android.systemui.qs.buttons.DataButton;
+import com.android.systemui.qs.buttons.FloatingButton;
+import com.android.systemui.qs.buttons.GestureAnywhereButton;
+import com.android.systemui.qs.buttons.HeadsUpButton;
 import com.android.systemui.qs.buttons.HotspotButton;
+import com.android.systemui.qs.buttons.HWKeysButton;
 import com.android.systemui.qs.buttons.LocationButton;
 import com.android.systemui.qs.buttons.LteButton;
+import com.android.systemui.qs.buttons.NavBarButton;
 import com.android.systemui.qs.buttons.NfcButton;
 import com.android.systemui.qs.buttons.QSButton;
+import com.android.systemui.qs.buttons.PieControlButton;
+import com.android.systemui.qs.buttons.PowerMenuButton;
+import com.android.systemui.qs.buttons.RestartUIButton;
 import com.android.systemui.qs.buttons.RotationLockButton;
+import com.android.systemui.qs.buttons.ScreenOffButton;
+import com.android.systemui.qs.buttons.SlimPieButton;
+import com.android.systemui.qs.buttons.SlimFloatsButton;
+import com.android.systemui.qs.buttons.ThemesButton;
 import com.android.systemui.qs.buttons.TorchButton;
 import com.android.systemui.qs.buttons.WifiButton;
 import com.android.systemui.statusbar.phone.PhoneStatusBar;
@@ -143,10 +159,26 @@ public class QSBar extends LinearLayout {
             button = new AirplaneModeButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_airplane),
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_airplane_off));
+        } else if (action.equals(QSBarConstants.BUTTON_APPCIRCLEBAR)) {
+            button = new AppCircleBarButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_appcirclebar_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_appcirclebar_off));
+        } else if (action.equals(QSBarConstants.BUTTON_APPSIDEBAR)) {
+            button = new AppSideBarButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_sidebar_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_sidebar_off));
+        } else if (action.equals(QSBarConstants.BUTTON_AMBIENT)) {
+            button = new AmbientButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_doze),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_doze_off));
         } else if (action.equals(QSBarConstants.BUTTON_BLUETOOTH)) {
             button = new BluetoothButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_bt),
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_bt_off));
+        } else if (action.equals(QSBarConstants.BUTTON_CYANIDE)) {
+            button = new CyanideButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_cyanide_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_cyanide_on));
         } else if (action.equals(QSBarConstants.BUTTON_DATA)) {
             button = new DataButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_data),
@@ -155,10 +187,26 @@ public class QSBar extends LinearLayout {
             button = new TorchButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_torch),
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_torch_off));
+        } else if (action.equals(QSBarConstants.BUTTON_FLOATING)) {
+            button = new FloatingButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_floating_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_floating_off));
+        } else if (action.equals(QSBarConstants.BUTTON_GESTUREANYWHERE)) {
+            button = new GestureAnywhereButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_gestures_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_gestures_off));
         } else if (action.equals(QSBarConstants.BUTTON_HOTSPOT)) {
             button = new HotspotButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_hotspot),
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_hotspot_off));
+        } else if (action.equals(QSBarConstants.BUTTON_HEADSUP)) {
+            button = new HeadsUpButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_headsup_toggle_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_headsup_toggle_off));
+        } else if (action.equals(QSBarConstants.BUTTON_HWKEYS)) {
+            button = new HWKeysButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_buttons_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_buttons_off));
         } else if (action.equals(QSBarConstants.BUTTON_INVERSION)) {
             button = new ColorInversionButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_inversion),
@@ -171,14 +219,46 @@ public class QSBar extends LinearLayout {
             button = new LteButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_lte),
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_lte_off));
+        } else if (action.equals(QSBarConstants.BUTTON_NAVBAR)) {
+            button = new NavBarButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_navbar_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_navbar_off));
         } else if (action.equals(QSBarConstants.BUTTON_NFC)) {
             button = new NfcButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_nfc),
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_nfc_off));
+        } else if (action.equals(QSBarConstants.BUTTON_PIE_CONTROL)) {
+            button = new PieControlButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_pie_global_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_pie_global_off));
+        } else if (action.equals(QSBarConstants.BUTTON_POWER_MENU)) {
+            button = new PowerMenuButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_sysbar_power),
+                    mContext.getResources().getDrawable(R.drawable.ic_sysbar_power));
+        } else if (action.equals(QSBarConstants.BUTTON_RESTARTUI)) {
+            button = new RestartUIButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_systemui_restart),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_systemui_restart));
         } else if (action.equals(QSBarConstants.BUTTON_ROTATION)) {
             button = new RotationLockButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_rotation),
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_rotation_off));
+        } else if (action.equals(QSBarConstants.BUTTON_SCREENOFF)) {
+            button = new ScreenOffButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_sysbar_power),
+                    mContext.getResources().getDrawable(R.drawable.ic_sysbar_power));
+        } else if (action.equals(QSBarConstants.BUTTON_SLIMPIE)) {
+            button = new SlimPieButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_pie_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_pie_off));
+        } else if (action.equals(QSBarConstants.BUTTON_SLIM_FLOATS)) {
+            button = new SlimFloatsButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_floating_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_floating_off));
+        } else if (action.equals(QSBarConstants.BUTTON_THEMES)) {
+            button = new ThemesButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_themes),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_themes));
         } else if (action.equals(QSBarConstants.BUTTON_WIFI)) {
             button = new WifiButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_wifi),
@@ -277,6 +357,42 @@ public class QSBar extends LinearLayout {
         void observe() {
             mContext.getContentResolver().registerContentObserver(
                     Settings.System.getUriFor(Settings.System.QS_BUTTONS),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.Secure.getUriFor(Settings.Secure.ACCESSIBILITY_DISPLAY_INVERSION_ENABLED),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.Secure.getUriFor(Settings.Secure.ADVANCED_MODE),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.ENABLE_APP_CIRCLE_BAR),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.APP_SIDEBAR_ENABLED),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.Secure.getUriFor(Settings.Secure.DOZE_ENABLED),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.FLOATING_WINDOW_MODE),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.GESTURE_ANYWHERE_ENABLED),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.NAVBAR_FORCE_ENABLE),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.PIE_CONTROLS),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.PA_PIE_STATE),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.HEADS_UP_USER_ENABLED),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.SLIM_ACTION_FLOATS),
                     false, this, UserHandle.USER_ALL);
             update();
         }

@@ -18,17 +18,33 @@ package com.android.internal.util.cyanide;
 
 public class QSBarConstants {
 
-    public static final String BUTTON_AIRPLANE   = "airplane";
-    public static final String BUTTON_BLUETOOTH  = "bt";
-    public static final String BUTTON_DATA       = "data";
-    public static final String BUTTON_FLASHLIGHT = "flashlight";
-    public static final String BUTTON_HOTSPOT    = "hotspot";
-    public static final String BUTTON_INVERSION  = "inversion";
-    public static final String BUTTON_LOCATION   = "location";
-    public static final String BUTTON_LTE        = "lte";
-    public static final String BUTTON_NFC        = "nfc";
-    public static final String BUTTON_ROTATION   = "rotation";
-    public static final String BUTTON_WIFI       = "wifi";
+    public static final String BUTTON_AIRPLANE         = "airplane";
+    public static final String BUTTON_AMBIENT          = "ambient";
+    public static final String BUTTON_APPCIRCLEBAR     = "appcirclebar";
+    public static final String BUTTON_APPSIDEBAR       = "appsidebar";
+    public static final String BUTTON_BLUETOOTH        = "bt";
+    public static final String BUTTON_CYANIDE          = "cyanide";
+    public static final String BUTTON_DATA             = "data";
+    public static final String BUTTON_FLASHLIGHT       = "flashlight";
+    public static final String BUTTON_FLOATING         = "floating";
+    public static final String BUTTON_GESTUREANYWHERE  = "gestureanywhere";
+    public static final String BUTTON_HEADSUP          = "headsup";
+    public static final String BUTTON_HOTSPOT          = "hotspot";
+    public static final String BUTTON_HWKEYS           = "hwkeys";
+    public static final String BUTTON_INVERSION        = "inversion";
+    public static final String BUTTON_LOCATION         = "location";
+    public static final String BUTTON_LTE              = "lte";
+    public static final String BUTTON_NAVBAR           = "navbar";
+    public static final String BUTTON_NFC              = "nfc";
+    public static final String BUTTON_PIE_CONTROL      = "piecontrol";
+    public static final String BUTTON_POWER_MENU       = "powermenu";
+    public static final String BUTTON_RESTARTUI        = "restartui";
+    public static final String BUTTON_ROTATION         = "rotation";
+    public static final String BUTTON_SCREENOFF        = "screenoff";
+    public static final String BUTTON_SLIMPIE          = "slimpie";
+    public static final String BUTTON_SLIM_FLOATS      = "slimfloats";
+    public static final String BUTTON_THEMES           = "themes";
+    public static final String BUTTON_WIFI             = "wifi";
 
     public static final String BUTTON_DELIMITER  = "|";
     public static final String ICON_EMPTY        = "empty";
@@ -44,6 +60,6 @@ public class QSBarConstants {
         + ICON_EMPTY        + BUTTON_DELIMITER
         + BUTTON_LOCATION   + BUTTON_DELIMITER
         + ICON_EMPTY        + BUTTON_DELIMITER
-        + BUTTON_NFC        + BUTTON_DELIMITER
+        + BUTTON_CYANIDE    + BUTTON_DELIMITER
         + ICON_EMPTY;
 }

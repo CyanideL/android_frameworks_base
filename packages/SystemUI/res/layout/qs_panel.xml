@@ -20,8 +20,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/qs_background_primary"
         android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:elevation="2dp">
+        android:paddingBottom="8dp">
 
     <com.android.systemui.qs.QSBarContainer
             android:id="@+id/quick_settings_bar_container"

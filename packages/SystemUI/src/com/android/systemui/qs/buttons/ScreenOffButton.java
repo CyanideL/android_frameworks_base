@@ -1,8 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
- * Copyright (C) 2013-2015 The CyanogenMod Project
- * Copyright 2014 SlimRoms project
- * Copyright 2014-2015 The Euphoria-OS Project
+ * Copyright (C) 2015 CyanideL && Fusion
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +14,17 @@
  * limitations under the License.
  */
 
-package com.android.systemui.qs.tiles;
+package com.android.systemui.qs.buttons;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.ContentObserver;
+import android.graphics.drawable.Drawable;
 import android.provider.Settings;
 import android.provider.Settings.Global;
 import android.hardware.input.InputManager;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.view.KeyEvent;
@@ -31,47 +32,50 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.android.systemui.R;
-import com.android.systemui.qs.QSTile;
+import com.android.systemui.qs.QSBar;
 
-/** Quick settings tile: Screen off **/
-public class ScreenOffTile extends QSTile<QSTile.BooleanState> {
+public class ScreenOffButton extends QSButton {
+
+    private final ContentObserver mScreenOffObserver;
+    private final ContentResolver mResolver;
 
     private PowerManager mPm;
-    private boolean mListening;
+    private boolean mEnabled;
 
-    public ScreenOffTile(Host host) {
-        super(host);
+    public ScreenOffButton(Context context, QSBar qsBar, Drawable iconEnabled,
+            Drawable iconDisabled) {
+        super(context, qsBar, iconEnabled, iconDisabled);
+
         mPm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+        mScreenOffObserver = new ContentObserver(new Handler()) {
+            @Override
+            public void onChange(boolean selfChange) {
+                mEnabled = true;
+                updateState(mEnabled);
+            }
+        };
+        mResolver = mContext.getContentResolver();
+        mEnabled = true;
+        updateState(mEnabled);
     }
 
     @Override
-    protected BooleanState newTileState() {
-        return new BooleanState();
-    }
-
     public void setListening(boolean listening) {
-        if (mListening == listening) return;
-        mListening = listening;
+        if (listening) {
+            mEnabled = true;
+        } else {
+            mResolver.unregisterContentObserver(mScreenOffObserver);
+        }
     }
 
     @Override
     public void handleClick() {
-        mHost.collapsePanels();
         mPm.goToSleep(SystemClock.uptimeMillis());
     }
 
-
     @Override
     public void handleLongClick() {
-        mHost.collapsePanels();
         triggerVirtualKeypress(KeyEvent.KEYCODE_POWER, true);
-    }
-
-    @Override
-    protected void handleUpdateState(BooleanState state, Object arg) {
-        state.visible = true;
-        state.label = mContext.getString(R.string.quick_settings_screen_off);
-        state.icon = ResourceIcon.get(R.drawable.ic_qs_power);
     }
 
     private void triggerVirtualKeypress(final int keyCode, final boolean longPress) {
