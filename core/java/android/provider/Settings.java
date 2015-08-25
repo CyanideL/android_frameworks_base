@@ -5402,6 +5402,12 @@ public final class Settings {
          * @hide
          */
         public static final String POWER_MENU_TEXT_COLOR = "power_menu_text_color";
+
+        /**
+         * This preference enables showing the power menu on LockScreen.
+         * @hide
+         */
+        public static final String POWER_MENU_LOCKSCREEN = "power_menu_lockscreen";
         
         /**
          * If On-The-Go should be displayed at the power menu.
