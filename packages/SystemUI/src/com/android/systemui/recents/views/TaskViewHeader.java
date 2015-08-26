@@ -37,6 +37,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.util.AttributeSet;
+import android.provider.Settings;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewOutlineProvider;
@@ -58,6 +59,7 @@ public class TaskViewHeader extends FrameLayout {
     // Header views
     ImageView mDismissButton;
     ImageView mPinButton;
+    ImageView mFloatButton;
     ImageView mApplicationIcon;
     TextView mActivityDescription;
 
@@ -69,10 +71,13 @@ public class TaskViewHeader extends FrameLayout {
     Drawable mDarkDismissDrawable;
     Drawable mLightPinDrawable;
     Drawable mDarkPinDrawable;
+    Drawable mLightFloatDrawable;
+    Drawable mDarkFloatDrawable;
     RippleDrawable mBackground;
     GradientDrawable mBackgroundColorDrawable;
     AnimatorSet mFocusAnimator;
     String mDismissContentDescription;
+    String mFloatContentDescription;
 
     // Static highlight that we draw at the top of each view
     static Paint sHighlightPaint;
@@ -98,6 +103,7 @@ public class TaskViewHeader extends FrameLayout {
         mConfig = RecentsConfiguration.getInstance();
         setWillNotDraw(false);
         setClipToOutline(true);
+
         setOutlineProvider(new ViewOutlineProvider() {
             @Override
             public void getOutline(View view, Outline outline) {
@@ -109,6 +115,9 @@ public class TaskViewHeader extends FrameLayout {
         Resources res = context.getResources();
         mLightDismissDrawable = res.getDrawable(R.drawable.recents_dismiss_light);
         mDarkDismissDrawable = res.getDrawable(R.drawable.recents_dismiss_dark);
+        mLightFloatDrawable = res.getDrawable(R.drawable.ic_floating_on);
+        mDarkFloatDrawable = res.getDrawable(R.drawable.ic_qs_dark_floating_on);
+        mFloatContentDescription = res.getString(R.string.recent_float_mode_title);
         mDismissContentDescription =
                 res.getString(R.string.accessibility_recents_item_will_be_dismissed);
 
@@ -142,6 +151,7 @@ public class TaskViewHeader extends FrameLayout {
         mActivityDescription = (TextView) findViewById(R.id.activity_description);
         mDismissButton = (ImageView) findViewById(R.id.dismiss_task);
         mPinButton = (ImageView) findViewById(R.id.lock_to_app_fab);
+        mFloatButton = (ImageView) findViewById(R.id.float_task);
 
         // Hide the backgrounds if they are ripple drawables
         if (!Constants.DebugFlags.App.EnableTaskFiltering) {
@@ -224,6 +234,10 @@ public class TaskViewHeader extends FrameLayout {
                 mLightDismissDrawable : mDarkDismissDrawable);
         mDismissButton.setContentDescription(String.format(mDismissContentDescription,
                 t.activityLabel));
+        mFloatButton.setImageDrawable(t.useLightOnPrimaryColor ?
+                mLightFloatDrawable : mDarkFloatDrawable);
+        mFloatButton.setContentDescription(String.format(mFloatContentDescription,
+                    t.activityLabel));
     }
 
     /** Unbinds the bar view from the task */
@@ -247,6 +261,16 @@ public class TaskViewHeader extends FrameLayout {
             mPinButton.setVisibility(View.VISIBLE);
             mPinButton.animate().cancel();
             mPinButton.animate()
+            .alpha(0f)
+            .setStartDelay(0)
+            .setInterpolator(mConfig.fastOutSlowInInterpolator)
+            .setDuration(mConfig.taskViewExitToAppDuration)
+             .withLayer()
+            .start();
+        }
+        if (mFloatButton.getVisibility() == View.VISIBLE) {
+            mFloatButton.animate().cancel();
+            mFloatButton.animate()
                     .alpha(0f)
                     .setStartDelay(0)
                     .setInterpolator(mConfig.fastOutSlowInInterpolator)
@@ -280,6 +304,23 @@ public class TaskViewHeader extends FrameLayout {
                     .withLayer()
                     .start();
         }
+        /** If we disabled the floating button in settings, do not make it visible */
+            if (mFloatButton.getVisibility() != View.VISIBLE) {
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.FLOATING_WINDOW_MODE, 0) == 1) {
+                   mFloatButton.setVisibility(View.VISIBLE);
+                } else {
+                    mFloatButton.setVisibility(View.GONE);
+                }
+                mFloatButton.setAlpha(0f);
+                mFloatButton.animate()
+                        .alpha(1f)
+                        .setStartDelay(0)
+                        .setInterpolator(mConfig.fastOutLinearInInterpolator)
+                        .setDuration(mConfig.taskViewEnterFromAppDuration)
+                        .withLayer()
+                        .start();
+        }
     }
 
     /** Mark this task view that the user does has not interacted with the stack after a certain time. */
@@ -295,12 +336,24 @@ public class TaskViewHeader extends FrameLayout {
             mPinButton.setVisibility(View.VISIBLE);
             mPinButton.setAlpha(1f);
         }
+        /** If we disabled the master float switch, do not make this visible */
+        if (mFloatButton.getVisibility() != View.VISIBLE) {
+            mFloatButton.animate().cancel();
+            if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.FLOATING_WINDOW_MODE, 0) == 1) {
+                mFloatButton.setVisibility(View.VISIBLE);
+            } else {
+                mFloatButton.setVisibility(View.GONE);
+            }
+            mFloatButton.setAlpha(1f);
+        }
     }
 
     /** Resets the state tracking that the user has not interacted with the stack after a certain time. */
     void resetNoUserInteractionState() {
         mDismissButton.setVisibility(View.INVISIBLE);
         mPinButton.setVisibility(View.INVISIBLE);
+        mFloatButton.setVisibility(View.INVISIBLE);
     }
 
     @Override
