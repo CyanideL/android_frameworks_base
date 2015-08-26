@@ -179,55 +179,54 @@ public class DateFormat {
      * @hide
      */
     public static boolean is24HourFormat(Context context, int userHandle) {
-        String value = Settings.System.getStringForUser(context.getContentResolver(),
+        String setting = Settings.System.getStringForUser(context.getContentResolver(),
                 Settings.System.TIME_12_24, userHandle);
-
-        if (value == null) {
-            return is24HourFormatLocale(context);
-        }
-
-        return value.equals("24");
+        Locale locale = context.getResources().getConfiguration().locale;
+        return is24HourFormat(setting, locale);
     }
 
     /**
-     * Returns true if the time should be formatted in 24 hour format, based on the device locale.
-     * @param context The context to use to get Resources.
-     * @return true if 24 hour time format should be used, false otherwise.
+     * Returns true if user preference with the given user handle is set to 24-hour format.
+     * @param setting value of the TIME_12_24 system setting, which may be null
+     * @param locale current default locale for this device
+     * @param userHandle the user handle of the user to query.
+     * @return true if 24 hour time format is selected, false otherwise.
      *
      * @hide
      */
-    public static boolean is24HourFormatLocale(Context context) {
-        String value = null;
-        Locale locale = context.getResources().getConfiguration().locale;
-
-        synchronized (sLocaleLock) {
-            if (sIs24HourLocale != null && sIs24HourLocale.equals(locale)) {
-                return sIs24Hour;
+    public static boolean is24HourFormat(String setting, Locale locale) {
+        if (setting == null) {
+            synchronized (sLocaleLock) {
+                if (sIs24HourLocale != null && sIs24HourLocale.equals(locale)) {
+                    return sIs24Hour;
+                }
             }
-        }
 
-        java.text.DateFormat natural =
-                java.text.DateFormat.getTimeInstance(java.text.DateFormat.LONG, locale);
+            java.text.DateFormat natural =
+                    java.text.DateFormat.getTimeInstance(java.text.DateFormat.LONG, locale);
 
-        if (natural instanceof SimpleDateFormat) {
-            SimpleDateFormat sdf = (SimpleDateFormat) natural;
-            String pattern = sdf.toPattern();
+            if (natural instanceof SimpleDateFormat) {
+                SimpleDateFormat sdf = (SimpleDateFormat) natural;
+                String pattern = sdf.toPattern();
 
-            if (pattern.indexOf('H') >= 0) {
-                value = "24";
+                if (pattern.indexOf('H') >= 0) {
+                    setting = "24";
+                } else {
+                    setting = "12";
+                }
             } else {
-                value = "12";
+                setting = "12";
             }
-        } else {
-            value = "12";
+
+            synchronized (sLocaleLock) {
+                sIs24HourLocale = locale;
+                sIs24Hour = setting.equals("24");
+            }
+
+            return sIs24Hour;
         }
 
-        synchronized (sLocaleLock) {
-            sIs24HourLocale = locale;
-            sIs24Hour = value.equals("24");
-        }
-
-        return sIs24Hour;
+        return setting.equals("24");
     }
 
     /**
