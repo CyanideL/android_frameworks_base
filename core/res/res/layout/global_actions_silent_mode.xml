@@ -82,7 +82,7 @@
             android:layout_gravity="center"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_audio_ring_notif_mute_cyanide"
+            android:src="@drawable/ic_audio_ring_notif_mute"
             android:scaleType="center"
             android:duplicateParentState="true"
             />
@@ -126,7 +126,7 @@
             android:layout_gravity="center"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_audio_ring_notif_cyanide"
+            android:src="@drawable/ic_audio_ring_notif"
             android:scaleType="center"
             android:duplicateParentState="true"
             />
