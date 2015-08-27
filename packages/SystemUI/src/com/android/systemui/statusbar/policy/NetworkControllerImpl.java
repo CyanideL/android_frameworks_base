@@ -529,11 +529,8 @@ public class NetworkControllerImpl extends BroadcastReceiver
             return false;
         }
         for (SubscriptionInfo info : allSubscriptions) {
-            int subId = info.getSubscriptionId();
-            if (!mMobileSignalControllers.containsKey(subId)) {
+            if (!mMobileSignalControllers.containsKey(info.getSubscriptionId())) {
                 return false;
-            } else {
-                mMobileSignalControllers.get(subId).updateSubscriptionInfo(info);
             }
         }
         return true;
@@ -851,6 +848,7 @@ public class NetworkControllerImpl extends BroadcastReceiver
         private final WifiManager mWifiManager;
         private final AsyncChannel mWifiChannel;
         private final boolean mHasMobileData;
+        private int mWifiActivityIconId = 0;
 
         public WifiSignalController(Context context, boolean hasMobileData,
                 List<NetworkSignalChangedCallback> signalCallbacks,
@@ -902,7 +900,7 @@ public class NetworkControllerImpl extends BroadcastReceiver
             int signalClustersLength = mSignalClusters.size();
             for (int i = 0; i < signalClustersLength; i++) {
                 mSignalClusters.get(i).setWifiIndicators(wifiVisible, getCurrentIconId(),
-                        getActivityIconId(ssidPresent), contentDescription);
+                        mCurrentState.inetCondition, mWifiActivityIconId, contentDescription);
             }
         }
 
@@ -964,6 +962,27 @@ public class NetworkControllerImpl extends BroadcastReceiver
                     || wifiActivity == WifiManager.DATA_ACTIVITY_IN;
             mCurrentState.activityOut = wifiActivity == WifiManager.DATA_ACTIVITY_INOUT
                     || wifiActivity == WifiManager.DATA_ACTIVITY_OUT;
+            boolean showNetworkActivity = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.STATUS_BAR_SHOW_NETWORK_ACTIVITY,
+                    0, UserHandle.USER_CURRENT) == 0 ? false : true;
+            if (showNetworkActivity) {
+                switch (wifiActivity) {
+                    case WifiManager.DATA_ACTIVITY_IN:
+                        mWifiActivityIconId = R.drawable.stat_sys_signal_in;
+                        break;
+                    case WifiManager.DATA_ACTIVITY_OUT:
+                        mWifiActivityIconId = R.drawable.stat_sys_signal_out;
+                        break;
+                    case WifiManager.DATA_ACTIVITY_INOUT:
+                        mWifiActivityIconId = R.drawable.stat_sys_signal_inout;
+                        break;
+                    case WifiManager.DATA_ACTIVITY_NONE:
+                        mWifiActivityIconId = R.drawable.stat_sys_signal_none;
+                        break;
+                }
+            } else {
+                mWifiActivityIconId = 0;
+            }
             notifyListenersIfNecessary();
         }
 
@@ -1038,8 +1057,10 @@ public class NetworkControllerImpl extends BroadcastReceiver
         private int mDataState = TelephonyManager.DATA_DISCONNECTED;
         private ServiceState mServiceState;
         private SignalStrength mSignalStrength;
+        private boolean mShowRsrpSignalLevelforLTE = false;
         private MobileIconGroup mDefaultIcons;
         private Config mConfig;
+        private int mMobileActivityIconId = 0;
 
         // TODO: Reduce number of vars passed in, if we have the NetworkController, probably don't
         // need listener lists anymore.
@@ -1058,6 +1079,8 @@ public class NetworkControllerImpl extends BroadcastReceiver
             mNetworkNameSeparator = getStringIfExists(R.string.status_bar_network_name_separator);
             mNetworkNameDefault = getStringIfExists(
                     com.android.internal.R.string.lockscreen_carrier_default);
+            mShowRsrpSignalLevelforLTE = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.USE_RSRP, 0) == 1;
 
             mapIconSets();
 
@@ -1197,10 +1220,13 @@ public class NetworkControllerImpl extends BroadcastReceiver
             mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_HSPA, hGroup);
             mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_HSPAP, TelephonyIcons.HP);
 
-            if (mConfig.show4gForLte) {
+            if (Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.SHOW_FOURG, 0) == 1) {
                 mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE, TelephonyIcons.FOUR_G);
+                updateTelephony();
             } else {
                 mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE, TelephonyIcons.LTE);
+                updateTelephony();
             }
         }
 
@@ -1237,7 +1263,8 @@ public class NetworkControllerImpl extends BroadcastReceiver
                 mSignalClusters.get(i).setMobileDataIndicators(
                         mCurrentState.enabled && !mCurrentState.airplaneMode,
                         getCurrentIconId(),
-                        getActivityIconId(mCurrentState.dataConnected),
+                        mCurrentState.inetCondition,
+                        mMobileActivityIconId,
                         typeIcon,
                         contentDescription,
                         dataContentDescription,
@@ -1320,7 +1347,7 @@ public class NetworkControllerImpl extends BroadcastReceiver
 
         void updateSubscriptionInfo(SubscriptionInfo info) {
             final boolean showCustomCarrier = Settings.System.getIntForUser(
-                    mContext.getContentResolver(), Settings.System.STATUS_BAR_CARRIER,
+                    mContext.getContentResolver(), Settings.System.STATUS_BAR_CUSTOM_CARRIER,
                     0, UserHandle.USER_CURRENT) == 1;
             final String CustomCarrierLabel = Settings.System.getStringForUser(mContext.getContentResolver(),
                     Settings.System.CUSTOM_CARRIER_LABEL, UserHandle.USER_CURRENT);
@@ -1347,6 +1374,15 @@ public class NetworkControllerImpl extends BroadcastReceiver
                     mCurrentState.level = mSignalStrength.getCdmaLevel();
                 } else {
                     mCurrentState.level = mSignalStrength.getLevel();
+                    if (mShowRsrpSignalLevelforLTE && mServiceState.getDataNetworkType() ==
+                            TelephonyManager.NETWORK_TYPE_LTE) {
+                        int level = mSignalStrength.getAlternateLteLevel();
+                        if (level != -1) {
+                            mCurrentState.level = level;
+                            if (DEBUG)
+                                Log.d(TAG, "update signal strength level = " + level);
+                        }
+                    }
                 }
             }
             if (mNetworkToIconLookup.indexOfKey(mDataNetType) >= 0) {
@@ -1383,6 +1419,27 @@ public class NetworkControllerImpl extends BroadcastReceiver
                     || activity == TelephonyManager.DATA_ACTIVITY_IN;
             mCurrentState.activityOut = activity == TelephonyManager.DATA_ACTIVITY_INOUT
                     || activity == TelephonyManager.DATA_ACTIVITY_OUT;
+            boolean showNetworkActivity = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.STATUS_BAR_SHOW_NETWORK_ACTIVITY,
+                    0, UserHandle.USER_CURRENT) == 0 ? false : true;
+            if (showNetworkActivity) {
+                switch (activity) {
+                    case TelephonyManager.DATA_ACTIVITY_IN:
+                        mMobileActivityIconId = R.drawable.stat_sys_signal_in;
+                        break;
+                    case TelephonyManager.DATA_ACTIVITY_OUT:
+                        mMobileActivityIconId = R.drawable.stat_sys_signal_out;
+                        break;
+                    case TelephonyManager.DATA_ACTIVITY_INOUT:
+                        mMobileActivityIconId = R.drawable.stat_sys_signal_inout;
+                        break;
+                    default:
+                        mMobileActivityIconId = R.drawable.stat_sys_signal_none;
+                        break;
+                }
+            } else {
+                mMobileActivityIconId = 0;
+            }
             notifyListenersIfNecessary();
         }
 
@@ -1624,19 +1681,6 @@ public class NetworkControllerImpl extends BroadcastReceiver
             }
         }
 
-        public int getActivityIconId(boolean connected) {
-            if (connected) {
-                if (mCurrentState.activityIn && mCurrentState.activityOut) {
-                    return R.drawable.stat_sys_signal_inout;
-                } else if (mCurrentState.activityIn) {
-                    return R.drawable.stat_sys_signal_in;
-                } else if (mCurrentState.activityOut) {
-                    return R.drawable.stat_sys_signal_out;
-                }
-            }
-            return R.drawable.stat_sys_signal_none;
-        }
-
         /**
          * Gets the content description id for the signal based on current state of connected and
          * level.
@@ -1810,12 +1854,12 @@ public class NetworkControllerImpl extends BroadcastReceiver
     }
 
     public interface SignalCluster {
-        void setWifiIndicators(boolean visible, int strengthIcon,
-                int activityIcon, String contentDescription);
+        void setWifiIndicators(boolean visible, int strengthIcon, int inetCondition, int activityIcon,
+                String contentDescription);
 
-        void setMobileDataIndicators(boolean visible, int strengthIcon, int activityIcon,
-                int typeIcon, String contentDescription, String typeContentDescription,
-                boolean isTypeIconWide, boolean showRoamingIndicator, int subId);
+        void setMobileDataIndicators(boolean visible, int strengthIcon, int inetCondition, int activityIcon,
+                int typeIcon, String contentDescription, String typeContentDescription, boolean isTypeIconWide, boolean showRoamingIndicator,
+                int subId);
         void setSubs(List<SubscriptionInfo> subs);
         void setNoSims(boolean show);
 
