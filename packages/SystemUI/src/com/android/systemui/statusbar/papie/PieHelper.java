@@ -122,7 +122,7 @@ public class PieHelper {
             final WifiManager wifiManager = (WifiManager) mContext
                     .getSystemService(Context.WIFI_SERVICE);
             final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
-            ssid = NetworkControllerImpl.huntForSsid(wifiManager, connectionInfo);
+            ssid = connectionInfo.getSSID();
         }
         return ssid.toUpperCase();
     }
