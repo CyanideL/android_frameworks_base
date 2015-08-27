@@ -17,7 +17,7 @@
 
 package com.android.internal.util.cyanide;
 
-public class PolicyConstants {
+public class PowerMenuConstants {
 
     public static final String ACTION_POWER_OFF        = "**poweroff**";
     public static final String ACTION_REBOOT           = "**reboot**";
@@ -43,19 +43,17 @@ public class PolicyConstants {
     public static final String ACTION_FLOATING_WINDOWS = "**floating_windows**";
     public static final String ACTION_TORCH            = "**torch**";
 
+    // no action
+    public static final String ACTION_NULL            = "**null**";
+
     public static final String ACTION_DELIMITER  = "|";
     public static final String ICON_EMPTY = "empty";
-    public static final String SYSTEM_ICON_IDENTIFIER = "system_shortcut=";
 
-    public static final String POWER_MENU_CONFIG_DEFAULT =
-          ACTION_POWER_OFF + ACTION_DELIMITER
-        + ICON_EMPTY       + ACTION_DELIMITER
-        + ACTION_REBOOT    + ACTION_DELIMITER
-        + ICON_EMPTY       + ACTION_DELIMITER
-        + ACTION_ONTHEGO     + ACTION_DELIMITER
-        + ICON_EMPTY       + ACTION_DELIMITER
-        + ACTION_PA_PIE    + ACTION_DELIMITER
-        + ICON_EMPTY       + ACTION_DELIMITER
-        + ACTION_SOUND     + ACTION_DELIMITER
-        + ICON_EMPTY       + ACTION_DELIMITER;
+    public static final String POWER_MENU_BUTTONS_DEFAULT =
+          ACTION_POWER_OFF  + ACTION_DELIMITER
+        + ICON_EMPTY        + ACTION_DELIMITER
+        + ACTION_REBOOT     + ACTION_DELIMITER
+        + ICON_EMPTY        + ACTION_DELIMITER
+        + ACTION_SOUND      + ACTION_DELIMITER
+        + ICON_EMPTY        + ACTION_DELIMITER;
 }

@@ -29,6 +29,8 @@ import android.provider.Settings;
 import android.os.UserHandle;
 import android.util.Log;
 
+import com.android.internal.util.cyanide.ImageHelper;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;

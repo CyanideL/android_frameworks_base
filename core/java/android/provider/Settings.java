@@ -5372,31 +5372,36 @@ public final class Settings {
         /** @hide */ public static final int HEADS_UP_USER_ON = 1;
 
         /**
-         * Config for advanced power menu
-         * @hide
-         */
-        public static final String POWER_MENU_CONFIG = "power_menu_config";
-
-        /**
-         * Text color for advanced power menu
+         * Power menu buttons
          *
          * @hide
          */
-        public static final String POWER_MENU_TEXT_COLOR = "power_menu_text_color";
+        public static final String POWER_MENU_BUTTONS = "power_menu_buttons";
 
         /**
          * Icon color for advanced power menu
          *
          * @hide
          */
-        public static final String POWER_MENU_ICON_COLOR = "power_menu_icon_color";
+        public static final String POWER_MENU_ICON_NORMAL_COLOR = "power_menu_icon_normal_color";
 
         /**
-         * Icon color mode for advanced power menu
-         *
+         * Color of the icons on the lock screen (enabled/selected state)
          * @hide
          */
-        public static final String POWER_MENU_ICON_COLOR_MODE = "power_menu_icon_color_mode";
+        public static final String POWER_MENU_ICON_ENABLED_SELECTED_COLOR = "power_menu_icon_enabled_selected_color";
+
+        /**
+         * Color of the ripple on the power menu
+         * @hide
+         */
+        public static final String POWER_MENU_RIPPLE_COLOR = "power_menu_ripple_color";
+
+        /**
+         * Color of the text on the power menu
+         * @hide
+         */
+        public static final String POWER_MENU_TEXT_COLOR = "power_menu_text_color";
         
         /**
          * If On-The-Go should be displayed at the power menu.
@@ -6023,7 +6028,6 @@ public final class Settings {
             NOTIFICATION_MEDIA_BG_MODE,
             STATUS_BAR_POWER_MENU,
             POWER_MENU_ONTHEGO_ENABLED,
-            POWER_MENU_ICON_COLOR_MODE,
             RECENTS_USE_OMNISWITCH,
             PA_PIE_ENABLE_COLOR,
             PA_PIE_STATE,

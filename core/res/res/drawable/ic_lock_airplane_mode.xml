@@ -15,5 +15,5 @@
 -->
 
 <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/ic_lock_airplane_mode_alpha"
+    android:src="@drawable/ic_lock_airplane_mode"
     android:fillColor="@*android:color/global_actions_icon_color_normal" />

@@ -44,13 +44,6 @@
   <java-symbol type="drawable" name="material_bg_blue_grey" />
   <java-symbol type="color" name="black" />
 
-  <!-- Config Power Menu -->
-  <java-symbol type="drawable" name="ic_lock_settings" />
-  <java-symbol type="color" name="global_actions_icon_color_normal" />
-  <java-symbol type="color" name="global_actions_icon_color_selected" />
-  <java-symbol type="color" name="global_actions_icon_color_enabled" />
-  <java-symbol type="string" name="global_action_current_user" />
-
   <!--  Animations -->
   <java-symbol type="string" name="action_null"/>
   <java-symbol type="string" name="animation_fade"/>
@@ -152,24 +145,12 @@
   <java-symbol type="string" name="global_actions_nav_bar_mode_off_status" />
   <java-symbol type="drawable" name="ic_lock_navbar" />
 
-  <!-- Config Power Menu -->
-  <java-symbol type="drawable" name="ic_lock_reboot" />
-  <java-symbol type="string" name="global_action_reboot" />
-  <java-symbol type="array" name="shutdown_reboot_actions" />
-  <java-symbol type="array" name="shutdown_reboot_options" />
-  <java-symbol type="string" name="reboot_system" />
-  <java-symbol type="string" name="reboot_progress" />
-
   <!-- DJSeekBarPreference -->
   <java-symbol type="layout" name="preference_widget_textsize_seekbar" />
   <java-symbol type="id" name="min_value" />
   <java-symbol type="id" name="current_value" />
   <java-symbol type="id" name="max_value" />
   <java-symbol type="id" name="textsize_seekbar" />
-
-  <!-- On-The-Go -->
-  <java-symbol type="string" name="global_action_onthego" />
-  <java-symbol type="drawable" name="ic_lock_onthego_alpha" />
 
   <!-- Expanded desktop -->
   <java-symbol type="string" name="global_actions_toggle_expanded_desktop_mode" />
@@ -178,28 +159,42 @@
   <java-symbol type="drawable" name="ic_lock_expanded_desktop" />
 
   <!-- Config Power Menu -->
-  <java-symbol type="drawable" name="ic_lock_power_off_alpha" />
-  <java-symbol type="drawable" name="ic_lock_reboot_alpha" />
-  <java-symbol type="drawable" name="ic_lock_screenshot_alpha" />
+  <java-symbol type="id" name="option1_icon" />
+  <java-symbol type="id" name="option2_icon" />
+  <java-symbol type="id" name="option3_icon" />
+  <java-symbol type="string" name="global_actions" />
+  <java-symbol type="drawable" name="global_actions_button_bg" />
+  <java-symbol type="drawable" name="global_actions_silent_mode_item_bg" />
+  <java-symbol type="drawable" name="ic_lock_power_off" />
+  <java-symbol type="drawable" name="ic_lock_reboot" />
+  <java-symbol type="drawable" name="ic_lock_screenshot" />
   <java-symbol type="drawable" name="ic_lock_airplane_mode_off_am_alpha" />
-  <java-symbol type="drawable" name="ic_lock_lock_alpha" />
+  <java-symbol type="drawable" name="ic_lock_lock" />
   <java-symbol type="drawable" name="ic_lock_user" />
+  <java-symbol type="drawable" name="ic_lock_profile" />
   <java-symbol type="drawable" name="ic_lock_profile_cyanide" />
   <java-symbol type="string" name="global_action_restart" />
   <java-symbol type="drawable" name="ic_lock_restart" />
-  <java-symbol type="string" name="global_action_torch" />
-  <java-symbol type="drawable" name="ic_lock_torch" />
   <java-symbol type="drawable" name="ic_audio_ring_notif_cyanide" />
   <java-symbol type="string" name="global_action_current_user" />
   <java-symbol type="dimen" name="max_avatar_size" />
   <java-symbol type="color" name="dslv_icon_dark" />
+  <java-symbol type="color" name="global_actions_icon_color_normal" />
+  <java-symbol type="color" name="global_actions_icon_color_enabled_selected" />
+  <java-symbol type="color" name="global_actions_ripple_color" />
+  <java-symbol type="color" name="global_actions_text_color" />
+  <java-symbol type="drawable" name="ic_lock_reboot" />
+  <java-symbol type="string" name="global_action_reboot" />
+  <java-symbol type="array" name="shutdown_reboot_actions" />
+  <java-symbol type="array" name="shutdown_reboot_options" />
+  <java-symbol type="string" name="reboot_system" />
+  <java-symbol type="string" name="reboot_progress" />
+  <java-symbol type="string" name="global_action_torch" />
+  <java-symbol type="drawable" name="ic_lock_torch" />
 
-  <!-- Power menu -->
-  <java-symbol type="color"  name="power_menu_icon_default_color" />
-  <java-symbol type="color"  name="power_menu_text_default_color" />
-  <java-symbol type="id" name="icon1" />
-  <java-symbol type="id" name="icon2" />
-  <java-symbol type="id" name="icon3" />
+  <!-- On-The-Go -->
+  <java-symbol type="string" name="global_action_onthego" />
+  <java-symbol type="drawable" name="ic_lock_onthego_alpha" />
 
   <!-- PA Pie controls -->
   <java-symbol type="string" name="global_actions_toggle_pa_pie_mode" />
