@@ -162,6 +162,10 @@
   <java-symbol type="id" name="option1_icon" />
   <java-symbol type="id" name="option2_icon" />
   <java-symbol type="id" name="option3_icon" />
+  <java-symbol type="id" name="option4_icon" />
+  <java-symbol type="id" name="option5_icon" />
+  <java-symbol type="id" name="option4" />
+  <java-symbol type="id" name="option5" />
   <java-symbol type="string" name="global_actions" />
   <java-symbol type="drawable" name="global_actions_button_bg" />
   <java-symbol type="drawable" name="global_actions_silent_mode_item_bg" />
