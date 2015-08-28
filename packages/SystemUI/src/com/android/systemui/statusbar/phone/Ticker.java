@@ -235,15 +235,20 @@ public abstract class Ticker {
 
             mIconSwitcher.setAnimateFirstView(false);
             mIconSwitcher.reset();
-            if (colorizeIcon(iconsColorMode, seg.icon)) {
-                if (seg.icon instanceof AnimationDrawable) {
-                    ((DrawableContainer)seg.icon).setColorFilter(iconColor,
+            if (seg.icon != null) {
+                if (colorizeIcon(iconsColorMode, seg.icon)) {
+                    if (seg.icon instanceof AnimationDrawable) {
+                        ((DrawableContainer)seg.icon).setColorFilter(iconColor,
+                               Mode.MULTIPLY);
+                        mIconSwitcher.setImageDrawable(seg.icon);
+                    } else if (seg.icon instanceof VectorDrawable) {
+                        seg.icon.setColorFilter(iconColor,
                            Mode.MULTIPLY);
-                    mIconSwitcher.setImageDrawable(seg.icon);
-                } else if (seg.icon instanceof VectorDrawable) {
-                    seg.icon.setColorFilter(iconColor,
-                           Mode.MULTIPLY);
-                    mIconSwitcher.setImageDrawable(seg.icon);
+                        mIconSwitcher.setImageDrawable(seg.icon);
+                    } else {
+                        mIconSwitcher.setImageBitmap(ImageHelper
+                                .getColoredBitmap(seg.icon, iconColor));
+                    }
                 } else {
                     mIconSwitcher.setImageDrawable(seg.icon);
                 }
