@@ -4148,13 +4148,21 @@ public final class Settings {
          * @hide
          */
         public static final String EGG_MODE = "egg_mode";
-        
+
         /**
 		 * Statusbar CyanideL logo
 		 * @hide
 		 */
 		public static final String STATUS_BAR_CYANIDE_LOGO = "status_bar_cyanide_logo";
-		
+
+        /**
+		 * Style of Status bar logo
+         * 0 - Left (default)
+         * 1 - Right
+         * @hide
+		 */
+		public static final String STATUS_BAR_CYANIDE_LOGO_STYLE = "status_bar_cyanide_logo_style";
+
 		/**
 		 * Statusbar CyanideL logo color setting
 		 * @hide
