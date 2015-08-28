@@ -385,6 +385,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_FLOATING_WINDOWS)) {
                 constructFloatingWindowsToggle();
                 mItems.add(mFloatingWindowsModeOn);
+            } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_SCREENSHOT)) {
+                mItems.add(getScreenshotAction());
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_SOUND) && mShowSilentToggle) {
                 if (!mHasVibrator) {
                     mSilentModeAction = new SilentModeToggleAction();
@@ -1027,6 +1029,28 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
              public boolean showBeforeProvisioning() {
                  return true;
              }
+        };
+    }
+
+    private Action getScreenshotAction() {
+        return new SinglePressAction(com.android.internal.R.drawable.ic_lock_screenshot,
+                R.string.action_screenshot) {
+
+            @Override
+            public void onPress() {
+                com.android.internal.util.fusion.Action.processAction(
+                        mContext, PowerMenuConstants.ACTION_SCREENSHOT, false);
+            }
+
+            @Override
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            @Override
+            public boolean showBeforeProvisioning() {
+                return true;
+            }
         };
     }
 
