@@ -18,8 +18,9 @@
     <!-- Buttons bar -->
 
     <!-- The seperater between the actions. -->
-    <dimen name="buttons_bar_seperater_width">8dp</dimen>
+    <dimen name="buttons_bar_seperater_width">7dp</dimen>
 
     <!-- Top margin for buttons bar. -->
-    <dimen name="buttons_bar_margin_top">25dp</dimen>
+    <dimen name="buttons_bar_margin_top">18dp</dimen>
+    <dimen name="buttons_bar_extension_margin_top">10dp</dimen>
 </resources>

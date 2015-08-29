@@ -68,6 +68,32 @@ public class ActionHelper {
                     Settings.System.LOCK_SCREEN_BUTTON_BAR_ACTIONS, config);
     }
 
+    // get and set the lockcreen button bar configs from provider and return propper arraylist objects
+    // @ActionConfig
+    public static ArrayList<ActionConfig> getLockscreenButtonBarExtensionConfig(Context context) {
+        String config = Settings.System.getStringForUser(
+                    context.getContentResolver(),
+                    Settings.System.LOCK_SCREEN_BUTTON_BAR_EXTENSION_ACTIONS,
+                    UserHandle.USER_CURRENT);
+        if (config == null) {
+            config = "";
+        }
+
+        return (ConfigSplitHelper.getActionConfigValues(context, config, null, null, true));
+    }
+
+    public static void setLockscreenButtonBarExtensionConfig(Context context,
+            ArrayList<ActionConfig> actionConfig, boolean reset) {
+        String config;
+        if (reset) {
+            config = "";
+        } else {
+            config = ConfigSplitHelper.setActionConfig(actionConfig, true);
+        }
+        Settings.System.putString(context.getContentResolver(),
+                    Settings.System.LOCK_SCREEN_BUTTON_BAR_EXTENSION_ACTIONS, config);
+    }
+
     // get and set the navbar configs from provider and return propper arraylist objects
     // @ActionConfig
     public static ArrayList<ActionConfig> getNavBarConfig(Context context) {

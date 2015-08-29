@@ -3917,6 +3917,47 @@ public final class Settings {
         public static final String LOCK_SCREEN_BUTTONS_BAR_NUMBER_OF_NOTIFICATIONS = "lock_screen_buttons_bar_number_of_notifications";
 
         /**
+         * Defines the actions to be shown on lockscreen
+         * Usage is like this: target:icon|target:icon|target:icon
+         * if :icon is not set, default application icon will be used
+         * @hide
+         */
+        public static final String LOCK_SCREEN_BUTTON_BAR_EXTENSION_ACTIONS = "lock_screen_buttons_bar_extension_actions";
+
+        /**
+         * Launch type for lockscreen buttons bar actions
+         * 0: Normal click
+         * 1: Double click
+         * 2: Lonpress
+         * default: 2
+         * @hide
+         */
+        public static final String LOCK_SCREEN_BUTTONS_BAR_EXTENSION_LAUNCH_TYPE = "lock_screen_buttons_bar_extension_launch_type";
+
+        /**
+         * When to hide the buttons bar if notifications are visible on the lock screen
+         * 0: Auto, (when the visible notifications will reach the maximum allowed notifications on the lock screen)
+         * 1: Custom number of notifications
+         * 2: Never
+         * default: 1
+         * @hide
+         */
+        public static final String LOCK_SCREEN_BUTTONS_BAR_EXTENSION_HIDE_BAR = "lock_screen_buttons_bar_extension_hide_bar";
+
+        /**
+         * Hide the buttons bar when the visible lockscreen notifications will reach this number
+         * 1: 1 notification (always)
+         * 2: 2 notifications
+         * 3: 3 notifications
+         * 4: 4 notifications
+         * 5: 5 notifications
+         * 6: 6 notifications
+         * default: 4
+         * @hide
+         */
+        public static final String LOCK_SCREEN_BUTTONS_BAR_EXTENSION_NUMBER_OF_NOTIFICATIONS = "lock_screen_buttons_bar_extension_number_of_notifications";
+
+        /**
          * Enable looking up of information of phone numbers not in the contacts
          *
          * @hide
