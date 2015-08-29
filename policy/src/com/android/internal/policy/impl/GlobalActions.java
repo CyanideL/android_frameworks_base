@@ -1038,7 +1038,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
             @Override
             public void onPress() {
-                com.android.internal.util.fusion.Action.processAction(
+                com.android.internal.util.cyanide.Action.processAction(
                         mContext, PowerMenuConstants.ACTION_SCREENSHOT, false);
             }
 
