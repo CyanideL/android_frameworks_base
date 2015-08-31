@@ -5786,6 +5786,12 @@ public final class Settings {
         public static final String STATUS_BAR_WEATHER_SIZE = "status_bar_weather_size";
 
         /**
+         * Statusbar weather font style setting
+         * @hide
+         */
+        public static final String STATUS_BAR_WEATHER_FONT_STYLE = "status_bar_weather_font_style";
+
+        /**
          * Whether to dim the navigation bar icons after inactivity
          * @hide
          */
@@ -7104,7 +7110,7 @@ public final class Settings {
          * Long press on lock screen lock icon to sleep
          * @hide
          */
-        public static final String LONG_PRESS_LOCK_ICON_TO_SLEEP = "long_press_lock_icon_to_sleep";
+        public static final String LONG_PRESS_LOCK_ICON_TORCH = "long_press_lock_icon_torch";
 
         /**
          * Comma-separated list of location providers that activities may access. Do not rely on
