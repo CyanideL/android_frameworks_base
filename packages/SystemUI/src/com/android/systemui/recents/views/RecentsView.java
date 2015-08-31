@@ -565,6 +565,8 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
             int available = (int)(memInfo.availMem / 1048576L);
             int max = (int)(getTotalMemory() / 1048576L);
             mMemText.setText("Free RAM: " + String.valueOf(available) + "MB");
+            mMemText.setTextColor(Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.MEM_TEXT_COLOR, 0xffffffff));
             mMemBar.setMax(max);
             mMemBar.setProgress(available);
     }

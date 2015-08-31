@@ -4854,6 +4854,12 @@ public final class Settings {
         public static final String SYSTEMUI_RECENTS_MEM_DISPLAY = "systemui_recents_mem_display";
 
         /**
+         * text color for recents membar
+         *  @hide
+         */
+        public static final String MEM_TEXT_COLOR = "mem_text_color";
+
+        /**
          * Display color temperature adjustment mode, one of DAY (default), NIGHT, or AUTO.
          * @hide
          */
