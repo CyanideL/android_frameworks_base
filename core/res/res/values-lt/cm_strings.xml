@@ -53,8 +53,6 @@
   <string name="permdesc_changePrivacyGuardState">Leisti programai keisti, kai kita programa veikia su privatumo sauga. Kai programa veikia su privatumo sauga ji neturės prieigos prie asmeninių duomenų pvz., kontaktų, skambučių žurnalų ar pranešimų.</string>
   <string name="privacy_guard_notification">Privatumo sauga aktyvi</string>
   <string name="privacy_guard_notification_detail"><xliff:g id="app">%1$s</xliff:g> negalės prieiti prie asmeninių duomenų</string>
-  <string name="permlab_useHardwareFramework">naudoti aparatinės įrangos sistemą</string>
-  <string name="permdesc_useHardwareFramework">Leidžia programai pasiekti CM aparatinės įrangos sistemą.</string>
   <string name="permlab_setKeyguardWallpaper">nustatyti klaviatūros apsaugos foną</string>
   <string name="permdesc_setKeyguardWallpaper">Leidžia programai pakeisti ekrano užrakto foną.</string>
   <string name="privacy_guard_dialog_title">Privatumo sauga</string>
@@ -214,6 +212,16 @@
   <string name="live_display_outdoor">Laukas (ryški saulė)</string>
   <string name="live_display_outdoor_summary">Naudoti tik lauko nustatymus</string>
   <string name="live_display_hint">„LiveDisplay“ gali padėti sumažinti akių įtampą ir padėti jums užmigti naktį. Spauskite čia, kad jį išbandyti!</string>
-  <string name="lock_to_app_toast_no_navbar">Kad atsegtumėte šį ekraną, palieskite ir palaikykite meniu mygtuką.</string>
   <string name="lock_to_app_description_no_navbar">Ekrano prisegimas užrakina ekraną vienoje pozicijoje.\n\nKad atsegtumėte, palieskite ir palaikykite meniu mygtuką.</string>
+  <string name="lock_to_app_toast_no_navbar">Kad atsegtumėte šį ekraną palieskite ir laikykite mygtuką atgal.</string>
+  <string name="quick_settings_tile_flashlight_not_title">Žibintuvėlis įjungtas</string>
+  <string name="quick_settings_tile_flashlight_not_summary">Bakstelėkite, kad išjungtumėte</string>
+  <string name="storage_sd_dock_card">SD kortelės dokas</string>
+  <string name="fingerprint_default_name">Pirštų atspaudas <xliff:g id="number">%d</xliff:g></string>
+  <string name="permlab_accessFingerprintService">pasiekti pirštų atspaudų paslaugą</string>
+  <string name="permdesc_accessFingerprintService">Leidžia programai pasiekti pirštų atspaudų paslaugą. Programa gali pridėti, ištrinti, pervardyti ir autentikuoti prieš pirštų atspaudus</string>
+  <string name="permlab_resetBatteryStats">Nustatyti iš naujo akumuliatoriaus statistiką</string>
+  <string name="permdesc_resetBatteryStats">Leidžia programai nustatyti iš naujo dabartinio žemo lygio akumuliatoriaus naudojimo duomenis.</string>
+  <string name="silent_mode_priority">Prioritetas</string>
+  <string name="silent_mode_none">Joks</string>
 </resources>
