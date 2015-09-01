@@ -84,6 +84,8 @@ public class FingerprintService extends SystemService {
     private static final long MS_PER_SEC = 1000;
     private long mHal;
 
+    private boolean mDisableVibration = false;
+
     private static final class ClientData {
         public IFingerprintServiceReceiver receiver;
         int userId;
@@ -238,6 +240,12 @@ public class FingerprintService extends SystemService {
         changeState(newState);
     }
 
+    private void vibrateDeviceIfSupported() {
+        if (mVibrator != null && !mDisableVibration) {
+            mVibrator.vibrate(FINGERPRINT_EVENT_VIBRATE_DURATION);
+        }
+    }
+
     void startEnroll(IBinder token, long timeout, int userId) {
         ClientData clientData = mClients.get(token);
         if (clientData != null) {
@@ -253,7 +261,7 @@ public class FingerprintService extends SystemService {
         }
     }
 
-    void startAuthentication(IBinder token, int userId) {
+    void startAuthentication(IBinder token, int userId, boolean disableVibration) {
         ClientData clientData = mClients.get(token);
         if (clientData != null) {
             if (clientData.userId != userId) throw new IllegalStateException("Bad user");
@@ -261,6 +269,7 @@ public class FingerprintService extends SystemService {
                 Slog.i(TAG, "fingerprint is in use");
                 return;
             }
+            mDisableVibration = disableVibration;
             nativeAuthenticate();
             changeState(STATE_AUTHENTICATING);
         } else {
@@ -272,6 +281,7 @@ public class FingerprintService extends SystemService {
         ClientData clientData = mClients.get(token);
         if (clientData != null) {
             if (clientData.userId != userId) throw new IllegalStateException("Bad user");
+            mDisableVibration = false;
             if (mState == STATE_IDLE) return;
             changeState(STATE_IDLE);
             nativeCancel();
@@ -475,10 +485,10 @@ public class FingerprintService extends SystemService {
         private final static String DUMP_CMD_GET_NUM_ENROLLMENT_STEPS = "getNumEnrollmentSteps";
 
         @Override // Binder call
-        public void authenticate(IBinder token, int userId) {
+        public void authenticate(IBinder token, int userId, boolean disableVibration) {
             checkPermission();
             throwIfNoFingerprint();
-            startAuthentication(token, userId);
+            startAuthentication(token, userId, disableVibration);
         }
 
         @Override // Binder call
