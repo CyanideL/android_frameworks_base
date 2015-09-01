@@ -70,4 +70,7 @@
     <!-- Expanded Status Bar Battery Level Text Color -->
     <color name="status_bar_battery_level_text_color">#ffffff</color>
 
+    <!-- Status bar expanded header background -->
+    <color name="status_bar_expanded_header_bg_color">#ffffffff</color>
+
 </resources>
