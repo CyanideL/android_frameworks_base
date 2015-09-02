@@ -101,7 +101,7 @@ public class KeyguardButtonsBarExtension extends LinearLayout {
         int launchType = Settings.System.getInt(resolver,
                 Settings.System.LOCK_SCREEN_BUTTONS_BAR_EXTENSION_LAUNCH_TYPE, 2);
         int iconSize = Settings.System.getInt(resolver,
-                Settings.System.LOCK_SCREEN_BUTTONS_BAR_ICON_SIZE, 36);
+                Settings.System.LOCK_SCREEN_BUTTONS_BAR_EXTENSION_ICON_SIZE, 36);
         int currentVisibleNotifications = Settings.System.getInt(resolver,
                 Settings.System.LOCK_SCREEN_VISIBLE_NOTIFICATIONS, 0);
         int maxAllowedNotifications = Settings.System.getInt(resolver,
@@ -271,7 +271,7 @@ public class KeyguardButtonsBarExtension extends LinearLayout {
                     Settings.System.LOCK_SCREEN_BUTTONS_BAR_EXTENSION_LAUNCH_TYPE),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCK_SCREEN_BUTTONS_BAR_ICON_SIZE),
+                    Settings.System.LOCK_SCREEN_BUTTONS_BAR_EXTENSION_ICON_SIZE),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCK_SCREEN_VISIBLE_NOTIFICATIONS),

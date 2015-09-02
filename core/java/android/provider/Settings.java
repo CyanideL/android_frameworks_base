@@ -3932,6 +3932,17 @@ public final class Settings {
         public static final String LOCK_SCREEN_BUTTON_BAR_EXTENSION_ACTIONS = "lock_screen_buttons_bar_extension_actions";
 
         /**
+         * Icon size for lockscreen buttons bar action icons
+         * 0: 24dp
+         * 1: 36dp
+         * 2: 48dp
+         * default: 2
+         * @hide
+         */
+        public static final String LOCK_SCREEN_BUTTONS_BAR_EXTENSION_ICON_SIZE =
+                "lock_screen_buttons_bar_extension_icon_size";
+
+        /**
          * Launch type for lockscreen buttons bar actions
          * 0: Normal click
          * 1: Double click
