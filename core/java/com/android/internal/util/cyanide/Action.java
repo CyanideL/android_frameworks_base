@@ -463,7 +463,7 @@ public class Action {
                 return;
             } else if (action.equals(ActionConstants.ACTION_THEME_SWITCH)) {
                 boolean overrideCustomColors = Settings.System.getInt(context.getContentResolver(),
-                        Settings.System.OVERRIDE_CUSTOM_COLORS, 0) == 1;
+                        Settings.System.OVERRIDE_CUSTOM_COLORS, 1) == 1;
                 boolean autoLightMode = Settings.Secure.getIntForUser(
                         context.getContentResolver(),
                         Settings.Secure.UI_THEME_AUTO_MODE, 0,
@@ -496,10 +496,10 @@ public class Action {
                     if (context.getResources().getConfiguration().uiThemeMode
                                 == Configuration.UI_THEME_MODE_HOLO_DARK) {
                         Settings.System.putInt(context.getContentResolver(),
-                                Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
+                                Settings.System.QS_BACKGROUND_COLOR, 0xff000000);
                         Settings.System.putInt(context.getContentResolver(),
                                 Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR,
-                                    0xff384248);
+                                    0xff000000);
                     } else {
                         Settings.System.putInt(context.getContentResolver(),
                                 Settings.System.QS_BACKGROUND_COLOR, 0xff1b1f23);
