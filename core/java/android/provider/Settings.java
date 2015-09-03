@@ -4406,7 +4406,13 @@ public final class Settings {
 		 * @hide
 		 */
 		public static final String STATUSBAR_CLOCK_FONT_STYLE = "statusbar_clock_font_style";
-		
+        
+        /**
+         * Settings for clock font size
+         * @hide
+         */
+        public static final String STATUSBAR_CLOCK_FONT_SIZE = "statusbar_clock_font_size";
+
 		/**
          * Whether to show the battery bar
          * @hide
