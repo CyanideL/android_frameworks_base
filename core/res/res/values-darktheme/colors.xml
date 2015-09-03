@@ -25,12 +25,12 @@
     <color name="material_deep_teal_200">#ffffffff</color>
 
     <!-- Material Light Accents -->
-    <color name="material_deep_teal_500">#ff009688</color>
+    <color name="material_deep_teal_500">#ff1976D2</color>
 
     <!-- Backgrounds and Accents -->
-    <color name="dark_material_dialog_background">#ff212021</color>
+    <color name="dark_material_dialog_background">#ff000000</color>
     <drawable name="dark_material_bg">@color/dark_material_dialog_background</drawable>
-    <color name="material_blue_grey">#ff1b1f23</color>
+    <color name="material_blue_grey">#ff000000</color>
     <drawable name="material_bg_blue_grey">@color/material_blue_grey</drawable>
     <color name="material_blue_grey_800">#ff37474f</color>
     <color name="material_blue_grey_900">#ff263238</color>
@@ -40,8 +40,8 @@
     <color name="material_grey_light">#ffc7c7c7</color>
     <color name="material_grey_dark">#ffb8b8b8</color>
     <color name="material_grey">#ffa1a1a1</color>
-    <color name="accent_material_light">#ff009688</color>
-    <color name="accent_material_dark">#ff009688</color>
+    <color name="accent_material_light">#ff1976D2</color>
+    <color name="accent_material_dark">#ff1976D2</color>
 
     <!-- Highlight text colors depending on style chosen -->
     <color name="highlighted_text_material_light">#66777777</color>
@@ -63,7 +63,7 @@
     <color name="secondary_text_default_material_dark">#ffaeaeae</color>
 
     <!-- Notification Modifications -->
-    <color name="system_notification_accent_color">#ff1b1f23</color>
+    <color name="system_notification_accent_color">#ff000000</color>
     <color name="notification_icon_bg_color">#4d000000</color>
     <color name="notification_action_color_filter">@color/primary_text_material_dark</color>
     <color name="notification_media_primary_color">#ffffffff</color>
@@ -78,13 +78,13 @@
     <!-- Background colors (System Theme Styles) -->
 
     <!-- Colors in Theme.Material Styles (System-wide) -->
-    <color name="background_material_dark">#ff1b1f23</color>
+    <color name="background_material_dark">#ff000000</color>
 
     <!-- Colors in Theme.Holo Styles (System-wide) -->
-    <color name="background_holo_dark">#ff1b1f23</color>
+    <color name="background_holo_dark">#ff000000</color>
 
     <!-- Backgrounds in app styles (System-wide) -->
-    <color name="background_dark">#ff1b1f23</color>
+    <color name="background_dark">#ff000000</color>
     <color name="background_light">#ffffffff</color>
 
     <!-- Dialog Background Colors -->
@@ -113,18 +113,19 @@
 
     <!-- Miscellaneous -->
     <color name="battery_saver_mode_color">#ff3b3b3b</color>
-    <color name="dslv_icon_dark">#ff009688</color>
-    <color name="power_menu_icon_default_color">#ff009688</color>
+    <color name="dslv_icon_dark">#ff1976D2</color>
+    <color name="power_menu_icon_default_color">#ff1976D2</color>
     <color name="power_menu_text_default_color">#ffffffff</color>
+    <color name="see_through">#00000000</color>
 
     <!-- SystemUI: -->
 
     <!-- Notification colors -->
-    <color name="sysui_system_primary_color">#ff1b1f23</color>
-    <color name="sysui_notif_material_bg_color">#ff1b1f23</color>
+    <color name="sysui_system_primary_color">#ff000000</color>
+    <color name="sysui_notif_material_bg_color">#ff000000</color>
     <color name="sysui_notif_material_bg_dimmed_color">#d41b1f23</color>
-    <color name="sysui_notif_material_bg_low_priority_color">#ff1b1f23</color>
-    <color name="sysui_notif_material_bg_media_default_color">#ff1b1f23</color>
+    <color name="sysui_notif_material_bg_low_priority_color">#ff000000</color>
+    <color name="sysui_notif_material_bg_media_default_color">#ff000000</color>
     <color name="sysui_notif_ripple_untinted_color">#28ffffff</color>
     <color name="sysui_notif_ripple_color_low_priority">#30ffffff</color>
     <color name="sysui_material_notification">#60ffffff</color>

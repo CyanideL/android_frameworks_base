@@ -605,21 +605,21 @@ final class UiModeManagerService extends SystemService
             }
             try {
                 boolean overrideCustomColors = Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.OVERRIDE_CUSTOM_COLORS, 1) == 1;
+                        Settings.System.OVERRIDE_CUSTOM_COLORS, 0) == 1;
                 ActivityManagerNative.getDefault().updateConfiguration(mConfiguration);
                 Toast.makeText(mContext, "updated configuration sent", Toast.LENGTH_SHORT).show();
                 if (overrideCustomColors) {
                     if (mContext.getResources().getConfiguration().uiThemeMode
                                 == Configuration.UI_THEME_MODE_HOLO_DARK) {
                         Settings.System.putInt(mContext.getContentResolver(),
-                                Settings.System.NOTIFICATION_BG_COLOR, 0xff1b1f23);
+                                Settings.System.NOTIFICATION_BG_COLOR, 0xff000000);
                         Settings.System.putInt(mContext.getContentResolver(),
                                 Settings.System.NOTIFICATION_TEXT_COLOR, 0xffffffff);
                         Settings.System.putInt(mContext.getContentResolver(),
-                                Settings.System.QS_BACKGROUND_COLOR, 0xff1b1f23);
+                                Settings.System.QS_BACKGROUND_COLOR, 0xff000000);
                         Settings.System.putInt(mContext.getContentResolver(),
                                 Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR,
-                                    0xff263238);
+                                    0xff000000);
                     } else {
                         Settings.System.putInt(mContext.getContentResolver(),
                                 Settings.System.NOTIFICATION_BG_COLOR, 0xffffffff);

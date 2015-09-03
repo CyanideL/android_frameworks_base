@@ -18,8 +18,6 @@
 <resources>
   <java-symbol type="style" name="Theme.Material.Dialog.Dark" />
   <java-symbol type="style" name="Theme.Material.Dialog.Alert.Dark" />
-  <java-symbol type="style" name="Theme.Material.FusionDark.Dialog" />
-  <java-symbol type="style" name="Theme.Material.FusionDark.Dialog.Alert" />
   <java-symbol type="style" name="TextAppearance.Material.Large.Dark" />
   <java-symbol type="style" name="TextAppearance.Material.Small.Dark" />
   <java-symbol type="drawable" name="item_background_borderless_material_dark" />
