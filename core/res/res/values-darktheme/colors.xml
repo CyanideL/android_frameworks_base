@@ -119,8 +119,6 @@
     <color name="see_through">#00000000</color>
 
     <!-- SystemUI: -->
-
-    <!-- Notification colors -->
     <color name="sysui_system_primary_color">#ff000000</color>
     <color name="sysui_notif_material_bg_color">#ff000000</color>
     <color name="sysui_notif_material_bg_dimmed_color">#d41b1f23</color>
@@ -129,6 +127,7 @@
     <color name="sysui_notif_ripple_untinted_color">#28ffffff</color>
     <color name="sysui_notif_ripple_color_low_priority">#30ffffff</color>
     <color name="sysui_material_notification">#60ffffff</color>
-    <!-- Status bar expanded header background -->
     <color name="status_bar_expanded_header_bg_color">#ff000000</color>
+    <color name="volume_panel_background_color">#ff000000</color>
+    <color name="system_primary_color">#ff000000</color>
 </resources>
