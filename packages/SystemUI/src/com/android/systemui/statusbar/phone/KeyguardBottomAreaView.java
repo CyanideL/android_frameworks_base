@@ -37,6 +37,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
+import android.graphics.PorterDuff.Mode;
 import android.hardware.ITorchService;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -246,6 +247,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
 
         initAccessibility();
         updateCustomShortcuts();
+        updateIndicationTextColor();
     }
 
     private void updateCustomShortcuts() {
@@ -583,6 +585,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
                 icon = new IntrinsicSizeDrawable(icon, iconWidth, iconHeight);
             }
             mLockIcon.setImageDrawable(icon);
+            updateIndicationTextColor();
         }
         
         mLockIcon.updateColorSettings();
@@ -723,11 +726,6 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
                 .setDuration(DOZE_ANIMATION_ELEMENT_DURATION);
     
     }
-    
-    public void updateTextColor(int color) {
-        mIndicationText.setTextColor(color);
-
-    }
 
     public void updateIconColor() {
         mCameraImageView.updateColorSettings();
@@ -781,6 +779,16 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
 
     public boolean isTargetCustom(LockscreenShortcutsHelper.Shortcuts shortcut) {
         return mShortcutHelper.isTargetCustom(shortcut);
+    }
+
+    public void updateIndicationTextColor() {
+        ContentResolver resolver = getContext().getContentResolver();
+        int color = Settings.System.getInt(resolver,
+                Settings.System.LOCKSCREEN_INDICATION_TEXT_COLOR, 0xFFFFFFFF);
+
+        if (mIndicationText != null) {
+            mIndicationText.setTextColor(color);
+        }
     }
 
     @Override
