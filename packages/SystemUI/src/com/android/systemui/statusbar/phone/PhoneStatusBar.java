@@ -441,10 +441,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private BatteryLevelTextView mBatteryLevel;
 
     // CyanideL logo
-    private boolean mCyanideLogo;
-    private int mCyanideLogoColor;
     private ImageView cyanideLogo;
     private int mCyanideLogoStyle;
+    private int mCyanideLogoColor;
 
     // position
     int[] mPositionTmp = new int[2];
@@ -549,9 +548,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_GREETING_TIMEOUT),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_CYANIDE_LOGO),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
 					Settings.System.STATUS_BAR_CYANIDE_LOGO_STYLE),
@@ -793,13 +789,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     resolver, Settings.System.STATUS_BAR_CYANIDE_LOGO_STYLE, 0,
                     UserHandle.USER_CURRENT);
 
-            mCyanideLogo = Settings.System.getIntForUser(resolver,
-                    Settings.System.STATUS_BAR_CYANIDE_LOGO, 0, mCurrentUserId) == 1;
-            showCyanideLogo(mCyanideLogo, mCyanideLogoStyle);
-
             mCyanideLogoColor = Settings.System.getIntForUser(resolver,
                     Settings.System.STATUS_BAR_CYANIDE_LOGO_COLOR, 0xFFFFFFFF, mCurrentUserId);
-            showCyanideLogo(mCyanideLogo, mCyanideLogoColor);
+            showCyanideLogo(mCyanideLogoColor);
 
             boolean showTaskManager = Settings.System.getIntForUser(resolver,
                     Settings.System.ENABLE_TASK_MANAGER, 0, UserHandle.USER_CURRENT) == 1;
@@ -960,15 +952,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mWeatherTempView.setVisibility(View.VISIBLE);
     }
 
-    public void showCyanideLogo(boolean show, int color) {
+    public void showCyanideLogo(int color) {
         if (mStatusBarView == null) return;
         ContentResolver resolver = mContext.getContentResolver();
         cyanideLogo.setColorFilter(color, Mode.SRC_IN);
-        if (cyanideLogo != null) {
-            cyanideLogo.setVisibility(show ? (mCyanideLogo ? View.VISIBLE : View.GONE) : View.GONE);
-
-        }
-	}
+    }
 
     private boolean isPieEnabled() {
         return Settings.System.getIntForUser(mContext.getContentResolver(),
@@ -2993,11 +2981,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void setKeyguardTextAndIconColors() {
+        int logoColor =
+                Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_CYANIDE_LOGO_COLOR, 0xffffffff);
         int textColor =
                 Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.LOCK_SCREEN_TEXT_COLOR, 0xffffffff);
         if (mKeyguardStatusBar != null) {
-            mKeyguardStatusBar.updateCarrierLabelColor(textColor);
+            mKeyguardStatusBar.updateLogoColor(logoColor);
         }
         if (mKeyguardBottomArea != null) {
             mKeyguardBottomArea.updateTextColor(textColor);

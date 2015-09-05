@@ -75,7 +75,7 @@
                 android:layout_height="match_parent"
                 >
                 
-                <ImageView
+                <com.android.systemui.statusbar.AlphaImageView
                     android:id="@+id/left_cyanide_logo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -178,7 +178,7 @@
                 android:gravity="center_vertical|start"
                 android:visibility="gone"
                 />
-            <ImageView
+            <com.android.systemui.statusbar.AlphaImageView
                 android:id="@+id/cyanide_logo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

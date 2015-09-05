@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
  * Copyright (C) 2014 The CyanogenMod Project
+ * Copyright (C) 2015 CyanideL
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +23,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
+import android.graphics.PorterDuff.Mode;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -64,6 +66,13 @@ public class KeyguardStatusBarView extends RelativeLayout
 
     private int mShowCarrierLabel;
     private TextView mCarrierLabel;
+    private int mCarrierColor;
+
+    // Cyanide Logo shit
+    private int mCyanideLogo;
+    private ImageView cyanideLogo;
+    private int mCyanideLogoStyle;
+    private int mCyanideLogoColor;
 
     private int mSystemIconsSwitcherHiddenExpandedMargin;
     private Interpolator mFastOutSlowInInterpolator;
@@ -71,6 +80,7 @@ public class KeyguardStatusBarView extends RelativeLayout
     private ContentObserver mObserver = new ContentObserver(new Handler()) {
         public void onChange(boolean selfChange, Uri uri) {
             showStatusBarCarrier();
+            showCyanideLogo();
             updateVisibilities();
         }
     };
@@ -78,11 +88,20 @@ public class KeyguardStatusBarView extends RelativeLayout
     public KeyguardStatusBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
         showStatusBarCarrier();
+        showCyanideLogo();
     }
 
     private void showStatusBarCarrier() {
         mShowCarrierLabel = Settings.System.getIntForUser(getContext().getContentResolver(),
                 Settings.System.STATUS_BAR_CUSTOM_CARRIER, 1, UserHandle.USER_CURRENT);
+    }
+
+    private void showCyanideLogo() {
+        mCyanideLogo = Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.STATUS_BAR_CYANIDE_LOGO_SHOW, 1, UserHandle.USER_CURRENT);
+        mCyanideLogoStyle = Settings.System.getIntForUser(
+                mContext.getContentResolver(), Settings.System.STATUS_BAR_CYANIDE_LOGO_STYLE, 0,
+                UserHandle.USER_CURRENT);
     }
 
     @Override
@@ -93,8 +112,12 @@ public class KeyguardStatusBarView extends RelativeLayout
         mMultiUserAvatar = (ImageView) findViewById(R.id.multi_user_avatar);
         mCarrierLabel = (TextView) findViewById(R.id.keyguard_carrier_text);
         mBatteryLevel = (BatteryLevelTextView) findViewById(R.id.battery_level_text);
-        mCarrierLabel = (TextView) findViewById(R.id.keyguard_carrier_text);
         loadDimens();
+        if (mCyanideLogoStyle == 0) {
+            cyanideLogo = (ImageView) findViewById(R.id.left_cyanide_logo);
+        } else {
+            cyanideLogo = (ImageView) findViewById(R.id.cyanide_logo);
+        }
         mFastOutSlowInInterpolator = AnimationUtils.loadInterpolator(getContext(),
                 android.R.interpolator.fast_out_slow_in);
         updateUserSwitcher();
@@ -129,6 +152,15 @@ public class KeyguardStatusBarView extends RelativeLayout
                 mCarrierLabel.setVisibility(View.VISIBLE);
             } else {
                 mCarrierLabel.setVisibility(View.GONE);
+            }
+        }
+        if (cyanideLogo != null) {
+            if (mCyanideLogo == 1) {
+                cyanideLogo.setVisibility(View.VISIBLE);
+            } else if (mCyanideLogo == 3) {
+                cyanideLogo.setVisibility(View.VISIBLE);
+            } else {
+                cyanideLogo.setVisibility(View.GONE);
             }
         }
         mBatteryLevel.setVisibility(View.VISIBLE);
@@ -269,6 +301,9 @@ public class KeyguardStatusBarView extends RelativeLayout
         super.onAttachedToWindow();
         getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
                 "status_bar_custom_carrier"), false, mObserver);
+        getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                "status_bar_cyanide_logo_show"), false, mObserver);
+
     }
 
     @Override
@@ -276,8 +311,14 @@ public class KeyguardStatusBarView extends RelativeLayout
         super.onDetachedFromWindow();
     }
 
-    public void updateCarrierLabelColor(int color) {
-        mCarrierLabel.setTextColor(color);
+    public void updateLogoColor(int color) {
+        cyanideLogo.setColorFilter(color, Mode.SRC_IN);
+    }
+
+    public void updateCarrierLabelColor() {
+        mCarrierColor = Settings.System.getInt(mContext.getContentResolver(),
+                            Settings.System.STATUS_BAR_CARRIER_COLOR, 0xffffffff);
+        mCarrierLabel.setTextColor(mCarrierColor);
     }
 
     public void setBatteryLevelTextColor() {

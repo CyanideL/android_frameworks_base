@@ -4212,7 +4212,7 @@ public final class Settings {
 		 * Statusbar CyanideL logo
 		 * @hide
 		 */
-		public static final String STATUS_BAR_CYANIDE_LOGO = "status_bar_cyanide_logo";
+		public static final String STATUS_BAR_CYANIDE_LOGO_SHOW = "status_bar_cyanide_logo_show";
 
         /**
 		 * Style of Status bar logo
@@ -6232,7 +6232,7 @@ public final class Settings {
             CLOCK_USE_SECOND,
             DISABLE_FC_NOTIFICATIONS,
             STATUS_BAR_GREETING,
-            STATUS_BAR_CYANIDE_LOGO,
+            STATUS_BAR_CYANIDE_LOGO_SHOW,
             LOCK_SCREEN_BUTTONS_BAR_RIPPLE_COLOR_MODE,
             LOCK_SCREEN_BUTTONS_BAR_ICON_COLOR_MODE,
             LOCK_SCREEN_SHOW_WEATHER,

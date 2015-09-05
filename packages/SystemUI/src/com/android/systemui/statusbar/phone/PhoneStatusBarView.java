@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
+ * Copyright (C) 2015 CyanideL
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +20,7 @@ package com.android.systemui.statusbar.phone;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.graphics.PorterDuff.Mode;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -28,6 +30,7 @@ import android.util.EventLog;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.internal.util.gesture.EdgeGesturePosition;
@@ -49,9 +52,15 @@ public class PhoneStatusBarView extends PanelBar {
     private int mShowCarrierLabel;
     private TextView mCarrierLabel;
 
+    // Cyanide Logo shit
+    private int mCyanideLogo;
+    private ImageView cyanideLogo;
+    private int mCyanideLogoStyle;
+
     private ContentObserver mObserver = new ContentObserver(new Handler()) {
         public void onChange(boolean selfChange, Uri uri) {
             showStatusBarCarrier();
+            showCyanideLogo();
             updateVisibilities();
         }
     };
@@ -59,6 +68,7 @@ public class PhoneStatusBarView extends PanelBar {
     public PhoneStatusBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
         showStatusBarCarrier();
+        showCyanideLogo();
 
         Resources res = getContext().getResources();
         mBarTransitions = new PhoneStatusBarTransitions(this);
@@ -81,9 +91,22 @@ public class PhoneStatusBarView extends PanelBar {
                 Settings.System.STATUS_BAR_CUSTOM_CARRIER, 1, UserHandle.USER_CURRENT);
     }
 
+    private void showCyanideLogo() {
+        mCyanideLogo = Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.STATUS_BAR_CYANIDE_LOGO_SHOW, 1, UserHandle.USER_CURRENT);
+        mCyanideLogoStyle = Settings.System.getIntForUser(
+                mContext.getContentResolver(), Settings.System.STATUS_BAR_CYANIDE_LOGO_STYLE, 0,
+                UserHandle.USER_CURRENT);
+    }
+
     @Override
     public void onFinishInflate() {
 		mCarrierLabel = (TextView) findViewById(R.id.statusbar_carrier_text);
+        if (mCyanideLogoStyle == 0) {
+            cyanideLogo = (ImageView) findViewById(R.id.left_cyanide_logo);
+        } else {
+            cyanideLogo = (ImageView) findViewById(R.id.cyanide_logo);
+        }
         updateVisibilities();
         mBarTransitions.init();
     }
@@ -96,6 +119,15 @@ public class PhoneStatusBarView extends PanelBar {
                 mCarrierLabel.setVisibility(View.VISIBLE);
             } else {
                 mCarrierLabel.setVisibility(View.GONE);
+            }
+        }
+        if (cyanideLogo != null) {
+            if (mCyanideLogo == 2) {
+                cyanideLogo.setVisibility(View.VISIBLE);
+            } else if (mCyanideLogo == 3) {
+                cyanideLogo.setVisibility(View.VISIBLE);
+            } else {
+                cyanideLogo.setVisibility(View.GONE);
             }
         }
     }
@@ -224,6 +256,8 @@ public class PhoneStatusBarView extends PanelBar {
         super.onAttachedToWindow();
         getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
                 "status_bar_custom_carrier"), false, mObserver);
+        getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                "status_bar_cyanide_logo_show"), false, mObserver);
     }
 
     @Override
