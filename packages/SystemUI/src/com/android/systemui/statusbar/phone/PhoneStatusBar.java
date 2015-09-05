@@ -547,6 +547,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_GREETING),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_GREETING_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_GREETING_TIMEOUT),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -814,6 +817,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     UserHandle.USER_CURRENT);
             if (mGreeting != null && !TextUtils.isEmpty(mGreeting) && mCyanideLabel != null) {
                 mCyanideLabel.setText(mGreeting);
+                mCyanideLabel.setTextColor(Settings.System.getInt(resolver,
+                        Settings.System.STATUS_BAR_GREETING_COLOR, 0xffffffff));
             }
 
             mShowLabelTimeout = Settings.System.getIntForUser(resolver,
@@ -2984,14 +2989,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         int logoColor =
                 Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.STATUS_BAR_CYANIDE_LOGO_COLOR, 0xffffffff);
-        int textColor =
-                Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.LOCK_SCREEN_TEXT_COLOR, 0xffffffff);
         if (mKeyguardStatusBar != null) {
             mKeyguardStatusBar.updateLogoColor(logoColor);
         }
         if (mKeyguardBottomArea != null) {
-            mKeyguardBottomArea.updateTextColor(textColor);
             mKeyguardBottomArea.updateIconColor();
         }
     }

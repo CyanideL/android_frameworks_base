@@ -4233,6 +4233,12 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_GREETING = "status_bar_greeting";
+
+        /**
+         * Status bar greeting text color
+         * @hide
+         */
+        public static final String STATUS_BAR_GREETING_COLOR = "status_bar_greeting_color";
         
         /**
 		 * Status bar greeting timeout
