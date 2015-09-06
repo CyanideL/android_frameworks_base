@@ -141,15 +141,11 @@ public class CarrierText extends TextView {
                 // "No SIM card"
                 // Grab the first subscripton, because they all should contain the emergency text,
                 // described above.
-                displayText =  makeCarrierStringOnEmergencyCapable(
-                        getContext().getText(R.string.keyguard_missing_sim_message_short),
-                        subs.get(0).getCarrierName());
+                displayText =  null;
             } else {
                 // We don't have a SubscriptionInfo to get the emergency calls only from.
                 // Lets just make it ourselves.
-                displayText =  makeCarrierStringOnEmergencyCapable(
-                        getContext().getText(R.string.keyguard_missing_sim_message_short),
-                        getContext().getText(com.android.internal.R.string.emergency_calls_only));
+                displayText =  null;
             }
         }
         setText(displayText);
