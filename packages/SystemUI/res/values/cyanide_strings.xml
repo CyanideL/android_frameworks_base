@@ -139,7 +139,7 @@
 	<string name="toast_not_installed">App is not installed</string>
 	
 	<!-- TRDS -->
-    <string name="quick_settings_trds_label">TRDS</string>
+    <string name="quick_settings_trds_label">Cyanide Blackout</string>
     
     <!-- Mount Notifications -->
     <string name="ext_media_mounted_notification_title">mounted</string>

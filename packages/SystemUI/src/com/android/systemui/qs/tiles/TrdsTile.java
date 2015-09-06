@@ -106,7 +106,7 @@ public class TrdsTile extends QSTile<QSTile.BooleanState> {
         state.visible = true;
         state.value = enabled;
         state.label = mContext.getString(R.string.quick_settings_trds_label);
-        state.icon = ResourceIcon.get(state.value ? R.drawable.ic_qs_trds_on : R.drawable.ic_qs_trds_off);
+        state.icon = ResourceIcon.get(state.value ? R.drawable.ic_qs_blackout : R.drawable.ic_qs_blackout_off);
     }
 
 }
