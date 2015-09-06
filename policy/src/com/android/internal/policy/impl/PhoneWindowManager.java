@@ -1969,6 +1969,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mScreenshotChordEnabled = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_enableScreenshotChord);
 
+        mBackKillTimeout = mContext.getResources().getInteger(
+                com.android.internal.R.integer.config_backKillTimeout);
+
         mGlobalKeyManager = new GlobalKeyManager(mContext);
 
         // Controls rotation and the like.
@@ -3370,6 +3373,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
         }
 
+        if (keyCode == KeyEvent.KEYCODE_BACK && !down) {
+            mHandler.removeCallbacks(mBackLongPress);
+        }
+
         // Cancel any pending meta actions if we see any other keys being pressed between the down
         // of the meta key and its corresponding up.
         if (mPendingMetaAction && !KeyEvent.isMetaKey(keyCode)) {
@@ -3752,6 +3759,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     voiceIntent.putExtra(RecognizerIntent.EXTRA_SECURE, true);
                 }
                 startActivityAsUser(voiceIntent, UserHandle.CURRENT_OR_SELF);
+            }
+        } else if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (down && repeatCount == 0) {
+                mHandler.postDelayed(mBackLongPress, mBackKillTimeout);
             }
         } else if (keyCode == KeyEvent.KEYCODE_SYSRQ) {
             if (down && repeatCount == 0) {
