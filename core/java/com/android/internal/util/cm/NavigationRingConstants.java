@@ -37,4 +37,8 @@ public class NavigationRingConstants {
     public static final String ACTION_STANDBY =               "standby";
     public static final String ACTION_TORCH =                 "torch";
     public static final String ACTION_VIBRATE =               "ringVibrate";
+    public static final String ACTION_LAST_APP =              "lastApp";
+    public static final String ACTION_POWERMENU =             "powermenu";
+    public static final String ACTION_RESTARTUI =             "restartui";
+    public static final String ACTION_SEARCH =                "search";
 }

@@ -18,6 +18,7 @@
 package com.android.systemui.cm;
 
 import android.app.ActivityManager;
+import android.app.ActivityManagerNative;
 import android.app.KeyguardManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -39,6 +40,7 @@ import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.os.Vibrator;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.InputDevice;
@@ -49,7 +51,9 @@ import android.widget.Toast;
 
 import com.android.internal.statusbar.IStatusBarService;
 import static com.android.internal.util.cm.NavigationRingConstants.*;
+import com.android.internal.util.cm.ActionUtils;
 import com.android.systemui.screenshot.TakeScreenshotService;
+import com.cyanide.util.Helpers;
 
 import java.net.URISyntaxException;
 
@@ -64,6 +68,7 @@ public class ActionTarget {
     private Handler mHandler;
     private KeyguardManager mKeyguardManager;
     private int mInjectKeyCode;
+    private static int mCurrentUserId = 0;
 
     private final Object mScreenshotLock = new Object();
     private ServiceConnection mScreenshotConnection = null;
@@ -73,6 +78,27 @@ public class ActionTarget {
         mHandler = new Handler();
         mAm = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         mKeyguardManager = (KeyguardManager) mContext.getSystemService(Context.KEYGUARD_SERVICE);
+    }
+
+    public static void setCurrentUser(int newUserId) {
+        mCurrentUserId = newUserId;
+    }
+
+    void sendCloseSystemWindows() {
+        sendCloseSystemWindows(mContext, null);
+    }
+
+    void sendCloseSystemWindows(String reason) {
+        sendCloseSystemWindows(mContext, reason);
+    }
+
+    static void sendCloseSystemWindows(Context context, String reason) {
+        if (ActivityManagerNative.isSystemReady()) {
+            try {
+                ActivityManagerNative.getDefault().closeSystemDialogs(reason);
+            } catch (RemoteException e) {
+            }
+        }
     }
 
     public boolean launchAction(String action) {
@@ -118,6 +144,18 @@ public class ActionTarget {
             return false;
         } else if (action.equals(ACTION_KILL_TASK)) {
             mHandler.post(mKillRunnable);
+            return true;
+        } else if (action.equals(ACTION_LAST_APP)) {
+            ActionUtils.switchToLastApp(mContext, mCurrentUserId);
+            return true;
+        } else if (action.equals(ACTION_SEARCH)) {
+            InputManager.triggerVirtualKeypress(KeyEvent.KEYCODE_SEARCH);
+            return true;
+        } else if (action.equals(ACTION_RESTARTUI)) {
+            Helpers.restartSystemUI();
+            return true;
+        } else if (action.equals(ACTION_POWERMENU)) {
+            mContext.sendBroadcast(new Intent(Intent.ACTION_POWERMENU));
             return true;
         } else if (action.equals(ACTION_VIBRATE)) {
             if (mAm.getRingerMode() != AudioManager.RINGER_MODE_VIBRATE) {
