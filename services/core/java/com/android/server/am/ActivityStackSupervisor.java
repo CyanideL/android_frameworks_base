@@ -241,7 +241,7 @@ public final class ActivityStackSupervisor implements DisplayListener {
      */
     String mPrivacyGuardPackageName = null;
 
-    private PowerManager mPm;
+    PowerManager mPm;
 
     /**
      * We don't want to allow the device to go to sleep while in the process
@@ -1351,7 +1351,7 @@ public final class ActivityStackSupervisor implements DisplayListener {
                                     container.mActivityDisplay.mDisplayId)));
             Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER , "startActivityLocked");
             /* Acquire perf lock during new app launch */
-            mPm.cpuBoost(2000 * 1000);
+            mPm.launchBoost();
             Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
         }
 
@@ -1907,7 +1907,7 @@ public final class ActivityStackSupervisor implements DisplayListener {
                             }
                             options = null;
                             movedToFront = true;
-                        }             
+                        }
                     }
                     // If the caller has requested that the target task be
                     // reset, then do so.
@@ -2736,7 +2736,7 @@ public final class ActivityStackSupervisor implements DisplayListener {
                 }
             }
         }
-        mPm.cpuBoost(2000 * 1000);
+        mPm.launchBoost();
 
         /* Delay Binder Explicit GC during application launch */
         BinderInternal.modifyDelayedGcParams();

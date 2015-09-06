@@ -62,12 +62,18 @@ interface IPowerManager
     void updateBlockedUids(int uid, boolean isBlocked);
 
     void cpuBoost(int duration);
+    void launchBoost();
 
     void setKeyboardVisibility(boolean visible);
 
     void setKeyboardLight(boolean on, int key);
 
 	void wakeUpWithProximityCheck(long time);
+
+    boolean setPowerProfile(String profile);
+    String getPowerProfile();
+
+    void activityResumed(String componentName);
 
     // blocked wakelock support
     String getSeenWakeLocks();
