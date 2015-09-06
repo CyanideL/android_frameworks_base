@@ -225,4 +225,8 @@
     <string name="shake_to_clean_notifications_title">Shake To Clean Notifications</string>
     <string name="shake_to_clean_notifications_summary">Use this switch, or longpress clear all notifications button to enable shake to clean the notifications feature</string>
 
+    <string name="quick_settings_led">LED</string>
+    <string name="quick_settings_led_on">Led ON</string>
+    <string name="quick_settings_led_off">Led OFF</string>
+
 </resources>
