@@ -4693,7 +4693,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     public void resetQsPanelVisibility() {
         mShowTaskList = mShowTaskList;
         if (mShowTaskList) {
-            mQSPanel.setVisibility(View.VISIBLE);
             mTaskManagerPanel.setVisibility(View.GONE);
             mShowTaskList = false;
         }
