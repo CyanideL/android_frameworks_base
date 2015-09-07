@@ -17,7 +17,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     
     <!-- Greeting -->
-    <string name="cyanide_label">You\'ve been POISONED</string>
+    <string name="cyanide_label">CyanideL</string>
     
     <!-- Cyanide Action Stuff-->
     <string name="action_null">Blank</string>
