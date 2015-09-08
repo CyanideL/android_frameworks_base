@@ -88,12 +88,12 @@ public class PhoneStatusBarView extends PanelBar {
 
     private void showStatusBarCarrier() {
         mShowCarrierLabel = Settings.System.getIntForUser(getContext().getContentResolver(),
-                Settings.System.STATUS_BAR_CUSTOM_CARRIER, 1, UserHandle.USER_CURRENT);
+                Settings.System.STATUS_BAR_CUSTOM_CARRIER, 0, UserHandle.USER_CURRENT);
     }
 
     private void showCyanideLogo() {
         mCyanideLogo = Settings.System.getIntForUser(getContext().getContentResolver(),
-                Settings.System.STATUS_BAR_CYANIDE_LOGO_SHOW, 1, UserHandle.USER_CURRENT);
+                Settings.System.STATUS_BAR_CYANIDE_LOGO_SHOW, 3, UserHandle.USER_CURRENT);
         mCyanideLogoStyle = Settings.System.getIntForUser(
                 mContext.getContentResolver(), Settings.System.STATUS_BAR_CYANIDE_LOGO_STYLE, 0,
                 UserHandle.USER_CURRENT);
