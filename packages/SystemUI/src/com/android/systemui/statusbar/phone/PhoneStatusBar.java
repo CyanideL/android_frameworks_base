@@ -4694,6 +4694,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         Resources res = mContext.getResources();
         ImageView image = (ImageView)
                 mHeader.findViewById(R.id.task_manager_button);
+        if (mState == StatusBarState.KEYGUARD) {
+            mTaskManagerButton.setVisibility(View.GONE);
+        }
         if (mShowTaskList && mShowTaskManager) {
             mTaskManagerPanel.setVisibility(View.GONE);
             image.setImageDrawable(res.getDrawable(
