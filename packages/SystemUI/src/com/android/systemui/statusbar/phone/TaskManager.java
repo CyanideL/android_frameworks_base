@@ -42,9 +42,11 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -90,6 +92,7 @@ public class TaskManager {
     private static final Object sLock = new Object();
     private ArrayList<DetailProcess> showTaskList = new ArrayList<DetailProcess>();
     private HashMap<String, View> childs = new HashMap<String, View>();
+    private int mAppColor;
 
     private boolean mTipsShowing = false;
 
@@ -101,6 +104,10 @@ public class TaskManager {
         mHomeIntent = new Intent(Intent.ACTION_MAIN);
         mHomeIntent.addCategory(Intent.CATEGORY_HOME);
 
+        final TextView taskManagerTitle =
+                (TextView) mTaskManagerPanel.findViewById(R.id.task_manager_title);
+        taskManagerTitle.setTextColor(Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.TASK_MANAGER_TITLE_TEXT_COLOR, 0xffffffff));
         mTaskManagerList = (LinearLayout) mTaskManagerPanel.findViewById(R.id.task_manager_list);
         final Button killAllButton = (Button) mTaskManagerPanel.findViewById(R.id.kill_all_button);
         killAllButton.setOnClickListener(new OnClickListener() {
@@ -155,6 +162,8 @@ public class TaskManager {
         final ProgressBar memoryUsageBar =
                 (ProgressBar)mTaskManagerPanel.findViewById(R.id.memory_usage_Bar);
         refreshMemoryusageText(memoryUsageText);
+        memoryUsageText.setTextColor(Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.TASK_MANAGER_MEMORY_TEXT_COLOR, 0xffffffff));
         refreshMemoryUsageBar(memoryUsageBar);
     }
 
@@ -175,6 +184,8 @@ public class TaskManager {
         final Drawable taskIcon = detailProcess.getIcon();
         final String taskName = detailProcess.getTitle();
         final String packageName = detailProcess.getPackageName();
+        mAppColor = Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.TASK_MANAGER_APP_COLOR, 0xffffffff);
 
         if (childs != null && childs.containsKey(packageName)) {
             return;
@@ -183,6 +194,9 @@ public class TaskManager {
         final View itemView = View.inflate(mContext, R.layout.task_item, null);
         ImageView taskIconImageView = (ImageView) itemView.findViewById(R.id.task_icon);
         taskIconImageView.setImageDrawable(taskIcon);
+        if (taskIconImageView != null) {
+            ((ImageView)taskIconImageView).setColorFilter(mAppColor, Mode.MULTIPLY);
+        }
         taskIconImageView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -196,6 +210,8 @@ public class TaskManager {
         });
         TextView taskNameTextView = (TextView) itemView.findViewById(R.id.task_name);
         taskNameTextView.setText(taskName);
+        taskNameTextView.setTextColor(Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.TASK_MANAGER_TASK_TEXT_COLOR, 0xffffffff));
         taskNameTextView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -541,6 +557,8 @@ public class TaskManager {
                .findViewById(com.android.internal.R.id.message);
 
         textView.setText(mContext.getString(resid));
+        textView.setTextColor(Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.TOAST_TEXT_COLOR, 0xffffffff));
         final WindowManager windowManager =
                 (WindowManager) mContext.getSystemService(mContext.WINDOW_SERVICE);
         WindowManager.LayoutParams params = new WindowManager.LayoutParams();

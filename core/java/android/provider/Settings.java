@@ -6073,6 +6073,34 @@ public final class Settings {
         public static final String OVERRIDE_CUSTOM_COLORS = "override_custom_colors";
 
         /**
+         * Change the color of the task manager kill button
+         *
+         * @hide
+         */
+        public static final String TASK_MANAGER_MEMORY_TEXT_COLOR = "task_manager_memory_text_color";
+
+        /**
+         * Change the color of the task manager text
+         *
+         * @hide
+         */
+        public static final String TASK_MANAGER_TASK_TEXT_COLOR = "task_manager_task_text_color";
+
+        /**
+         * Change the color of the task manager title text
+         *
+         * @hide
+         */
+        public static final String TASK_MANAGER_TITLE_TEXT_COLOR = "task_manager_title_text_color";
+
+        /**
+         * Change the color of the task manager kill button
+         *
+         * @hide
+         */
+        public static final String TASK_MANAGER_APP_COLOR = "task_manager_app_color";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
