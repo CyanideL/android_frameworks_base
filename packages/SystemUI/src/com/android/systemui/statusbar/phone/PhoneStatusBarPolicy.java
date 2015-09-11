@@ -504,7 +504,7 @@ public class PhoneStatusBarPolicy {
     };
 
     private void updateSu() {
-        mService.setIconVisibility(SLOT_SU, mSuController.hasActiveSessions());
+        mService.setIconVisibility(SLOT_SU, mSuIconVisible && mSuController.hasActiveSessions());
         if (mSuController.hasActiveSessions()) {
             publishSuCustomTile();
         } else {
