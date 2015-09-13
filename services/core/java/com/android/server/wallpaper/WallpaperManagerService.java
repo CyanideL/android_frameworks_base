@@ -108,6 +108,8 @@ public class WallpaperManagerService extends IWallpaperManager.Stub {
     static final String KEYGUARD_WALLPAPER = "keyguard_wallpaper";
     static final String KEYGUARD_WALLPAPER_INFO = "keyguard_wallpaper_info.xml";
 
+    private WallpaperObserver mWallpaperObserver;
+
     /**
      * Observes the wallpaper for changes and notifies all IWallpaperServiceCallbacks
      * that the wallpaper has changed. The CREATE is triggered when there is no
