@@ -16,6 +16,7 @@
 
 package com.android.systemui.qs;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -225,6 +226,7 @@ public class QSTileView extends ViewGroup {
     }
 
     protected void updateColors() {
+        final ContentResolver resolver = mContext.getContentResolver();
         mIconColor = QSColorHelper.getIconColor(mContext);
         mLabelColor = QSColorHelper.getTextColor(mContext);
     }

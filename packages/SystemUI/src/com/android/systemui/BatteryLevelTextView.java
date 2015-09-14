@@ -50,9 +50,7 @@ public class BatteryLevelTextView extends TextView implements
     private boolean mBatteryCharging;
     private int mBatteryLevel = 0;
     private boolean mShow;
-    private boolean mForceShow;
     private boolean mAttached;
-    private int mRequestedVisibility;
 
     private int mNewColor;
     private int mOldColor;
@@ -69,7 +67,6 @@ public class BatteryLevelTextView extends TextView implements
     public BatteryLevelTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mResolver = context.getContentResolver();
-        mRequestedVisibility = getVisibility();
 
         mNewColor = Settings.System.getInt(mResolver,
                 Settings.System.STATUSBAR_CLOCK_COLOR, 0xffffffff);
@@ -79,22 +76,11 @@ public class BatteryLevelTextView extends TextView implements
         loadShowBatteryTextSetting();
     }
 
-    public void setForceShown(boolean forceShow) {
-        mForceShow = forceShow;
-        updateVisibility();
-    }
-
     public void setBatteryController(BatteryController batteryController) {
         mBatteryController = batteryController;
         if (mAttached) {
             mBatteryController.addStateChangedCallback(this);
         }
-    }
-
-    @Override
-    public void setVisibility(int visibility) {
-        mRequestedVisibility = visibility;
-        updateVisibility();
     }
 
     @Override
@@ -149,10 +135,10 @@ public class BatteryLevelTextView extends TextView implements
     }
 
     private void updateVisibility() {
-        if (mShow || mForceShow) {
-            super.setVisibility(mRequestedVisibility);
+        if (mShow) {
+            super.setVisibility(View.VISIBLE);
         } else {
-            super.setVisibility(GONE);
+            super.setVisibility(View.GONE);
         }
     }
 

@@ -461,8 +461,16 @@ public class QSTileHost implements QSTile.Host {
     private List<String> loadTileSpecs() {
         final Resources res = mContext.getResources();
         final String defaultTileList = res.getString(R.string.quick_settings_tiles_default);
-        String tileList = Settings.Secure.getString(mContext.getContentResolver(),
-                Settings.Secure.QS_TILES);
+        final int qsType = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.QS_TYPE, mUserTracker.getCurrentUserId(), 0);
+        final boolean show = qsType == 0;
+        String tileList;
+        if (show) {
+            tileList = Settings.Secure.getStringForUser(mContext.getContentResolver(),
+                    Settings.Secure.QS_TILES, mUserTracker.getCurrentUserId());
+        } else {
+            tileList = "";
+        }
         if (DEBUG) Log.d(TAG, "Config string: "+tileList);
         if (tileList == null) {
             tileList = res.getString(R.string.quick_settings_tiles);
@@ -538,6 +546,9 @@ public class QSTileHost implements QSTile.Host {
             if (mRegistered) {
                 mContext.getContentResolver().unregisterContentObserver(this);
             }
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.QS_TYPE),
+                    false, this, mUserTracker.getCurrentUserId());
             mContext.getContentResolver().registerContentObserver(
                     Settings.Secure.getUriFor(Settings.Secure.QS_TILES),
                     false, this, mUserTracker.getCurrentUserId());

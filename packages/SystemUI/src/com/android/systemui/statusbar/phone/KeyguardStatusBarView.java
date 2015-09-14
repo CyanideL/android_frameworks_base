@@ -163,7 +163,6 @@ public class KeyguardStatusBarView extends RelativeLayout
                 cyanideLogo.setVisibility(View.GONE);
             }
         }
-        mBatteryLevel.setVisibility(View.VISIBLE);
     }
 
     private void updateSystemIconsLayoutParams() {

@@ -151,7 +151,6 @@ import com.android.keyguard.KeyguardHostView.OnDismissAction;
 import com.android.keyguard.ViewMediatorCallback;
 import com.android.systemui.BatteryMeterView;
 import com.android.systemui.cyanide.SearchPanelSwipeView;
-import com.android.systemui.cyanide.StatusBarHeaderMachine;
 import com.android.systemui.BatteryLevelTextView;
 import com.android.systemui.DemoMode;
 import com.android.systemui.EventLogConstants;
@@ -163,6 +162,7 @@ import com.android.systemui.doze.DozeLog;
 import com.android.systemui.doze.ShakeSensorManager;
 import com.android.systemui.keyguard.KeyguardViewMediator;
 import com.android.systemui.qs.QSBar;
+import com.android.systemui.qs.QSContainer;
 import com.android.systemui.qs.QSPanel;
 import com.android.systemui.recent.ScreenPinningRequest;
 import com.android.systemui.settings.BrightnessController;
@@ -185,6 +185,7 @@ import com.android.systemui.statusbar.SignalClusterView;
 import com.android.systemui.statusbar.SpeedBumpView;
 import com.android.systemui.statusbar.StatusBarIconView;
 import com.android.systemui.statusbar.StatusBarState;
+import com.android.systemui.statusbar.phone.StatusBarHeaderExpandedPanel;
 import com.android.systemui.statusbar.phone.UnlockMethodCache.OnUnlockMethodChangedListener;
 import com.android.systemui.statusbar.policy.AccessibilityController;
 import com.android.systemui.statusbar.policy.BatteryController;
@@ -397,19 +398,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     // settings
     View mFlipSettingsView;
     private QSPanel mQSPanel;
+    private QSContainer mQSContainer;
     private QSBar mQSBar;
+    private StatusBarHeaderExpandedPanel mHeaderExpandedPanel;
     private DevForceNavbarObserver mDevForceNavbarObserver;
     String mGreeting = "";
     boolean mSearchPanelAllowed = true;
-
-    // task manager
-    private TaskManager mTaskManager;
-    private LinearLayout mTaskManagerPanel;
-    private ImageButton mTaskManagerButton;
-    // task manager enabled
-    private boolean mShowTaskManager;
-    // task manager click state
-    private boolean mShowTaskList = false;
 
     // top bar
     StatusBarHeaderView mHeader;
@@ -574,9 +568,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.NOTIFICATION_CLEAR_ALL_ICON_COLOR),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.ENABLE_TASK_MANAGER),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAVIGATION_BAR_CAN_MOVE),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -694,17 +685,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.PIE_CONTROLS))) {
                     attachPieContainer(isPieEnabled());
             } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.ENABLE_TASK_MANAGER))) {
-                    mShowTaskManager = Settings.System.getIntForUser(
-                            mContext.getContentResolver(),
-                            Settings.System.ENABLE_TASK_MANAGER,
-                            0, UserHandle.USER_CURRENT) == 1;
-                            recreateStatusBar();
-                            updateRowStates();
-                            updateSpeedbump();
-                            updateClearAll();
-                            updateEmptyShadeView();
-            } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.USE_SLIM_RECENTS))) {
                 updateRecents();
             } else if (uri.equals(Settings.System.getUriFor(
@@ -798,22 +778,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mCyanideLogoColor = Settings.System.getIntForUser(resolver,
                     Settings.System.STATUS_BAR_CYANIDE_LOGO_COLOR, 0xFFFFFFFF, mCurrentUserId);
             showCyanideLogo(mCyanideLogoColor);
-
-            boolean showTaskManager = Settings.System.getIntForUser(resolver,
-                    Settings.System.ENABLE_TASK_MANAGER, 0, UserHandle.USER_CURRENT) == 1;
-            if (mShowTaskManager != showTaskManager) {
-                if (!mShowTaskManager) {
-                    // explicitly reset click state when disabled
-                    mShowTaskList = false;
-                }
-                mShowTaskManager = showTaskManager;
-                if (mHeader != null) {
-                    mHeader.setTaskManagerEnabled(showTaskManager);
-                }
-                if (mNotificationPanel != null) {
-                    mNotificationPanel.setTaskManagerEnabled(showTaskManager);
-                }
-            }
 
             mGreeting = Settings.System.getStringForUser(resolver,
                     Settings.System.STATUS_BAR_GREETING,
@@ -1029,7 +993,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private boolean mAutohideSuspended;
     private int mStatusBarMode;
     private int mNavigationBarMode;
-    private StatusBarHeaderMachine mStatusBarHeaderMachine;
 
     private ViewMediatorCallback mKeyguardViewMediatorCallback;
     private ScrimController mScrimController;
@@ -1554,26 +1517,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             (SignalClusterView) mStatusBarView.findViewById(R.id.signal_cluster);
         final SignalClusterView signalClusterKeyguard =
             (SignalClusterView) mKeyguardStatusBar.findViewById(R.id.signal_cluster);
-        final SignalClusterView signalClusterQs =
-            (SignalClusterView) mHeader.findViewById(R.id.signal_cluster);
         mNetworkController.addSignalCluster(signalCluster);
         mNetworkController.addSignalCluster(signalClusterKeyguard);
-        mNetworkController.addSignalCluster(signalClusterQs);
         signalCluster.setSecurityController(mSecurityController);
         signalCluster.setNetworkController(mNetworkController);
         signalClusterKeyguard.setSecurityController(mSecurityController);
         signalClusterKeyguard.setNetworkController(mNetworkController);
-        signalClusterQs.setSecurityController(mSecurityController);
-        signalClusterQs.setNetworkController(mNetworkController);
-        final boolean isAPhone = mNetworkController.hasVoiceCallingFeature();
-        if (isAPhone) {
-            mNetworkController.addEmergencyListener(new NetworkControllerImpl.EmergencyListener() {
-                @Override
-                public void setEmergencyCallsOnly(boolean emergencyOnly) {
-                    mHeader.setShowEmergencyCallsOnly(emergencyOnly);
-                }
-            });
-        }
 
         mCarrierLabel = (TextView)mStatusBarWindowContent.findViewById(R.id.carrier_label);
         mShowCarrierInPanel = (mCarrierLabel != null);
@@ -1682,6 +1631,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mLocationController, mHotspotController);
         }
 
+        mHeaderExpandedPanel = (StatusBarHeaderExpandedPanel) mStatusBarWindowContent.findViewById(R.id.header_expanded_panel);
+        if (mHeaderExpandedPanel != null) {
+            mHeaderExpandedPanel.setUp(this, mBatteryController, mNetworkController, mWeatherController);
+        }
+
         // Set up the initial custom tile listener state.
         try {
             mCustomTileListenerService.registerAsSystemService(mContext,
@@ -1697,36 +1651,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.Secure.LOCKSCREEN_HIDE_TILES_WITH_SENSITIVE_DATA, 0,
                         UserHandle.USER_CURRENT) != 0);
 
-        // Task manager
-        mTaskManagerPanel =
-                (LinearLayout) mStatusBarWindowContent.findViewById(R.id.task_manager_panel);
-        mTaskManager = new TaskManager(mContext, mTaskManagerPanel);
-        mTaskManager.setActivityStarter(this);
-        mTaskManagerButton = (ImageButton) mHeader.findViewById(R.id.task_manager_button);
-        mTaskManagerButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                mShowTaskList = !mShowTaskList;
-                mNotificationPanel.setTaskManagerVisibility(mShowTaskList);
-            }
-        });
-        if (mRecreating) {
-            mHeader.setTaskManagerEnabled(mShowTaskManager);
-            mNotificationPanel.setTaskManagerEnabled(mShowTaskManager);
-            mShowTaskList = false;
-        }
-
         // User info. Trigger first load.
         mHeader.setUserInfoController(mUserInfoController);
         mKeyguardStatusBar.setUserInfoController(mUserInfoController);
         mUserInfoController.reloadUserInfo();
 
-        mHeader.setBatteryController(mBatteryController);
         mBatteryView.setBatteryController(mBatteryController);
         mBatteryLevel.setBatteryController(mBatteryController);
         mKeyguardStatusBar.setBatteryController(mBatteryController);
         mHeader.setNextAlarmController(mNextAlarmController);
-        mHeader.setWeatherController(mWeatherController);
 
         PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
         mBroadcastReceiver.onReceive(mContext,
@@ -1754,9 +1687,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         UpdateNotifPanelClearAllIconColor();
         updateMoreIconColor();
         updateOverflowMoreIconColor();
-        mStatusBarHeaderMachine = new StatusBarHeaderMachine(mContext);
-        mStatusBarHeaderMachine.addObserver(mHeader);
-        mStatusBarHeaderMachine.updateEnablement();
         return mStatusBarView;
     }
 
@@ -3443,9 +3373,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mWaitingForKeyguardExit = false;
         disable(mDisabledUnmodified, !force /* animate */);
         setInteracting(StatusBarManager.WINDOW_STATUS_BAR, true);
-        if (mShowTaskManager) {
-            mTaskManager.refreshTaskManagerView();
-        }
     }
 
     public void animateCollapsePanels() {
@@ -4692,21 +4619,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), true,
                 mUserSetupObserver,
                 mCurrentUserId);
-    }
-
-    public void resetQsPanelVisibility() {
-        Resources res = mContext.getResources();
-        ImageView image = (ImageView)
-                mHeader.findViewById(R.id.task_manager_button);
-        if (mState == StatusBarState.KEYGUARD) {
-            mTaskManagerButton.setVisibility(View.GONE);
-        }
-        if (mShowTaskList && mShowTaskManager) {
-            mTaskManagerPanel.setVisibility(View.GONE);
-            image.setImageDrawable(res.getDrawable(
-                R.drawable.ic_tasklist_switch_normal));
-            mShowTaskList = false;
-        }
     }
 
     private void setHeadsUpVisibility(boolean vis) {

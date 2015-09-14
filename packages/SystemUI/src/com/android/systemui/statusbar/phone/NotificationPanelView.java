@@ -90,6 +90,8 @@ public class NotificationPanelView extends PanelView implements
 
     private KeyguardAffordanceHelper mAfforanceHelper;
     private StatusBarHeaderView mHeader;
+    private View mHeaderCollapsedPanelBackground;
+    private View mHeaderExpandedPanelBackground;
     private KeyguardUserSwitcher mKeyguardUserSwitcher;
     private KeyguardStatusBarView mKeyguardStatusBar;
     private QSBar mQSBar;
@@ -208,13 +210,6 @@ public class NotificationPanelView extends PanelView implements
     private int mStatusBarHeaderHeight;
     private GestureDetector mDoubleTapGesture;
 
-    private int mQSType;
-
-    // Task manager
-    private boolean mShowTaskManager;
-    private boolean mTaskManagerShowing;
-    private LinearLayout mTaskManagerPanel;
-
     public NotificationPanelView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(!DEBUG);
@@ -239,7 +234,14 @@ public class NotificationPanelView extends PanelView implements
     protected void onFinishInflate() {
         super.onFinishInflate();
         mHeader = (StatusBarHeaderView) findViewById(R.id.header);
-        mHeader.setOnClickListener(this);
+        mHeaderCollapsedPanelBackground = mHeader.getCollapsedPanelBackground();
+        if (mHeaderCollapsedPanelBackground != null) {
+            mHeaderCollapsedPanelBackground.setOnClickListener(this);
+        }
+        mHeaderExpandedPanelBackground = mHeader.getExpandedPanelBackground();
+        if (mHeaderExpandedPanelBackground != null) {
+            mHeaderExpandedPanelBackground.setOnClickListener(this);
+        }
         mKeyguardStatusBar = (KeyguardStatusBarView) findViewById(R.id.keyguard_header);
         mKeyguardStatusView = (KeyguardStatusView) findViewById(R.id.keyguard_status_view);
         mQSBar = (QSBar) findViewById(R.id.quick_settings_bar);
@@ -255,7 +257,6 @@ public class NotificationPanelView extends PanelView implements
                 }
             }
         });
-        mTaskManagerPanel = (LinearLayout) findViewById(R.id.task_manager_panel);
         mClockView = (TextView) findViewById(R.id.clock_view);
         mScrollView = (ObservableScrollView) findViewById(R.id.scroll_view);
         mScrollView.setListener(this);
@@ -352,10 +353,8 @@ public class NotificationPanelView extends PanelView implements
 
         // Calculate quick setting heights.
         int oldMaxHeight = mQsMaxExpansionHeight;
-        mQsMinExpansionHeight = mKeyguardShowing ?
-                0 : mHeader.getCollapsedHeight() + (mQSType == 2 ? 0 : mQsPeekHeight);
-        mQsMaxExpansionHeight = mQSType == 2 ?
-                mHeader.getExpandedHeight() : mHeader.getExpandedHeight() + mQsContainer.getDesiredHeight();
+        mQsMinExpansionHeight = mKeyguardShowing ? 0 : mHeader.getCollapsedHeight() + mQsPeekHeight;
+        mQsMaxExpansionHeight = mHeader.getExpandedHeight() + mQsContainer.getDesiredHeight();
         positionClockAndNotifications();
         if (mQsExpanded && mQsFullyExpanded) {
             mQsExpansionHeight = mQsMaxExpansionHeight;
@@ -504,7 +503,8 @@ public class NotificationPanelView extends PanelView implements
 
     public void setQsExpansionEnabled(boolean qsExpansionEnabled) {
         mQsExpansionEnabled = qsExpansionEnabled;
-        mHeader.setClickable(qsExpansionEnabled);
+        mHeaderCollapsedPanelBackground.setClickable(qsExpansionEnabled);
+        mHeaderExpandedPanelBackground.setClickable(qsExpansionEnabled);
     }
 
     @Override
@@ -539,7 +539,7 @@ public class NotificationPanelView extends PanelView implements
     public void openQs() {
         cancelAnimation();
         if (mQsExpansionEnabled) {
-            setQsExpansion(mQsMaxExpansionHeight);
+            setQsExpansion(getQsMaxExpansionHeight());
         }
     }
 
@@ -762,7 +762,6 @@ public class NotificationPanelView extends PanelView implements
         if (event.getActionMasked() == MotionEvent.ACTION_DOWN && mExpandedHeight == 0
                 && mQsExpansionEnabled) {
             mTwoFingerQsExpandPossible = true;
-            mStatusBar.resetQsPanelVisibility();
         }
         boolean twoFingerQsEvent = mTwoFingerQsExpandPossible
                 && (event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN
@@ -1192,11 +1191,7 @@ public class NotificationPanelView extends PanelView implements
         mNotificationStackScroller.setScrollingEnabled(
                 mStatusBarState != StatusBarState.KEYGUARD && (!mQsExpanded
                         || mQsExpansionFromOverscroll));
-        if (mQSType != 2) {
-            mQsContainer.setQSTypeVisibility(expandVisually);
-            mQsContainer.setVisibility(
-                    mKeyguardShowing && !expandVisually ? View.INVISIBLE : View.VISIBLE);
-        }
+        mQsContainer.updateVisibility(mKeyguardShowing, expandVisually);
         mScrollView.setTouchEnabled(mQsExpanded);
         updateEmptyShadeView();
         mQsNavbarScrim.setVisibility(mStatusBarState == StatusBarState.SHADE && mQsExpanded
@@ -1209,8 +1204,8 @@ public class NotificationPanelView extends PanelView implements
     }
 
     private void setQsExpansion(float height) {
-        height = Math.min(Math.max(height, mQsMinExpansionHeight), mQsMaxExpansionHeight);
-        mQsFullyExpanded = height == mQsMaxExpansionHeight;
+        height = Math.min(Math.max(height, mQsMinExpansionHeight), getQsMaxExpansionHeight());
+        mQsFullyExpanded = height == getQsMaxExpansionHeight();
         if (height > mQsMinExpansionHeight && !mQsExpanded && !mStackScrollerOverscrolling) {
             setQsExpanded(true);
         } else if (height <= mQsMinExpansionHeight && mQsExpanded) {
@@ -1227,7 +1222,6 @@ public class NotificationPanelView extends PanelView implements
         updateNotificationScrim(height);
         if (mKeyguardShowing) {
             updateHeaderKeyguard();
-            mStatusBar.resetQsPanelVisibility();
         }
         if (mStatusBarState == StatusBarState.SHADE && mQsExpanded
                 && !mStackScrollerOverscrolling && mQsScrimEnabled) {
@@ -1256,7 +1250,7 @@ public class NotificationPanelView extends PanelView implements
 
     private void updateNotificationScrim(float height) {
         int startDistance = mQsMinExpansionHeight + mNotificationScrimWaitDistance;
-        float progress = (height - startDistance) / (mQsMaxExpansionHeight - startDistance);
+        float progress = (height - startDistance) / (getQsMaxExpansionHeight() - startDistance);
         progress = Math.max(0.0f, Math.min(progress, 1.0f));
     }
 
@@ -1302,7 +1296,7 @@ public class NotificationPanelView extends PanelView implements
             // from a scrolled quick settings.
             return interpolate(getQsExpansionFraction(),
                     mNotificationStackScroller.getIntrinsicPadding() - mNotificationTopPadding,
-                    mQsMaxExpansionHeight);
+                    getQsMaxExpansionHeight());
         } else {
             return mQsExpansionHeight;
         }
@@ -1349,7 +1343,7 @@ public class NotificationPanelView extends PanelView implements
     }
 
     private void flingSettings(float vel, boolean expand, final Runnable onFinishRunnable) {
-        float target = expand ? mQsMaxExpansionHeight : mQsMinExpansionHeight;
+        float target = expand ? getQsMaxExpansionHeight() : mQsMinExpansionHeight;
         if (target == mQsExpansionHeight) {
             mScrollYOverride = -1;
             if (onFinishRunnable != null) {
@@ -1428,53 +1422,6 @@ public class NotificationPanelView extends PanelView implements
         }
     }
 
-    void setTaskManagerEnabled(boolean enabled) {
-        mShowTaskManager = enabled;
-        // explicity restore visibility states when disabled
-        // and TaskManager last state was showing
-        if (!enabled && mTaskManagerShowing) {
-            mTaskManagerShowing = false;
-            mQsPanel.setVisibility(View.VISIBLE);
-            mTaskManagerPanel.setVisibility(View.GONE);
-        }
-    }
-
-    public void setTaskManagerVisibility(boolean taskManagerShowing) {
-        if (mShowTaskManager) {
-			mTaskManagerShowing = taskManagerShowing;
-            cancelAnimation();
-            boolean expandVisually = mQsExpanded || mStackScrollerOverscrolling;
-            if (mQSType != 0) {
-                mQSBar.setVisibility(expandVisually && !mTaskManagerShowing
-                        ? View.VISIBLE : View.GONE);
-                mQsPanel.setVisibility(expandVisually && !mTaskManagerShowing
-                        ? View.GONE : View.GONE);
-                mTaskManagerPanel.setVisibility(expandVisually && taskManagerShowing
-                        && !mKeyguardShowing ? View.VISIBLE : View.GONE);
-                updateTaskQSButton();
-            } else if (mQSType != 1) {
-				mQsPanel.setVisibility(expandVisually && !mTaskManagerShowing
-                        ? View.VISIBLE : View.GONE);
-                mTaskManagerPanel.setVisibility(expandVisually && taskManagerShowing
-                        && !mKeyguardShowing ? View.VISIBLE : View.GONE);
-                updateTaskQSButton();
-            }
-        }
-    }
-
-    private void updateTaskQSButton() {
-        Resources res = mContext.getResources();
-        ImageView image = (ImageView)
-                mHeader.findViewById(R.id.task_manager_button);
-        if (!mTaskManagerShowing) {
-            image.setImageDrawable(res.getDrawable(
-                R.drawable.ic_tasklist_switch_normal));
-        } else {
-            image.setImageDrawable(
-                    res.getDrawable(R.drawable.ic_quick_settings));
-         }
-     }
-
     @Override
     protected boolean isScrolledToBottom() {
         if (!isInSettings()) {
@@ -1542,12 +1489,16 @@ public class NotificationPanelView extends PanelView implements
         }
     }
 
+    private int getQsMaxExpansionHeight() {
+        return mHeader.getExpandedHeight() + mQsContainer.getDesiredHeight();
+    }
+
     /**
-     * @return a temporary override of {@link #mQsMaxExpansionHeight}, which is needed when
+     * @return a temporary override of {@link #getQsMaxExpansionHeight()}, which is needed when
      *         collapsing QS / the panel when QS was scrolled
      */
     private int getTempQsMaxExpansion() {
-        int qsTempMaxExpansion = mQsMaxExpansionHeight;
+        int qsTempMaxExpansion = getQsMaxExpansionHeight();
         if (mScrollYOverride != -1) {
             qsTempMaxExpansion -= mScrollYOverride;
         }
@@ -1576,7 +1527,7 @@ public class NotificationPanelView extends PanelView implements
                     + mNotificationStackScroller.getBottomStackPeekSize()
                     + mNotificationStackScroller.getCollapseSecondCardPadding();
         }
-        int maxQsHeight = mQsMaxExpansionHeight;
+        int maxQsHeight = getQsMaxExpansionHeight();
 
         // If an animation is changing the size of the QS panel, take the animated value.
         if (mQsSizeChangeAnimator != null) {
@@ -1863,12 +1814,15 @@ public class NotificationPanelView extends PanelView implements
 
     @Override
     public void onClick(View v) {
-        if (v == mHeader) {
+        if (v == mHeaderCollapsedPanelBackground) {
+            onQsExpansionStarted();
+            if (mQsExpansionEnabled) {
+                flingSettings(0 /* vel */, true /* expand */);
+            }
+        } else if (v == mHeaderExpandedPanelBackground) {
             onQsExpansionStarted();
             if (mQsExpanded) {
                 flingSettings(0 /* vel */, false /* expand */);
-            } else if (mQsExpansionEnabled) {
-                flingSettings(0 /* vel */, true /* expand */);
             }
         }
     }
@@ -2214,6 +2168,8 @@ public class NotificationPanelView extends PanelView implements
                     Settings.System.QS_RIPPLE_COLOR), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_TYPE), false, this);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.QS_SHOW_BRIGHTNESS_SLIDER), false, this);
             update();
         }
 
@@ -2236,6 +2192,9 @@ public class NotificationPanelView extends PanelView implements
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.QS_TYPE))) {
                 setQSType();
+            } else if (uri.equals(Settings.Secure.getUriFor(
+                    Settings.Secure.QS_SHOW_BRIGHTNESS_SLIDER))) {
+                setShowBrightnessSlider();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.QS_ICON_COLOR))
                 || uri.equals(Settings.System.getUriFor(
@@ -2263,21 +2222,33 @@ public class NotificationPanelView extends PanelView implements
                     UserHandle.USER_CURRENT);
 
             setQSType();
+            setShowBrightnessSlider();
             setQSBackgroundColor();
             setQSColors();
         }
     }
 
     private void setQSType() {
-        mQSType = Settings.System.getInt(mContext.getContentResolver(),
+        ContentResolver resolver = mContext.getContentResolver();
+        final int qsType = Settings.System.getInt(resolver,
                 Settings.System.QS_TYPE, 0);
         if (mQsContainer != null) {
-            mQsContainer.setQSType(mQSType);
+            mQsContainer.setQSType(qsType);
+        }
+    }
+
+    private void setShowBrightnessSlider() {
+        ContentResolver resolver = mContext.getContentResolver();
+        final boolean ShowBrightnessSlider = Settings.Secure.getInt(resolver,
+                Settings.Secure.QS_SHOW_BRIGHTNESS_SLIDER, 1) == 1;
+        if (mQsContainer != null) {
+            mQsContainer.setShowBrightnessSlider(ShowBrightnessSlider);
         }
     }
 
     private void setQSBackgroundColor() {
-        final int bgColor = Settings.System.getInt(mContext.getContentResolver(),
+        ContentResolver resolver = mContext.getContentResolver();
+        final int bgColor = Settings.System.getInt(resolver,
                 Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
         if (mQsContainer != null) {
             mQsContainer.getBackground().setColorFilter(

@@ -2549,6 +2549,24 @@ public final class Settings {
         public static final String QS_SMART_PULLDOWN = "qs_smart_pulldown";
 
         /**
+         * Whether to show the QS settings button on the header of the expanded status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_SHOW_QS_BUTTON = "status_bar_expanded_header_show_qs_button";
+
+        /**
+         * Whether to show the torch button on the header of the expanded status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_SHOW_TORCH_BUTTON = "status_bar_expanded_header_show_torch_button";
+
+        /**
+         * Color of the ripple effects on the header of the expanded status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_RIPPLE_COLOR = "status_bar_expanded_header_ripple_color";
+
+        /**
          * Control whether the process CPU usage meter should be shown.
          *
          * @deprecated Use {@link Global#SHOW_PROCESSES} instead
@@ -5950,25 +5968,13 @@ public final class Settings {
          * What application to launch when the user clicks the clock in the notification bar
          * @hide
          */
-        public static final String CLOCK_SHORTCUT = "clock_shortcut";
-
-        /**
-         * What application to launch when the user clicks the calendar in the notification bar
-         * @hide
-         */
-        public static final String CALENDAR_SHORTCUT = "calendar_shortcut";
+        public static final String HEADER_BUTTON_SHORTCUT = "header_button_shortcut";
 
         /**
          * What application to launch when the user long clicks the calendar in the notification bar
          * @hide
          */
-        public static final String CLOCK_LONG_SHORTCUT = "clock_long_shortcut";
-
-        /**
-         * What application to launch when the user long clicks the calendar in the notification bar
-         * @hide
-         */
-        public static final String CALENDAR_LONG_SHORTCUT = "calendar_long_shortcut";
+        public static final String HEADER_BUTTON_LONG_SHORTCUT = "header_button_long_shortcut";
 
         /**
          * What application to launch when the user clicks the cyanide button in the notification bar
