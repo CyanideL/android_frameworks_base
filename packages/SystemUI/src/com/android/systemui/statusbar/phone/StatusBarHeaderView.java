@@ -245,6 +245,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     private void requestCaptureValues() {
         mCaptureValues = true;
         requestLayout();
+        updateVisibilities();
     }
 
     public void setActivityStarter(ActivityStarter activityStarter) {
@@ -909,6 +910,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
         mExpandedPanel.setQsTorchBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
+        mExpandedPanel.setTaskBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
     }
 
     private RippleDrawable getColoredBackgroundDrawable(Drawable rd, boolean applyBackgroundColor) {
@@ -1000,7 +1003,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mStatusBarPowerMenuStyle = Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_POWER_MENU, 2);
     }
- 
+
     private void goToSleep() {
         PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
         pm.goToSleep(SystemClock.uptimeMillis());

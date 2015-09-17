@@ -23,6 +23,7 @@ import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.android.systemui.R;
 
@@ -38,6 +39,11 @@ public class QSContainer extends FrameLayout {
     private QSBarContainer mQSBarContainer;
     private QSBar mQSBar;
     private QSPanel mQSPanel;
+
+    // Task manager
+    private boolean mShowTaskManager;
+    private boolean mTaskManagerShowing;
+    private LinearLayout mTaskManagerPanel;
 
     private int mHeightOverride = -1;
     private final int mPadding;
@@ -64,6 +70,7 @@ public class QSContainer extends FrameLayout {
         mQSBarContainer =
                 (QSBarContainer) findViewById(R.id.quick_settings_bar_container);
         mQSBar = (QSBar) findViewById(R.id.quick_settings_bar);
+        mTaskManagerPanel = (LinearLayout) findViewById(R.id.task_manager_panel);
     }
 
     @Override
@@ -71,6 +78,7 @@ public class QSContainer extends FrameLayout {
         final int width = MeasureSpec.getSize(widthMeasureSpec);
         mQSPanel.measure(exactly(width), MeasureSpec.UNSPECIFIED);
         mQSBarContainer.measure(exactly(width), MeasureSpec.UNSPECIFIED);
+        mTaskManagerPanel.measure(exactly(width), MeasureSpec.UNSPECIFIED);
         int height = 0;
         if (mShowBrightnessSlider || mQSType == QS_TYPE_PANEL) {
             if (mQSType == QS_TYPE_BAR) {
@@ -84,6 +92,9 @@ public class QSContainer extends FrameLayout {
         }
         if (mShowBrightnessSlider || mQSType != QS_TYPE_HIDDEN) {
             height += mPadding * 2;
+        }
+        if (mTaskManagerShowing) {
+            height += mTaskManagerPanel.getMeasuredHeight();
         }
         setMeasuredDimension(width, height);
     }
@@ -100,6 +111,8 @@ public class QSContainer extends FrameLayout {
                 mPadding + mQSPanel.getMeasuredHeight());
         mQSBarContainer.layout(0, qsBarTop, mQSBarContainer.getMeasuredWidth(),
                 qsBarTop + mQSBarContainer.getMeasuredHeight());
+        mTaskManagerPanel.layout(0, mPadding, mTaskManagerPanel.getMeasuredWidth(),
+                mPadding + mTaskManagerPanel.getMeasuredHeight());
         updateBottom();
     }
 
@@ -121,7 +134,6 @@ public class QSContainer extends FrameLayout {
             mQSPanel.setVisibility(mShowBrightnessSlider ? View.INVISIBLE : View.GONE);
             setVisibility(mShowBrightnessSlider ? View.INVISIBLE : View.GONE);
         }
-        requestLayout();
     }
 
     public void setShowBrightnessSlider(boolean ShowBrightnessSlider) {
@@ -131,20 +143,25 @@ public class QSContainer extends FrameLayout {
         requestLayout();
     }
 
-    public void updateVisibility(boolean keyguardShowing, boolean visible) {
-        if (mQSType == QS_TYPE_HIDDEN && !mShowBrightnessSlider) {
+    public void updateVisibility(boolean keyguardShowing, boolean visible, boolean taskManagerShowing) {
+        if (mQSType == QS_TYPE_HIDDEN && !mShowBrightnessSlider && !mShowTaskManager) {
             return;
         }
+        mTaskManagerShowing = taskManagerShowing;
         setVisibility(keyguardShowing && !visible ? View.INVISIBLE : View.VISIBLE);
         if (mQSType == QS_TYPE_PANEL) {
             mQSPanel.setVisibility(visible ?  View.VISIBLE : View.INVISIBLE);
+            mTaskManagerPanel.setVisibility(visible && mShowTaskManager ?  View.VISIBLE : View.INVISIBLE);
         } else if (mQSType == QS_TYPE_BAR) {
             mQSBarContainer.setVisibility(visible ?  View.VISIBLE : View.INVISIBLE);
             mQSBar.setVisibility(visible ?  View.VISIBLE : View.INVISIBLE);
             mQSPanel.setVisibility(visible && mShowBrightnessSlider ? View.VISIBLE : View.INVISIBLE);
+            mTaskManagerPanel.setVisibility(visible && mShowTaskManager ?  View.VISIBLE : View.INVISIBLE);
         } else {
             mQSPanel.setVisibility(mShowBrightnessSlider ? View.VISIBLE : View.INVISIBLE);
+            mTaskManagerPanel.setVisibility(visible && mShowTaskManager ?  View.VISIBLE : View.INVISIBLE);
         }
+        requestLayout();
     }
 
     public void setListening(boolean listening) {
