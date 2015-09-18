@@ -731,7 +731,7 @@ public class QSPanel extends ViewGroup {
 
     public void setColors() {
         refreshAllTiles();
-        mBrightnessController.setToggleSliderColors();
+        mBrightnessController.setColors();
     }
 
     public void setHideQsTilesWithSensitiveData(boolean value) {
