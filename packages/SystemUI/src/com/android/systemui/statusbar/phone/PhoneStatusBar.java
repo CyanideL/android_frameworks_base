@@ -610,6 +610,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_SHOW_WEATHER_TEMP), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_HIDE_WEATHER),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_NUMBER_OF_NOTIFICATION_ICONS),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_WEATHER_TEMP_STYLE),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -744,6 +750,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     || uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CYANIDE_LOGO_NUMBER_OF_NOTIFICATION_ICONS))) {
                     setCyanideLogoVisibility();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_SHOW_WEATHER_TEMP))
+                    || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_HIDE_WEATHER))
+                    || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_NUMBER_OF_NOTIFICATION_ICONS))) {
+                    setWeatherTempVisibility();
             }
             update();
         }
@@ -1701,6 +1714,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         setKeyguardTextAndIconColors();
         updateBatteryLevelTextColor();
         setCyanideLogoVisibility();
+        setWeatherTempVisibility();
         UpdateNotifPanelClearAllIconColor();
         updateMoreIconColor();
         updateOverflowMoreIconColor();
@@ -2584,6 +2598,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mNotificationIcons.addView(expected, i);
         }
         setCyanideLogoVisibility();
+        setWeatherTempVisibility();
     }
 
     @Override
@@ -2969,6 +2984,37 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
         if (mCyanideLogo != null && showStatLock) {
             mCyanideLogo.setVisibility(showStatLock && !forceHideByNumberOfIcons
+                    ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    private void setWeatherTempVisibility() {
+        final ContentResolver resolver = mContext.getContentResolver();
+
+        final boolean showTemp = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_SHOW_WEATHER_TEMP, 0) == 1;
+        final boolean showTempState = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_SHOW_WEATHER_TEMP, 0) == 2;
+
+        final boolean forceHide = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_WEATHER_HIDE_WEATHER, 1) == 1;
+        final int maxAllowedIcons = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_WEATHER_NUMBER_OF_NOTIFICATION_ICONS, 1);
+        boolean forceHideByNumberOfIcons = false;
+        int currentVisibleNotificationIcons = 0;
+
+        if (mNotificationIcons != null) {
+            currentVisibleNotificationIcons = mNotificationIcons.getChildCount();
+        }
+        if (forceHide && currentVisibleNotificationIcons >= maxAllowedIcons) {
+            forceHideByNumberOfIcons = true;
+        }
+        if (mWeatherTempView != null && showTemp) {
+            mWeatherTempView.setVisibility(showTemp && !forceHideByNumberOfIcons
+                    ? View.VISIBLE : View.GONE);
+        }
+        if (mWeatherTempView != null && showTempState) {
+            mWeatherTempView.setVisibility(showTempState && !forceHideByNumberOfIcons
                     ? View.VISIBLE : View.GONE);
         }
     }
