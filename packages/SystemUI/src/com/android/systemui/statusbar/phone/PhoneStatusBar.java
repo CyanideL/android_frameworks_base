@@ -435,7 +435,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private BatteryLevelTextView mBatteryLevel;
 
     // CyanideL logo
-    private ImageView cyanideLogo;
+    private ImageView mCyanideLogo;
     private int mCyanideLogoStyle;
     private int mCyanideLogoColor;
 
@@ -547,10 +547,19 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_GREETING_TIMEOUT),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CYANIDE_LOGO_SHOW),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
 					Settings.System.STATUS_BAR_CYANIDE_LOGO_STYLE),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
 					Settings.System.STATUS_BAR_CYANIDE_LOGO_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CYANIDE_LOGO_HIDE_LOGO),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CYANIDE_LOGO_NUMBER_OF_NOTIFICATION_ICONS),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.ENABLE_NAVIGATION_RING),
@@ -728,6 +737,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     updateSpeedbump();
                     updateClearAll();
                     updateEmptyShadeView();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CYANIDE_LOGO_SHOW))
+                    || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CYANIDE_LOGO_HIDE_LOGO))
+                    || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CYANIDE_LOGO_NUMBER_OF_NOTIFICATION_ICONS))) {
+                    setCyanideLogoVisibility();
             }
             update();
         }
@@ -927,7 +943,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     public void showCyanideLogo(int color) {
         if (mStatusBarView == null) return;
         ContentResolver resolver = mContext.getContentResolver();
-        cyanideLogo.setColorFilter(color, Mode.SRC_IN);
+        mCyanideLogo.setColorFilter(color, Mode.SRC_IN);
     }
 
     private boolean isPieEnabled() {
@@ -1549,9 +1565,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mContext.getContentResolver(), Settings.System.STATUS_BAR_CYANIDE_LOGO_STYLE, 0,
                 UserHandle.USER_CURRENT);
         if (mCyanideLogoStyle == 0) {
-            cyanideLogo = (ImageView) mStatusBarView.findViewById(R.id.left_cyanide_logo);
+            mCyanideLogo = (ImageView) mStatusBarView.findViewById(R.id.left_cyanide_logo);
         } else {
-            cyanideLogo = (ImageView) mStatusBarView.findViewById(R.id.cyanide_logo);
+            mCyanideLogo = (ImageView) mStatusBarView.findViewById(R.id.cyanide_logo);
         }
 
         mWeatherTempStyle = Settings.System.getIntForUser(
@@ -1684,6 +1700,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         startGlyphRasterizeHack();
         setKeyguardTextAndIconColors();
         updateBatteryLevelTextColor();
+        setCyanideLogoVisibility();
         UpdateNotifPanelClearAllIconColor();
         updateMoreIconColor();
         updateOverflowMoreIconColor();
@@ -2566,6 +2583,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mNotificationIcons.removeView(expected);
             mNotificationIcons.addView(expected, i);
         }
+        setCyanideLogoVisibility();
     }
 
     @Override
@@ -2921,6 +2939,37 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                             .start();
                 }
             }
+        }
+    }
+
+    private void setCyanideLogoVisibility() {
+        final ContentResolver resolver = mContext.getContentResolver();
+
+        final boolean showStat = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CYANIDE_LOGO_SHOW, 0) == 2;
+        final boolean showStatLock = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CYANIDE_LOGO_SHOW, 0) == 3;
+
+        final boolean forceHide = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CYANIDE_LOGO_HIDE_LOGO, 1) == 1;
+        final int maxAllowedIcons = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CYANIDE_LOGO_NUMBER_OF_NOTIFICATION_ICONS, 1);
+        boolean forceHideByNumberOfIcons = false;
+        int currentVisibleNotificationIcons = 0;
+
+        if (mNotificationIcons != null) {
+            currentVisibleNotificationIcons = mNotificationIcons.getChildCount();
+        }
+        if (forceHide && currentVisibleNotificationIcons >= maxAllowedIcons) {
+            forceHideByNumberOfIcons = true;
+        }
+        if (mCyanideLogo != null && showStat) {
+            mCyanideLogo.setVisibility(showStat && !forceHideByNumberOfIcons
+                    ? View.VISIBLE : View.GONE);
+        }
+        if (mCyanideLogo != null && showStatLock) {
+            mCyanideLogo.setVisibility(showStatLock && !forceHideByNumberOfIcons
+                    ? View.VISIBLE : View.GONE);
         }
     }
 

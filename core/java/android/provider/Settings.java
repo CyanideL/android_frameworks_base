@@ -4240,6 +4240,25 @@ public final class Settings {
 		 */
 		public static final String STATUS_BAR_CYANIDE_LOGO_STYLE = "status_bar_cyanide_logo_style";
 
+        /**
+         * Wether to hide the Cyanide logo on the status bar when the custom number of notifications is reached
+         * @hide
+         */
+        public static final String STATUS_BAR_CYANIDE_LOGO_HIDE_LOGO = "status_bar_cyanide_logo_hide_logo";
+
+        /**
+         * Hide the Cyanide logo on the status bar when the notification icons will reach this number
+         * 1: 1 notification icon (always)
+         * 2: 2 notification icons
+         * 3: 3 notification icons
+         * 4: 4 notification icons
+         * 5: 5 notification icons
+         * 6: 6 notification icons
+         * default: 1
+         * @hide
+         */
+        public static final String STATUS_BAR_CYANIDE_LOGO_NUMBER_OF_NOTIFICATION_ICONS = "status_bar_cyanide_logo_number_of_notification_icons";
+
 		/**
 		 * Statusbar CyanideL logo color setting
 		 * @hide
