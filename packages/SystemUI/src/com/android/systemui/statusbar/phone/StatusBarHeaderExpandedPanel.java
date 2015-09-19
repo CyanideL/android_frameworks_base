@@ -82,10 +82,6 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
     private ImageView mQsSettingsButton;
     private ImageView mQsTorchButton;
 
-    // Task Manager
-    private ImageView mTaskManagerButton;
-    private boolean mShowTaskManager;
-
     private Drawable mMobileSignalIcon;
     private Drawable mWifiSignalIcon;
 
@@ -152,7 +148,6 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
         mQsSettingsButton = (ImageView) findViewById(R.id.qs_settings_button);
         mQsTorchButton = (ImageView) findViewById(R.id.qs_torch_button);
         mQsTorchButton.setAlpha(128);
-        mTaskManagerButton = (ImageView) findViewById(R.id.task_manager_button);
 
         mWeatherView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,11 +192,6 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
         });
     }
 
-    void setTaskManagerEnabled(boolean enabled) {
-        mShowTaskManager = enabled;
-        updateVisibilities();
-    }
-
     public void setListening(boolean listening) {
         if (listening) {
             mContext.registerReceiver(mBatteryInfoReceiver,
@@ -226,14 +216,12 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
         mWeatherView.setVisibility(showWeather() ? View.VISIBLE : View.INVISIBLE);
         mQsSettingsButton.setVisibility(showQsButton() ? View.VISIBLE : View.INVISIBLE);
         mQsTorchButton.setVisibility(showTorchButton() ? View.VISIBLE : View.INVISIBLE);
-        mTaskManagerButton.setVisibility(showTask() ? View.VISIBLE : View.INVISIBLE);
     }
 
     public void updateClickTargets(boolean clickable) {
         mWeatherView.setClickable(showWeather() && clickable);
         mQsSettingsButton.setClickable(showQsButton() && clickable);
         mQsTorchButton.setClickable(showTorchButton() && clickable);
-        mTaskManagerButton.setClickable(showTask() && clickable);
     }
 
     private boolean showWeather() {
@@ -249,11 +237,6 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
     private boolean showTorchButton() {
         return Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.STATUS_BAR_EXPANDED_HEADER_SHOW_TORCH_BUTTON, 0) == 1;
-    }
-
-    private boolean showTask() {
-        return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.ENABLE_TASK_MANAGER, 0) == 1;
     }
 
     @Override
@@ -363,7 +346,6 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
         mCarrierIconView.setColorFilter(color, Mode.MULTIPLY);
         mQsSettingsButton.setColorFilter(color, Mode.MULTIPLY);
         mQsTorchButton.setColorFilter(color, Mode.MULTIPLY);
-        mTaskManagerButton.setColorFilter(color, Mode.MULTIPLY);
     }
 
     public void setWeatherViewBackground(RippleDrawable background) {
@@ -376,10 +358,6 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
 
     public void setQsTorchBackground(RippleDrawable background) {
         mQsTorchButton.setBackground(background);
-    }
-
-    public void setTaskBackground(RippleDrawable background) {
-        mTaskManagerButton.setBackground(background);
     }
 
     public void setTextColor(int color, boolean isOpaque) {
