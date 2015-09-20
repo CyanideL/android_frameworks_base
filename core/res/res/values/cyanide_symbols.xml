@@ -355,4 +355,6 @@
   <java-symbol type="string" name="three_finger_swipe_gesture_message" />
   <java-symbol type="drawable" name="three_finger_swipe_gesture" />
 
+  <java-symbol type="string" name="default_greeting_welcome" />
+
 </resources>

@@ -6133,6 +6133,30 @@ public final class Settings {
         public static final String LOCKSCREEN_MEDIA_METADATA = "lockscreen_media_metadata";
 
         /**
+         *  Weather to show a greeting on the status bar after unlocking the device
+         * @hide
+         */
+        public static final String STATUS_BAR_GREETING_SHOW_LABEL = "status_bar_greeting_show_label";
+
+        /**
+         *  Label used for the greeting on the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_GREETING_CUSTOM_LABEL = "status_bar_greeting_custom_label";
+
+        /**
+         *  Timeout for the greeting on the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_GREETING_TIMEOUT = "status_bar_greeting_timeout";
+
+        /**
+         *  Color of the greeting label on the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_GREETING_COLOR = "status_bar_greeting_color";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

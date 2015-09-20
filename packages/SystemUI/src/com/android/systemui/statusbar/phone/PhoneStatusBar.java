@@ -35,6 +35,8 @@ import static com.android.systemui.statusbar.phone.BarTransitions.MODE_TRANSPARE
 import static com.android.systemui.statusbar.phone.BarTransitions.MODE_WARNING;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.annotation.ChaosLab;
@@ -103,6 +105,7 @@ import android.service.notification.StatusBarNotification;
 import android.telephony.TelephonyManager;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
+import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
@@ -146,6 +149,7 @@ import android.widget.Toast;
 import com.android.internal.statusbar.StatusBarIcon;
 import com.android.internal.util.cm.ActionUtils;
 import com.android.internal.util.cm.WeatherControllerImpl;
+import com.android.internal.util.cyanide.GreetingTextHelper;
 import com.android.keyguard.KeyguardHostView.OnDismissAction;
 import com.android.keyguard.ViewMediatorCallback;
 import com.android.systemui.BatteryMeterView;
@@ -288,6 +292,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     public static final int FADE_KEYGUARD_START_DELAY = 50;
     public static final int FADE_KEYGUARD_DURATION = 150;
 
+    private static final int GREETING_LABEL_ALWAYS = 0;
+    private static final int GREETING_LABEL_ONCE   = 0;
+    private static final int GREETING_LABEL_HIDDEN = 2;
+
     // Weather temperature
     public static final int FONT_NORMAL = 0;
     public static final int FONT_ITALIC = 1;
@@ -416,6 +424,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private long mKeyguardFadingAwayDuration;
 
     int mKeyguardMaxNotificationCount;
+
+    private LinearLayout mGreetingLabelLayout;
+    private TextView mGreetingLabel;
+    private int mShowGreetingLabel;
+    private boolean mHideGreetingLabel = false;
+    private int mGreetingLabelTimeout;
 
     // carrier/wifi label
     private TextView mCarrierLabel;
@@ -627,6 +641,18 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.LOCKSCREEN_HIDE_TILES_WITH_SENSITIVE_DATA),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_GREETING_SHOW_LABEL),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_GREETING_CUSTOM_LABEL),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_GREETING_TIMEOUT),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_GREETING_COLOR),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -743,6 +769,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     || uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_WEATHER_NUMBER_OF_NOTIFICATION_ICONS))) {
                     setWeatherTempVisibility();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_GREETING_SHOW_LABEL))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_GREETING_CUSTOM_LABEL))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_GREETING_TIMEOUT))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_GREETING_COLOR))) {
+                updateGreetingLabelSettings();
             }
             update();
         }
@@ -1358,6 +1393,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         // figure out which pixel-format to use for the status bar.
         mPixelFormat = PixelFormat.OPAQUE;
 
+        mGreetingLabelLayout = (LinearLayout) mStatusBarView.findViewById(R.id.status_bar_greeting_label_layout);
+        mGreetingLabel = (TextView) mStatusBarView.findViewById(R.id.status_bar_greeting_label);
         mSystemIconArea = (LinearLayout) mStatusBarView.findViewById(R.id.system_icon_area);
         mSystemIcons = (LinearLayout) mStatusBarView.findViewById(R.id.system_icons);
         mStatusIcons = (LinearLayout)mStatusBarView.findViewById(R.id.statusIcons);
@@ -1683,6 +1720,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         startGlyphRasterizeHack();
         setKeyguardTextAndIconColors();
+        updateGreetingLabelSettings();
         updateBatteryLevelTextColor();
         setCyanideLogoVisibility();
         setWeatherTempVisibility();
@@ -2928,6 +2966,33 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
+    private void updateGreetingLabelSettings() {
+        final ContentResolver resolver = mContext.getContentResolver();
+
+        mShowGreetingLabel = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_GREETING_SHOW_LABEL,
+                GREETING_LABEL_ONCE);
+        mGreetingLabelTimeout = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_GREETING_TIMEOUT, 400);
+        final int color = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_GREETING_COLOR, 0xffffffff);
+
+        setGreetingLabelText();
+        mGreetingLabel.setTextColor(color);
+    }
+
+    private void setGreetingLabelText() {
+        final String greeting = Settings.System.getString(
+                mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_GREETING_CUSTOM_LABEL);
+
+        if (greeting == null || greeting.isEmpty()) {
+            mGreetingLabel.setText(GreetingTextHelper.getDefaultGreetingText(mContext));
+        } else {
+            mGreetingLabel.setText(greeting);
+        }
+    }
+
     private void setCyanideLogoVisibility() {
         final ContentResolver resolver = mContext.getContentResolver();
 
@@ -3074,7 +3139,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     /**
      * State is one or more of the DISABLE constants from StatusBarManager.
      */
-    public void disable(int state, boolean animate) {
+    public void disable(int state, final boolean animate) {
         mDisabledUnmodified = state;
         state = adjustDisableFlags(state);
         final int old = mDisabled;
@@ -3157,7 +3222,32 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 }
                 animateStatusBarHide(mNotificationIconArea, animate);
             } else {
-                animateStatusBarShow(mNotificationIconArea, animate);
+                if (mShowGreetingLabel != GREETING_LABEL_HIDDEN && !mHideGreetingLabel) {
+                    if (animate) {
+                        if (mClockLocation == Clock.STYLE_CLOCK_CENTER && mShowClock) {
+                            mCenterClockLayout.setVisibility(View.GONE);
+                        }
+                        mSystemIconArea.setVisibility(View.GONE);
+                        mGreetingLabelLayout.setVisibility(View.VISIBLE);
+                        mGreetingLabelLayout.animate().cancel();
+                        mGreetingLabelLayout.animate()
+                                .alpha(1f)
+                                .setDuration(400)
+                                .setInterpolator(ALPHA_IN)
+                                .setStartDelay(50)
+                                .withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                greetingLabelAnimatorFadeOut(animate);
+                            }
+                        });
+                    } else {
+                        greetingLabelAnimatorFadeOut(animate);
+                    }
+                    mHideGreetingLabel = true;
+                } else {
+                    animateStatusBarShow(mNotificationIconArea, animate);
+                }
             }
         }
 
@@ -3294,6 +3384,45 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     @Override  // UnlockMethodCache.OnUnlockMethodChangedListener
     public void onUnlockMethodStateChanged() {
         logStateToEventlog();
+    }
+
+    protected void greetingLabelAnimatorFadeOut(final boolean animate) {
+        mGreetingLabelLayout.animate().cancel();
+        mGreetingLabelLayout.animate()
+                .alpha(0f)
+                .setDuration(400)
+                .setStartDelay(mGreetingLabelTimeout)
+                .setInterpolator(ALPHA_OUT)
+                .withEndAction(new Runnable() {
+            @Override
+            public void run() {
+                mGreetingLabelLayout.setVisibility(View.GONE);
+
+                AnimatorSet anims = new AnimatorSet();
+                ArrayList<Animator> animList = new ArrayList<Animator>();
+
+                if (mClockLocation == Clock.STYLE_CLOCK_CENTER && mShowClock) {
+                    animList.add(fadeInAnimator(mCenterClockLayout));
+                }
+                animList.add(fadeInAnimator(mSystemIconArea));
+                animList.add(fadeInAnimator(mNotificationIconArea));
+
+
+                anims.playTogether(animList);
+                anims.start();
+            }
+        });
+    }
+
+    public ObjectAnimator fadeInAnimator(final View v) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(v, "alpha", 0f, 1f);
+        animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    v.setVisibility(View.VISIBLE);
+                }
+            });
+        return animator;
     }
 
     /**
@@ -4502,6 +4631,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
             else if (Intent.ACTION_SCREEN_OFF.equals(action)) {
                 mScreenOn = false;
+                if (mShowGreetingLabel == GREETING_LABEL_ALWAYS) {
+                    mHideGreetingLabel = false;
+                }
                 notifyNavigationBarScreenOn(false);
                 notifyHeadsUpScreenOn(false);
                 finishBarAnimations();
