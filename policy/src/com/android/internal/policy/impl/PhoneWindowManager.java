@@ -432,7 +432,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     int mCurrentAppOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
     boolean mHasSoftInput = false;
     boolean mTranslucentDecorEnabled = true;
-    int mBackKillTimeout;
 
     int mDeviceHardwareKeys;
 
@@ -1968,9 +1967,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         mScreenshotChordEnabled = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_enableScreenshotChord);
-
-        mBackKillTimeout = mContext.getResources().getInteger(
-                com.android.internal.R.integer.config_backKillTimeout);
 
         mGlobalKeyManager = new GlobalKeyManager(mContext);
 
@@ -3759,10 +3755,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     voiceIntent.putExtra(RecognizerIntent.EXTRA_SECURE, true);
                 }
                 startActivityAsUser(voiceIntent, UserHandle.CURRENT_OR_SELF);
-            }
-        } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (down && repeatCount == 0) {
-                mHandler.postDelayed(mBackLongPress, mBackKillTimeout);
             }
         } else if (keyCode == KeyEvent.KEYCODE_SYSRQ) {
             if (down && repeatCount == 0) {
