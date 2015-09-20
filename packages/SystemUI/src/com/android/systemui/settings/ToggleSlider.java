@@ -183,7 +183,7 @@ public class ToggleSlider extends RelativeLayout {
             new int[] {-com.android.internal.R.attr.state_checked}
         };
         int colors[] = new int[] {
-            0xff009688, // Material deep teal 500
+            iconColor,
             iconColor
         };
         ColorStateList color = new ColorStateList(states, colors);

@@ -66,7 +66,7 @@ public class ThemesButton extends QSButton {
         Intent intent = new Intent("android.intent.action.MAIN");
         intent.addCategory(CATEGORY_THEME_CHOOSER);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        mContext.startActivityAsUser(intent, new UserHandle(UserHandle.USER_CURRENT));
+        mQSBar.startSettingsActivity(intent);
     }
 
     @Override

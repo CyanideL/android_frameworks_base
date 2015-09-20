@@ -81,6 +81,7 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
 
     private ImageView mQsSettingsButton;
     private ImageView mQsTorchButton;
+    private ImageView mCyanideButton;
 
     private Drawable mMobileSignalIcon;
     private Drawable mWifiSignalIcon;
@@ -146,8 +147,60 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
         mWeatherText = (TextView) findViewById(R.id.expanded_panel_weather_text);
 
         mQsSettingsButton = (ImageView) findViewById(R.id.qs_settings_button);
+        mCyanideButton = (ImageView) findViewById(R.id.cyanide_button);
         mQsTorchButton = (ImageView) findViewById(R.id.qs_torch_button);
         mQsTorchButton.setAlpha(128);
+
+        mCarrierIconView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
+                startCarrierActivity();
+            }
+        });
+
+        mCarrierIconView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
+                startCarrierLongActivity();
+            return true;
+            }
+        });
+
+        mWifiIconView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
+                startWifiActivity();
+            }
+        });
+
+        mWifiIconView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
+                startWifiLongActivity();
+            return true;
+            }
+        });
+
+        mBatteryMeterView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
+                startBatteryActivity();
+            }
+        });
+
+        mBatteryMeterView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
+                startBatteryLongActivity();
+            return true;
+            }
+        });
 
         mWeatherView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,6 +215,23 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
             public boolean onLongClick(View v) {
                 doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
                 startWeatherActivity();
+            return true;
+            }
+        });
+
+        mCyanideButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
+                startCyanideSettingsActivity();
+            }
+        });
+
+        mCyanideButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
+                startCyanideLongSettingsActivity();
             return true;
             }
         });
@@ -216,17 +286,27 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
         mWeatherView.setVisibility(showWeather() ? View.VISIBLE : View.INVISIBLE);
         mQsSettingsButton.setVisibility(showQsButton() ? View.VISIBLE : View.INVISIBLE);
         mQsTorchButton.setVisibility(showTorchButton() ? View.VISIBLE : View.INVISIBLE);
+        mCyanideButton.setVisibility(showCyanideButton() ? View.VISIBLE : View.INVISIBLE);
     }
 
     public void updateClickTargets(boolean clickable) {
         mWeatherView.setClickable(showWeather() && clickable);
         mQsSettingsButton.setClickable(showQsButton() && clickable);
         mQsTorchButton.setClickable(showTorchButton() && clickable);
+        mBatteryMeterView.setClickable(clickable);
+        mWifiIconView.setClickable(clickable);
+        mCarrierIconView.setClickable(clickable);
+        mCyanideButton.setClickable(showCyanideButton() && clickable);
     }
 
     private boolean showWeather() {
         return Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.STATUS_BAR_EXPANDED_HEADER_SHOW_WEATHER, 0) == 1;
+    }
+
+    private boolean showCyanideButton() {
+        return Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.SHOW_CYANIDE_BUTTON, 1) == 1;
     }
 
     private boolean showQsButton() {
@@ -346,6 +426,23 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
         mCarrierIconView.setColorFilter(color, Mode.MULTIPLY);
         mQsSettingsButton.setColorFilter(color, Mode.MULTIPLY);
         mQsTorchButton.setColorFilter(color, Mode.MULTIPLY);
+        mCyanideButton.setColorFilter(color, Mode.MULTIPLY);
+    }
+
+    public void setCyanideBackground(RippleDrawable background) {
+        mCyanideButton.setBackground(background);
+    }
+
+    public void setCarrierBackground(RippleDrawable background) {
+        mCarrierIconView.setBackground(background);
+    }
+
+    public void setWifiBackground(RippleDrawable background) {
+        mWifiIconView.setBackground(background);
+    }
+
+    public void setBatteryBackground(RippleDrawable background) {
+        mBatteryMeterView.setBackground(background);
     }
 
     public void setWeatherViewBackground(RippleDrawable background) {
@@ -450,6 +547,44 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
                 Settings.System.STATUS_BAR_EXPANDED_HEADER_SHOW_WEATHER_LOCATION, 1) == 1;
     }
 
+    private void startCarrierActivity() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.android.settings",
+            "com.android.settings.Settings$WirelessSettingsActivity");
+        mActivityStarter.startActivity(intent, true /* dismissShade */);
+    }
+
+    private void startCarrierLongActivity() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.android.settings",
+            "com.android.settings.Settings$DataUsageSummaryActivity");
+        mActivityStarter.startActivity(intent, true /* dismissShade */);
+    }
+
+    private void startWifiActivity() {
+        mActivityStarter.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS),
+        true /* dismissShade */);
+    }
+
+    private void startWifiLongActivity() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.android.settings",
+            "com.android.settings.Settings$TetherSettingsActivity");
+        mActivityStarter.startActivity(intent, true /* dismissShade */);
+    }
+
+    private void startBatteryActivity() {
+        mActivityStarter.startActivity(new Intent(Intent.ACTION_POWER_USAGE_SUMMARY),
+        true /* dismissShade */);
+    }
+
+    private void startBatteryLongActivity() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.android.settings",
+            "com.android.settings.Settings$BatterySaverSettingsActivity");
+        mActivityStarter.startActivity(intent, true /* dismissShade */);
+    }
+
     private void startForecastActivity() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -478,6 +613,50 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
             mActivityStarter.startActivity(intent, true /* dismissShade */);
         }
     }
+
+    private void startCyanideSettingsActivity() {
+        Intent cyanideShortcutIntent = null;
+        String cyanideShortcutIntentUri = Settings.System.getStringForUser(
+                mContext.getContentResolver(), Settings.System.CYANIDE_SHORTCUT, UserHandle.USER_CURRENT);
+        if(cyanideShortcutIntentUri != null) {
+            try {
+                cyanideShortcutIntent = Intent.parseUri(cyanideShortcutIntentUri, 0);
+            } catch (URISyntaxException e) {
+                cyanideShortcutIntent = null;
+            }
+        }
+
+        if(cyanideShortcutIntent != null) {
+            mActivityStarter.startActivity(cyanideShortcutIntent, true);
+        } else {
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName("com.android.settings",
+                "com.android.settings.Settings$MainSettingsActivity"));
+            mActivityStarter.startActivity(intent, true /* dismissShade */);
+        }
+    }
+
+    private void startCyanideLongSettingsActivity() {
+        Intent cyanideLongShortcutIntent = null;
+        String cyanideLongShortcutIntentUri = Settings.System.getStringForUser(
+                mContext.getContentResolver(), Settings.System.CYANIDE_LONG_SHORTCUT, UserHandle.USER_CURRENT);
+        if(cyanideLongShortcutIntentUri != null) {
+            try {
+                cyanideLongShortcutIntent = Intent.parseUri(cyanideLongShortcutIntentUri, 0);
+            } catch (URISyntaxException e) {
+                cyanideLongShortcutIntent = null;
+            }
+        }
+
+        if(cyanideLongShortcutIntent != null) {
+            mActivityStarter.startActivity(cyanideLongShortcutIntent, true);
+        } else {
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName("com.android.settings",
+                "com.android.settings.Settings$CyanideCentralActivity"));
+             mActivityStarter.startActivity(intent, true /* dismissShade */);
+         }
+     }
 
     private void startQsSettingsActivity() {
         Intent QSShortcutIntent = null;
