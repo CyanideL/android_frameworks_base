@@ -4266,24 +4266,6 @@ public final class Settings {
 		public static final String STATUS_BAR_CYANIDE_LOGO_COLOR = "status_bar_cyanide_logo_color";
 
         /**
-         * Status bar greeting
-         * @hide
-         */
-        public static final String STATUS_BAR_GREETING = "status_bar_greeting";
-
-        /**
-         * Status bar greeting text color
-         * @hide
-         */
-        public static final String STATUS_BAR_GREETING_COLOR = "status_bar_greeting_color";
-        
-        /**
-		 * Status bar greeting timeout
-		 * @hide
-		 */
-		public static final String STATUS_BAR_GREETING_TIMEOUT = "status_bar_greeting_timeout";
-
-        /**
          * Battery status style on the status bar
          * 0 - Icon portrait
          * 1 - Icon landscape
@@ -6322,7 +6304,6 @@ public final class Settings {
             DOUBLE_TAP_SLEEP_ANYWHERE,
             CLOCK_USE_SECOND,
             DISABLE_FC_NOTIFICATIONS,
-            STATUS_BAR_GREETING,
             STATUS_BAR_CYANIDE_LOGO_SHOW,
             LOCK_SCREEN_BUTTONS_BAR_RIPPLE_COLOR_MODE,
             LOCK_SCREEN_BUTTONS_BAR_ICON_COLOR_MODE,
