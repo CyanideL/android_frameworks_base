@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.ContentResolver;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -376,6 +377,9 @@ public class RecentsView extends FrameLayout {
         updateTimeVisibility();
         setClearAllVisibility();
         updateFontStyle();
+        updateMemTextColor();
+        updateMemBarBgColor();
+        updateMemBarColor();
     }
 
     @Override
@@ -530,6 +534,9 @@ public class RecentsView extends FrameLayout {
         if (mTaskStackView.getVisibility() != GONE) {
             mTaskStackView.measure(widthMeasureSpec, heightMeasureSpec);
         showMemDisplay();
+        updateMemTextColor();
+        updateMemBarBgColor();
+        updateMemBarColor();
         }
 
         updateTimeVisibility();
@@ -650,6 +657,9 @@ public class RecentsView extends FrameLayout {
         mMemBar.setVisibility(View.VISIBLE);
 
         updateMemoryStatus();
+        updateMemTextColor();
+        updateMemBarBgColor();
+        updateMemBarColor();
         return true;
     }
 
@@ -664,6 +674,10 @@ public class RecentsView extends FrameLayout {
             mMemText.setText("Free RAM: " + String.valueOf(available) + "MB");
             mMemBar.setMax(max);
             mMemBar.setProgress(available);
+
+            updateMemTextColor();
+            updateMemBarBgColor();
+            updateMemBarColor();
     }
 
     public long getTotalMemory() {
@@ -671,6 +685,36 @@ public class RecentsView extends FrameLayout {
         mAm.getMemoryInfo(memInfo);
         long totalMem = memInfo.totalMem;
         return totalMem;
+    }
+
+    private void updateMemTextColor() {
+        ContentResolver resolver = mContext.getContentResolver();
+        int color = Settings.System.getInt(resolver,
+                Settings.System.MEM_TEXT_COLOR, 0xffffffff);
+
+        if (mMemText != null) {
+            mMemText.setTextColor(color);
+        }
+    }
+
+    private void updateMemBarBgColor() {
+        ContentResolver resolver = mContext.getContentResolver();
+        int color = Settings.System.getInt(resolver,
+                Settings.System.MEMORY_BAR_COLOR, 0xffffffff);
+
+        if (mMemBar != null) {
+            mMemBar.setProgressBackgroundTintList(ColorStateList.valueOf(color));
+        }
+    }
+
+    private void updateMemBarColor() {
+        ContentResolver resolver = mContext.getContentResolver();
+        int color = Settings.System.getInt(resolver,
+                Settings.System.MEMORY_BAR_USED_COLOR, 0xffffffff);
+
+        if (mMemBar != null) {
+            mMemBar.setProgressTintList(ColorStateList.valueOf(color));
+        }
     }
 
 
