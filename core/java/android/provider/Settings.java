@@ -2493,6 +2493,24 @@ public final class Settings {
 		public static final String QS_TEXT_COLOR = "qs_text_color";
 
         /**
+         *  Color of the used portion of the qs brightness slider
+         * @hide
+         */
+        public static final String QS_BRIGHTNESS_SLIDER_COLOR = "qs_brightness_slider_color";
+
+        /**
+         *  Color of the unused portion of the qs brightness slider
+         * @hide
+         */
+        public static final String QS_BRIGHTNESS_SLIDER_BG_COLOR = "qs_brightness_slider_bg_color";
+
+        /**
+         *  Color of the qs brightness slider icon
+         * @hide
+         */
+        public static final String QS_BRIGHTNESS_SLIDER_ICON_COLOR = "qs_brightness_slider_icon_color";
+
+        /**
          *
          * OverScroll effects configuration
          * @hide
@@ -4906,6 +4924,18 @@ public final class Settings {
          *  @hide
          */
         public static final String MEM_TEXT_COLOR = "mem_text_color";
+
+        /**
+         *  Color of the memory bar
+         * @hide
+         */
+        public static final String MEMORY_BAR_COLOR = "memory_bar_color";
+
+        /**
+         *  Color of the used portion of the memory bar
+         * @hide
+         */
+        public static final String MEMORY_BAR_USED_COLOR = "memory_bar_used_color";
 
         /**
          * Display color temperature adjustment mode, one of DAY (default), NIGHT, or AUTO.

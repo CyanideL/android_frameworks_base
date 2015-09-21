@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.ContentResolver;
 import android.content.res.Resources;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
@@ -424,6 +425,9 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
             }
         }
         showMemDisplay();
+        updateMemTextColor();
+        updateMemBarBgColor();
+        updateMemBarColor();
 
         enableShakeCleanByUser = Settings.System.getInt(mContext.getContentResolver(),
             Settings.System.SHAKE_TO_CLEAN_RECENTS, 0) == 1;
@@ -553,6 +557,9 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
         mMemBar.setVisibility(View.VISIBLE);
 
         updateMemoryStatus();
+        updateMemTextColor();
+        updateMemBarBgColor();
+        updateMemBarColor();
         return true;
     }
 
@@ -565,10 +572,11 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
             int available = (int)(memInfo.availMem / 1048576L);
             int max = (int)(getTotalMemory() / 1048576L);
             mMemText.setText("Free RAM: " + String.valueOf(available) + "MB");
-            mMemText.setTextColor(Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.MEM_TEXT_COLOR, 0xffffffff));
             mMemBar.setMax(max);
             mMemBar.setProgress(available);
+            updateMemTextColor();
+            updateMemBarBgColor();
+            updateMemBarColor();
     }
 
     public long getTotalMemory() {
@@ -577,7 +585,6 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
         long totalMem = memInfo.totalMem;
         return totalMem;
     }
-
 
     private boolean dismissAll() {
         return Settings.System.getInt(mContext.getContentResolver(),
@@ -624,6 +631,39 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
                         return true;
              }
         });
+        updateMemTextColor();
+        updateMemBarBgColor();
+        updateMemBarColor();
+    }
+
+    private void updateMemTextColor() {
+        ContentResolver resolver = mContext.getContentResolver();
+        int color = Settings.System.getInt(resolver,
+                Settings.System.MEM_TEXT_COLOR, 0xffffffff);
+
+        if (mMemText != null) {
+            mMemText.setTextColor(color);
+        }
+    }
+
+    private void updateMemBarBgColor() {
+        ContentResolver resolver = mContext.getContentResolver();
+        int color = Settings.System.getInt(resolver,
+                Settings.System.MEMORY_BAR_COLOR, 0xffffffff);
+
+        if (mMemBar != null) {
+            mMemBar.setProgressBackgroundTintList(ColorStateList.valueOf(color));
+        }
+    }
+
+    private void updateMemBarColor() {
+        ContentResolver resolver = mContext.getContentResolver();
+        int color = Settings.System.getInt(resolver,
+                Settings.System.MEMORY_BAR_USED_COLOR, 0xffffffff);
+
+        if (mMemBar != null) {
+            mMemBar.setProgressTintList(ColorStateList.valueOf(color));
+        }
     }
 
     /**

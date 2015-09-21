@@ -1,6 +1,8 @@
 /*
 * Copyright (C) 2015 DarkKat
 *
+*  Additional Options 2015 CyanideL
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -22,6 +24,21 @@ import android.provider.Settings;
 public class QSColorHelper {
 
     private static int WHITE = 0xffffffff;
+
+    public static int getBrightnessSliderColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.QS_BRIGHTNESS_SLIDER_COLOR, WHITE);
+    }
+
+    public static int getBrightnessSliderEmptyColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.QS_BRIGHTNESS_SLIDER_BG_COLOR, WHITE);
+    }
+
+    public static int getBrightnessSliderIconColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.QS_BRIGHTNESS_SLIDER_ICON_COLOR, WHITE);
+    }
 
     public static int getIconColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),

@@ -17,12 +17,14 @@
 package com.android.systemui.settings;
 
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.PorterDuff.Mode;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -68,6 +70,7 @@ public class ToggleSlider extends RelativeLayout {
 
     public ToggleSlider(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
+
     }
 
     public ToggleSlider(Context context, AttributeSet attrs, int defStyle) {
@@ -165,26 +168,29 @@ public class ToggleSlider extends RelativeLayout {
     }
 
     public void setColors() {
+        ContentResolver resolver = mContext.getContentResolver();
         final int iconColor = QSColorHelper.getIconColor(mContext);
-        final int progressBarBgColor = (179 << 24) | (iconColor & 0x00ffffff); // Icon color with a transparency of 70%
         final int rippleColor = QSColorHelper.getRippleColor(mContext);
+        final int sliderColor = QSColorHelper.getBrightnessSliderColor(mContext);
+        final int sliderEmptyColor = QSColorHelper.getBrightnessSliderEmptyColor(mContext);
+        final int sliderIconColor = QSColorHelper.getBrightnessSliderIconColor(mContext);
         final int textColor = QSColorHelper.getTextColor(mContext);
-        mSlider.getThumb().setColorFilter(iconColor, Mode.MULTIPLY);
-        mSlider.setProgressBackgroundTintList(
-                ColorStateList.valueOf(progressBarBgColor));
-        updateToggleIconColor(iconColor);
+        mSlider.getThumb().setColorFilter(sliderIconColor, Mode.MULTIPLY);
+        mSlider.setProgressBackgroundTintList(ColorStateList.valueOf(sliderEmptyColor));
+        mSlider.setProgressTintList(ColorStateList.valueOf(sliderColor));
+        updateToggleIconColor(sliderIconColor);
         updateRippleColor(rippleColor);
         mToggle.setTextColor(textColor);
     }
 
-    private void updateToggleIconColor(int iconColor) {
+    private void updateToggleIconColor(int sliderIconColor) {
         int states[][] = new int[][] {
             new int[] {com.android.internal.R.attr.state_checked},
             new int[] {-com.android.internal.R.attr.state_checked}
         };
         int colors[] = new int[] {
-            iconColor,
-            iconColor
+            sliderIconColor,
+            sliderIconColor
         };
         ColorStateList color = new ColorStateList(states, colors);
 

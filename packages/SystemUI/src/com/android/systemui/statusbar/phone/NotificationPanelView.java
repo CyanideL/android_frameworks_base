@@ -2170,6 +2170,12 @@ public class NotificationPanelView extends PanelView implements
                     Settings.System.QS_TYPE), false, this);
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.QS_SHOW_BRIGHTNESS_SLIDER), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_BG_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_ICON_COLOR), false, this);
             update();
         }
 
@@ -2196,6 +2202,12 @@ public class NotificationPanelView extends PanelView implements
                     Settings.Secure.QS_SHOW_BRIGHTNESS_SLIDER))) {
                 setShowBrightnessSlider();
             } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_COLOR))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_BG_COLOR))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_ICON_COLOR))
+                || uri.equals(Settings.System.getUriFor(
                     Settings.System.QS_ICON_COLOR))
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.QS_RIPPLE_COLOR))
