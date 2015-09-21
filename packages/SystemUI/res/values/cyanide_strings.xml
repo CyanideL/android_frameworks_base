@@ -16,9 +16,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     
-    <!-- Greeting -->
-    <string name="cyanide_label">CyanideL</string>
-    
     <!-- Cyanide Action Stuff-->
     <string name="action_null">Blank</string>
     <string name="action_home">Default: Home</string>
@@ -127,6 +124,7 @@
     
     <!-- Random Cyanide Strings -->
     <string name="recents_empty">CyanideL Is Fully Optimized</string>
+    <string name="cyanide_empty_shade">Poisoned By CyanideL</string>
     
     <!-- App sidebar -->
     <string name="default_folder_text">Folder</string>
