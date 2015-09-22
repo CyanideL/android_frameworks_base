@@ -445,7 +445,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             Intent intent = new Intent();
             intent.setComponent(new ComponentName(
                     "com.android.settings",
-                    "com.android.settings.Settings$QSTilesSettingsActivity"));
+                    "com.android.settings.Settings$StatusBarSettingsSettingsActivity"));
                 mActivityStarter.startActivity(intent, true /* dismissShade */);
         } else if (v == mHeadsUpButton) {
             startHeadsUpLongClickActivity();
