@@ -4308,9 +4308,11 @@ public final class Settings {
         /**
          * Battery charging animation speed on the status bar
          * 0 - Disabled
-         * 1 - Slow
+         * 1 - Very slow
+         * 2 - Slow
          * 3 - Normal (default)
-         * 5 - fast
+         * 4 - Fast
+         * 5 - Very fast
          * default: 3
          * @hide
          */
