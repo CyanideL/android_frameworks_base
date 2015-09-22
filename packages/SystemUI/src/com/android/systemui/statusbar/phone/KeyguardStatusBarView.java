@@ -63,6 +63,7 @@ public class KeyguardStatusBarView extends RelativeLayout
 
     private BatteryController mBatteryController;
     private KeyguardUserSwitcher mKeyguardUserSwitcher;
+    private UserInfoController mUserInfoController;
 
     private int mShowCarrierLabel;
     private TextView mCarrierLabel;
@@ -200,13 +201,17 @@ public class KeyguardStatusBarView extends RelativeLayout
         mBatteryLevel.setBatteryController(batteryController);
     }
 
-    public void setUserInfoController(UserInfoController userInfoController) {
-        userInfoController.addListener(new UserInfoController.OnUserInfoChangedListener() {
+    private UserInfoController.OnUserInfoChangedListener mUserInfoChangedListener =
+        new UserInfoController.OnUserInfoChangedListener() {
             @Override
             public void onUserInfoChanged(String name, Drawable picture) {
                 mMultiUserAvatar.setImageDrawable(picture);
             }
-        });
+        };
+
+    public void setUserInfoController(UserInfoController userInfoController) {
+        mUserInfoController = userInfoController;
+        userInfoController.addListener(mUserInfoChangedListener);
     }
 
     @Override
@@ -306,8 +311,12 @@ public class KeyguardStatusBarView extends RelativeLayout
     }
 
     @Override
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        if (mUserInfoController != null) {
+            mUserInfoController.removeListener(mUserInfoChangedListener);
+            mUserInfoController = null;
+        }
     }
 
     public void updateLogoColor(int color) {

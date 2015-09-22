@@ -135,6 +135,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     // Power menu button
     private ImageView mStatusBarPowerMenu;
 
+    private UserInfoController mUserInfoController;
+
     private ContentObserver mContentObserver = new ContentObserver(new Handler()) {
    	 @Override
     	 public void onChange(boolean selfChange, Uri uri) {
@@ -240,6 +242,18 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         FontSizeUtils.updateFontSize(this, android.R.id.title, R.dimen.qs_detail_header_text_size);
         FontSizeUtils.updateFontSize(this, android.R.id.toggle, R.dimen.qs_detail_header_text_size);
         FontSizeUtils.updateFontSize(mAmPm, R.dimen.qs_time_collapsed_size);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        setListening(false);
+        setQSPanel(null);
+        if (mUserInfoController != null) {
+            mUserInfoController.removeListener(mUserInfoChangedListener);
+            mUserInfoController = null;
+        }
+        getOverlay().clear();
     }
 
     private void requestCaptureValues() {
@@ -386,13 +400,17 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         invalidateOutline();
     }
 
+    private UserInfoController.OnUserInfoChangedListener mUserInfoChangedListener =
+            new UserInfoController.OnUserInfoChangedListener() {
+                @Override
+                public void onUserInfoChanged(String name, Drawable picture) {
+                    mMultiUserAvatar.setImageDrawable(picture);
+                }
+            };
+
     public void setUserInfoController(UserInfoController userInfoController) {
-        userInfoController.addListener(new UserInfoController.OnUserInfoChangedListener() {
-            @Override
-            public void onUserInfoChanged(String name, Drawable picture) {
-                mMultiUserAvatar.setImageDrawable(picture);
-            }
-        });
+        mUserInfoController = userInfoController;
+        userInfoController.addListener(mUserInfoChangedListener);
     }
 
     @Override
@@ -487,6 +505,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     }
 
     public void setQSPanel(QSPanel qsp) {
+        if (qsp == null && mQSPanel != null) {
+            mQSPanel.setCallback(null);
+        }
         mQSPanel = qsp;
         if (mQSPanel != null) {
             mQSPanel.setCallback(mQsPanelCallback);

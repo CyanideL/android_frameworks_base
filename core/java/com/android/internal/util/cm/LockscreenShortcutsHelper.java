@@ -78,6 +78,11 @@ public class LockscreenShortcutsHelper {
         }
     };
 
+    public void cleanup() {
+        mContext.getContentResolver().unregisterContentObserver(mObserver);
+        mListener = null;
+    }
+
     public static class TargetInfo {
         public Drawable icon;
         public boolean colorizeCustomIcons;
