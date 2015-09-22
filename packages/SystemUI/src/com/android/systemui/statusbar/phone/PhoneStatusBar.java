@@ -430,6 +430,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private int mShowGreetingLabel;
     private boolean mHideGreetingLabel = false;
     private int mGreetingLabelTimeout;
+    private int mGreetingFontSize = 12;
+    private boolean mGreetingLabelPreview;
+
+    private GreetingLabelObserver mGreetingLabelObserver;
 
     // carrier/wifi label
     private TextView mCarrierLabel;
@@ -1218,6 +1222,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         addNavigationBar(false);
 
+        mGreetingLabelObserver = new GreetingLabelObserver(mHandler);
+        mGreetingLabelObserver.observe();
+
         mSettingsObserver.observe();
 
         // Developer options - Force Navigation bar
@@ -1721,6 +1728,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         startGlyphRasterizeHack();
         setKeyguardTextAndIconColors();
         updateGreetingLabelSettings();
+        updateGreetingFontSize();
         updateBatteryLevelTextColor();
         setCyanideLogoVisibility();
         setWeatherTempVisibility();
@@ -2981,6 +2989,28 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mGreetingLabel.setTextColor(color);
     }
 
+    class GreetingLabelObserver extends ContentObserver {
+        GreetingLabelObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.STATUS_BAR_GREETING_FONT_SIZE),
+                    false, this, UserHandle.USER_CURRENT);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_GREETING_SHOW_LABEL_PREVIEW),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateGreetingFontSize();
+            previewGreetingLabelText();
+        }
+    }
+
     private void setGreetingLabelText() {
         final String greeting = Settings.System.getString(
                 mContext.getContentResolver(),
@@ -2990,6 +3020,40 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mGreetingLabel.setText(GreetingTextHelper.getDefaultGreetingText(mContext));
         } else {
             mGreetingLabel.setText(greeting);
+        }
+    }
+
+    private void updateGreetingFontSize() {
+        ContentResolver resolver = mContext.getContentResolver();
+
+        mGreetingFontSize = Settings.System.getIntForUser(resolver,
+                Settings.System.STATUS_BAR_GREETING_FONT_SIZE, 12,
+                UserHandle.USER_CURRENT);
+
+        mGreetingLabel.setTextSize(mGreetingFontSize);
+    }
+
+    private void previewGreetingLabelText() {
+        ContentResolver resolver = mContext.getContentResolver();
+
+        mGreetingLabelPreview = Settings.System.getIntForUser(resolver,
+                Settings.System.STATUS_BAR_GREETING_SHOW_LABEL_PREVIEW, 0,
+                UserHandle.USER_CURRENT) == 1;
+
+        if (mGreetingLabelPreview) {
+            mSystemIconArea.setVisibility(View.GONE);
+            if (mClockLocation == Clock.STYLE_CLOCK_CENTER) {
+                mCenterClockLayout.setVisibility(View.GONE);
+            }
+            mGreetingLabelLayout.setAlpha(1f);
+            mGreetingLabelLayout.setVisibility(View.VISIBLE);
+        } else {
+            mGreetingLabelLayout.setVisibility(View.GONE);
+            mGreetingLabelLayout.setAlpha(0f);
+            if (mClockLocation == Clock.STYLE_CLOCK_CENTER) {
+                mCenterClockLayout.setVisibility(View.VISIBLE);
+            }
+            mSystemIconArea.setVisibility(View.VISIBLE);
         }
     }
 

@@ -86,5 +86,9 @@
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textColor">@color/kg_carrier_text</item>
     </style>
+
+    <style name="TextAppearance.StatusBar.Greeting" parent="@*android:style/TextAppearance.StatusBar.Icon">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
 </resources>
 
