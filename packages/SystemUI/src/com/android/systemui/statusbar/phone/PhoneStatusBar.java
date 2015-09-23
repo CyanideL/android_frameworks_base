@@ -438,7 +438,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private boolean mHideGreetingLabel = false;
     private int mGreetingLabelTimeout;
     private int mGreetingFontSize = 12;
-    private boolean mGreetingLabelPreview;
+    private int mGreetingLabelPreview;
 
     private GreetingLabelObserver mGreetingLabelObserver;
 
@@ -3038,7 +3038,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         @Override
         public void onChange(boolean selfChange) {
             updateGreetingFontSize();
-            previewGreetingLabelText();
+            previewGreetingLabel();
         }
     }
 
@@ -3064,27 +3064,57 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mGreetingLabel.setTextSize(mGreetingFontSize);
     }
 
-    private void previewGreetingLabelText() {
+    private void previewGreetingLabel() {
         ContentResolver resolver = mContext.getContentResolver();
 
         mGreetingLabelPreview = Settings.System.getIntForUser(resolver,
                 Settings.System.STATUS_BAR_GREETING_SHOW_LABEL_PREVIEW, 0,
-                UserHandle.USER_CURRENT) == 1;
+                UserHandle.USER_CURRENT);
 
-        if (mGreetingLabelPreview) {
-            mSystemIconArea.setVisibility(View.GONE);
+        if (mGreetingLabelPreview == 1) {
+            AnimatorSet anims = new AnimatorSet();
+            ArrayList<Animator> animList = new ArrayList<Animator>();
+
             if (mClockLocation == Clock.STYLE_CLOCK_CENTER) {
-                mCenterClockLayout.setVisibility(View.GONE);
+                animList.add(fadeOutAnimator(mCenterClockLayout));
             }
-            mGreetingLabelLayout.setAlpha(1f);
+            animList.add(fadeOutAnimator(mSystemIconArea));
+            animList.add(fadeOutAnimator(mNotificationIconArea));
+
+            anims.playTogether(animList);
+            anims.start();
             mGreetingLabelLayout.setVisibility(View.VISIBLE);
+            mGreetingLabelLayout.animate().cancel();
+            mGreetingLabelLayout.animate()
+                .alpha(1f)
+                .setDuration(600)
+                .setInterpolator(ALPHA_IN)
+                .setStartDelay(60)
+                .start();
         } else {
-            mGreetingLabelLayout.setVisibility(View.GONE);
-            mGreetingLabelLayout.setAlpha(0f);
-            if (mClockLocation == Clock.STYLE_CLOCK_CENTER) {
-                mCenterClockLayout.setVisibility(View.VISIBLE);
-            }
-            mSystemIconArea.setVisibility(View.VISIBLE);
+            mGreetingLabelLayout.animate().cancel();
+            mGreetingLabelLayout.animate()
+                .alpha(0f)
+                .setDuration(400)
+                .setInterpolator(ALPHA_OUT)
+                .withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    mGreetingLabelLayout.setVisibility(View.GONE);
+
+                    AnimatorSet anims = new AnimatorSet();
+                    ArrayList<Animator> animList = new ArrayList<Animator>();
+
+                    if (mClockLocation == Clock.STYLE_CLOCK_CENTER) {
+                        animList.add(fadeInAnimator(mCenterClockLayout));
+                    }
+                    animList.add(fadeInAnimator(mSystemIconArea));
+                    animList.add(fadeInAnimator(mNotificationIconArea));
+
+                    anims.playTogether(animList);
+                    anims.start();
+                }
+            });
         }
     }
 
@@ -3405,6 +3435,20 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     .setStartDelay(mKeyguardFadingAwayDelay)
                     .start();
         }
+    }
+
+    public ObjectAnimator fadeOutAnimator(final View v) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(v, "alpha", 1f, 0f);
+        animator.setDuration(400);
+        animator.setStartDelay(50);
+        animator.setInterpolator(ALPHA_OUT);
+        animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    v.setVisibility(View.VISIBLE);
+                }
+            });
+        return animator;
     }
 
     @Override
