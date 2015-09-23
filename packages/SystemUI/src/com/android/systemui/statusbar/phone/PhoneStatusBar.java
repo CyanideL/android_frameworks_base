@@ -796,6 +796,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 updateGreetingLabelSettings();
             }
             update();
+            if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_CAN_MOVE))) {
+                prepareNavigationBarView(true);
+            }
         }
 
         public void update() {
