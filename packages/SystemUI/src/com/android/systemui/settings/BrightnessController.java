@@ -271,7 +271,7 @@ public class BrightnessController implements ToggleSlider.Listener {
     public void setColors() {
         mControl.setColors();
         if (mIcon != null) {
-            mIcon.setColorFilter(QSColorHelper.getIconColor(mContext), Mode.MULTIPLY);
+            mIcon.setColorFilter(QSColorHelper.getBrightnessSliderIconColor(mContext), Mode.MULTIPLY);
         }
     }
 

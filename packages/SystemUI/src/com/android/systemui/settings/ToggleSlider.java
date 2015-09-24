@@ -17,14 +17,12 @@
 package com.android.systemui.settings;
 
 import android.content.Context;
-import android.content.ContentResolver;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.PorterDuff.Mode;
-import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -168,8 +166,6 @@ public class ToggleSlider extends RelativeLayout {
     }
 
     public void setColors() {
-        ContentResolver resolver = mContext.getContentResolver();
-        final int iconColor = QSColorHelper.getIconColor(mContext);
         final int rippleColor = QSColorHelper.getRippleColor(mContext);
         final int sliderColor = QSColorHelper.getBrightnessSliderColor(mContext);
         final int sliderEmptyColor = QSColorHelper.getBrightnessSliderEmptyColor(mContext);
