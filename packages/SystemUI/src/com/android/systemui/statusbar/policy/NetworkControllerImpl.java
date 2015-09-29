@@ -529,8 +529,11 @@ public class NetworkControllerImpl extends BroadcastReceiver
             return false;
         }
         for (SubscriptionInfo info : allSubscriptions) {
-            if (!mMobileSignalControllers.containsKey(info.getSubscriptionId())) {
+            int subId = info.getSubscriptionId();
+            if (!mMobileSignalControllers.containsKey(subId)) {
                 return false;
+            } else {
+                mMobileSignalControllers.get(subId).updateSubscriptionInfo(info);
             }
         }
         return true;

@@ -90,8 +90,7 @@ public class NotificationPanelView extends PanelView implements
 
     private KeyguardAffordanceHelper mAfforanceHelper;
     private StatusBarHeaderView mHeader;
-    private View mHeaderCollapsedPanelBackground;
-    private View mHeaderExpandedPanelBackground;
+    private View mHeaderCollapsedPanelLayout;
     private KeyguardUserSwitcher mKeyguardUserSwitcher;
     private KeyguardStatusBarView mKeyguardStatusBar;
     private QSBar mQSBar;
@@ -234,13 +233,10 @@ public class NotificationPanelView extends PanelView implements
     protected void onFinishInflate() {
         super.onFinishInflate();
         mHeader = (StatusBarHeaderView) findViewById(R.id.header);
-        mHeaderCollapsedPanelBackground = mHeader.getCollapsedPanelBackground();
-        if (mHeaderCollapsedPanelBackground != null) {
-            mHeaderCollapsedPanelBackground.setOnClickListener(this);
-        }
-        mHeaderExpandedPanelBackground = mHeader.getExpandedPanelBackground();
-        if (mHeaderExpandedPanelBackground != null) {
-            mHeaderExpandedPanelBackground.setOnClickListener(this);
+        mHeaderCollapsedPanelLayout = mHeader.getCollapsedPanelLayout();
+        mHeader.setOnClickListener(this);
+        if (mHeaderCollapsedPanelLayout != null) {
+            mHeaderCollapsedPanelLayout.setOnClickListener(this);
         }
         mKeyguardStatusBar = (KeyguardStatusBarView) findViewById(R.id.keyguard_header);
         mKeyguardStatusView = (KeyguardStatusView) findViewById(R.id.keyguard_status_view);
@@ -515,8 +511,8 @@ public class NotificationPanelView extends PanelView implements
 
     public void setQsExpansionEnabled(boolean qsExpansionEnabled) {
         mQsExpansionEnabled = qsExpansionEnabled;
-        mHeaderCollapsedPanelBackground.setClickable(qsExpansionEnabled);
-        mHeaderExpandedPanelBackground.setClickable(qsExpansionEnabled);
+        mHeader.setClickable(qsExpansionEnabled);
+        mHeaderCollapsedPanelLayout.setClickable(qsExpansionEnabled);
     }
 
     @Override
@@ -1231,7 +1227,6 @@ public class NotificationPanelView extends PanelView implements
         mHeader.setExpansion(getHeaderExpansionFraction());
         setQsTranslation(height);
         requestScrollerTopPaddingUpdate(false /* animate */);
-        updateNotificationScrim(height);
         if (mKeyguardShowing) {
             updateHeaderKeyguard();
         }
@@ -1258,12 +1253,6 @@ public class NotificationPanelView extends PanelView implements
         } else {
             return getContext().getString(R.string.accessibility_desc_notification_shade);
         }
-    }
-
-    private void updateNotificationScrim(float height) {
-        int startDistance = mQsMinExpansionHeight + mNotificationScrimWaitDistance;
-        float progress = (height - startDistance) / (getQsMaxExpansionHeight() - startDistance);
-        progress = Math.max(0.0f, Math.min(progress, 1.0f));
     }
 
     private float getHeaderExpansionFraction() {
@@ -1826,12 +1815,12 @@ public class NotificationPanelView extends PanelView implements
 
     @Override
     public void onClick(View v) {
-        if (v == mHeaderCollapsedPanelBackground) {
+        if (v == mHeaderCollapsedPanelLayout) {
             onQsExpansionStarted();
             if (mQsExpansionEnabled) {
                 flingSettings(0 /* vel */, true /* expand */);
             }
-        } else if (v == mHeaderExpandedPanelBackground) {
+        } else if (v == mHeader) {
             onQsExpansionStarted();
             if (mQsExpanded) {
                 flingSettings(0 /* vel */, false /* expand */);

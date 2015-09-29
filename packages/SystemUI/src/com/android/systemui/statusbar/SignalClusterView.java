@@ -59,12 +59,11 @@ public class SignalClusterView
 
     private static final int DEFAULT_COLOR = 0xffffffff;
     private static final int DEFAULT_ACTIVITY_COLOR = 0xff000000;
+    Handler mHandler;
 
     NetworkControllerImpl mNC;
     SecurityController mSC;
     private SettingsObserver mObserver;
-
-    Handler mHandler;
 
     private boolean mNoSimsVisible = false;
     private boolean mVpnVisible = false;
@@ -188,7 +187,9 @@ public class SignalClusterView
         mWifiSignalSpacer =           findViewById(R.id.wifi_signal_spacer);
         mMobileSignalGroup = (LinearLayout) findViewById(R.id.mobile_signal_group);
         for (PhoneState state : mPhoneStates) {
-            mMobileSignalGroup.addView(state.mMobileGroup);
+            if (state != null) {
+                mMobileSignalGroup.addView(state.mMobileGroup);
+            }
         }
 
         mObserver.observe();
@@ -244,7 +245,10 @@ public class SignalClusterView
             int activityIcon, int typeIcon, String contentDescription, String typeContentDescription,
             boolean isTypeIconWide, boolean showRoamingIndicator, int subId) {
         boolean updateColors = false;
-        PhoneState state = getOrInflateState(subId);
+        PhoneState state = getState(subId);
+        if (state == null) {
+            return;
+        }
         state.mMobileVisible = visible;
         state.mMobileStrengthId = strengthIcon;
         if (mInetCondition != inetCondition) {
@@ -281,13 +285,13 @@ public class SignalClusterView
         }
     }
 
-    private PhoneState getOrInflateState(int subId) {
+    private PhoneState getState(int subId) {
         for (PhoneState state : mPhoneStates) {
             if (state.mSubId == subId) {
                 return state;
             }
         }
-        return inflatePhoneState(subId);
+        return null;
     }
 
     private PhoneState inflatePhoneState(int subId) {
@@ -331,6 +335,7 @@ public class SignalClusterView
             mWifiActivity.setImageDrawable(null);
         }
 
+        if (mPhoneStates != null)
         for (PhoneState state : mPhoneStates) {
             if (state.mMobile != null) {
                 state.mMobile.setImageDrawable(null);

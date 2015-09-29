@@ -98,8 +98,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     private TextView mDateCollapsed;
     private TextView mDateExpanded;
     private View mSettingsButton;
-    private View mCollapsedPanelBg;
-    private View mExpandedPanelBg;
+    private View mCollapsedPanelLayout;
     private View mQsDetailHeader;
     private TextView mQsDetailHeaderTitle;
     private Switch mQsDetailHeaderSwitch;
@@ -125,7 +124,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
 
     private float mCurrentT;
     private boolean mShowingDetail;
-    private boolean mIsCollapsedPanelBgInFront = true;
+    private float mElevation;
+    private boolean mCollapsedPanelBgVisible = true;
 
     // HeadsUp button
     protected int mDrawable;
@@ -155,8 +155,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mCollapsedPanelBg = findViewById(R.id.collapsed_panel_bg);
-        mExpandedPanelBg = findViewById(R.id.expanded_panel_bg);
+        mCollapsedPanelLayout = findViewById(R.id.collapsed_panel_layout);
         mDateGroup = findViewById(R.id.date_group);
         mTime = (TextView) findViewById(R.id.time_view);
         mTime.setOnClickListener(this);
@@ -534,6 +533,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         target.settingsRotation = !mExpanded ? 180f : 0f;
 
         target.expandedPanelY = mExpandedPanel.getTop();
+        target.collapsedPanelElevation = mExpanded ? 0 : mElevation;
 
         target.dateCollapsedAlpha = getAlphaForVisibility(mDateCollapsed);
         target.dateExpandedAlpha = getAlphaForVisibility(mDateExpanded);
@@ -590,10 +590,18 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             // Otherwise it needs to stay invisible
             applyAlpha(mAlarmStatus, values.alarmStatusAlpha);
         }
+        mCollapsedPanelLayout.setElevation(values.collapsedPanelElevation);
         if (mCurrentT == 1f) {
-            bringContentToFront(false, mShowingDetail);
-        } else if (!mIsCollapsedPanelBgInFront) {
-            bringContentToFront(true, false);
+            mCollapsedPanelBgVisible = false;
+            mCollapsedPanelLayout.setBackground(null);
+            mCollapsedPanelLayout.setClickable(false);
+            mCollapsedPanelLayout.setFocusable(false);
+        } else if (!mCollapsedPanelBgVisible) {
+            mCollapsedPanelBgVisible = true;
+            mCollapsedPanelLayout.setBackground(getColoredBackgroundDrawable(
+                    mContext.getDrawable(R.drawable.notification_header_bg), true));
+            mCollapsedPanelLayout.setClickable(true);
+            mCollapsedPanelLayout.setFocusable(true);
         }
         if (mHeadsUpButton != null && getQSType() == 0) {
             mHeadsUpButton.setTranslationX(values.headerHeadsUpButton - mHeadsUpButton.getWidth());
@@ -627,6 +635,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         float settingsX;
         float settingsRotation;
         float expandedPanelY;
+        float collapsedPanelElevation;
         float dateExpandedAlpha;
         float dateCollapsedAlpha;
         float alarmStatusAlpha;
@@ -644,6 +653,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             headerPowerMenuButton = v1.headerPowerMenuButton * (1 - t) + v2.headerPowerMenuButton * t;
 
             float t3 = Math.max(0, t - 0.7f) / 0.3f;
+            collapsedPanelElevation = v1.collapsedPanelElevation * (1 - t3) + v2.collapsedPanelElevation * t3;
             dateExpandedAlpha = v1.dateExpandedAlpha * (1 - t3) + v2.dateExpandedAlpha * t3;
             dateCollapsedAlpha = v1.dateCollapsedAlpha * (1 - t3) + v2.dateCollapsedAlpha * t3;
             alarmStatusAlpha = v1.alarmStatusAlpha * (1 - t3) + v2.alarmStatusAlpha * t3;
@@ -705,8 +715,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
 
         private void handleShowingDetail(final QSTile.DetailAdapter detail) {
             final boolean showingDetail = detail != null;
-            bringContentToFront(false, showingDetail);
-            transition(mQsDetailHeader, showingDetail, true);
+            transition(mExpandedPanel, !showingDetail);
+            transition(mQsDetailHeader, showingDetail);
             mShowingDetail = showingDetail;
             if (showingDetail) {
                 mQsDetailHeaderTitle.setText(detail.getTitle());
@@ -731,29 +741,25 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             }
         }
 
-        private void transition(final View v, final boolean in, final boolean changeVisibility) {
+        private void transition(final View v, final boolean in) {
             if (in) {
                 v.bringToFront();
-                if (changeVisibility) {
-                    v.setVisibility(VISIBLE);
-                }
+                v.setVisibility(VISIBLE);
             }
-            if (changeVisibility) {
-                if (v.hasOverlappingRendering()) {
-                    v.animate().withLayer();
-                }
-                v.animate()
-                        .alpha(in ? 1 : 0)
-                        .withEndAction(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!in) {
-                                    v.setVisibility(INVISIBLE);
-                                }
+            if (v.hasOverlappingRendering()) {
+                v.animate().withLayer();
+            }
+            v.animate()
+                    .alpha(in ? 1 : 0)
+                    .withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!in) {
+                                v.setVisibility(INVISIBLE);
                             }
-                        })
-                        .start();
-            }
+                        }
+                    })
+                    .start();
         }
     };
 
@@ -851,9 +857,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     }
 
     private void updateBackgroundColor() {
-        mExpandedPanelBg.setBackground(getColoredBackgroundDrawable(
+        setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.notification_header_bg), true));
-        mCollapsedPanelBg.setBackground(getColoredBackgroundDrawable(
+        mCollapsedPanelLayout.setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.notification_header_bg), true));
         mTime.setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable_rectangle), false));
@@ -910,35 +916,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 Settings.System.QS_TYPE, 0);
     }
 
-    public View getCollapsedPanelBackground() {
-        return mCollapsedPanelBg;
-    }
-
-    public View getExpandedPanelBackground() {
-        return mExpandedPanelBg;
-    }
-
-    private void bringContentToFront(boolean isCollapsed, boolean showingDetail) {
-        if (isCollapsed) {
-            mCollapsedPanelBg.bringToFront();
-            mIsCollapsedPanelBgInFront = true;
-        } else {
-            mExpandedPanelBg.bringToFront();
-            mIsCollapsedPanelBgInFront = false;
-            if (!showingDetail) {
-                mExpandedPanel.bringToFront();
-            }
-        }
-        findViewById(R.id.clock_date_view).bringToFront();
-        if (mAlarmShowing && !isCollapsed) {
-            mAlarmStatus.bringToFront();
-        }
-        mMultiUserSwitch.bringToFront();
-        mSettingsButton.bringToFront();
-        if (mHeadsUpButton != null) {
-            mHeadsUpButton.bringToFront();
-        }
-        mStatusBarPowerMenu.bringToFront();
+    public View getCollapsedPanelLayout() {
+        return mCollapsedPanelLayout;
     }
 
     private boolean getUserHeadsUpState() {
@@ -973,7 +952,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mStatusBarPowerMenuStyle = Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_POWER_MENU, 2);
     }
- 
+
     private void goToSleep() {
         PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
         pm.goToSleep(SystemClock.uptimeMillis());
