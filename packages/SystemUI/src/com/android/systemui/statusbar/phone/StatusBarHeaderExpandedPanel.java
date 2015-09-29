@@ -32,6 +32,7 @@ import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Handler;
 import android.os.UserHandle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -92,6 +93,7 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
     private ImageView mQsSettingsButton;
     private ImageView mQsTorchButton;
     private ImageView mCyanideButton;
+    private ImageView mCameraButton;
 
     private boolean mSupportsMobileData = true;
     private boolean mMobileNetworkEnabled = false;
@@ -158,6 +160,7 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
 
         mQsSettingsButton = (ImageView) findViewById(R.id.qs_settings_button);
         mCyanideButton = (ImageView) findViewById(R.id.cyanide_button);
+        mCameraButton = (ImageView) findViewById(R.id.camera_button);
         mQsTorchButton = (ImageView) findViewById(R.id.qs_torch_button);
         mQsTorchButton.setAlpha(128);
 
@@ -225,6 +228,23 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
             public boolean onLongClick(View v) {
                 doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
                 startWeatherActivity();
+            return true;
+            }
+        });
+
+        mCameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
+                startCameraActivity();
+            }
+        });
+
+        mCameraButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
+                startCameraLongActivity();
             return true;
             }
         });
@@ -306,6 +326,7 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
         mWeatherView.setVisibility(showWeather() ? View.VISIBLE : View.INVISIBLE);
         mQsSettingsButton.setVisibility(showQsButton() ? View.VISIBLE : View.INVISIBLE);
         mQsTorchButton.setVisibility(showTorchButton() ? View.VISIBLE : View.INVISIBLE);
+        mCameraButton.setVisibility(showCameraButton() ? View.VISIBLE : View.INVISIBLE);
         mCyanideButton.setVisibility(showCyanideButton() ? View.VISIBLE : View.INVISIBLE);
     }
 
@@ -316,12 +337,18 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
         mBatteryMeterView.setClickable(clickable);
         mWifiSignalIconView.setClickable(clickable);
         mMobileSignalIconView.setClickable(clickable);
+        mCameraButton.setClickable(showCameraButton() && clickable);
         mCyanideButton.setClickable(showCyanideButton() && clickable);
     }
 
     private boolean showWeather() {
         return Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.STATUS_BAR_EXPANDED_HEADER_SHOW_WEATHER, 0) == 1;
+    }
+
+    private boolean showCameraButton() {
+        return Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.SHOW_CAMERA_BUTTON, 0) == 1;
     }
 
     private boolean showCyanideButton() {
@@ -507,6 +534,11 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
         mQsSettingsButton.setColorFilter(color, Mode.MULTIPLY);
         mQsTorchButton.setColorFilter(color, Mode.MULTIPLY);
         mCyanideButton.setColorFilter(color, Mode.MULTIPLY);
+        mCameraButton.setColorFilter(color, Mode.MULTIPLY);
+    }
+
+    public void setCameraBackground(RippleDrawable background) {
+        mCameraButton.setBackground(background);
     }
 
     public void setCyanideBackground(RippleDrawable background) {
@@ -692,6 +724,18 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
                 "com.cyanogenmod.lockclock.preference.Preferences");
             mActivityStarter.startActivity(intent, true /* dismissShade */);
         }
+    }
+
+    private void startCameraActivity() {
+        Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA, null);
+        mActivityStarter.startActivity(intent, true /* dismissShade */);
+    }
+
+    private void startCameraLongActivity() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.android.gallery3d",
+            "com.android.gallery3d.app.GalleryActivity");
+        mActivityStarter.startActivity(intent, true /* dismissShade */);
     }
 
     private void startCyanideSettingsActivity() {

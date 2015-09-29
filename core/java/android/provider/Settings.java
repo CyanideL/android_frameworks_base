@@ -6215,6 +6215,13 @@ public final class Settings {
         public static final String LOCKSCREEN_BLUR_RADIUS = "lockscreen_blur_radius";
 
         /**
+         * Wether to show a camera button in status bar header
+         *
+         * @hide
+         */
+        public static final String SHOW_CAMERA_BUTTON = "show_camera_button";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

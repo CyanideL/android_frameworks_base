@@ -42,6 +42,7 @@ import android.os.SystemClock;
 import android.os.UserHandle;
 import android.provider.AlarmClock;
 import android.provider.CalendarContract;
+import android.provider.CalendarContract.Events;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -157,6 +158,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         super.onFinishInflate();
         mCollapsedPanelLayout = findViewById(R.id.collapsed_panel_layout);
         mDateGroup = findViewById(R.id.date_group);
+        mDateGroup.setOnClickListener(this);
+        mDateGroup.setOnLongClickListener(mLongClickListener);
         mTime = (TextView) findViewById(R.id.time_view);
         mTime.setOnClickListener(this);
         mAmPm = (TextView) findViewById(R.id.am_pm_view);
@@ -228,8 +231,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             mCaptureValues = false;
             updateLayoutValues(mCurrentT);
         }
-        mAlarmStatus.setX(getWidth()  / 2 - mAlarmStatus.getWidth()  / 2);
-        mAlarmStatus.setY(mSettingsButton.getBottom());
+        mAlarmStatus.setX(findViewById(R.id.clock_date_view).getLeft() + mDateGroup.getLeft() + mDateCollapsed.getRight());
+        mAlarmStatus.setY(findViewById(R.id.clock_date_view).getTop() + mDateGroup.getTop() - mAlarmStatus.getPaddingTop());
     }
 
     @Override
@@ -419,6 +422,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         } else if (v == mTime) {
             mActivityStarter.startActivity(new Intent(AlarmClock.ACTION_SHOW_ALARMS),
             true /* dismissShade */);
+        } else if (v == mDateGroup) {
+            startDateActivity();
         } else if (v == mHeadsUpButton) {
             startHeadsUpActivity();
         } else if (v == mStatusBarPowerMenu) {
@@ -446,6 +451,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                     "com.android.settings",
                     "com.android.settings.Settings$StatusBarSettingsSettingsActivity"));
                 mActivityStarter.startActivity(intent, true /* dismissShade */);
+        } else if (v == mDateGroup) {
+            startDateLongActivity();
         } else if (v == mHeadsUpButton) {
             startHeadsUpLongClickActivity();
         } else if (mStatusBarPowerMenuStyle == STATUS_BAR_POWER_MENU_DEFAULT) {
@@ -460,6 +467,20 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     private void startBatteryActivity() {
         mActivityStarter.startActivity(new Intent(Intent.ACTION_POWER_USAGE_SUMMARY),
                 true /* dismissShade */);
+    }
+
+    private void startDateActivity() {
+        Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
+        builder.appendPath("time");
+        ContentUris.appendId(builder, System.currentTimeMillis());
+        Intent intent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
+        mActivityStarter.startActivity(intent, true /* dismissShade */);
+    }
+
+    private void startDateLongActivity() {
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setData(Events.CONTENT_URI);
+        mActivityStarter.startActivity(intent, true /* dismissShade */);
     }
 
     private void startHeadsUpActivity() {
@@ -861,6 +882,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mContext.getDrawable(R.drawable.notification_header_bg), true));
         mCollapsedPanelLayout.setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.notification_header_bg), true));
+        mDateGroup.setBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable_rectangle), false));
         mTime.setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable_rectangle), false));
         mMultiUserSwitch.setBackground(getColoredBackgroundDrawable(
@@ -886,6 +909,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mExpandedPanel.setQsSettingsBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
         mExpandedPanel.setQsTorchBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
+        mExpandedPanel.setCameraBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
         mExpandedPanel.setCyanideBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable_oval), false));

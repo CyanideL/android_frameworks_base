@@ -42,7 +42,7 @@
             android:layout_height="36dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="9dp"
             android:paddingTop="9dp"
             android:paddingBottom="9dp"
             android:gravity="center_vertical">
@@ -116,6 +116,18 @@
                 android:importantForAccessibility="noHideDescendants"/>
         </LinearLayout>
 
+        <com.android.keyguard.AlphaOptimizedImageButton android:id="@+id/camera_button"
+            style="@android:style/Widget.Material.Button.Borderless"
+            android:layout_width="29dp"
+            android:layout_height="29dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/expanded_panel_mobile_network"
+            android:layout_marginStart="9dp"
+            android:background="@drawable/ripple_drawable_oval"
+            android:src="@drawable/qs_camera"
+            android:scaleType="centerInside"
+            android:contentDescription="@string/accessibility_desc_settings" />
+
         <LinearLayout
             android:id="@+id/expanded_panel_battery"
             android:layout_width="wrap_content"
@@ -161,7 +173,6 @@
             android:layout_height="46dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="4dp"
             android:background="@drawable/ripple_drawable_oval"
             android:src="@drawable/ic_qs_button_torch_off"
             android:scaleType="centerInside"
@@ -188,11 +199,11 @@
 
         <com.android.keyguard.AlphaOptimizedImageButton android:id="@+id/cyanide_button"
             style="@android:style/Widget.Material.Button.Borderless"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/expanded_panel_wifi_network"
-            android:layout_marginEnd="7dp"
+            android:layout_marginEnd="9dp"
             android:background="@drawable/ripple_drawable_oval"
             android:src="@drawable/ic_qs_cyanide_on"
             android:scaleType="centerInside"
@@ -204,7 +215,6 @@
             android:layout_height="48dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="4dp"
             android:background="@drawable/ripple_drawable_oval"
             android:src="@drawable/ic_settings_qs"
             android:scaleType="centerInside"
@@ -281,8 +291,9 @@
         <LinearLayout android:id="@+id/clock_date_view"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/status_bar_header_height"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="9dp"
             android:layout_alignParentTop="true"
+            android:layout_marginTop="14dp"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -316,10 +327,10 @@
 
         <Button android:id="@+id/alarm_status"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="28dp"
             android:layout_toEndOf="@id/date_group"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
             android:drawablePadding="6dp"
             android:drawableStart="@drawable/ic_access_alarms_small"
             android:textColor="#64ffffff"

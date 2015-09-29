@@ -3560,6 +3560,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 public void onAnimationStart(Animator animation) {
                     v.setVisibility(View.VISIBLE);
                 }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (mState != StatusBarState.SHADE) {
+                        v.setAlpha(0);
+                        v.setVisibility(View.INVISIBLE);
+                    }
+                }
             });
         return animator;
     }
