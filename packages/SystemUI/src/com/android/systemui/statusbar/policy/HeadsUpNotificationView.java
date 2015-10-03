@@ -23,6 +23,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Outline;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -54,6 +55,7 @@ import com.android.systemui.statusbar.ExpandableView;
 import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.notification.NotificationHelper;
 import com.android.systemui.statusbar.phone.PhoneStatusBar;
+import com.android.internal.util.cyanide.NotificationColorHelper;
 
 import java.util.ArrayList;
 
@@ -342,6 +344,7 @@ public class HeadsUpNotificationView extends LinearLayout implements SwipeHelper
             mAttached = true;
 
             final ViewConfiguration viewConfiguration = ViewConfiguration.get(getContext());
+            final int customIconColor = NotificationColorHelper.getCustomIconColor(mContext);
             float touchSlop = viewConfiguration.getScaledTouchSlop();
             mSwipeHelper = new SwipeHelper(SwipeHelper.X, this, getContext());
             mSwipeHelper.setMaxSwipeProgress(mMaxAlpha);
@@ -369,6 +372,7 @@ public class HeadsUpNotificationView extends LinearLayout implements SwipeHelper
                     }
                 });
                 mSnoozeButton.setVisibility(mSnoozeButtonVisibility ? View.VISIBLE : View.GONE);
+                mSnoozeButton.setColorFilter(customIconColor, Mode.SRC_IN);
             }
 
             if (mHeadsUp != null) {
