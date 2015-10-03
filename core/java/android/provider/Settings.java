@@ -5437,13 +5437,20 @@ public final class Settings {
          * @hide
          */
         public static final String HEADS_UP_NOTIFICATION_DECAY = "heads_up_notification_decay";
-        
+
         /**
          * Defines the global heads up notification snooze
          *
          * @hide
          */
         public static final String HEADS_UP_NOTIFICATION_SNOOZE = "heads_up_notification_snooze";
+        
+        /**
+         * Defines global heads up snooze time if user want to snooze it.
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_SNOOZE_TIME = "heads_up_snooze_time";
 
         /**
          * Volume key controls ringtone or media sound stream

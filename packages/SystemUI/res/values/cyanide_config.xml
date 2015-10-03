@@ -7,5 +7,8 @@
     <!-- Enable force PA Pie centered -->
     <bool name="config_forcePieCentered">true</bool>
 
+    <!-- milliseconds how long heads up should be in snooze. -->
+    <integer name="heads_up_snooze_time">300000</integer>
+
 </resources>
 
