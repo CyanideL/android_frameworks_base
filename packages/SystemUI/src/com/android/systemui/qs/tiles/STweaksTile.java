@@ -53,6 +53,14 @@ public class STweaksTile extends QSTile<QSTile.BooleanState> {
     }
 
     @Override
+    public void handleLongClick() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.af.synapse",
+            "com.af.synapse.MainActivity");
+        mHost.startSettingsActivity(intent);
+    }
+
+    @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
         state.visible = true;
         state.label = mContext.getString(R.string.quick_settings_stweaks);
