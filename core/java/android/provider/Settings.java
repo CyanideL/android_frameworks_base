@@ -5453,6 +5453,13 @@ public final class Settings {
         public static final String HEADS_UP_SNOOZE_TIME = "heads_up_snooze_time";
 
         /**
+         * Defines whether to actually use the new snooze button. Barf lol
+         *
+         * @hide
+         */
+        public static final String SHOW_HEADS_UP_SNOOZE = "show_heads_up_snooze";
+
+        /**
          * Volume key controls ringtone or media sound stream
          *
          * @hide

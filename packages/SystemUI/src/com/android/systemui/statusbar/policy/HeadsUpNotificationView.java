@@ -123,6 +123,9 @@ public class HeadsUpNotificationView extends LinearLayout implements SwipeHelper
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.HEADS_UP_NOTIFICATION_SNOOZE),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SHOW_HEADS_UP_SNOOZE),
+                    false, this);
             update();
         }
 
@@ -140,6 +143,8 @@ public class HeadsUpNotificationView extends LinearLayout implements SwipeHelper
                     mContext.getResources().getInteger(
                     R.integer.heads_up_default_snooze_length_ms),
                     UserHandle.USER_CURRENT);
+            mSnoozeButtonVisibility = Settings.System.getInt(
+                    resolver, Settings.System.SHOW_HEADS_UP_SNOOZE, 0) == 1;
         }
     }
 
@@ -170,7 +175,8 @@ public class HeadsUpNotificationView extends LinearLayout implements SwipeHelper
     }
 
     public void setSnoozeVisibility(boolean show) {
-        mSnoozeButtonVisibility = show;
+        mSnoozeButtonVisibility = (Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.SHOW_HEADS_UP_SNOOZE, 0) == 1);
         if (mSnoozeButton != null) {
             mSnoozeButton.setVisibility(show ? View.VISIBLE : View.GONE);
         }
@@ -229,7 +235,8 @@ public class HeadsUpNotificationView extends LinearLayout implements SwipeHelper
 
             if (mSnoozeButton != null) {
                 mSnoozeButton.setAlpha(mMaxAlpha);
-                mIsSnoozeButtonNowVisible = true;
+                mIsSnoozeButtonNowVisible = (Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.SHOW_HEADS_UP_SNOOZE, 0) == 1);
             }
 
             mHeadsUp.setInterruption();
