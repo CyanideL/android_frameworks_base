@@ -5460,6 +5460,12 @@ public final class Settings {
         public static final String SHOW_HEADS_UP_SNOOZE = "show_heads_up_snooze";
 
         /**
+         * Snooze button background color
+         * @hide
+         */
+        public static final String HEADS_UP_SNOOZE_BG = "heads_up_snooze_bg";
+
+        /**
          * Volume key controls ringtone or media sound stream
          *
          * @hide

@@ -98,6 +98,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     private ImageView mMultiUserAvatar;
     private TextView mDateCollapsed;
     private TextView mDateExpanded;
+    private View mSwapPanelsButton;
     private View mSettingsButton;
     private View mCollapsedPanelLayout;
     private View mQsDetailHeader;
@@ -167,6 +168,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mMultiUserAvatar = (ImageView) findViewById(R.id.multi_user_avatar);
         mDateCollapsed = (TextView) findViewById(R.id.date_collapsed);
         mDateExpanded = (TextView) findViewById(R.id.date_expanded);
+        mSwapPanelsButton = findViewById(R.id.header_swap_panels_button);
+        mSwapPanelsButton.setOnClickListener(this);
         mStatusBarPowerMenu = (ImageView) findViewById(R.id.status_bar_power_menu);
         mStatusBarPowerMenu.setOnClickListener(this);
         mStatusBarPowerMenu.setLongClickable(true);
@@ -333,7 +336,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         if (mHeadsUpButton != null) {
             mHeadsUpButton.setVisibility(mExpanded && mShowHeadsUpButton ? View.VISIBLE : View.GONE);
         }
-        mExpandedPanel.updateVisibilities();
         mQsDetailHeader.setVisibility(mExpanded && mShowingDetail? View.VISIBLE : View.INVISIBLE);
     }
 
@@ -428,6 +430,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             startHeadsUpActivity();
         } else if (v == mStatusBarPowerMenu) {
             statusBarPowerMenuAction();
+        } else if (v == mSwapPanelsButton) {
+            mExpandedPanel.swapPanels(true /* with animation */);
         } else if (v == mAlarmStatus && mNextAlarm != null) {
             PendingIntent showIntent = mNextAlarm.getShowIntent();
             if (showIntent != null && showIntent.isActivity()) {
@@ -605,6 +609,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         if (getQSType() == 0) {
             mSettingsButton.setX(values.settingsX);
             mSettingsButton.setRotation(values.settingsRotation);
+            mSwapPanelsButton.setX(values.settingsX - mSettingsButton.getWidth() * 2);
         }
         mExpandedPanel.setY(height - mExpandedPanel.getHeight());
         if (!mShowingDetail) {
@@ -865,6 +870,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 SBEHeaderColorHelper.getIconColor(mContext), Mode.MULTIPLY);
         ((ImageView) mStatusBarPowerMenu).setColorFilter(
                 SBEHeaderColorHelper.getIconColor(mContext), Mode.MULTIPLY);
+        ((ImageView) mSwapPanelsButton).setColorFilter(
+                SBEHeaderColorHelper.getIconColor(mContext), Mode.MULTIPLY);
         if (mHeadsUpButton != null) {
             ((ImageView) mHeadsUpButton).setColorFilter(
                     SBEHeaderColorHelper.getIconColor(mContext), Mode.MULTIPLY);
@@ -890,6 +897,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
         mSettingsButton.setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
+        mSwapPanelsButton.setBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
         mStatusBarPowerMenu.setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
         if (mHeadsUpButton != null) {
@@ -904,8 +913,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
         mExpandedPanel.setBatteryBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
-        mExpandedPanel.setWeatherViewBackground(getColoredBackgroundDrawable(
-                mContext.getDrawable(R.drawable.ripple_drawable_rectangle), false));
         mExpandedPanel.setQsSettingsBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
         mExpandedPanel.setQsTorchBackground(getColoredBackgroundDrawable(
