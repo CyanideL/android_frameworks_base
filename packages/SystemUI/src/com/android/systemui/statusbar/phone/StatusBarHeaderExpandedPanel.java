@@ -268,7 +268,6 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
             return true;
             }
         });
-    }
 
         mCyanideButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -331,6 +331,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mAlarmStatus.setVisibility(mExpanded && mAlarmShowing ? View.VISIBLE : View.INVISIBLE);
         mMultiUserSwitch.setVisibility(mExpanded && getQSType() == 0 ? View.VISIBLE : View.INVISIBLE);
         mMultiUserAvatar.setVisibility(mExpanded && getQSType() == 0 ? View.VISIBLE : View.INVISIBLE);
+        mSwapPanelsButton.setVisibility(mExpanded ? View.VISIBLE : View.INVISIBLE);
         mStatusBarPowerMenu.setVisibility(mExpanded
                 && (mStatusBarPowerMenuStyle != STATUS_BAR_POWER_MENU_OFF) ? View.VISIBLE : View.GONE);
         if (mHeadsUpButton != null) {
@@ -617,6 +618,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             mSettingsButton.setX(values.settingsX);
             mSettingsButton.setRotation(values.settingsRotation);
             mSwapPanelsButton.setTranslationX(values.headerSwapPanelsButton - mSwapPanelsButton.getWidth());
+            mSwapPanelsButton.setRotation(values.settingsRotation);
         }
         mExpandedPanel.setY(height - mExpandedPanel.getHeight());
         if (!mShowingDetail) {

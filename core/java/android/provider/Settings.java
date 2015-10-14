@@ -3885,7 +3885,6 @@ public final class Settings {
          */
         public static final String LOCK_SCREEN_BUTTONS_BAR_LAUNCH_TYPE = "lock_screen_buttons_bar_launch_type";
 
-
         /**
          * Colorize lockscreen buttons bar icon
          * 0: never
@@ -6208,6 +6207,50 @@ public final class Settings {
          * @hide
          */
         public static final String LOCKSCREEN_BLUR_RADIUS = "lockscreen_blur_radius";
+
+        /**
+         * Custom shortcuts for the expanded header buttons panel
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS = "panel_shortcuts";
+
+        /**
+         * The way in which shortcuts will launch
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS_PRESS_TYPE = "panel_shortcuts_press_type";
+
+        /**
+         * Whether to colorize the header shortcut bar icons
+         * 0: never
+         * 1: if the icon is an greyscale icon
+         * 2: always
+         * default: 0
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS_ICON_COLOR_MODE = "panel_shortcuts_icon_color_mode";
+
+        /**
+         * Color the header shortcut bar ripple
+         * 0: Auto
+         * 1: Custom color
+         * 2: Disabled
+         * default: 2
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS_RIPPLE_COLOR_MODE = "panel_shortcuts_ripple_color_mode";
+
+        /**
+         * Header shortcuts ripple color
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS_RIPPLE_COLOR = "panel_shortcuts_ripple_color";
+
+        /**
+         * Color of header shortcut bar icons
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS_ICON_COLOR = "panel_shortcuts_icon_color";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings

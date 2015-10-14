@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2015 DarkKat
+<!-- Copyright (C) 2015 Darkkat
+                   2015 CyanideL
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -28,7 +29,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="9dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/ripple_drawable_oval"
         android:src="@drawable/ic_qs_cyanide_on"
@@ -42,7 +43,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="9dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/ripple_drawable_oval"
         android:src="@drawable/ic_settings_qs"
@@ -77,13 +78,12 @@
         android:scaleType="centerInside"
         android:contentDescription="@string/accessibility_desc_settings" />
 
-<!--        <ImageView
-            android:id="@+id/expanded_panel_mobile_activity_icon"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"/>
+    <include layout="@layout/panel_shortcuts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/camera_button"
+        android:layout_alignTop="@id/camera_button"
+        android:layout_toStartOf="@id/cyanide_button"
+        android:layout_centerHorizontal="true"/>
 
-        <ImageView
-            android:id="@+id/expanded_panel_wifi_activity_icon"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"/> -->
 </RelativeLayout>

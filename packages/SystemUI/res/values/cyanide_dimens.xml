@@ -121,4 +121,8 @@
     <dimen name="recent_app_sidebar_item_padding">2dp</dimen>
     <dimen name="recent_app_sidebar_item_title_text_size">11sp</dimen>
 
+    <!-- Panel Shortcuts -->
+    <dimen name="shortcut_seperater_width">8dp</dimen>
+    <dimen name="shortcut_margin_top">25dp</dimen>
+
 </resources>
