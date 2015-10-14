@@ -77,6 +77,7 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
     private WeatherController mWeatherController;
     private WifiManager mWifiManager;
  
+    private View mButtonPanel;
     private View mDevicePanel;
     private View mWeatherPanel;
 
@@ -108,7 +109,9 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
     private TextView mWeatherPanelHumidity;
     private TextView mWeatherPanelTimestamp;
 
+    private boolean mPanelButtonsVisible = false;
     private boolean mPanelDeviceInfoVisible = false;
+    private boolean mPanelWeatherInfoVisible = false;
 
     private ImageView mQsSettingsButton;
     private ImageView mQsTorchButton;
@@ -162,6 +165,7 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mButtonPanel = findViewById(R.id.expanded_panel_button_panel);
         mDevicePanel = findViewById(R.id.expanded_panel_device_panel);
         mWeatherPanel = findViewById(R.id.expanded_panel_weather_panel);
 
@@ -184,7 +188,7 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
         mCyanideButton = (ImageView) findViewById(R.id.cyanide_button);
         mCameraButton = (ImageView) findViewById(R.id.camera_button);
         mQsTorchButton = (ImageView) findViewById(R.id.qs_torch_button);
-        mQsTorchButton.setAlpha(128);
+        if (mQsTorchButton != null) mQsTorchButton.setAlpha(128);
 
         mTraffic = (StatusBarHeaderTraffic) findViewById(R.id.expanded_panel_traffic_layout);
 
@@ -264,6 +268,7 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
             return true;
             }
         });
+    }
 
         mCyanideButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -306,6 +311,23 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
                 startQsTorchActivity();
             }
         });
+
+        mWeatherPanelLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
+                startForecastActivity();
+            }
+        });
+
+        mWeatherPanelLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
+                startWeatherActivity();
+            return true;
+            }
+        });
     
         updateTrafficLayout();
         swapPanels(false);
@@ -322,6 +344,10 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
             ruleText = mMobileNetworkTextLayout.getId();
             ruleIcon = mMobileSignalIconView.getId();
         }
+        if (mSupportsMobileData && !mPanelButtonsVisible) {
+            ruleText = mCameraButton.getId();
+            ruleIcon = mCyanideButton.getId();
+        }
         lp.addRule(RelativeLayout.ALIGN_TOP, ruleText);
         lp.addRule(RelativeLayout.START_OF, ruleIcon);
         lp.addRule(RelativeLayout.END_OF, ruleText);
@@ -333,21 +359,35 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
 
     public void swapPanels(boolean animate) {
         if (!mPanelDeviceInfoVisible) {
+            mButtonPanel.setVisibility(View.GONE);
             mWeatherPanel.setVisibility(View.INVISIBLE);
             mDevicePanel.setVisibility(View.VISIBLE);
             if (animate) {
-                mDevicePanel.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.push_right_in));
-                mWeatherPanel.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.push_left_out));
+                mDevicePanel.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.push_left_in));
+                mButtonPanel.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.push_right_out));
              }
+             mPanelWeatherInfoVisible = false;
              mPanelDeviceInfoVisible = true;
-        } else {
-            mDevicePanel.setVisibility(View.INVISIBLE);
+        } else if (!mPanelWeatherInfoVisible) {
+            mButtonPanel.setVisibility(View.INVISIBLE);
+            mDevicePanel.setVisibility(View.GONE);
             mWeatherPanel.setVisibility(View.VISIBLE);
             if (animate) {
                 mWeatherPanel.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.push_left_in));
                 mDevicePanel.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.push_right_out));
              }
+             mPanelButtonsVisible = false;
+             mPanelWeatherInfoVisible = true;
+         } else if (!mPanelButtonsVisible) {
+            mDevicePanel.setVisibility(View.INVISIBLE);
+            mWeatherPanel.setVisibility(View.GONE);
+            mButtonPanel.setVisibility(View.VISIBLE);
+            if (animate) {
+                mButtonPanel.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.push_left_in));
+                mWeatherPanel.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.push_right_out));
+             }
              mPanelDeviceInfoVisible = false;
+             mPanelButtonsVisible = true;
          }
      }
 
@@ -358,9 +398,7 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
             if (mNetworkController != null) {
                 mNetworkController.addNetworkSignalChangedCallback(this);
             }
-//            if (showWeather()) {
-                mWeatherController.addCallback(this);
-//            }
+            mWeatherController.addCallback(this);
         } else {
             mContext.unregisterReceiver(mBatteryInfoReceiver);
             mNetworkController.removeNetworkSignalChangedCallback(this);
@@ -369,49 +407,15 @@ public class StatusBarHeaderExpandedPanel extends RelativeLayout implements
         mTraffic.setListening(listening);
     }
 
-    public void updateVisibilities() {
-//        mWeatherView.setVisibility(showWeather() ? View.VISIBLE : View.INVISIBLE);
-        mQsSettingsButton.setVisibility(showQsButton() ? View.VISIBLE : View.INVISIBLE);
-        mQsTorchButton.setVisibility(showTorchButton() ? View.VISIBLE : View.INVISIBLE);
-        mCameraButton.setVisibility(showCameraButton() ? View.VISIBLE : View.INVISIBLE);
-        mCyanideButton.setVisibility(showCyanideButton() ? View.VISIBLE : View.INVISIBLE);
-    }
-
     public void updateClickTargets(boolean clickable) {
-//        mWeatherView.setClickable(showWeather() && clickable);
-        mQsSettingsButton.setClickable(showQsButton() && clickable);
-        mQsTorchButton.setClickable(showTorchButton() && clickable);
+        mWeatherPanelLayout.setClickable(clickable);
+        mQsSettingsButton.setClickable(clickable);
+        mQsTorchButton.setClickable(clickable);
         mBatteryMeterView.setClickable(clickable);
         mWifiSignalIconView.setClickable(clickable);
         mMobileSignalIconView.setClickable(clickable);
-        mCameraButton.setClickable(showCameraButton() && clickable);
-        mCyanideButton.setClickable(showCyanideButton() && clickable);
-    }
-
-    private boolean showWeather() {
-//        return Settings.System.getInt(mContext.getContentResolver(),
-//                Settings.System.STATUS_BAR_EXPANDED_HEADER_SHOW_WEATHER, 0) == 1;
-        return true;
-    }
-
-    private boolean showCameraButton() {
-        return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.SHOW_CAMERA_BUTTON, 0) == 1;
-    }
-
-    private boolean showCyanideButton() {
-        return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.SHOW_CYANIDE_BUTTON, 1) == 1;
-    }
-
-    private boolean showQsButton() {
-        return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_EXPANDED_HEADER_SHOW_QS_BUTTON, 0) == 1;
-    }
-
-    private boolean showTorchButton() {
-        return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_EXPANDED_HEADER_SHOW_TORCH_BUTTON, 0) == 1;
+        mCameraButton.setClickable(clickable);
+        mCyanideButton.setClickable(clickable);
     }
 
     @Override

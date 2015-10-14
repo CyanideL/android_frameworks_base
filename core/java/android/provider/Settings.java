@@ -2567,18 +2567,6 @@ public final class Settings {
         public static final String QS_SMART_PULLDOWN = "qs_smart_pulldown";
 
         /**
-         * Whether to show the QS settings button on the header of the expanded status bar
-         * @hide
-         */
-        public static final String STATUS_BAR_EXPANDED_HEADER_SHOW_QS_BUTTON = "status_bar_expanded_header_show_qs_button";
-
-        /**
-         * Whether to show the torch button on the header of the expanded status bar
-         * @hide
-         */
-        public static final String STATUS_BAR_EXPANDED_HEADER_SHOW_TORCH_BUTTON = "status_bar_expanded_header_show_torch_button";
-
-        /**
          * Color of the ripple effects on the header of the expanded status bar
          * @hide
          */
@@ -4714,12 +4702,6 @@ public final class Settings {
         public static final String STATUS_BAR_NETWORK_SPEED_ICON_COLOR = "status_bar_network_speed_icon_color";
 
         /**
-         * Boolean value on whether to show weather in the statusbar
-         * @hide
-         */
-        public static final String STATUS_BAR_EXPANDED_HEADER_SHOW_WEATHER = "status_bar_expanded_header_show_weather";
-
-        /**
          * Whether to show the weather location on the header of the expanded status bar
          * @hide
          */
@@ -5979,13 +5961,6 @@ public final class Settings {
         public static final String SHOW_HEADSET_ICON = "show_headset_icon";
 
         /**
-         * Wether to show a cyanide button in status bar header
-         *
-         * @hide
-         */
-        public static final String SHOW_CYANIDE_BUTTON = "show_cyanide_button";
-
-        /**
          * Show four g instead of lte
          * @hide
          */
@@ -6235,13 +6210,6 @@ public final class Settings {
         public static final String LOCKSCREEN_BLUR_RADIUS = "lockscreen_blur_radius";
 
         /**
-         * Wether to show a camera button in status bar header
-         *
-         * @hide
-         */
-        public static final String SHOW_CAMERA_BUTTON = "show_camera_button";
-
-        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -6360,7 +6328,6 @@ public final class Settings {
             THREE_FINGER_GESTURE,
             USE_RSRP,
             SHOW_FOURG,
-            SHOW_CYANIDE_BUTTON,
             SHOW_HEADSET_ICON,
             SHOW_VOLUME_ICON,
             DEFAULT_LANDSCAPE_ORIENTATION,
@@ -6402,7 +6369,6 @@ public final class Settings {
             ANDROID_RECENTS_SHOW_CLEAR_ALL,
             ANDROID_RECENTS_SHOW_SEARCH_BAR,
             STATUS_BAR_EXPANDED_HEADER_SHOW_WEATHER_LOCATION,
-            STATUS_BAR_EXPANDED_HEADER_SHOW_WEATHER,
             STATUS_BAR_NETWORK_SPEED_INDICATOR,
             FORCE_EXPANDED_NOTIFICATIONS,
             LOCK_SCREEN_HIDE_CARRIER,

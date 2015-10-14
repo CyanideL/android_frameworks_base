@@ -336,6 +336,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         if (mHeadsUpButton != null) {
             mHeadsUpButton.setVisibility(mExpanded && mShowHeadsUpButton ? View.VISIBLE : View.GONE);
         }
+//        mExpandedPanel.updateVisibilities();
         mQsDetailHeader.setVisibility(mExpanded && mShowingDetail? View.VISIBLE : View.INVISIBLE);
     }
 
@@ -564,8 +565,14 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         target.dateExpandedAlpha = getAlphaForVisibility(mDateExpanded);
         target.alarmStatusAlpha = getAlphaForVisibility(mAlarmStatus);
         target.multiUserSwitchAlpha = getAlphaForVisibility(mMultiUserSwitch);
+        target.swapPanelsAlpha = getAlphaForVisibility(mSwapPanelsButton);
         target.headsUpAlpha = getAlphaForVisibility(mHeadsUpButton);
         target.statusBarPowerMenuAlpha = getAlphaForVisibility(mStatusBarPowerMenu);
+        if (mSwapPanelsButton != null) {
+            target.headerSwapPanelsButton = mExpanded
+                    ? 0
+                    : mSettingsButton.getLeft() - mSwapPanelsButton.getLeft();
+        }
         if (mStatusBarPowerMenu != null) {
             target.headerPowerMenuButton = mExpanded
                     ? 0
@@ -609,7 +616,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         if (getQSType() == 0) {
             mSettingsButton.setX(values.settingsX);
             mSettingsButton.setRotation(values.settingsRotation);
-            mSwapPanelsButton.setX(values.settingsX - mSettingsButton.getWidth() * 2);
+            mSwapPanelsButton.setTranslationX(values.headerSwapPanelsButton - mSwapPanelsButton.getWidth());
         }
         mExpandedPanel.setY(height - mExpandedPanel.getHeight());
         if (!mShowingDetail) {
@@ -646,6 +653,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         applyAlpha(mDateCollapsed, values.dateCollapsedAlpha);
         applyAlpha(mDateExpanded, values.dateExpandedAlpha);
         applyAlpha(mMultiUserSwitch, values.multiUserSwitchAlpha);
+        applyAlpha(mSwapPanelsButton, values.swapPanelsAlpha);
         applyAlpha(mHeadsUpButton, values.headsUpAlpha);
         applyAlpha(mStatusBarPowerMenu, values.statusBarPowerMenuAlpha);
 
@@ -666,7 +674,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         float dateCollapsedAlpha;
         float alarmStatusAlpha;
         float multiUserSwitchAlpha;
+        float swapPanelsAlpha;
         float headsUpAlpha;
+        float headerSwapPanelsButton;
         float headerHeadsUpButton;
         float headerPowerMenuButton;
         float statusBarPowerMenuAlpha;
@@ -675,6 +685,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             settingsX = v1.settingsX * (1 - t) + v2.settingsX * t;
             settingsRotation = v1.settingsRotation * (1 - t) + v2.settingsRotation * t;
             expandedPanelY = v1.expandedPanelY * (1 - t) + v2.expandedPanelY * t;
+            headerSwapPanelsButton = v1.headerSwapPanelsButton * (1 - t) + v2.headerSwapPanelsButton * t;
             headerHeadsUpButton = v1.headerHeadsUpButton * (1 - t) + v2.headerHeadsUpButton * t;
             headerPowerMenuButton = v1.headerPowerMenuButton * (1 - t) + v2.headerPowerMenuButton * t;
 
@@ -684,6 +695,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             dateCollapsedAlpha = v1.dateCollapsedAlpha * (1 - t3) + v2.dateCollapsedAlpha * t3;
             alarmStatusAlpha = v1.alarmStatusAlpha * (1 - t3) + v2.alarmStatusAlpha * t3;
             multiUserSwitchAlpha = v1.multiUserSwitchAlpha * (1 - t3) + v2.multiUserSwitchAlpha * t3;
+            swapPanelsAlpha = v1.swapPanelsAlpha * (1 - t3) + v2.swapPanelsAlpha * t3;
             headsUpAlpha = v1.headsUpAlpha * (1 - t3) + v2.headsUpAlpha * t3;
             statusBarPowerMenuAlpha = v1.statusBarPowerMenuAlpha * (1 - t3) + v2.statusBarPowerMenuAlpha * t3;
         }

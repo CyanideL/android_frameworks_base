@@ -43,18 +43,6 @@
         android:layout_marginBottom="8dp"
         android:scaleType="centerInside" />
 
-    <com.android.keyguard.AlphaOptimizedImageButton android:id="@+id/camera_button"
-        style="@android:style/Widget.Material.Button.Borderless"
-        android:layout_width="29dp"
-        android:layout_height="29dp"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/expanded_panel_wifi_signal_icon"
-        android:layout_marginStart="9dp"
-        android:background="@drawable/ripple_drawable_oval"
-        android:src="@drawable/qs_camera"
-        android:scaleType="centerInside"
-        android:contentDescription="@string/accessibility_desc_settings" />
-
     <FrameLayout
         android:id="@+id/expanded_panel_battery_layout"
         android:layout_width="20dp"
@@ -79,7 +67,7 @@
         android:layout_height="36dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="9dp"
         android:paddingTop="9dp"
         android:paddingBottom="9dp"
         android:gravity="center_vertical">
@@ -109,7 +97,7 @@
         android:layout_width="wrap_content"
         android:layout_height="36dp"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="9dp"
         android:layout_below="@id/mobile_network_text_layout"
         android:paddingTop="9dp"
         android:paddingBottom="9dp"
@@ -140,7 +128,7 @@
         android:layout_width="wrap_content"
         android:layout_height="36dp"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="9dp"
         android:layout_below="@id/wifi_network_text_layout"
         android:paddingTop="9dp"
         android:paddingBottom="9dp"
@@ -246,40 +234,6 @@
             android:layout_weight="1" />
 
     </com.android.systemui.statusbar.policy.StatusBarHeaderTraffic>
-
-    <com.android.keyguard.AlphaOptimizedImageButton android:id="@+id/qs_torch_button"
-        style="@android:style/Widget.Material.Button.Borderless"
-        android:layout_width="46dp"
-        android:layout_height="46dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/ripple_drawable_oval"
-        android:src="@drawable/ic_qs_button_torch_off"
-        android:scaleType="centerInside"
-        android:contentDescription="@string/accessibility_desc_settings" />
-
-    <com.android.keyguard.AlphaOptimizedImageButton android:id="@+id/cyanide_button"
-        style="@android:style/Widget.Material.Button.Borderless"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@id/wifi_network_text_layout"
-        android:layout_marginEnd="9dp"
-        android:background="@drawable/ripple_drawable_oval"
-        android:src="@drawable/ic_qs_cyanide_on"
-        android:scaleType="centerInside"
-        android:contentDescription="@string/accessibility_desc_settings" />
-
-    <com.android.keyguard.AlphaOptimizedImageButton android:id="@+id/qs_settings_button"
-        style="@android:style/Widget.Material.Button.Borderless"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/ripple_drawable_oval"
-        android:src="@drawable/ic_settings_qs"
-        android:scaleType="centerInside"
-        android:contentDescription="@string/accessibility_desc_settings" />
 
 <!--        <ImageView
             android:id="@+id/expanded_panel_mobile_activity_icon"

@@ -39,6 +39,8 @@
         <include layout="@layout/expanded_header_panel_device_info" />
 
         <include layout="@layout/expanded_header_panel_weather_info" />
+
+        <include layout="@layout/expanded_header_panel_buttons" />
     </com.android.systemui.statusbar.phone.StatusBarHeaderExpandedPanel>
 
     <RelativeLayout

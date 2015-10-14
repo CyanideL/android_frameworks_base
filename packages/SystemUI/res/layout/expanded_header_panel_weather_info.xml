@@ -33,6 +33,7 @@
         android:id="@+id/weather_panel_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="20dp"
         android:layout_gravity="center" >
 
         <LinearLayout
