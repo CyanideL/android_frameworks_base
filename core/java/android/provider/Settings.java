@@ -4298,6 +4298,12 @@ public final class Settings {
          */
         public static final String STATUS_BAR_BATTERY_STATUS_CHARGING_USE_CIRCE_FILL = "status_bar_battery_status_use_circle_fill_animation";
 
+        /** 
+         * Whether to allow one finger quick settings expansion on the right side of the statusbar.
+         * @hide
+         */
+        public static final String STATUS_BAR_QUICK_QS_PULLDOWN = "status_bar_quick_qs_pulldown";
+
         /**
          * Whether to show the Circle battery status dotted on the status bar
          * @hide
