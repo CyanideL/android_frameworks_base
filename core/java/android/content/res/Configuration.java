@@ -568,6 +568,11 @@ public final class Configuration implements Parcelable, Comparable<Configuration
      * <a href="{@docRoot}guide/topics/resources/providing-resources.html#NightQualifier">night</a>
      * resource qualifier. */
     public static final int UI_MODE_NIGHT_YES = 0x20;
+    /** Constant for {@link #uiMode}: a {@link #UI_MODE_NIGHT_MASK}
+     * value that corresponds to the
+     * <a href="{@docRoot}guide/topics/resources/providing-resources.html#NightQualifier">night</a>
+     * resource qualifier. */
+    public static final int UI_MODE_NIGHT_BLACKOUT = 0x30;
 
     /**
      * Bit mask of the ui mode.  Currently there are two fields:
@@ -863,6 +868,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
             case UI_MODE_NIGHT_UNDEFINED: sb.append(" ?night"); break;
             case UI_MODE_NIGHT_NO: /* not-night is not interesting to print */ break;
             case UI_MODE_NIGHT_YES: sb.append(" night"); break;
+            case UI_MODE_NIGHT_BLACKOUT: sb.append(" blackout"); break;
             default: sb.append(" night="); sb.append(uiMode&UI_MODE_NIGHT_MASK); break;
         }
         switch (touchscreen) {
@@ -945,13 +951,14 @@ public final class Configuration implements Parcelable, Comparable<Configuration
     }
 
     /**
-     * Copies the fields from delta into this Configuration object, keeping
-     * track of which ones have changed. Any undefined fields in {@code delta}
-     * are ignored and not copied in to the current Configuration.
-     *
-     * @return a bit mask of the changed fields, as per {@link #diff}
+     * Copy the fields from delta into this Configuration object, keeping
+     * track of which ones have changed.  Any undefined fields in
+     * <var>delta</var> are ignored and not copied in to the current
+     * Configuration.
+     * @return Returns a bit mask of the changed fields, as per
+     * {@link #diff}.
      */
-    public @Config int updateFrom(@NonNull Configuration delta) {
+    public int updateFrom(Configuration delta) {
         int changed = 0;
         if (delta.fontScale > 0 && fontScale != delta.fontScale) {
             changed |= ActivityInfo.CONFIG_FONT_SCALE;
@@ -1209,8 +1216,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
      * @return {@code true} if the resource needs to be loaded, {@code false}
      *         otherwise
      */
-    public static boolean needNewResources(@Config int configChanges,
-            @Config int interestingChanges) {
+    public static boolean needNewResources(int configChanges, int interestingChanges) {
         return (configChanges & (interestingChanges|ActivityInfo.CONFIG_FONT_SCALE)) != 0;
     }
 
@@ -1693,6 +1699,9 @@ public final class Configuration implements Parcelable, Comparable<Configuration
                 break;
             case Configuration.UI_MODE_NIGHT_NO:
                 parts.add("notnight");
+                break;
+            case Configuration.UI_MODE_NIGHT_BLACKOUT:
+                parts.add("blackout");
                 break;
             default:
                 break;
