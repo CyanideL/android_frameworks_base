@@ -160,4 +160,8 @@
   <!-- Screen Recording -->
   <java-symbol type="bool" name="config_enableScreenrecordChord" />
 
+  <!-- Power menu Animations  -->
+  <java-symbol type="style" name="PowerMenuBottomAnimation" />
+  <java-symbol type="style" name="PowerMenuTopAnimation" />
+
 </resources>
