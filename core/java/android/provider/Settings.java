@@ -5231,6 +5231,12 @@ public final class Settings {
         public static final String POWER_MENU_BUTTON = "power_menu_button";
 
         /**
+         * Size of the clock on the lock screen
+         * @hide
+         */
+        public static final String LOCK_CLOCK_FONT_SIZE = "lock_clock_font_size";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

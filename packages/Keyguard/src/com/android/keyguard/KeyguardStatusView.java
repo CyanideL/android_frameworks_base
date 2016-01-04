@@ -50,6 +50,7 @@ public class KeyguardStatusView extends GridLayout {
     private TextClock mClockView;
     private TextView mOwnerInfo;
     private KeyguardRomLogo mRomLogo;
+    private int mLCFontSize = 88;
 
     //On the first boot, keyguard will start to receiver TIME_TICK intent.
     //And onScreenTurnedOff will not get called if power off when keyguard is not started.
@@ -63,6 +64,7 @@ public class KeyguardStatusView extends GridLayout {
             if (enableRefresh) {
                 refresh();
             }
+            updateClockSize();
         }
 
         @Override
@@ -74,6 +76,7 @@ public class KeyguardStatusView extends GridLayout {
                 updateLogoVisibility();
                 updateLogoColor();
                 updateLogoImage();
+                updateClockSize();
             }
         }
 
@@ -82,6 +85,7 @@ public class KeyguardStatusView extends GridLayout {
             setEnableMarquee(true);
             enableRefresh = true;
             refresh();
+            updateClockSize();
         }
 
         @Override
@@ -97,6 +101,7 @@ public class KeyguardStatusView extends GridLayout {
             updateLogoVisibility();
             updateLogoColor();
             updateLogoImage();
+            updateClockSize();
         }
     };
 
@@ -112,6 +117,7 @@ public class KeyguardStatusView extends GridLayout {
         super(context, attrs, defStyle);
         mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         mLockPatternUtils = new LockPatternUtils(getContext());
+        updateClockSize();
     }
 
     private void setEnableMarquee(boolean enabled) {
@@ -138,6 +144,7 @@ public class KeyguardStatusView extends GridLayout {
         updateLogoVisibility();
         updateLogoColor();
         updateLogoImage();
+        updateClockSize();
 
         // Disable elegant text height because our fancy colon makes the ymin value huge for no
         // reason.
@@ -147,13 +154,12 @@ public class KeyguardStatusView extends GridLayout {
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mClockView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                getResources().getDimensionPixelSize(R.dimen.widget_big_font_size));
         // Some layouts like burmese have a different margin for the clock
         MarginLayoutParams layoutParams = (MarginLayoutParams) mClockView.getLayoutParams();
         layoutParams.bottomMargin = getResources().getDimensionPixelSize(
                 R.dimen.bottom_text_spacing_digital);
         mClockView.setLayoutParams(layoutParams);
+        mClockView.setTextSize(mLCFontSize);
         mDateView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 getResources().getDimensionPixelSize(R.dimen.widget_label_font_size));
         mOwnerInfo.setTextSize(TypedValue.COMPLEX_UNIT_PX,
@@ -243,6 +249,15 @@ public class KeyguardStatusView extends GridLayout {
     @Override
     public boolean hasOverlappingRendering() {
         return false;
+    }
+
+    private void updateClockSize() {
+        mLCFontSize = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LOCK_CLOCK_FONT_SIZE, 88);
+
+        if (mClockView != null) {
+            mClockView.setTextSize(mLCFontSize);
+        }
     }
 
     // DateFormat.getBestDateTimePattern is extremely expensive, and refresh is called often.
