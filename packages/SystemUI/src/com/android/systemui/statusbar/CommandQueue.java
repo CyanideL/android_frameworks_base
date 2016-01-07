@@ -79,6 +79,7 @@ public class CommandQueue extends IStatusBar.Stub {
     private static final int MSG_TOGGLE_LAST_APP               = 33 << MSG_SHIFT;
     private static final int MSG_TOGGLE_KILL_APP               = 34 << MSG_SHIFT;
     private static final int MSG_TOGGLE_SCREENSHOT             = 35 << MSG_SHIFT;
+    private static final int MSG_SCREEN_PINNING_STATE_CHANGED  = 36 << MSG_SHIFT;
 
     public static final int FLAG_EXCLUDE_NONE = 0;
     public static final int FLAG_EXCLUDE_SEARCH_PANEL = 1 << 0;
@@ -137,11 +138,20 @@ public class CommandQueue extends IStatusBar.Stub {
         void toggleLastApp();
         void toggleKillApp();
         void toggleScreenshot();
+        void screenPinningStateChanged(boolean enabled);
     }
 
     public CommandQueue(Callbacks callbacks, StatusBarIconList list) {
         mCallbacks = callbacks;
         mList = list;
+    }
+
+    public void screenPinningStateChanged(boolean enabled) {
+        synchronized (mLock) {
+            mHandler.removeMessages(MSG_SCREEN_PINNING_STATE_CHANGED);
+            mHandler.obtainMessage(MSG_SCREEN_PINNING_STATE_CHANGED,
+                    enabled ? 1 : 0, 0, null).sendToTarget();
+        }
     }
 
     public void setIcon(String slot, StatusBarIcon icon) {
@@ -541,6 +551,9 @@ public class CommandQueue extends IStatusBar.Stub {
                     break;
                 case MSG_TOGGLE_SCREENSHOT:
                     mCallbacks.toggleScreenshot();
+                   break:
+                case MSG_SCREEN_PINNING_STATE_CHANGED:
+                    mCallbacks.screenPinningStateChanged(msg.arg1 != 0);
                     break;
             }
         }
