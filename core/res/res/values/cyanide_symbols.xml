@@ -167,5 +167,6 @@
   <java-symbol type="style" name="PowerMenuRightAnimation" />
   <java-symbol type="style" name="PowerMenuRotateAnimation" />
   <java-symbol type="style" name="PowerMenuGrowAnimation" />
+  <java-symbol type="style" name="PowerMenuTurnAnimation" />
 
 </resources>
