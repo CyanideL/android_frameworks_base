@@ -17,16 +17,22 @@
 package com.android.systemui.statusbar;
 
 import android.app.Notification;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
+import android.content.ContentResolver;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.DrawableContainer;
 import android.graphics.drawable.Icon;
+import android.graphics.drawable.InsetDrawable;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -38,8 +44,10 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.ViewDebug;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.ImageView;
 
 import com.android.internal.statusbar.StatusBarIcon;
+import com.android.internal.util.cyanide.ImageHelper;
 import com.android.systemui.R;
 
 import java.text.NumberFormat;
@@ -52,7 +60,7 @@ public class StatusBarIconView extends AnimatedImageView {
     private StatusBarIcon mIcon;
     @ViewDebug.ExportedProperty private String mSlot;
     private Drawable mNumberBackground;
-    private Paint mNumberPain;
+    private Paint mNumberPaint;
     private int mNumberX;
     private int mNumberY;
     private String mNumberText;
@@ -60,6 +68,8 @@ public class StatusBarIconView extends AnimatedImageView {
     private final boolean mBlocked;
     private int mDensity;
     private boolean mShowNotificationCount;
+    private int mNotifCountColor;
+    private int mNotifCountTextColor;
     private GlobalSettingsObserver mObserver;
 
     public StatusBarIconView(Context context, String slot, Notification notification) {
@@ -69,65 +79,47 @@ public class StatusBarIconView extends AnimatedImageView {
     public StatusBarIconView(Context context, String slot, Notification notification,
             boolean blocked) {
         super(context);
+        final Resources res = context.getResources();
         mBlocked = blocked;
         final float densityMultiplier = res.getDisplayMetrics().density;
         final float scaledPx = 8 * densityMultiplier;
         mSlot = slot;
-        mNumberPain = new Paint();
-        mNumberPain.setTextAlign(Paint.Align.CENTER);
-        mNumberPain.setColor(context.getColor(R.drawable.notification_number_text_color));
-        mNumberPain.setAntiAlias(true);
-        mNumberPain.setTypeface(Typeface.DEFAULT_BOLD);
-        mNumberPain.setTextSize(scaledPx);
-        setNotification(notification);
-        maybeUpdateIconScale();
-        setScaleType(ScaleType.CENTER);
-        mDensity = context.getResources().getDisplayMetrics().densityDpi;
+        updateColors();
+        mNumberPaint = new Paint();
+        mNumberPaint.setTextAlign(Paint.Align.CENTER);
+        mNumberPaint.setAntiAlias(true);
+        mNumberPaint.setTypeface(Typeface.DEFAULT_BOLD);
+        mNumberPaint.setTextSize(scaledPx);
 
         mObserver = GlobalSettingsObserver.getInstance(context);
-    }
-
-    private void maybeUpdateIconScale() {
         // We do not resize and scale system icons (on the right), only notification icons (on the
         // left).
-        if (mNotification != null || mAlwaysScaleIcon) {
-            updateIconScale();
+        if (notification != null) {
+            final int outerBounds = res.getDimensionPixelSize(R.dimen.status_bar_icon_size);
+            final int imageBounds = res.getDimensionPixelSize(R.dimen.status_bar_icon_drawing_size);
+            final float scale = (float)imageBounds / (float)outerBounds;
+            setScaleX(scale);
+            setScaleY(scale);
         }
-    }
 
-    private void updateIconScale() {
-        Resources res = mContext.getResources();
-        final int outerBounds = res.getDimensionPixelSize(R.dimen.status_bar_icon_size);
-        final int imageBounds = res.getDimensionPixelSize(R.dimen.status_bar_icon_drawing_size);
-        final float scale = (float)imageBounds / (float)outerBounds;
-        setScaleX(scale);
-        setScaleY(scale);
-    }
-
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        int density = newConfig.densityDpi;
-        if (density != mDensity) {
-            mDensity = density;
-            maybeUpdateIconScale();
-            updateDrawable();
-        }
+        setScaleType(ImageView.ScaleType.CENTER);
     }
 
     public void setNotification(Notification notification) {
         mNotification = notification;
-        mShowNotificationCount = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_NOTIF_COUNT, 0, UserHandle.USER_CURRENT) == 1;
+        updateColors();
         setContentDescription(notification);
     }
 
     public StatusBarIconView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mBlocked = false;
-        mAlwaysScaleIcon = true;
-        updateIconScale();
-        mDensity = context.getResources().getDisplayMetrics().densityDpi;
+        final Resources res = context.getResources();
+        final int outerBounds = res.getDimensionPixelSize(R.dimen.status_bar_icon_size);
+        final int imageBounds = res.getDimensionPixelSize(R.dimen.status_bar_icon_drawing_size);
+        final float scale = (float)imageBounds / (float)outerBounds;
+        setScaleX(scale);
+        setScaleY(scale);
     }
 
     private static boolean streq(String a, String b) {
@@ -171,6 +163,7 @@ public class StatusBarIconView extends AnimatedImageView {
         final boolean numberEquals = mIcon != null
                 && mIcon.number == icon.number;
         mIcon = icon.clone();
+        updateColors();
         setContentDescription(icon.contentDescription);
         if (!iconEquals || force) {
             if (!updateDrawable(false /* no clear */)) return false;
@@ -180,11 +173,14 @@ public class StatusBarIconView extends AnimatedImageView {
         }
 
         if (!numberEquals || force) {
-            if (icon.number > 1 && mShowNotificationCount) {
+            if (icon.number > 0 && mShowNotificationCount) {
                 if (mNumberBackground == null) {
                     mNumberBackground = getContext().getResources().getDrawable(
                             R.drawable.ic_notification_overlay);
                 }
+                mNumberBackground.setColorFilter(null);
+                mNumberBackground.setColorFilter(mNotifCountColor,
+                        Mode.MULTIPLY);
                 placeNumber();
             } else {
                 mNumberBackground = null;
@@ -215,6 +211,7 @@ public class StatusBarIconView extends AnimatedImageView {
             setImageDrawable(null);
         }
         setImageDrawable(drawable);
+
         return true;
     }
 
@@ -229,24 +226,16 @@ public class StatusBarIconView extends AnimatedImageView {
      * @return Drawable for this item, or null if the package or item could not
      *         be found
      */
-    public static Drawable getIcon(Context context, StatusBarIcon statusBarIcon) {
-        int userId = statusBarIcon.user.getIdentifier();
-        if (userId == UserHandle.USER_ALL) {
-            userId = UserHandle.USER_SYSTEM;
+    public static Drawable getIcon(Context context, StatusBarIcon icon) {
+        int userId;
+        if (icon != null) {
+            userId = icon.user.getIdentifier();
+            if (userId == UserHandle.USER_ALL) {
+                userId = UserHandle.USER_OWNER;
+            }
+            return icon.icon.loadDrawableAsUser(context, userId);
         }
-
-        Drawable icon = statusBarIcon.icon.loadDrawableAsUser(context, userId);
-
-        TypedValue typedValue = new TypedValue();
-        context.getResources().getValue(R.dimen.status_bar_icon_scale_factor, typedValue, true);
-        float scaleFactor = typedValue.getFloat();
-
-        // No need to scale the icon, so return it as is.
-        if (scaleFactor == 1.f) {
-            return icon;
-        }
-
-        return new ScalingDrawableWrapper(icon, scaleFactor);
+        return null;
     }
 
     public StatusBarIcon getStatusBarIcon() {
@@ -281,7 +270,7 @@ public class StatusBarIconView extends AnimatedImageView {
 
         if (mNumberBackground != null) {
             mNumberBackground.draw(canvas);
-            canvas.drawText(mNumberText, mNumberX, mNumberY, mNumberPain);
+            canvas.drawText(mNumberText, mNumberX, mNumberY, mNumberPaint);
         }
     }
 
@@ -326,7 +315,7 @@ public class StatusBarIconView extends AnimatedImageView {
         final int w = getWidth();
         final int h = getHeight();
         final Rect r = new Rect();
-        mNumberPain.getTextBounds(str, 0, str.length(), r);
+        mNumberPaint.getTextBounds(str, 0, str.length(), r);
         final int tw = r.right - r.left;
         final int th = r.bottom - r.top;
         mNumberBackground.getPadding(r);
@@ -345,9 +334,9 @@ public class StatusBarIconView extends AnimatedImageView {
 
     private void setContentDescription(Notification notification) {
         if (notification != null) {
-            String d = contentDescForNotification(mContext, notification);
-            if (!TextUtils.isEmpty(d)) {
-                setContentDescription(d);
+            CharSequence tickerText = notification.tickerText;
+            if (!TextUtils.isEmpty(tickerText)) {
+                setContentDescription(tickerText);
             }
         }
     }
@@ -360,7 +349,6 @@ public class StatusBarIconView extends AnimatedImageView {
     public String getSlot() {
         return mSlot;
     }
-
 
     public static String contentDescForNotification(Context c, Notification n) {
         String appName = "";
@@ -419,8 +407,15 @@ public class StatusBarIconView extends AnimatedImageView {
         }
 
         void observe() {
-            mContext.getContentResolver().registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.STATUS_BAR_NOTIF_COUNT),
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_NOTIF_COUNT),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_NOTIF_COUNT_ICON_COLOR),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_NOTIF_COUNT_TEXT_COLOR),
                     false, this);
         }
 
@@ -430,13 +425,27 @@ public class StatusBarIconView extends AnimatedImageView {
 
         @Override
         public void onChange(boolean selfChange) {
-            boolean showIconCount = Settings.System.getIntForUser(mContext.getContentResolver(),
-                    Settings.System.STATUS_BAR_NOTIF_COUNT, 0, UserHandle.USER_CURRENT) == 1;
             for (StatusBarIconView sbiv : mIconViews) {
-                sbiv.mShowNotificationCount = showIconCount;
+                sbiv.updateColors();
                 sbiv.set(sbiv.mIcon, true);
+                sbiv.mNumberPaint.setColor(sbiv.mNotifCountTextColor);
             }
         }
+    }
+
+    private void updateColors() {
+        ContentResolver resolver = mContext.getContentResolver();
+
+        mShowNotificationCount = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_NOTIF_COUNT,
+                    mContext.getResources().getBoolean(
+                    R.bool.config_statusBarShowNumber) ? 0 : 0) == 1;
+        mNotifCountColor = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_NOTIF_COUNT_ICON_COLOR,
+                0xffffffff);
+        mNotifCountTextColor = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_NOTIF_COUNT_TEXT_COLOR,
+                0xffffffff);
     }
 }
 
