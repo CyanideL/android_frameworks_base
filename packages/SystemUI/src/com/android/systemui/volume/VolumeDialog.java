@@ -31,6 +31,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -42,6 +43,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.provider.Settings.Global;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -75,6 +77,8 @@ import com.android.systemui.tuner.TunerZenModePanel;
 import com.android.systemui.volume.VolumeDialogController.State;
 import com.android.systemui.volume.VolumeDialogController.StreamState;
 
+import com.android.internal.util.cyanide.VolumeDialogColorHelper;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,6 +104,7 @@ public class VolumeDialog implements TunerService.Tunable {
     private final Context mContext;
     private final H mHandler = new H();
     private final VolumeDialogController mController;
+    private Context vContext;
 
     private CustomDialog mDialog;
     private ViewGroup mDialogView;
@@ -116,14 +121,15 @@ public class VolumeDialog implements TunerService.Tunable {
     private LayoutTransition mLayoutTransition;
     private final Object mSafetyWarningLock = new Object();
     private final Accessibility mAccessibility = new Accessibility();
-    private final ColorStateList mActiveSliderTint;
-    private final ColorStateList mInactiveSliderTint;
-    private VolumeDialogMotion mMotion;
     private final int mWindowType;
     private final ZenModeController mZenModeController;
+    private final VolumeDialogMotion mMotion;
+    private int mBackgroundColor;
+    private int mExpandButtonColor;
 
     private boolean mShowing;
     private boolean mExpanded;
+    private boolean mForceExpanded;
 
     private int mActiveStream;
     private boolean mShowHeaders = VolumePrefs.DEFAULT_SHOW_HEADERS;
@@ -145,6 +151,7 @@ public class VolumeDialog implements TunerService.Tunable {
     public VolumeDialog(Context context, int windowType, VolumeDialogController controller,
             ZenModeController zenModeController, Callback callback) {
         mContext = context;
+        vContext = context;
         mController = controller;
         mCallback = callback;
         mWindowType = windowType;
@@ -152,8 +159,6 @@ public class VolumeDialog implements TunerService.Tunable {
         mKeyguard = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
         mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         mAccessibilityMgr = (AccessibilityManager) mContext.getSystemService(Context.ACCESSIBILITY_SERVICE);
-        mActiveSliderTint = loadColorStateList(R.color.system_accent_color);
-        mInactiveSliderTint = loadColorStateList(R.color.volume_slider_inactive);
 
         initDialog();
 
@@ -165,6 +170,22 @@ public class VolumeDialog implements TunerService.Tunable {
 
         final Configuration currentConfig = mContext.getResources().getConfiguration();
         mDensity = currentConfig.densityDpi;
+
+        mMotion = new VolumeDialogMotion(mDialog, mDialogView, mDialogContentView, mExpandButton,
+                new VolumeDialogMotion.Callback() {
+            @Override
+            public void onAnimatingChanged(boolean animating) {
+                if (animating) return;
+                if (mPendingStateChanged) {
+                    mHandler.sendEmptyMessage(H.STATE_CHANGED);
+                    mPendingStateChanged = false;
+                }
+                if (mPendingRecheckAll) {
+                    mHandler.sendEmptyMessage(H.RECHECK_ALL);
+                    mPendingRecheckAll = false;
+                }
+            }
+        });
     }
 
     private void initDialog() {
@@ -198,7 +219,6 @@ public class VolumeDialog implements TunerService.Tunable {
         window.setAttributes(lp);
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
-
         mDialog.setContentView(R.layout.volume_dialog);
         mDialogView = (ViewGroup) mDialog.findViewById(R.id.volume_dialog);
         mDialogView.setOnHoverListener(new View.OnHoverListener() {
@@ -219,21 +239,6 @@ public class VolumeDialog implements TunerService.Tunable {
         updateExpandButtonH();
 
         mDialogContentView.setLayoutTransition(mLayoutTransition);
-        mMotion = new VolumeDialogMotion(mDialog, mDialogView, mDialogContentView, mExpandButton,
-                new VolumeDialogMotion.Callback() {
-                    @Override
-                    public void onAnimatingChanged(boolean animating) {
-                        if (animating) return;
-                        if (mPendingStateChanged) {
-                            mHandler.sendEmptyMessage(H.STATE_CHANGED);
-                            mPendingStateChanged = false;
-                        }
-                        if (mPendingRecheckAll) {
-                            mHandler.sendEmptyMessage(H.RECHECK_ALL);
-                            mPendingRecheckAll = false;
-                        }
-                    }
-                });
 
         if (mRows.isEmpty()) {
             addRow(AudioManager.STREAM_RING,
@@ -257,6 +262,9 @@ public class VolumeDialog implements TunerService.Tunable {
         mZenPanel = (TunerZenModePanel) mDialog.findViewById(R.id.tuner_zen_mode_panel);
         mZenPanel.init(mZenModeController);
         mZenPanel.setCallback(mZenPanelCallback);
+
+        updateExpandButtonColor();
+        updateForceExpanded();
     }
 
     @Override
@@ -264,10 +272,6 @@ public class VolumeDialog implements TunerService.Tunable {
         if (SHOW_FULL_ZEN.equals(key)) {
             mShowFullZen = newValue != null && Integer.parseInt(newValue) != 0;
         }
-    }
-
-    private ColorStateList loadColorStateList(int colorResId) {
-        return ColorStateList.valueOf(mContext.getColor(colorResId));
     }
 
     private void updateWindowWidthH() {
@@ -363,6 +367,7 @@ public class VolumeDialog implements TunerService.Tunable {
         writer.println(VolumeDialog.class.getSimpleName() + " state:");
         writer.print("  mShowing: "); writer.println(mShowing);
         writer.print("  mExpanded: "); writer.println(mExpanded);
+        writer.print("  mForceExpanded: "); writer.println(mForceExpanded);
         writer.print("  mExpandButtonAnimationRunning: ");
         writer.println(mExpandButtonAnimationRunning);
         writer.print("  mActiveStream: "); writer.println(mActiveStream);
@@ -423,8 +428,10 @@ public class VolumeDialog implements TunerService.Tunable {
                 return false;
             }
         });
+        final ColorStateList iconColor = VolumeDialogColorHelper.getIconColorList(mContext);
         row.icon = (ImageButton) row.view.findViewById(R.id.volume_row_icon);
         row.icon.setImageResource(iconRes);
+        row.icon.setImageTintList(iconColor);
         row.icon.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -492,12 +499,14 @@ public class VolumeDialog implements TunerService.Tunable {
     }
 
     private int computeTimeoutH() {
+        final int volumePanelTimeout = Settings.System.getInt(vContext.getContentResolver(),
+                Settings.System.VOLUME_DIALOG_TIMEOUT, 5000);
         if (mAccessibility.mFeedbackEnabled) return 20000;
         if (mHovering) return 16000;
         if (mSafetyWarning != null) return 5000;
-        if (mExpanded || mExpandButtonAnimationRunning) return 5000;
-        if (mActiveStream == AudioManager.STREAM_MUSIC) return 1500;
-        return 3000;
+        //if (mExpanded || mForceExpanded || mExpandButtonAnimationRunning) return 5000;
+        //if (mActiveStream == AudioManager.STREAM_MUSIC) return 1500;
+        return volumePanelTimeout;
     }
 
     protected void dismissH(int reason) {
@@ -605,8 +614,8 @@ public class VolumeDialog implements TunerService.Tunable {
     }
 
     private boolean isVisibleH(VolumeRow row, boolean isActive) {
-        return mExpanded && row.view.getVisibility() == View.VISIBLE
-                || (mExpanded && (row.important || isActive))
+        return mExpanded || mForceExpanded && row.view.getVisibility() == View.VISIBLE
+                || (mExpanded  && (row.important || isActive))
                 || !mExpanded && isActive;
     }
 
@@ -615,6 +624,9 @@ public class VolumeDialog implements TunerService.Tunable {
         final VolumeRow activeRow = getActiveRow();
         updateFooterH();
         updateExpandButtonH();
+        setBackgroundColor();
+        updateExpandButtonColor();
+        updateForceExpanded();
         if (!mShowing) {
             trimObsoleteH();
         }
@@ -835,15 +847,16 @@ public class VolumeDialog implements TunerService.Tunable {
     }
 
     private void updateVolumeRowSliderTintH(VolumeRow row, boolean isActive) {
-        if (isActive && mExpanded) {
+        final ColorStateList sliderIconColor = VolumeDialogColorHelper.getSliderIconColorList(mContext);
+        final ColorStateList sliderColor = VolumeDialogColorHelper.getSliderColorList(mContext);
+        final ColorStateList sliderInactiveColor = VolumeDialogColorHelper.getSliderInactiveColorList(mContext);
+        if (isActive && mForceExpanded) {
             row.slider.requestFocus();
         }
-        final ColorStateList tint = isActive && row.slider.isEnabled() ? mActiveSliderTint
-                : mInactiveSliderTint;
-        if (tint == row.cachedSliderTint) return;
-        row.cachedSliderTint = tint;
-        row.slider.setProgressTintList(tint);
-        row.slider.setThumbTintList(tint);
+        row.cachedSliderTint = sliderColor;
+        row.slider.setProgressTintList(sliderColor);
+        row.slider.setProgressBackgroundTintList(sliderInactiveColor);
+        row.slider.setThumbTintList(sliderIconColor);
     }
 
     private void updateVolumeRowSliderH(VolumeRow row, boolean enable, int vlevel) {
@@ -1253,5 +1266,26 @@ public class VolumeDialog implements TunerService.Tunable {
     public interface Callback {
         void onZenSettingsClicked();
         void onZenPrioritySettingsClicked();
+    }
+
+    private void setBackgroundColor() {
+        mBackgroundColor = VolumeDialogColorHelper.getBackgroundColor(mContext);
+
+        if (mDialogView != null) {
+            mDialogView.setBackgroundColor(mBackgroundColor);
+        }
+    }
+
+    private void updateExpandButtonColor() {
+        mExpandButtonColor = VolumeDialogColorHelper.getExpandButtonColor(mContext);
+
+        if (mExpandButton != null) {
+            mExpandButton.setColorFilter(mExpandButtonColor, Mode.MULTIPLY);
+        }
+    }
+
+    private void updateForceExpanded() {
+        mForceExpanded = Settings.System.getInt(vContext.getContentResolver(),
+                Settings.System.VOLUME_DIALOG_FORCE_EXPANDED, 1) == 1;
     }
 }

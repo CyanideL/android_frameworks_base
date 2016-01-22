@@ -4608,6 +4608,54 @@ public final class Settings {
         public static final String TOAST_TEXT_COLOR = "toast_text_color";
 
         /**
+         * Background color of the volume dialog
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_BG_COLOR = "volume_dialog_bg_color";
+
+        /**
+         * Icon color of the volume dialog
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_ICON_COLOR = "volume_dialog_icon_color";
+
+        /**
+         * Slider icon color of the volume dialog
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_SLIDER_ICON_COLOR = "volume_dialog_slider_icon_color";
+
+        /**
+         * Slider color of the volume dialog
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_SLIDER_COLOR = "volume_dialog_slider_color";
+
+        /**
+         * Slider icon color of the volume dialog
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_EXPAND_BUTTON_COLOR = "volume_dialog_expand_button_color";
+
+        /**
+         * Inactive color of the volume dialog slider
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_SLIDER_INACTIVE_COLOR = "volume_dialog_slider_inactive_color";
+
+        /**
+         * Force Volume panel in expanded mode
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_FORCE_EXPANDED = "volume_dialog_force_expanded";
+
+        /**
+         * timeout for the volume dialog
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_TIMEOUT = "volume_dialog_timeout";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
