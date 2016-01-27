@@ -1019,7 +1019,7 @@ public class ZenModeHelper {
 
         @Override
         public boolean canVolumeUpExitSilent() {
-            return mZenMode == Global.ZEN_MODE_OFF || mZenMode == Global.ZEN_MODE_IMPORTANT_INTERRUPTIONS;
+            return true;
         }
 
         @Override
