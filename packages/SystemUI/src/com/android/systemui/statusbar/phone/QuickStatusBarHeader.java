@@ -29,6 +29,8 @@ import android.graphics.drawable.RippleDrawable;
 import android.os.UserManager;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.PowerManager;
+import android.os.SystemClock;
 import android.os.UserHandle;
 import android.provider.AlarmClock;
 import android.provider.CalendarContract;
@@ -69,6 +71,10 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         NextAlarmChangeCallback, OnClickListener, OnLongClickListener, OnUserInfoChangedListener {
 
     private static final String TAG = "QuickStatusBarHeader";
+
+    private static final int STATUS_BAR_POWER_MENU_OFF = 0;
+    private static final int STATUS_BAR_POWER_MENU_DEFAULT = 1;
+    private static final int STATUS_BAR_POWER_MENU_INVERTED = 2;
 
     private static final float EXPAND_INDICATOR_THRESHOLD = .93f;
 
@@ -112,11 +118,23 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
     private View mEdit;
     private boolean mShowFullAlarm;
     private float mDateTimeTranslation;
+    private ImageView mPowerMenuButton;
+    private int mPowerMenuButtonStyle;
+    private boolean mPowerMenuVisible = true;
 
     private SettingsObserver mSettingsObserver;
 
+    private ContentObserver mContentObserver = new ContentObserver(new Handler()) {
+   	@Override
+         public void onChange(boolean selfChange, Uri uri) {
+		 showPowerMenuButton();
+        }
+    };
+
     public QuickStatusBarHeader(Context context, AttributeSet attrs) {
         super(context, attrs);
+        showPowerMenuButton();  
+        mContext = context;
     }
 
     @Override
@@ -154,6 +172,9 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         mCyanideButton = findViewById(R.id.cyanide_button);
         mCyanideButton.setOnClickListener(this);
         mCyanideButton.setOnLongClickListener(this);
+        mPowerMenuButton = (ImageView) findViewById(R.id.power_menu_button);
+        mPowerMenuButton.setOnClickListener(this);
+        mPowerMenuButton.setOnLongClickListener(this);
 
         mAlarmStatusCollapsed = findViewById(R.id.alarm_status_collapsed);
         mAlarmStatus = (TextView) findViewById(R.id.alarm_status);
@@ -168,8 +189,10 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         //((RippleDrawable) mExpandIndicator.getBackground()).setForceSoftware(true);
         mExpandIndicator.setVisibility(View.GONE);
         ((RippleDrawable) mCyanideButton.getBackground()).setForceSoftware(true);
+        ((RippleDrawable) mPowerMenuButton.getBackground()).setForceSoftware(true);
 
         updateResources();
+        updatePowerMenuButtonVisibility();
     }
 
     @Override
@@ -203,6 +226,7 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         mSettingsAlpha = new TouchAnimator.Builder()
                 .addFloat(mEdit, "alpha", 0, 1)
                 .addFloat(mMultiUserSwitch, "alpha", 0, 1)
+                .addFloat(mPowerMenuButton, "alpha", 0, 1)
                 .build();
 
         final boolean isRtl = isLayoutRtl();
@@ -268,6 +292,15 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
     }
 
     @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        ContentResolver resolver = getContext().getContentResolver();
+        // status bar power menu
+        resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.POWER_MENU_BUTTON), false, mContentObserver);
+    }
+
+    @Override
     protected void onDetachedFromWindow() {
         setListening(false);
         mHost.getUserInfoController().remListener(this);
@@ -296,6 +329,7 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
             setClickable(false);
         });
         updateRippleColor();
+        updatePowerMenuButtonVisibility();
     }
 
     protected void updateVisibilities() {
@@ -306,8 +340,8 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         final boolean isDemo = UserManager.isDeviceInDemoMode(mContext);
         mMultiUserSwitch.setVisibility(mExpanded && mMultiUserSwitch.hasMultipleUsers() && !isDemo
                 ? View.VISIBLE : View.INVISIBLE);
-        mSettingsButton.setVisibility(mExpanded ? View.VISIBLE : View.INVISIBLE);
         mEdit.setVisibility(isDemo || !mExpanded ? View.INVISIBLE : View.VISIBLE);
+        mPowerMenuButton.setVisibility(mExpanded && mPowerMenuVisible ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void updateDateTimePosition() {
@@ -369,6 +403,8 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
             startClockActivity();
         } else if (v == mDate) {
             startDateActivity();
+        } else if (v == mPowerMenuButton) {
+            startPowerMenuAction();
         }
     }
 
@@ -376,6 +412,8 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
     public boolean onLongClick(View v) {
         if (v == mCyanideButton) {
             startCyanideModsLongClick();
+        } else if (v == mPowerMenuButton) {
+            startPowerMenuLongAction();
         }
         return false;
     }
@@ -491,6 +529,10 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
                 mContext.getDrawable(R.drawable.ripple_drawable_rectangle), false));
         mMultiUserSwitch.setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
+        mEdit.setBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
+        mPowerMenuButton.setBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
         if (mDateTimeGroup instanceof ViewGroup) {
             for (int i = 0; i < ((ViewGroup) mDateTimeGroup).getChildCount(); i++) {
                 if (((ViewGroup) mDateTimeGroup).getChildAt(i) instanceof TextView) {
@@ -531,6 +573,9 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         ((ImageView) mCyanideButton).setImageTintList(QSColorHelper.getHeaderIconColorList(mContext));
         ((ImageView) mSettingsButton).setImageTintList(QSColorHelper.getHeaderIconColorList(mContext));
         ((ImageView) mEdit).setImageTintList(QSColorHelper.getHeaderIconColorList(mContext));
+        if (mPowerMenuButton != null) {
+            ((ImageView) mPowerMenuButton).setImageTintList(QSColorHelper.getHeaderIconColorList(mContext));
+        }
         ((TextView) mDateTimeAlarmGroup.findViewById(R.id.date)).setCompoundDrawableTintList(QSColorHelper.getHeaderIconColorList(mContext));
         ((ImageView) mAlarmStatusCollapsed).setImageTintList(QSColorHelper.getHeaderIconColorList(mContext));
         Drawable alarmIcon =
@@ -554,6 +599,49 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         }
         mAlarmStatus.setTextColor(QSColorHelper.getHeaderTextColor(mContext));
     }
+
+    private void updatePowerMenuButtonVisibility() {
+        mPowerMenuButton.setVisibility(mExpanded
+                && (mPowerMenuButtonStyle != STATUS_BAR_POWER_MENU_OFF) ? View.VISIBLE
+                : View.GONE);
+        if (mPowerMenuButtonStyle == STATUS_BAR_POWER_MENU_OFF) {
+            mPowerMenuVisible = false;
+        } else {
+            mPowerMenuVisible = true;
+        }
+        updateVisibilities();
+    }
+
+    private void startPowerMenuLongAction() {
+        if (mPowerMenuButtonStyle == STATUS_BAR_POWER_MENU_INVERTED) {
+            goToSleep();
+        } else if (mPowerMenuButtonStyle == STATUS_BAR_POWER_MENU_DEFAULT) {
+            triggerPowerMenuDialog();
+        }
+    }
+
+    private void triggerPowerMenuDialog() {
+        mContext.sendBroadcast(new Intent(Intent.ACTION_POWERMENU));
+    }
+
+    private void startPowerMenuAction() {
+        if (mPowerMenuButtonStyle == STATUS_BAR_POWER_MENU_DEFAULT) {
+            goToSleep();
+        } else if (mPowerMenuButtonStyle == STATUS_BAR_POWER_MENU_INVERTED) {
+            triggerPowerMenuDialog();
+        }
+    }
+
+    private void showPowerMenuButton() {
+        ContentResolver resolver = getContext().getContentResolver();
+        mPowerMenuButtonStyle = Settings.System.getInt(resolver,
+                Settings.System.POWER_MENU_BUTTON, 2);
+    }
+ 
+    private void goToSleep() {
+        PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+        pm.goToSleep(SystemClock.uptimeMillis());
+    }  
 
     class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {

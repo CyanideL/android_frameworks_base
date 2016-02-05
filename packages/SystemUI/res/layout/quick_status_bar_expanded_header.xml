@@ -40,10 +40,20 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="12dp">
 
+        <com.android.keyguard.AlphaOptimizedImageButton android:id="@+id/power_menu_button"
+            style="@android:style/Widget.Material.Button.Borderless"
+            android:layout_alignParentEnd="true"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ripple_drawable"
+            android:src="@drawable/ic_lock_power_off_alpha"
+            android:scaleType="centerInside"
+            android:visibility="gone"
+            android:contentDescription="@string/accessibility_quick_settings_settings"  />
+
         <com.android.systemui.statusbar.phone.MultiUserSwitch android:id="@+id/multi_user_switch"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_alignParentEnd="true"
             android:focusable="true"
             android:background="@drawable/ripple_drawable" >
             <ImageView android:id="@+id/multi_user_avatar"
@@ -53,8 +63,20 @@
                 android:scaleType="centerInside"/>
         </com.android.systemui.statusbar.phone.MultiUserSwitch>
 
+        <com.android.keyguard.AlphaOptimizedImageButton android:id="@+id/power_menu_button"
+            style="@android:style/Widget.Material.Button.Borderless"
+            android:layout_toStartOf="@+id/multi_user_switch"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ripple_drawable"
+            android:src="@drawable/ic_lock_power_off_alpha"
+            android:scaleType="centerInside"
+            android:visibility="gone"
+            android:contentDescription="@string/accessibility_quick_settings_settings"  />
+
         <com.android.systemui.statusbar.AlphaOptimizedImageView
             android:id="@android:id/edit"
+            android:layout_toStartOf="@+id/power_menu_button"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:clipToPadding="false"
