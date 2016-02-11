@@ -52,6 +52,7 @@ public class KeyguardStatusView extends GridLayout {
     private int mLCFontSize = 88;
     private TextView mOwnerInfo;
     private int mOwnerSize = 14;
+    private int mAlarmDateSize = 14;
 
     //On the first boot, keyguard will start to receiver TIME_TICK intent.
     //And onScreenTurnedOff will not get called if power off when keyguard is not started.
@@ -67,6 +68,7 @@ public class KeyguardStatusView extends GridLayout {
             }
             updateOwnerSize();
             updateClockSize();
+            updateAlarmDateSize();
         }
 
         @Override
@@ -80,6 +82,7 @@ public class KeyguardStatusView extends GridLayout {
                 updateLogoImage();
                 updateOwnerSize();
                 updateClockSize();
+                updateAlarmDateSize();
             }
         }
 
@@ -90,6 +93,7 @@ public class KeyguardStatusView extends GridLayout {
             refresh();
             updateOwnerSize();
             updateClockSize();
+            updateAlarmDateSize();
         }
 
         @Override
@@ -107,6 +111,7 @@ public class KeyguardStatusView extends GridLayout {
             updateLogoImage();
             updateOwnerSize();
             updateClockSize();
+            updateAlarmDateSize();
         }
     };
 
@@ -124,6 +129,7 @@ public class KeyguardStatusView extends GridLayout {
         mLockPatternUtils = new LockPatternUtils(getContext());
         updateOwnerSize();
         updateClockSize();
+        updateAlarmDateSize();
     }
 
     private void setEnableMarquee(boolean enabled) {
@@ -152,6 +158,7 @@ public class KeyguardStatusView extends GridLayout {
         updateLogoImage();
         updateOwnerSize();
         updateClockSize();
+        updateAlarmDateSize();
 
         // Disable elegant text height because our fancy colon makes the ymin value huge for no
         // reason.
@@ -273,6 +280,18 @@ public class KeyguardStatusView extends GridLayout {
 
         if (mOwnerInfo != null) {
             mOwnerInfo.setTextSize(mOwnerSize);
+        }
+    }
+
+    private void updateAlarmDateSize() {
+        mAlarmDateSize = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LS_ALARM_DATE_FONT_SIZE, 14);
+
+        if (mAlarmStatusView != null) {
+            mAlarmStatusView.setTextSize(mAlarmDateSize);
+        }
+        if (mDateView != null) {
+            mDateView.setTextSize(mAlarmDateSize);
         }
     }
 
