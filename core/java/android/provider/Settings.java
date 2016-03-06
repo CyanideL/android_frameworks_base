@@ -3578,6 +3578,374 @@ public final class Settings {
          */
 
         /**
+         * Size of the Text in Expansion View Activity Panel
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_ACTIVITY_PANEL_TEXT_COLOR = "expansion_view_activity_panel_text_color";
+
+        /**
+         * Size of the Text in Expansion View Activity Panel
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_ACTIVITY_PANEL_TEXT_SIZE = "expansion_view_activity_panel_text_size";
+
+        /**
+         * Expansion View Custom Logo
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_CUSTOM_LOGO = "expansion_view_custom_logo";
+
+        /**
+         * Expansion View Text Color
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_TEXT_COLOR = "expansion_view_text_color";
+
+        /**
+         * Expansion View Icon Color
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_ICON_COLOR = "expansion_view_icon_color";
+
+        /**
+         * Expansion View Ripple Color
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_RIPPLE_COLOR = "expansion_view_ripple_color";
+
+        /**
+         * Empty Shade Text Font Style
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_FONT_STYLE = "expansion_view_font_style";
+
+        /**
+         * Size of the Empty Shade Text
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_TEXT_SIZE = "expansion_view_text_size";
+
+        /**
+         * Empty Shade Custom Text
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_TEXT_CUSTOM = "expansion_view_text_custom";
+
+        /**
+         * Expansion View Forced On
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_FORCE_SHOW = "expansion_view_force_show";
+
+        /**
+         * Expansion View Show on Lockscreen
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_KEYGUARD_SHOW = "expansion_view_keyguard_show";
+
+        /**
+         * Whether to show current weather info in the expansion view weather panel
+         *
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_WEATHER_SHOW_CURRENT = "expansion_view_weather_show_current";
+
+        /**
+         * Type of the weather icon in the Expansion View
+         * 0 - Monochrome
+         * 1 - Colored
+         * 2 - VClouds
+         * default: 0
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_WEATHER_ICON_TYPE = "expansion_view_weather_icon_type";
+
+        /**
+         * Icon color for the expansion view weather panel
+         *
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_WEATHER_ICON_COLOR = "expansion_view_weather_icon_color";
+
+        /**
+         * Text color for the expansion view weather panel
+         *
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_WEATHER_TEXT_COLOR = "expansion_view_weather_text_color";
+
+        /**
+         * Text size for the expansion view weather panel
+         *
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_WEATHER_TEXT_SIZE = "expansion_view_weather_text_size";
+
+        /**
+         * Color of the quick settings panel background
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BACKGROUND_GRADIENT_USE_CENTER_COLOR = "expansion_view_background_gradient_use_center_color";
+
+        /**
+         * Orientation of the background colors of expanded header
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BACKGROUND_GRADIENT_ORIENTATION = "expansion_view_background_gradient_orientation";
+
+        /**
+         * Use a center color for header background
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BACKGROUND_COLOR_START = "expansion_view_background_color_start";
+
+        /**
+         * Start color of the status bar header
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BACKGROUND_COLOR_CENTER = "expansion_view_background_color_center";
+
+        /**
+         * Center color of the status bar header
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BACKGROUND_COLOR_END = "expansion_view_background_color_end";
+
+        /**
+         * Expansion View Change Animation
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_ANIMATION = "expansion_view_animation";
+
+        /**
+         * Expansion View Vibration
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_VIBRATION = "expansion_view_vibration";
+
+        /**
+         * Expansion View stroke
+         * 0 = disabled
+         * 1 = use accent color (default)
+         * 2 = use custom color
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_STROKE = "expansion_view_stroke";
+
+        /**
+         * Expansion View stroke custom color
+         * Accent color is used as default
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_STROKE_COLOR = "expansion_view_stroke_color";
+
+        /**
+         * Expansion View stroke custom thickness
+         * 4dp is default for Cyanide
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_STROKE_THICKNESS = "expansion_view_stroke_thickness";
+
+        /**
+         * Quick settings custom corner radius
+         * 0dp is default
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_CORNER_RADIUS = "expansion_view_corner_radius";
+
+        /**
+         * Expansion view custom stroke dash width
+         * Set 0 to disable (default)
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_STROKE_DASH_WIDTH = "expansion_view_stroke_dash_width";
+
+        /**
+         * Expansion view custom stroke dash gap
+         * 10 is default for cyanide
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_STROKE_DASH_GAP = "expansion_view_stroke_dash_gap";
+
+        /**
+         * Expansion View Shortcut Bar Visibility
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_PANEL_SHORTCUTS = "expansion_view_panel_shortcuts";
+
+        /**
+         * Icon of the battery in expansion view
+         * 0 - Battery portrait
+         * 1 - Battery landscape
+         * 2 - Circle
+         * 3 - Hidden
+         * default: 0
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BATTERY_ICON_INDICATOR = "expansion_view_battery_icon_indicator";
+
+        /**
+         *  Weather to show the battery status text in expansion view
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BATTERY_SHOW_TEXT = "expansion_view_battery_show_text";
+
+        /**
+         * Dot interval of the battery circle icon in expanion view
+         * 0 - No dots
+         * 1 - 10
+         * default: 0
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BATTERY_CIRCLE_DOT_INTERVAL = "expansion_view_battery_circle_dot_interval";
+
+        /**
+         * Dot length of the battery circle icon in expansion view
+         * 0 - 10
+         * default: 0
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BATTERY_CIRCLE_DOT_LENGTH = "expansion_view_battery_circle_dot_length";
+
+        /**
+         *  Weather to show a battery charging animation in expansion view
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BATTERY_SHOW_CHARGE_ANIMATION = "expansion_view_battery_show_charge_animation";
+
+        /**
+         *  Weather to cut the battery percentage out of the battery status icon in expansion view
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BATTERY_CUT_OUT_TEXT = "expansion_view_battery_cut_out_text";
+
+        /**
+         * Color of the battery status text in expansion view
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BATTERY_ICON_COLOR = "expansion_view_battery_icon_color";
+
+        /**
+         * Color of the battery status text in expansion view
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BATTERY_TEXT_COLOR = "expansion_view_battery_text_color";
+
+        /**
+         * Network traffic indicator, goes from least to greatest significant bitwise
+         * 0 = Display up-stream traffic if set
+         * 1 = Display down-stream traffic if set
+         * 2 = Show as Byte/s if set
+         * 16-31 = Refresh interval(ms) min: 250 max: 32750 default: 1000
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_NETWORK_TRAFFIC_STATE = "expansion_view_network_traffic_state";
+
+        /**
+         * Whether or not to hide the network traffic indicator when there is no activity
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_NETWORK_TRAFFIC_AUTOHIDE = "expansion_view_network_traffic_autohide";
+
+        /**
+         * Network traffic inactivity threshold (default is 10 kBs)
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_NETWORK_TRAFFIC_AUTOHIDE_THRESHOLD = "expansion_view_network_traffic_autohide_threshold";
+
+        /**
+         * Network stats arrows on/off switch
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_NETWORK_TRAFFIC_HIDE_ARROW = "expansion_view_network_traffic_hide_arrow";
+
+        /**
+         * Network stats Color style
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_NETWORK_TRAFFIC_COLOR = "expansion_view_network_traffic_color";
+
+        /**
+         * Expansion View Panel 1 Selection
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_PANEL_ONE = "expansion_view_panel_one";
+
+        /**
+         * Expansion View Panel 2 Selection
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_PANEL_TWO = "expansion_view_panel_two";
+
+        /**
+         * Expansion View Panel 3 Selection
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_PANEL_THREE = "expansion_view_panel_three";
+
+        /**
+         * Expansion View Panel 4 Selection
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_PANEL_FOUR = "expansion_view_panel_four";
+
+        /**
+         * Custom shortcuts for the empty shade view
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS = "panel_shortcuts";
+
+        /**
+         * The way in which shortcuts will launch
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS_PRESS_TYPE = "panel_shortcuts_press_type";
+
+        /**
+         * Whether to colorize the shadeview shortcut bar icons
+         * 0: never
+         * 1: if the icon is an greyscale icon
+         * 2: always
+         * default: 0
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS_ICON_COLOR_MODE = "panel_shortcuts_icon_color_mode";
+
+        /**
+         * Color the shadeview shortcut bar ripple
+         * 0: Auto
+         * 1: Custom color
+         * 2: Disabled
+         * default: 2
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS_RIPPLE_COLOR_MODE = "panel_shortcuts_ripple_color_mode";
+
+        /**
+         * Header shortcuts ripple color
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS_RIPPLE_COLOR = "panel_shortcuts_ripple_color";
+
+        /**
+         * Color of shortcut bar icons
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS_ICON_COLOR = "panel_shortcuts_icon_color";
+
+        /**
+         * Size of the shortcut bar icons
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS_ICON_SIZE = "panel_shortcuts_icon_size";
+
+        /**
+         * Force custom colors switch
+         * @hide
+         */
+        public static final String FORCE_CUSTOM_COLORS = "force_custom_colors";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -5954,6 +6322,12 @@ public final class Settings {
          * @hide
          */
         public static final String UI_NIGHT_MODE = "ui_night_mode";
+
+        /**
+         * Auto theme mode which switches based on lightsensor
+         * @hide
+         */
+        public static final String UI_NIGHT_AUTO_MODE = "ui_night_auto_mode";
 
         /**
          * Whether screensavers are enabled.

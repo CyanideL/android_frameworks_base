@@ -50,6 +50,7 @@ import com.android.systemui.EventLogTags;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
 import com.android.systemui.classifier.FalsingManager;
+import com.android.systemui.cyanide.expansionview.ExpansionViewController;
 import com.android.systemui.qs.QSContainer;
 import com.android.systemui.statusbar.ExpandableNotificationRow;
 import com.android.systemui.statusbar.ExpandableView;
@@ -195,6 +196,7 @@ public class NotificationPanelView extends PanelView implements
     private boolean mLaunchingAffordance;
     private FalsingManager mFalsingManager;
     private String mLastCameraLaunchSource = KeyguardBottomAreaView.CAMERA_LAUNCH_SOURCE_AFFORDANCE;
+    private ExpansionViewController mExpansionViewController;
 
     private Runnable mHeadsUpExistenceChangedRunnable = new Runnable() {
         @Override
@@ -297,6 +299,24 @@ public class NotificationPanelView extends PanelView implements
             lp.width = panelWidth;
             lp.gravity = panelGravity;
             mNotificationStackScroller.setLayoutParams(lp);
+        }
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        //mSettingsObserver.observe();
+        if (mExpansionViewController != null) {
+            mExpansionViewController.setObserving(true);
+        }
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        //mSettingsObserver.unobserve();
+        if (mExpansionViewController != null) {
+            mExpansionViewController.setObserving(false);
         }
     }
 
@@ -1655,6 +1675,9 @@ public class NotificationPanelView extends PanelView implements
     private void setListening(boolean listening) {
         mQsContainer.setListening(listening);
         mKeyguardStatusBar.setListening(listening);
+        if (mExpansionViewController != null) {
+            mExpansionViewController.setListening(listening);
+        }
     }
 
     @Override
@@ -2337,5 +2360,9 @@ public class NotificationPanelView extends PanelView implements
 
     public void setGroupManager(NotificationGroupManager groupManager) {
         mGroupManager = groupManager;
+    }
+
+    public void setExpansionViewController(ExpansionViewController controller) {
+        mExpansionViewController = controller;
     }
 }

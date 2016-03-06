@@ -24,6 +24,8 @@ import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.provider.Settings;
+import android.os.UserHandle;
 import android.util.Log;
 
 import java.io.File;
@@ -36,6 +38,31 @@ public class ActionHelper {
     private static final String SYSTEM_METADATA_NAME = "android";
     private static final String SYSTEMUI_METADATA_NAME = "com.android.systemui";
     private static final String SETTINGS_METADATA_NAME = "com.android.settings";
+
+    public static ArrayList<ActionConfig> getPanelShortcutsConfig(Context context) {
+        String config = Settings.System.getStringForUser(
+                    context.getContentResolver(),
+                    Settings.System.PANEL_SHORTCUTS,
+                    UserHandle.USER_CURRENT);
+        if (config == null) {
+            config = "";
+        }
+
+        return (ConfigSplitHelper.getActionConfigValues(context, config, null, null, true));
+    }
+
+    public static void setPanelShortcutsConfig(Context context,
+            ArrayList<ActionConfig> actionConfig, boolean reset) {
+        String config;
+        if (reset) {
+            config = "";
+        } else {
+            config = ConfigSplitHelper.setActionConfig(actionConfig, true);
+        }
+        Settings.System.putString(context.getContentResolver(),
+                    Settings.System.PANEL_SHORTCUTS,
+                    config);
+    }
 
     // General methods to retrieve the correct icon for the respective action.
     public static Drawable getActionIconImage(Context context,

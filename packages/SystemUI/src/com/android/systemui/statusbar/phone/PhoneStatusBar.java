@@ -29,6 +29,7 @@ import android.app.StatusBarManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -58,6 +59,7 @@ import android.media.session.MediaController;
 import android.media.session.MediaSession;
 import android.media.session.MediaSessionManager;
 import android.media.session.PlaybackState;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -118,6 +120,8 @@ import com.android.systemui.SystemUIFactory;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.classifier.FalsingLog;
 import com.android.systemui.classifier.FalsingManager;
+import com.android.systemui.cyanide.expansionview.ExpansionViewController;
+import com.android.systemui.cyanide.UserContentObserver;
 import com.android.systemui.doze.DozeHost;
 import com.android.systemui.doze.DozeLog;
 import com.android.systemui.keyguard.KeyguardViewMediator;
@@ -174,6 +178,9 @@ import com.android.systemui.statusbar.stack.NotificationStackScrollLayout.OnChil
 import com.android.systemui.statusbar.stack.StackStateAnimator;
 import com.android.systemui.statusbar.stack.StackViewState;
 import com.android.systemui.volume.VolumeComponent;
+
+import com.android.internal.util.cyanide.WeatherServiceController;
+import com.android.internal.util.cyanide.WeatherServiceControllerImpl;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -312,6 +319,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     FingerprintUnlockController mFingerprintUnlockController;
     LightStatusBarController mLightStatusBarController;
     protected LockscreenWallpaper mLockscreenWallpaper;
+    WeatherServiceControllerImpl mWeatherController;
 
     int mNaturalBarHeight = -1;
 
@@ -398,6 +406,57 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     private int mNavigationIconHints = 0;
     private HandlerThread mHandlerThread;
+
+    class SettingsObserver extends UserContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void observe() {
+            super.observe();
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_FORCE_SHOW),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_KEYGUARD_SHOW),
+                    false, this, UserHandle.USER_ALL);
+            update();
+        }
+
+        @Override
+        protected void unobserve() {
+            super.unobserve();
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.unregisterContentObserver(this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            update();
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+
+            if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_FORCE_SHOW))) {
+                forceExpansionView();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_FORCE_SHOW))) {
+                keyguardExpansionView();
+            }
+            update();
+        }
+
+        @Override
+        public void update() {
+            ContentResolver resolver = mContext.getContentResolver();
+            updateSettings();
+        }
+    }
 
     // ensure quick settings is disabled until the current user makes it through the setup wizard
     private boolean mUserSetup = false;
@@ -663,6 +722,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         addNavigationBar();
 
+        // Status bar settings observer
+        SettingsObserver observer = new SettingsObserver(mHandler);
+        observer.observe();
+
         // Lastly, call to the icon policy to install/update all the icons.
         mIconPolicy = new PhoneStatusBarPolicy(mContext, mIconController, mCastController,
                 mHotspotController, mUserInfoController, mBluetoothController,
@@ -808,6 +871,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mStackScroller.setScrimController(mScrimController);
         mStatusBarView.setScrimController(mScrimController);
         mDozeScrimController = new DozeScrimController(mScrimController, context);
+        mWeatherController = new WeatherServiceControllerImpl(mContext);
 
         mKeyguardStatusBar = (KeyguardStatusBarView) mStatusBarWindow.findViewById(R.id.keyguard_header);
         mKeyguardStatusView = mStatusBarWindow.findViewById(R.id.keyguard_status_view);
@@ -884,6 +948,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     mHandler, this);
             createUserSwitcher();
         }
+
+        // Set up the expansion view controller
+        final View expansionViewContainer = mStatusBarWindow.findViewById(R.id.expansion_view_controller_container);
+        ExpansionViewController expansionViewController = new ExpansionViewController(mContext, expansionViewContainer);
+        expansionViewController.setUp(this, mNetworkController, /*mBatteryController,*/ mWeatherController);
+        mNotificationPanel.setExpansionViewController(expansionViewController);
 
         // Set up the quick settings tile panel
         AutoReinflateContainer container = (AutoReinflateContainer) mStatusBarWindow.findViewById(
@@ -982,7 +1052,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         inflateDismissView();
         updateClearAll();
         inflateEmptyShadeView();
-        updateEmptyShadeView();
+        //updateEmptyShadeView();
         inflateOverflowContainer();
         mStatusBarKeyguardViewManager.onDensityOrFontScaleChanged();
         mUserInfoController.onDensityOrFontScaleChanged();
@@ -1721,7 +1791,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateRowStates();
         updateSpeedbump();
         updateClearAll();
-        updateEmptyShadeView();
+        //updateEmptyShadeView();
 
         updateQsExpansionEnabled();
         mShadeUpdates.check();
@@ -1836,7 +1906,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private void updateEmptyShadeView() {
         boolean showEmptyShade =
                 mState != StatusBarState.KEYGUARD &&
-                        mNotificationData.getActiveNotifications().size() == 0;
+                        mNotificationData.getActiveNotifications().size() == 0 && !mStackScroller.mForceShadeView;
         mNotificationPanel.setShadeEmpty(showEmptyShade);
     }
 
@@ -2216,6 +2286,30 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     }
                 }
             }
+        }
+    }
+
+    private void updateSettings() {
+        forceExpansionView();
+        keyguardExpansionView();
+    }
+
+    private void forceExpansionView() {
+
+        boolean force = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.EXPANSION_VIEW_FORCE_SHOW, 1) == 1;
+        if (mStackScroller != null) {
+            mStackScroller.forceShowShade(force);
+        }
+        mNotificationPanel.setShadeEmpty(force);
+    }
+
+    private void keyguardExpansionView() {
+
+        boolean force = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.EXPANSION_VIEW_KEYGUARD_SHOW, 0) == 1;
+        if (mStackScroller != null) {
+            mStackScroller.keyguardShowShade(force);
         }
     }
 
