@@ -201,6 +201,8 @@ public class NotificationStackScrollLayout extends ViewGroup
     private DismissView mDismissView;
     private EmptyShadeView mEmptyShadeView;
     private boolean mDismissAllInProgress;
+    public boolean mForceShadeView = false;
+    public boolean mKeyguardShadeView = false;
 
     /**
      * Was the scroller scrolled to the top when the down motion was observed?
@@ -461,7 +463,7 @@ public class NotificationStackScrollLayout extends ViewGroup
         mCollapsedSize = context.getResources()
                 .getDimensionPixelSize(R.dimen.notification_min_height);
         mBottomStackPeekSize = context.getResources()
-                .getDimensionPixelSize(R.dimen.bottom_stack_peek_amount);
+                .getDimensionPixelSize(R.dimen.nothing);
         mStackScrollAlgorithm.initView(context);
         mPaddingBetweenElements = Math.max(1, context.getResources()
                 .getDimensionPixelSize(R.dimen.notification_divider_height));
@@ -857,7 +859,9 @@ public class NotificationStackScrollLayout extends ViewGroup
             requestChildrenUpdate();
         } else {
             // We start the swipe and snap back in the same frame, we don't want any animation
-            mDragAnimPendingChildren.remove(animView);
+            if (!mForceShadeView) {
+                mDragAnimPendingChildren.remove(animView);
+            }
         }
         if (mCurrIconRow != null && targetLeft == 0) {
             mCurrIconRow.resetState();
@@ -2170,8 +2174,7 @@ public class NotificationStackScrollLayout extends ViewGroup
         final ExpandableView firstChild = getFirstChildNotGone();
         final int firstChildMinHeight = firstChild != null ? firstChild.getCollapsedHeight()
                 : mCollapsedSize;
-        return mIntrinsicPadding + firstChildMinHeight + mBottomStackPeekSize
-                + mBottomStackSlowDownHeight;
+        return mBottomStackPeekSize;
     }
 
     private int clampPadding(int desiredPadding) {
@@ -3133,7 +3136,7 @@ public class NotificationStackScrollLayout extends ViewGroup
     }
 
     private int getStackEndPosition() {
-        return mMaxLayoutHeight - mBottomStackPeekSize - mBottomStackSlowDownHeight
+        return mMaxLayoutHeight - mBottomStackSlowDownHeight
                 + mPaddingBetweenElements + (int) mStackTranslation;
     }
 
@@ -3300,7 +3303,6 @@ public class NotificationStackScrollLayout extends ViewGroup
 
     public void goToFullShade(long delay) {
         mDismissView.setInvisible();
-        mEmptyShadeView.setInvisible();
         mGoToFullShadeNeedsAnimation = true;
         mGoToFullShadeDelay = delay;
         mNeedsAnimation = true;
@@ -3422,48 +3424,33 @@ public class NotificationStackScrollLayout extends ViewGroup
     }
 
     public void setEmptyShadeView(EmptyShadeView emptyShadeView) {
-        int index = -1;
+        int index = 0;
         if (mEmptyShadeView != null) {
             index = indexOfChild(mEmptyShadeView);
-            removeView(mEmptyShadeView);
+            if (!mForceShadeView) {
+                removeView(mEmptyShadeView);
+           }
         }
         mEmptyShadeView = emptyShadeView;
         addView(mEmptyShadeView, index);
     }
 
     public void updateEmptyShadeView(boolean visible) {
-        int oldVisibility = mEmptyShadeView.willBeGone() ? GONE : mEmptyShadeView.getVisibility();
-        int newVisibility = visible ? VISIBLE : GONE;
-        if (oldVisibility != newVisibility) {
-            if (newVisibility != GONE) {
-                if (mEmptyShadeView.willBeGone()) {
-                    mEmptyShadeView.cancelAnimation();
-                } else {
-                    mEmptyShadeView.setInvisible();
-                }
-                mEmptyShadeView.setVisibility(newVisibility);
-                mEmptyShadeView.setWillBeGone(false);
-                updateContentHeight();
-                notifyHeightChangeListener(mEmptyShadeView);
-            } else {
-                Runnable onFinishedRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        mEmptyShadeView.setVisibility(GONE);
-                        mEmptyShadeView.setWillBeGone(false);
-                        updateContentHeight();
-                        notifyHeightChangeListener(mEmptyShadeView);
-                    }
-                };
-                if (mAnimationsEnabled && mIsExpanded) {
-                    mEmptyShadeView.setWillBeGone(true);
-                    mEmptyShadeView.performVisibilityAnimation(false, onFinishedRunnable);
-                } else {
-                    mEmptyShadeView.setInvisible();
-                    onFinishedRunnable.run();
-                }
-            }
+        if (!mForceShadeView) {
+            mEmptyShadeView.setVisibility(GONE);
+        } else if (!mKeyguardShadeView && mPhoneStatusBar.getBarState() == StatusBarState.KEYGUARD) {
+            mEmptyShadeView.setVisibility(GONE);
+        } else {
+            mEmptyShadeView.setVisibility(VISIBLE);
         }
+    }
+
+    public void forceShowShade(boolean show) {
+        mForceShadeView = show;
+    }
+
+    public void keyguardShowShade(boolean show) {
+        mKeyguardShadeView = show;
     }
 
     public void setOverflowContainer(NotificationOverflowContainer overFlowContainer) {
@@ -3638,7 +3625,7 @@ public class NotificationStackScrollLayout extends ViewGroup
                     }
                 } else if (child == mEmptyShadeView) {
                     // We arrived at the empty shade view, for which we accept all clicks
-                    return true;
+                    return false;
                 } else if (!belowChild){
                     // We are on a child
                     return false;
