@@ -2527,4 +2527,7 @@
 
     <!-- Boolean to enable stk functionality on Samsung phones -->
     <bool name="config_samsung_stk">false</bool>
+
+    <!-- Configuartion to support SIM contact batch operation.-->
+    <bool name="config_sim_phonebook_batch_operation">true</bool>
 </resources>
