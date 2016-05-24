@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
@@ -48,6 +49,7 @@ public class KeyguardStatusView extends GridLayout {
     private TextClock mDateView;
     private TextClock mClockView;
     private TextView mOwnerInfo;
+    private KeyguardRomLogo mRomLogo;
 
     private KeyguardUpdateMonitorCallback mInfoCallback = new KeyguardUpdateMonitorCallback() {
 
@@ -62,6 +64,9 @@ public class KeyguardStatusView extends GridLayout {
                 if (DEBUG) Slog.v(TAG, "refresh statusview showing:" + showing);
                 refresh();
                 updateOwnerInfo();
+                updateLogoVisibility();
+                updateLogoColor();
+                updateLogoImage();
             }
         }
 
@@ -79,6 +84,9 @@ public class KeyguardStatusView extends GridLayout {
         public void onUserSwitchComplete(int userId) {
             refresh();
             updateOwnerInfo();
+            updateLogoVisibility();
+            updateLogoColor();
+            updateLogoImage();
         }
     };
 
@@ -111,11 +119,15 @@ public class KeyguardStatusView extends GridLayout {
         mDateView.setShowCurrentUserTime(true);
         mClockView.setShowCurrentUserTime(true);
         mOwnerInfo = (TextView) findViewById(R.id.owner_info);
+        mRomLogo = (KeyguardRomLogo) findViewById(R.id.keyguard_rom_logo_container);
 
         boolean shouldMarquee = KeyguardUpdateMonitor.getInstance(mContext).isDeviceInteractive();
         setEnableMarquee(shouldMarquee);
         refresh();
         updateOwnerInfo();
+        updateLogoVisibility();
+        updateLogoColor();
+        updateLogoImage();
 
         // Disable elegant text height because our fancy colon makes the ymin value huge for no
         // reason.
@@ -253,6 +265,32 @@ public class KeyguardStatusView extends GridLayout {
             clockView12 = clockView12.replace(':', '\uee01');
 
             cacheKey = key;
+        }
+    }
+
+    private void updateLogoVisibility() {
+        final boolean showLogo = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.KEYGUARD_LOGO_SHOW, 1) == 1;
+
+        if (mRomLogo != null) {
+            mRomLogo.showLogo(showLogo);
+        }
+    }
+
+    private void updateLogoColor() {
+        int color = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.KEYGUARD_LOGO_COLOR, 0xff1976D2);
+
+        if (mRomLogo != null) {
+            mRomLogo.setIconColor(color);
+
+        }
+    }
+
+    private void updateLogoImage() {
+
+        if (mRomLogo != null) {
+            mRomLogo.updateLogoImage();
         }
     }
 }

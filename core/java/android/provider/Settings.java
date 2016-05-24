@@ -4508,6 +4508,26 @@ public final class Settings {
          */
         public static final String ANIM_TILE_INTERPOLATOR = "anim_tile_interpolator";
 
+       /**
+        * Custom Icon for the logo
+        * @hide
+        */
+        public static final String KEYGUARD_LOGO_CUSTOM = "keyguard_logo_custom";
+
+        /**
+		 * Style of Status bar logo
+         * 0 - Left (default)
+         * 1 - Right
+         * @hide
+		 */
+		public static final String KEYGUARD_LOGO_SHOW = "keyguard_logo_show";
+
+        /**
+         * Color of the custom icon on the lock screen
+         * @hide
+         */
+        public static final String KEYGUARD_LOGO_COLOR = "keyguard_logo_color";
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
