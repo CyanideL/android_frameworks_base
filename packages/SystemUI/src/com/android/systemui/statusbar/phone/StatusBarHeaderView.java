@@ -192,6 +192,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        setOnLongClickListener(this);
         mSystemIconsSuperContainer = findViewById(R.id.system_icons_super_container);
         mSystemIconsContainer = (ViewGroup) findViewById(R.id.system_icons_container);
         mSystemIconsSuperContainer.setOnClickListener(this);
@@ -683,8 +684,17 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             triggerPowerMenuDialog();
         } else if (mPowerMenuButtonStyle == STATUS_BAR_POWER_MENU_INVERTED) {
             goToSleep();
+        } else if (v == this) {
+            startExpandedActivity();
         }
         return false;
+    }
+
+    private void startExpandedActivity() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.android.settings",
+            "com.android.settings.Settings$ExpandedHeaderSettingsActivity");
+        mActivityStarter.startActivity(intent, true /* dismissShade */);
     }
 
     private void startSettingsActivity() {
@@ -694,7 +704,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
 
     private void startSettingsLongClickActivity() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
-	intent.setClassName("com.android.settings",
+        intent.setClassName("com.android.settings",
             "com.android.settings.Settings$StatusBarSettingsSettingsActivity");
         mActivityStarter.startActivity(intent, true /* dismissShade */);
     }
