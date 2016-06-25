@@ -31,6 +31,7 @@ import android.graphics.Outline;
 import android.graphics.Rect;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.graphics.Typeface;
@@ -171,6 +172,12 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     private SettingsObserver mSettingsObserver;
     private boolean mShowWeather;
     private boolean mShowWeatherLocation;
+
+    // Stroke
+    private int mSBEHStroke;
+    private int mSBEHStrokeColor;
+    private int mSBEHStrokeThickness;
+    private int mSBEHCornerRadius;
 
     private ContentObserver mContentObserver = new ContentObserver(new Handler()) {
    	 @Override
@@ -1300,6 +1307,18 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_EXPANDED_HEADER_BATTERY_COLOR),
                     false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE_THICKNESS),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_CORNER_RADIUS),
+                    false, this, UserHandle.USER_ALL);
             updateSettings();
         }
 
@@ -1316,8 +1335,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                     Settings.System.STATUS_BAR_EXPANDED_HEADER_SHOW_WEATHER_LOCATION))) {
                 updateWeatherSettings();
             } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR))
-                || uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_EXPANDED_HEADER_RIPPLE_COLOR))) {
                 updateBackgroundColor();
             } else if (uri.equals(Settings.System.getUriFor(
@@ -1371,6 +1388,17 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.VRTOXIN_BUTTON))) {
                 updateVRToxinButton();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE_COLOR))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE_THICKNESS))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_CORNER_RADIUS))) {
+                setSBEHStroke();
             }
 
         }
@@ -1394,12 +1422,11 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             updateBatteryColor();
             updateClockColor();
             updateDateColor();
+            setSBEHStroke();
         }
     }
 
     private void updateBackgroundColor() {
-        setBackground(getColoredBackgroundDrawable(
-                mContext.getDrawable(R.drawable.notification_header_bg), true));
         mMultiUserSwitch.setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable), false));
         mSettingsButton.setBackground(getColoredBackgroundDrawable(
@@ -1412,6 +1439,37 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mContext.getDrawable(R.drawable.ripple_drawable), false));
         mAlarmStatus.setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable), false));
+    }
+
+    private void setSBEHStroke() {
+        ContentResolver resolver = mContext.getContentResolver();
+        mSBEHStroke = Settings.System.getInt(
+                resolver, Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE, 1);
+        mSBEHStrokeColor = Settings.System.getInt(
+                resolver, Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE_COLOR, mContext.getResources().getColor(R.color.system_accent_color));
+        mSBEHStrokeThickness = Settings.System.getInt(
+                resolver, Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE_THICKNESS, 4);
+        mSBEHCornerRadius = Settings.System.getInt(
+                resolver, Settings.System.STATUS_BAR_EXPANDED_HEADER_CORNER_RADIUS, 0);
+        final int backgroundColor = SBEHeaderColorHelper.getBackgroundColor(mContext);
+        final GradientDrawable gradientDrawable = new GradientDrawable();
+        if (mSBEHStroke == 0) { // Disable by setting border color to match bg color
+            gradientDrawable.setColor(backgroundColor);
+            gradientDrawable.setStroke(0, mSBEHStrokeColor);
+            gradientDrawable.setCornerRadius(mSBEHCornerRadius);
+            setBackground(gradientDrawable);
+        } else if (mSBEHStroke == 1) { // use accent color for border
+            gradientDrawable.setColor(backgroundColor);
+            gradientDrawable.setStroke(mSBEHStrokeThickness, mContext.getResources().getColor(R.color.system_accent_color));
+        } else if (mSBEHStroke == 2) { // use custom border color
+            gradientDrawable.setColor(backgroundColor);
+            gradientDrawable.setStroke(mSBEHStrokeThickness, mSBEHStrokeColor);
+        }
+
+        if (mSBEHStroke != 0) {
+            gradientDrawable.setCornerRadius(mSBEHCornerRadius);
+            setBackground(gradientDrawable);
+        }
     }
 
     private void updateTextColor() {
@@ -1774,10 +1832,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
 
         background.setColor(ColorStateList.valueOf(
                 SBEHeaderColorHelper.getRippleColor(mContext)));
-        if (applyBackgroundColor) {
-            background.setTintList(ColorStateList.valueOf(
-                    SBEHeaderColorHelper.getBackgroundColor(mContext)));
-        }
         return background;
     }
 
