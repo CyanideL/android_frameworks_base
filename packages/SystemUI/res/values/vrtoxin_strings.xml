@@ -374,4 +374,8 @@
     <string name="quick_settings_halo_on">Halo</string>
     <string name="quick_settings_halo_off">Halo disabled</string>
 
+    <!-- Slim recents app sidebar queue app toast -->
+    <string name="toast_recents_queue_app">Launch %s after closing recents</string>
+    <string name="toast_recents_cancel_queued_app">Cancelled app launch</string>
+
 </resources>

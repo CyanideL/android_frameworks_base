@@ -565,6 +565,7 @@ public class RecentPanelView {
                 Log.e(TAG, "Error launching activity " + intent, e);
             }
         }
+        mController.onLaunchApplication();
         exit();
     }
 
@@ -595,6 +596,7 @@ public class RecentPanelView {
         intent.setComponent(intent.resolveActivity(mContext.getPackageManager()));
         TaskStackBuilder.create(mContext)
                 .addNextIntentWithParentStack(intent).startActivities(getAnimation());
+        mController.onLaunchApplication();
         exit();
     }
 
