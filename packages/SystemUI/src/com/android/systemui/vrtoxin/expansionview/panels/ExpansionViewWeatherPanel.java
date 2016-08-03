@@ -242,8 +242,8 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
 
     private void startWeatherServiceActivity() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("net.cyanide.weather",
-            "net.cyanide.weather.SettingsActivity");
+        intent.setClassName("com.rogersb11.cyanide",
+            "com.rogersb11.cyanide.weather.WeatherSettings");
         mStatusBar.startActivity(intent, true /* dismissShade */);
     }
 

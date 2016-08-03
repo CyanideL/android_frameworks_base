@@ -56,8 +56,8 @@ public class VRToxinTile extends QSTile<QSTile.BooleanState> {
     protected void handleClick() {
         MetricsLogger.action(mContext, getMetricsCategory(), !mState.value);
         Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.android.settings",
-            "com.android.settings.Settings$MainSettingsActivity");
+        intent.setClassName("com.rogersb11.cyanide",
+            "com.rogersb11.cyanide.MainActivity");
         mHost.startActivityDismissingKeyguard(intent);
     }
 

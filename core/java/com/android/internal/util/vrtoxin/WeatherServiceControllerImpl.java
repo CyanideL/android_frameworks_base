@@ -41,15 +41,15 @@ import java.util.List;
 
 public class WeatherServiceControllerImpl implements WeatherServiceController {
     private static final String TAG = "WeatherService:WeatherServiceController";
-    public static final String PACKAGE_NAME = "net.cyanide.weather";
+    public static final String PACKAGE_NAME = "com.rogersb11.cyanide";
 
     public static final ComponentName COMPONENT_WEATHER_FORECAST = new ComponentName(
-            "net.cyanide.weather", "net.cyanide.weather.ForecastActivity");
+            "com.rogersb11.cyanide", "com.rogersb11.cyanide.weather.ForecastActivity");
 
     private static final Uri WEATHER_URI
-            = Uri.parse("content://net.cyanide.weather.provider/weather");
+            = Uri.parse("content://com.rogersb11.cyanide.weather.provider/weather");
     private static final Uri SETTINGS_URI
-            = Uri.parse("content://net.cyanide.weather.provider/settings");
+            = Uri.parse("content://com.rogersb11.cyanide.weather.provider/settings");
     private static final String[] WEATHER_PROJECTION = new String[] {
             "city",
             "wind_speed",
@@ -93,7 +93,7 @@ public class WeatherServiceControllerImpl implements WeatherServiceController {
 
         if (WeatherHelper.isWeatherServiceAvailable(mContext)) {
             Intent updateIntent = new Intent(Intent.ACTION_MAIN)
-                    .setClassName(PACKAGE_NAME, PACKAGE_NAME + ".WeatherService");
+                    .setClassName(PACKAGE_NAME, PACKAGE_NAME + ".weather.WeatherService");
             updateIntent.setAction(PACKAGE_NAME + ".ACTION_UPDATE");
             updateIntent.putExtra("force", true);
             mContext.startService(updateIntent);

@@ -855,8 +855,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             mActivityStarter.startActivity(weatherLongShortcutIntent, true);
         } else {
             Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.setClassName("net.cyanide.weather",
-            "net.cyanide.weather.SettingsActivity");
+            intent.setClassName("com.rogersb11.cyanide",
+            "com.rogersb11.cyanide.weather.WeatherSettings");
             mActivityStarter.startActivity(intent, true /* dismissShade */);
         }
     }
@@ -877,8 +877,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mActivityStarter.startActivity(vrtoxinShortcutIntent, true);
             } else {
                 Intent intent = new Intent(Intent.ACTION_MAIN);
-                intent.setClassName("com.android.settings",
-                    "com.android.settings.Settings$MainSettingsActivity");
+                intent.setClassName("com.rogersb11.cyanide",
+                    "com.rogersb11.cyanide.MainActivity");
                 mActivityStarter.startActivity(intent, true /* dismissShade */);
             }
     }
