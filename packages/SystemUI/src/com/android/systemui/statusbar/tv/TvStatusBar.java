@@ -131,7 +131,7 @@ public class TvStatusBar extends BaseStatusBar {
     }
 
     @Override
-    protected void updateNotifications() {
+    public void updateNotifications() {
     }
 
     @Override

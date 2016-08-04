@@ -1389,6 +1389,18 @@ public class NotificationManagerService extends SystemService {
             return mRankingHelper.getPackageVisibilityOverride(pkg, uid);
         }
 
+        public void setHaloPolicyBlack(String pkg, int uid, boolean allowed) {
+            checkCallerIsSystem();
+            mRankingHelper.setHaloPolicyBlack(pkg, uid, allowed);
+            savePolicyFile();
+        }
+
+        @Override
+        public boolean isPackageAllowedForHalo(String pkg, int uid) {
+            enforceSystemOrSystemUI("INotificationManager.setHaloBlacklistStatus");
+            return mRankingHelper.isPackageAllowedForHalo(pkg, uid);
+        }
+
         /**
          * System-only API for getting a list of current (i.e. not cleared) notifications.
          *

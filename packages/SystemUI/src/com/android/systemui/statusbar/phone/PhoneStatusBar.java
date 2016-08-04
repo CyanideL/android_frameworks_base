@@ -2546,7 +2546,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     @Override
-    protected void updateNotifications() {
+    public void updateNotifications() {
         mNotificationData.filterAndSort();
 
         updateNotificationShade();
@@ -4860,6 +4860,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (mNotificationPanel != null) {
             mNotificationPanel.updateResources();
         }
+        //restartHalo();
     }
 
     protected void loadDimens() {

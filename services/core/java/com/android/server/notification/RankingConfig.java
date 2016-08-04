@@ -31,4 +31,8 @@ public interface RankingConfig {
     boolean getPackageKeyguard(String packageName, int uid);
 
     void setPackageKeyguard(String packageName, int uid, boolean keyguard);
+
+    boolean isPackageAllowedForHalo(String packageName, int uid);
+
+    void setHaloPolicyBlack(String packagename, int uid, boolean floating);
 }

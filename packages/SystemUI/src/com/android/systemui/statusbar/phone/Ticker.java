@@ -438,4 +438,3 @@ public abstract class Ticker {
                 0xffffffff);
     }
 }
-
