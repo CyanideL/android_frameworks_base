@@ -2647,7 +2647,31 @@ public final class Settings {
          * Color of the quick settings panel background
          * @hide
          */
-        public static final String QS_BACKGROUND_COLOR = "qs_background_color";
+        public static final String QS_BACKGROUND_GRADIENT_USE_CENTER_COLOR = "qs_background_gradient_use_center_color";
+
+        /**
+         * Color of the quick settings panel background
+         * @hide
+         */
+        public static final String QS_BACKGROUND_GRADIENT_ORIENTATION = "qs_background_gradient_orientation";
+
+        /**
+         * Color of the quick settings panel background
+         * @hide
+         */
+        public static final String QS_BACKGROUND_COLOR_START = "qs_background_color_start";
+
+        /**
+         * Color of the quick settings panel background
+         * @hide
+         */
+        public static final String QS_BACKGROUND_COLOR_CENTER = "qs_background_color_center";
+
+        /**
+         * Color of the quick settings panel background
+         * @hide
+         */
+        public static final String QS_BACKGROUND_COLOR_END = "qs_background_color_end";
 
         /**
          * Color of the quick settings icons
@@ -5573,20 +5597,44 @@ public final class Settings {
         public static final String STATUS_BAR_EXPANDED_HEADER_STROKE_DASH_WIDTH = "status_bar_expanded_header_stroke_dash_width";
 
         /**
-         * Expanded header custom stroke dash gap
-         * 10 is default for cyanide
+         * Expanded header custom stroke dash width
+         * Set 0 to disable (default)
          * @hide
          */
         public static final String STATUS_BAR_EXPANDED_HEADER_STROKE_DASH_GAP = "status_bar_expanded_header_stroke_dash_gap";
 
-         /**
-         * Color of the expanded status bar header background
+        /**
+         * Color of the quick settings panel background
          * @hide
          */
-        public static final String STATUS_BAR_EXPANDED_HEADER_BG_COLOR = "status_bar_expanded_header_bg_color";
+        public static final String HEADER_BACKGROUND_GRADIENT_USE_CENTER_COLOR = "header_background_gradient_use_center_color";
 
         /**
-         * Color of the ripple effects on the header of the expanded status bar
+         * Orientation of the background colors of expanded header
+         * @hide
+         */
+        public static final String HEADER_BACKGROUND_GRADIENT_ORIENTATION = "header_background_gradient_orientation";
+
+        /**
+         * Use a center color for header background
+         * @hide
+         */
+        public static final String HEADER_BACKGROUND_COLOR_START = "header_background_color_start";
+
+        /**
+         * Start color of the status bar header
+         * @hide
+         */
+        public static final String HEADER_BACKGROUND_COLOR_CENTER = "header_background_color_center";
+
+        /**
+         * Center color of the status bar header
+         * @hide
+         */
+        public static final String HEADER_BACKGROUND_COLOR_END = "header_background_color_end";
+
+        /**
+         * End color of the status bar header
          * @hide
          */
         public static final String STATUS_BAR_EXPANDED_HEADER_RIPPLE_COLOR = "status_bar_expanded_header_ripple_color";
@@ -6606,10 +6654,34 @@ public final class Settings {
         public static final String KEYGUARD_TOGGLE_TORCH = "keyguard_toggle_torch";
 
         /**
-         * Background color of the volume dialog
+         * Color of the quick settings panel background
          * @hide
          */
-        public static final String VOLUME_DIALOG_BG_COLOR = "volume_dialog_bg_color";
+        public static final String VOLUME_DIALOG_BACKGROUND_GRADIENT_USE_CENTER_COLOR = "volume_dialog_background_gradient_use_center_color";
+
+        /**
+         * Orientation of the background colors of expanded header
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_BACKGROUND_GRADIENT_ORIENTATION = "volume_dialog_background_gradient_orientation";
+
+        /**
+         * Use a center color for header background
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_BACKGROUND_COLOR_START = "volume_dialog_background_color_start";
+
+        /**
+         * Start color of the status bar header
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_BACKGROUND_COLOR_CENTER = "volume_dialog_background_color_center";
+
+        /**
+         * Center color of the status bar header
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_BACKGROUND_COLOR_END = "volume_dialog_background_color_end";
 
         /**
          * Icon color of the volume dialog
@@ -6923,11 +6995,34 @@ public final class Settings {
         public static final String EXPANSION_VIEW_WEATHER_TEXT_SIZE = "expansion_view_weather_text_size";
 
         /**
-         * Text color for the expansion view weather panel
-         *
+         * Color of the quick settings panel background
          * @hide
          */
-        public static final String EXPANSION_VIEW_BACKGROUND_COLOR = "expansion_view_background_color";
+        public static final String EXPANSION_VIEW_BACKGROUND_GRADIENT_USE_CENTER_COLOR = "expansion_view_background_gradient_use_center_color";
+
+        /**
+         * Orientation of the background colors of expanded header
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BACKGROUND_GRADIENT_ORIENTATION = "expansion_view_background_gradient_orientation";
+
+        /**
+         * Use a center color for header background
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BACKGROUND_COLOR_START = "expansion_view_background_color_start";
+
+        /**
+         * Start color of the status bar header
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BACKGROUND_COLOR_CENTER = "expansion_view_background_color_center";
+
+        /**
+         * Center color of the status bar header
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BACKGROUND_COLOR_END = "expansion_view_background_color_end";
 
         /**
          * Expansion View Change Animation

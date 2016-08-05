@@ -139,9 +139,35 @@ public class ExpansionViewColorHelper {
                 WHITE);
     }
 
-    public static int getBackgroundColor(Context context) {
+    public static int getBgGradientOrientation(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
-                Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR, 0x00000000);
+                Settings.System.EXPANSION_VIEW_BACKGROUND_GRADIENT_ORIENTATION, 270);
+    }
+
+    private static boolean useBgGradientCenterColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.EXPANSION_VIEW_BACKGROUND_GRADIENT_USE_CENTER_COLOR,
+                0) == 1;
+    }
+
+    public static int[] getBackgroundColors(Context context) {
+        int startColor = Settings.System.getInt(context.getContentResolver(),
+                Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR_START, 0x00000000);
+        int[] colors;
+        int centerColor = useBgGradientCenterColor(context)
+                ? Settings.System.getInt(context.getContentResolver(),
+                        Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR_CENTER, 0x00000000)
+                : 0;
+        int endColor = Settings.System.getInt(context.getContentResolver(),
+                Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR_END, 0x00000000);
+
+        colors = new int[useBgGradientCenterColor(context) ? 3 : 2];
+        colors[0] = startColor;
+        if (useBgGradientCenterColor(context)) {
+            colors[1] = centerColor;
+        }
+        colors[useBgGradientCenterColor(context) ? 2 : 1] = endColor;
+    return colors;
     }
 
     public static int getNormalRippleColor(Context context) {

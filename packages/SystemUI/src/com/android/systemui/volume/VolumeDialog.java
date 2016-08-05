@@ -38,6 +38,7 @@ import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.GradientDrawable.Orientation;
 import android.media.AudioManager;
 import android.media.AudioSystem;
 import android.os.Debug;
@@ -119,7 +120,6 @@ public class VolumeDialog {
     private final Object mSafetyWarningLock = new Object();
     private final Accessibility mAccessibility = new Accessibility();
     private final VolumeDialogMotion mMotion;
-    private int mBackgroundColor;
     private int mExpandButtonColor;
 
     private boolean mShowing;
@@ -146,6 +146,7 @@ public class VolumeDialog {
     private int mCustomCornerRadius;
     private int mCustomDashWidth;
     private int mCustomDashGap;
+    private GradientDrawable volumeDialogGd;
 
     public VolumeDialog(Context context, int windowType, VolumeDialogController controller,
             ZenModeController zenModeController, Callback callback) {
@@ -187,6 +188,7 @@ public class VolumeDialog {
         mDialogContentView = (ViewGroup) mDialog.findViewById(R.id.volume_dialog_content);
         mExpandButton = (ImageButton) mDialogView.findViewById(R.id.volume_expand_button);
         mExpandButton.setOnClickListener(mClickExpand);
+        volumeDialogGd = new GradientDrawable();
         updateWindowWidthH();
         updateExpandButtonH();
         mLayoutTransition = new LayoutTransition();
@@ -595,7 +597,7 @@ public class VolumeDialog {
         final VolumeRow activeRow = getActiveRow();
         updateFooterH();
         updateExpandButtonH();
-        setBackgroundColor();
+        updateBgGradientOrientation();
         updateExpandButtonColor();
         updateForceExpanded();
         setVolumeStroke();
@@ -1173,14 +1175,6 @@ public class VolumeDialog {
         void onZenPrioritySettingsClicked();
     }
 
-    private void setBackgroundColor() {
-        mBackgroundColor = VolumeDialogColorHelper.getBackgroundColor(mContext);
-
-        if (mDialogView != null) {
-            mDialogView.setBackgroundColor(mBackgroundColor);
-        }
-    }
-
     private void updateExpandButtonColor() {
         mExpandButtonColor = VolumeDialogColorHelper.getExpandButtonColor(mContext);
 
@@ -1189,8 +1183,29 @@ public class VolumeDialog {
         }
     }
 
+    private void updateBgGradientOrientation() {
+        Orientation orientation = Orientation.TOP_BOTTOM;
+        int mBgOrientation =
+                VolumeDialogColorHelper.getBgGradientOrientation(mContext);
+        if (mBgOrientation == 45) {
+            orientation = Orientation.BL_TR;
+        } else if (mBgOrientation == 90) {
+            orientation = Orientation.BOTTOM_TOP;
+        } else if (mBgOrientation == 135) {
+            orientation = Orientation.BR_TL;
+        } else if (mBgOrientation == 180) {
+            orientation = Orientation.RIGHT_LEFT;
+        } else if (mBgOrientation == 225) {
+            orientation = Orientation.TR_BL;
+        } else if (mBgOrientation == 270) {
+            orientation = Orientation.TOP_BOTTOM;
+        } else if (mBgOrientation == 315) {
+            orientation = Orientation.TL_BR;
+        }
+        volumeDialogGd.setOrientation(orientation);
+    }
+
     public void setVolumeStroke () {
-        mBackgroundColor = VolumeDialogColorHelper.getBackgroundColor(mContext);
         mVolumeDialogStroke = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.VOLUME_DIALOG_STROKE, 1);
         mCustomStrokeColor = Settings.System.getInt(mContext.getContentResolver(),
@@ -1204,19 +1219,17 @@ public class VolumeDialog {
         mCustomDashGap = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.VOLUME_DIALOG_STROKE_DASH_GAP, 10);
 
-        final GradientDrawable volumeDialogGd = new GradientDrawable();
-
         if (mVolumeDialogStroke == 0) { // Disable by setting border thickness to 0
-            volumeDialogGd.setColor(mBackgroundColor);
-            volumeDialogGd.setStroke(0, mBackgroundColor);
+            volumeDialogGd.setColors(VolumeDialogColorHelper.getBackgroundColors(mContext));
+            volumeDialogGd.setStroke(0, mCustomStrokeColor);
             volumeDialogGd.setCornerRadius(mCustomCornerRadius);
             mDialogView.setBackground(volumeDialogGd);
         } else if (mVolumeDialogStroke == 1) { // use accent color for border
-            volumeDialogGd.setColor(mBackgroundColor);
+            volumeDialogGd.setColors(VolumeDialogColorHelper.getBackgroundColors(mContext));
             volumeDialogGd.setStroke(mCustomStrokeThickness, mContext.getResources().getColor(R.color.system_accent_color),
                     mCustomDashWidth, mCustomDashGap);
         } else if (mVolumeDialogStroke == 2) { // use custom border color
-            volumeDialogGd.setColor(mBackgroundColor);
+            volumeDialogGd.setColors(VolumeDialogColorHelper.getBackgroundColors(mContext));
             volumeDialogGd.setStroke(mCustomStrokeThickness, mCustomStrokeColor, mCustomDashWidth, mCustomDashGap);
         }
 

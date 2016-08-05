@@ -380,6 +380,12 @@ public class ExpansionViewController {
         }
     }
 
+    private void setExpansionViewBgOrientation() {
+        if (mExpansionViewCustomPanel != null) {
+            mExpansionViewCustomPanel.updateBgGradientOrientation();
+        }
+    }
+
     public void setObserving(boolean observe) {
         if (observe) {
             mSettingsObserver.observe();
@@ -442,7 +448,7 @@ public class ExpansionViewController {
                     Settings.System.EXPANSION_VIEW_WEATHER_TEXT_COLOR),
                     false, this);
             mResolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR),
+                    Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR_START),
                     false, this);
             mResolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_WEATHER_TEXT_SIZE),
@@ -504,6 +510,21 @@ public class ExpansionViewController {
             mResolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_STROKE_DASH_WIDTH),
                     false, this);
+            mResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR_START),
+                    false, this);
+            mResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR_CENTER),
+                    false, this);
+            mResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR_END),
+                    false, this);
+            mResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_BACKGROUND_GRADIENT_USE_CENTER_COLOR),
+                    false, this);
+            mResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_BACKGROUND_GRADIENT_ORIENTATION),
+                    false, this);
             update();
         }
 
@@ -528,6 +549,7 @@ public class ExpansionViewController {
             setExpansionViewWeatherTextSize();
             setExpansionViewVibration();
             setExpansionViewPanelVisibility();
+            setExpansionViewBgOrientation();
 
         }
 
@@ -612,7 +634,13 @@ public class ExpansionViewController {
                     Settings.System.EXPANSION_VIEW_PANEL_FOUR))) {
                 setExpansionViewPanelVisibility();
             } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR))
+                    Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR_START))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR_CENTER))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR_END))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_BACKGROUND_GRADIENT_USE_CENTER_COLOR))
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_STROKE))
                 || uri.equals(Settings.System.getUriFor(
@@ -625,7 +653,10 @@ public class ExpansionViewController {
                     Settings.System.EXPANSION_VIEW_STROKE_DASH_GAP))
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_STROKE_DASH_WIDTH))) {
-                setExpansionViewStroke();
+                 setExpansionViewStroke();
+                } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_BACKGROUND_GRADIENT_ORIENTATION))) {
+                setExpansionViewBgOrientation();
             }
         }
     }

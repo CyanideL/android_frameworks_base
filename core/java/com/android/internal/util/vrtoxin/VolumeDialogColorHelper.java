@@ -29,11 +29,6 @@ public class VolumeDialogColorHelper {
     private static int MATERIAL_GREEN = 0xff009688;
     private static int MATERIAL_BLUE_GREY = 0xff37474f;
 
-    public static int getBackgroundColor(Context context) {
-        return Settings.System.getInt(context.getContentResolver(),
-                Settings.System.VOLUME_DIALOG_BG_COLOR, MATERIAL_BLUE_GREY);
-    }
-
     public static int getExpandButtonColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.VOLUME_DIALOG_EXPAND_BUTTON_COLOR, MATERIAL_GREEN);
@@ -73,5 +68,36 @@ public class VolumeDialogColorHelper {
     public static int getSliderInactiveColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.VOLUME_DIALOG_SLIDER_INACTIVE_COLOR, WHITE);
+    }
+
+    public static int getBgGradientOrientation(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.VOLUME_DIALOG_BACKGROUND_GRADIENT_ORIENTATION, 270);
+    }
+
+    private static boolean useBgGradientCenterColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.VOLUME_DIALOG_BACKGROUND_GRADIENT_USE_CENTER_COLOR,
+                0) == 1;
+    }
+
+    public static int[] getBackgroundColors(Context context) {
+        int startColor = Settings.System.getInt(context.getContentResolver(),
+                Settings.System.VOLUME_DIALOG_BACKGROUND_COLOR_START, MATERIAL_BLUE_GREY);
+        int[] colors;
+        int centerColor = useBgGradientCenterColor(context)
+                ? Settings.System.getInt(context.getContentResolver(),
+                        Settings.System.VOLUME_DIALOG_BACKGROUND_COLOR_CENTER, MATERIAL_BLUE_GREY)
+                : 0;
+        int endColor = Settings.System.getInt(context.getContentResolver(),
+                Settings.System.VOLUME_DIALOG_BACKGROUND_COLOR_END, MATERIAL_BLUE_GREY);
+
+        colors = new int[useBgGradientCenterColor(context) ? 3 : 2];
+        colors[0] = startColor;
+        if (useBgGradientCenterColor(context)) {
+            colors[1] = centerColor;
+        }
+        colors[useBgGradientCenterColor(context) ? 2 : 1] = endColor;
+    return colors;
     }
 }

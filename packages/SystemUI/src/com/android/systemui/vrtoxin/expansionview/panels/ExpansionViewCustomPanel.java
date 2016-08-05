@@ -24,6 +24,7 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.GradientDrawable.Orientation;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Typeface;
@@ -71,6 +72,7 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
     private ImageView mLayoutChanger;
     private ImageView mShadeRomLogo;
     private TextView mCustomText;
+    private GradientDrawable gradientDrawable;
 
     protected Vibrator mVibrator;
  
@@ -131,6 +133,7 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
         mShortcutBarContainer = findViewById(R.id.expansion_view_shortcut_bar_container);
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mWeatherPanel = (ExpansionViewWeatherPanel) findViewById(R.id.expansion_view_weather_container);
+        gradientDrawable = new GradientDrawable();
 
         mCustomText.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -334,6 +337,28 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
         return AnimationUtils.loadAnimation(mContext, animationResId);
     }
 
+    public void updateBgGradientOrientation() {
+        Orientation orientation = Orientation.TOP_BOTTOM;
+        int mBgOrientation =
+                ExpansionViewColorHelper.getBgGradientOrientation(mContext);
+        if (mBgOrientation == 45) {
+            orientation = Orientation.BL_TR;
+        } else if (mBgOrientation == 90) {
+            orientation = Orientation.BOTTOM_TOP;
+        } else if (mBgOrientation == 135) {
+            orientation = Orientation.BR_TL;
+        } else if (mBgOrientation == 180) {
+            orientation = Orientation.RIGHT_LEFT;
+        } else if (mBgOrientation == 225) {
+            orientation = Orientation.TR_BL;
+        } else if (mBgOrientation == 270) {
+            orientation = Orientation.TOP_BOTTOM;
+        } else if (mBgOrientation == 315) {
+            orientation = Orientation.TL_BR;
+        }
+        gradientDrawable.setOrientation(orientation);
+    }
+
     public void setStroke() {
         final int mStroke = Settings.System.getInt(
                 mResolver, Settings.System.EXPANSION_VIEW_STROKE, 1);
@@ -347,19 +372,17 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
                 mResolver, Settings.System.EXPANSION_VIEW_STROKE_DASH_GAP, 0);
         final int mCustomDashGap = Settings.System.getInt(
                 mResolver, Settings.System.EXPANSION_VIEW_STROKE_DASH_WIDTH, 10);
-        final int backgroundColor = ExpansionViewColorHelper.getBackgroundColor(mContext);
-        final GradientDrawable gradientDrawable = new GradientDrawable();
         if (mStroke == 0) { // Disable by setting border thickness to 0
-            gradientDrawable.setColor(backgroundColor);
+            gradientDrawable.setColors(ExpansionViewColorHelper.getBackgroundColors(mContext));
             gradientDrawable.setStroke(0, mStrokeColor);
             gradientDrawable.setCornerRadius(mCornerRadius);
             setBackground(gradientDrawable);
         } else if (mStroke == 1) { // use accent color for border
-            gradientDrawable.setColor(backgroundColor);
+            gradientDrawable.setColors(ExpansionViewColorHelper.getBackgroundColors(mContext));
             gradientDrawable.setStroke(mStrokeThickness, mContext.getResources().getColor(R.color.system_accent_color),
                     mCustomDashWidth, mCustomDashGap);
         } else if (mStroke == 2) { // use custom border color
-            gradientDrawable.setColor(backgroundColor);
+            gradientDrawable.setColors(ExpansionViewColorHelper.getBackgroundColors(mContext));
             gradientDrawable.setStroke(mStrokeThickness, mStrokeColor, mCustomDashWidth, mCustomDashGap);
         }
 

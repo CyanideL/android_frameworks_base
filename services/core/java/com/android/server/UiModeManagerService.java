@@ -577,7 +577,9 @@ final class UiModeManagerService extends SystemService
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.NOTIFICATION_TEXT_COLOR, 0xff000000);
                 Settings.System.putInt(mContext.getContentResolver(),
-                        Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
+                        Settings.System.QS_BACKGROUND_COLOR_START, 0xff263238);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.QS_BACKGROUND_COLOR_END, 0xff263238);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.POWER_MENU_BG_COLOR, 0xffffffff);
                 Settings.System.putInt(mContext.getContentResolver(),
@@ -587,13 +589,17 @@ final class UiModeManagerService extends SystemService
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.POWER_MENU_ICON_ENABLED_SELECTED_COLOR, 0xff1976D2);
                 Settings.System.putInt(mContext.getContentResolver(),
-                        Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR, 0xff384248);
+                        Settings.System.HEADER_BACKGROUND_COLOR_START, 0xff384248);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.HEADER_BACKGROUND_COLOR_END, 0xff384248);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.BOOT_DIALOG_TEXT_COLOR, 0xff000000);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.BOOT_DIALOG_BACKGROUND_COLOR, 0xffffffff);
                 Settings.System.putInt(mContext.getContentResolver(),
-                        Settings.System.VOLUME_DIALOG_BG_COLOR, 0xff37474f);
+                        Settings.System.VOLUME_DIALOG_BACKGROUND_COLOR_START, 0xff37474f);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.VOLUME_DIALOG_BACKGROUND_COLOR_END, 0xff37474f);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.VOLUME_DIALOG_ICON_COLOR, 0xff009688);
                 Settings.System.putInt(mContext.getContentResolver(),
@@ -626,7 +632,9 @@ final class UiModeManagerService extends SystemService
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.NOTIFICATION_TEXT_COLOR, 0xffffffff);
                 Settings.System.putInt(mContext.getContentResolver(),
-                        Settings.System.QS_BACKGROUND_COLOR, 0xff1b1f23);
+                        Settings.System.QS_BACKGROUND_COLOR_START, 0xff1b1f23);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.QS_BACKGROUND_COLOR_END, 0xff1b1f23);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.POWER_MENU_BG_COLOR, 0xff1b1f23);
                 Settings.System.putInt(mContext.getContentResolver(),
@@ -636,13 +644,17 @@ final class UiModeManagerService extends SystemService
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.POWER_MENU_ICON_ENABLED_SELECTED_COLOR, 0xff33b5e5);
                 Settings.System.putInt(mContext.getContentResolver(),
-                        Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR, 0xff263238);
+                        Settings.System.HEADER_BACKGROUND_COLOR_START, 0xff263238);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.HEADER_BACKGROUND_COLOR_END, 0xff263238);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.BOOT_DIALOG_TEXT_COLOR, 0xffffffff);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.BOOT_DIALOG_BACKGROUND_COLOR, 0xff1b1f23);
                 Settings.System.putInt(mContext.getContentResolver(),
-                        Settings.System.VOLUME_DIALOG_BG_COLOR, 0xff1b1f23);
+                        Settings.System.VOLUME_DIALOG_BACKGROUND_COLOR_START, 0xff1b1f23);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.VOLUME_DIALOG_BACKGROUND_COLOR_END, 0xff1b1f23);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.VOLUME_DIALOG_ICON_COLOR, 0xff009688);
                 Settings.System.putInt(mContext.getContentResolver(),
@@ -675,7 +687,9 @@ final class UiModeManagerService extends SystemService
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.NOTIFICATION_TEXT_COLOR, 0xffffffff);
                 Settings.System.putInt(mContext.getContentResolver(),
-                        Settings.System.QS_BACKGROUND_COLOR, 0xff000000);
+                        Settings.System.QS_BACKGROUND_COLOR_START, 0xff000000);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.QS_BACKGROUND_COLOR_END, 0xff000000);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.POWER_MENU_BG_COLOR, 0xff000000);
                 Settings.System.putInt(mContext.getContentResolver(),
@@ -685,13 +699,17 @@ final class UiModeManagerService extends SystemService
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.POWER_MENU_ICON_ENABLED_SELECTED_COLOR, 0xff1976D2);
                 Settings.System.putInt(mContext.getContentResolver(),
-                        Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR, 0xff000000);
+                        Settings.System.HEADER_BACKGROUND_COLOR_START, 0xff000000);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.HEADER_BACKGROUND_COLOR_END, 0xff000000);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.BOOT_DIALOG_TEXT_COLOR, 0xffffffff);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.BOOT_DIALOG_BACKGROUND_COLOR, 0xff000000);
                 Settings.System.putInt(mContext.getContentResolver(),
-                        Settings.System.VOLUME_DIALOG_BG_COLOR, 0xff000000);
+                        Settings.System.VOLUME_DIALOG_BACKGROUND_COLOR_START, 0xff000000);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.VOLUME_DIALOG_BACKGROUND_COLOR_END, 0xff000000);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.VOLUME_DIALOG_ICON_COLOR, 0xff00ff00);
                 Settings.System.putInt(mContext.getContentResolver(),
@@ -728,7 +746,9 @@ final class UiModeManagerService extends SystemService
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.NOTIFICATION_TEXT_COLOR, 0xfffff400);
                 Settings.System.putInt(mContext.getContentResolver(),
-                        Settings.System.QS_BACKGROUND_COLOR, 0xff0f2e4c);
+                        Settings.System.QS_BACKGROUND_COLOR_START, 0xff0f2e4c);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.QS_BACKGROUND_COLOR_END, 0xff0f2e4c);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.QS_ICON_COLOR, 0xfffff400);
                 Settings.System.putInt(mContext.getContentResolver(),
@@ -752,7 +772,9 @@ final class UiModeManagerService extends SystemService
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.STATUS_BAR_EXPANDED_HEADER_ICON_COLOR, 0xfffff400);
                 Settings.System.putInt(mContext.getContentResolver(),
-                        Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR, 0xff0f2e4c);
+                        Settings.System.HEADER_BACKGROUND_COLOR_START, 0xff0f2e4c);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.HEADER_BACKGROUND_COLOR_END, 0xff0f2e4c);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.SETTINGS_BG_COLOR, 0xff0f2e4c);
                 Settings.System.putInt(mContext.getContentResolver(),

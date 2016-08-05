@@ -24,12 +24,6 @@ public class SBEHeaderColorHelper {
     private static final int SYSTEMUI_SECONDARY = 0xff384248;
     private static final int WHITE = 0xffffffff;
 
-    public static int getBackgroundColor(Context context) {
-        return Settings.System.getInt(context.getContentResolver(),
-                Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR,
-                SYSTEMUI_SECONDARY);
-    }
-
     public static int getSettingsColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.STATUS_BAR_EXPANDED_HEADER_SETTINGS_COLOR, WHITE);
@@ -107,5 +101,36 @@ public class SBEHeaderColorHelper {
                 Settings.System.STATUS_BAR_EXPANDED_HEADER_TEXT_COLOR, WHITE);
         int colorToUse =  (alpha << 24) | (color & 0x00ffffff);
         return colorToUse;
+    }
+
+    public static int getBgGradientOrientation(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.HEADER_BACKGROUND_GRADIENT_ORIENTATION, 270);
+    }
+
+    private static boolean useBgGradientCenterColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.HEADER_BACKGROUND_GRADIENT_USE_CENTER_COLOR,
+                0) == 1;
+    }
+
+    public static int[] getBackgroundColors(Context context) {
+        int startColor = Settings.System.getInt(context.getContentResolver(),
+                Settings.System.HEADER_BACKGROUND_COLOR_START, 0xff000000);
+        int[] colors;
+        int centerColor = useBgGradientCenterColor(context)
+                ? Settings.System.getInt(context.getContentResolver(),
+                        Settings.System.HEADER_BACKGROUND_COLOR_CENTER, 0xff000000)
+                : 0;
+        int endColor = Settings.System.getInt(context.getContentResolver(),
+                Settings.System.HEADER_BACKGROUND_COLOR_END, 0xff000000);
+
+        colors = new int[useBgGradientCenterColor(context) ? 3 : 2];
+        colors[0] = startColor;
+        if (useBgGradientCenterColor(context)) {
+            colors[1] = centerColor;
+        }
+        colors[useBgGradientCenterColor(context) ? 2 : 1] = endColor;
+    return colors;
     }
 }
