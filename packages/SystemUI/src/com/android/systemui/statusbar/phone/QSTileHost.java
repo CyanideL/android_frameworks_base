@@ -53,6 +53,7 @@ import com.android.systemui.qs.tiles.DndTile;
 import com.android.systemui.qs.tiles.ExpandedDesktopTile;
 import com.android.systemui.qs.tiles.FlashlightTile;
 import com.android.systemui.qs.tiles.FloatingWindowsTile;
+import com.android.systemui.qs.tiles.HaloTile;
 import com.android.systemui.qs.tiles.HeadsUpTile;
 import com.android.systemui.qs.tiles.HotspotTile;
 import com.android.systemui.qs.tiles.HWKeysTile;
@@ -379,6 +380,8 @@ public class QSTileHost implements QSTile.Host {
                 return new ScreenrecordTile(this);
             case QSConstants.TILE_LAYERS:
                 return new LayersManagerTile(this);
+            case QSConstants.TILE_HALO:
+                return new HaloTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }

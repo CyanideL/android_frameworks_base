@@ -77,6 +77,7 @@ public class QSConstants {
     public static final String TILE_CAFFEINE = "caffeine";
     public static final String TILE_SCREEN_RECORD = "screen_record";
     public static final String TILE_LAYERS = "layers";
+    public static final String TILE_HALO = "toggleHalo";
 
     protected static final ArrayList<String> STATIC_TILES_AVAILABLE = new ArrayList<String>();
     protected static final ArrayList<String> TILES_AVAILABLE = new ArrayList<String>();
@@ -132,6 +133,7 @@ public class QSConstants {
         STATIC_TILES_AVAILABLE.add(TILE_SCREEN_RECORD);
         STATIC_TILES_AVAILABLE.add(TILE_CAFFEINE);
         STATIC_TILES_AVAILABLE.add(TILE_LAYERS);
+        STATIC_TILES_AVAILABLE.add(TILE_HALO);
 
         TILES_AVAILABLE.addAll(STATIC_TILES_AVAILABLE);
     }
