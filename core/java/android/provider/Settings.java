@@ -2723,6 +2723,12 @@ public final class Settings {
         public static final String QS_SMART_PULLDOWN = "qs_smart_pulldown";
 
         /**
+         * Typeface for quick settings
+         * @hide
+         */
+        public static final String QS_FONT_STYLES = "qs_font_styles";
+
+        /**
          * Control whether the process CPU usage meter should be shown.
          *
          * @deprecated Use {@link Global#SHOW_PROCESSES} instead

@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -62,12 +63,15 @@ import com.android.systemui.settings.ToggleSlider;
 import com.android.systemui.statusbar.phone.QSTileHost;
 import com.android.systemui.statusbar.policy.BrightnessMirrorController;
 
+import com.android.internal.util.vrtoxin.FontHelper;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
 /** View that represents the quick settings tile panel. **/
 public class QSPanel extends ViewGroup {
     private static final float TILE_ASPECT = 1.2f;
+    public static Typeface mFontStyle;
 
     private final Context mContext;
     protected final ArrayList<TileRecord> mRecords = new ArrayList<TileRecord>();
@@ -181,7 +185,9 @@ public class QSPanel extends ViewGroup {
         mDetailDoneButton.setText(R.string.quick_settings_done);
         mDetailSettingsButton.setText(R.string.quick_settings_more_settings);
         mDetailDoneButton.setTextColor(QSColorHelper.getTextColor(mContext));
+        mDetailDoneButton.setTypeface(mFontStyle);
         mDetailSettingsButton.setTextColor(QSColorHelper.getTextColor(mContext));
+        mDetailSettingsButton.setTypeface(mFontStyle);
     }
 
     public void setBrightnessMirror(BrightnessMirrorController c) {
@@ -846,6 +852,9 @@ public class QSPanel extends ViewGroup {
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.QUICK_SETTINGS_TILES_VIBRATE),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_FONT_STYLES),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -872,6 +881,95 @@ public class QSPanel extends ViewGroup {
             mVibrationEnabled = Settings.Secure.getIntForUser(
             mContext.getContentResolver(), Settings.Secure.QUICK_SETTINGS_TILES_VIBRATE,
                 0, UserHandle.USER_CURRENT) == 1;
+            updateQSFontStyle();
+        }
+    }
+
+    private void updateQSFontStyle() {
+        final int mQSFontStyle = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.QS_FONT_STYLES, FontHelper.FONT_NORMAL);
+
+        getFontStyle(mQSFontStyle);
+    }
+
+    public static void getFontStyle(int font) {
+        switch (font) {
+            case FontHelper.FONT_NORMAL:
+            default:
+                mFontStyle = (Typeface.create("sans-serif", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_BOLD:
+                mFontStyle = (Typeface.create("sans-serif", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_BOLD_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                break;
+            case FontHelper.FONT_LIGHT:
+                mFontStyle = (Typeface.create("sans-serif-light", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_LIGHT_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif-light", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_THIN:
+                mFontStyle = (Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_THIN_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED:
+                mFontStyle = (Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_CONDENSED_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT:
+                mFontStyle = (Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD:
+                mFontStyle = (Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                break;
+            case FontHelper.FONT_MEDIUM:
+                mFontStyle = (Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_MEDIUM_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_BLACK:
+                mFontStyle = (Typeface.create("sans-serif-black", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_BLACK_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif-black", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT:
+                mFontStyle = (Typeface.create("cursive", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT_BOLD:
+                mFontStyle = (Typeface.create("cursive", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_COMINGSOON:
+                mFontStyle = (Typeface.create("casual", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_NOTOSERIF:
+                mFontStyle = (Typeface.create("serif", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_NOTOSERIF_ITALIC:
+                mFontStyle = (Typeface.create("serif", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD:
+                mFontStyle = (Typeface.create("serif", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
+                mFontStyle = (Typeface.create("serif", Typeface.BOLD_ITALIC));
+                break;
         }
     }
 }

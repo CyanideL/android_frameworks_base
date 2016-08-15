@@ -120,6 +120,7 @@ public class QSDetailItems extends FrameLayout {
         mEmptyText.setText(text);
         mEmptyIcon.setColorFilter(mIconColor, Mode.MULTIPLY);
         mEmptyText.setTextColor(mEmptyTextColor);
+        mEmptyText.setTypeface(QSPanel.mFontStyle);
     }
 
     /**
@@ -202,12 +203,14 @@ public class QSDetailItems extends FrameLayout {
         final TextView title = (TextView) view.findViewById(android.R.id.title);
         title.setText(item.line1);
         title.setTextColor(mTextColor);
+        title.setTypeface(QSPanel.mFontStyle);
         final TextView summary = (TextView) view.findViewById(android.R.id.summary);
         final boolean twoLines = !TextUtils.isEmpty(item.line2);
         title.setMaxLines(twoLines ? 1 : 2);
         summary.setVisibility(twoLines ? VISIBLE : GONE);
         //disconnect.setColorFilter(mIconColor, Mode.MULTIPLY); //enable after signal icon coloring is added
         summary.setText(twoLines ? item.line2 : null);
+        summary.setTypeface(QSPanel.mFontStyle);
         view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

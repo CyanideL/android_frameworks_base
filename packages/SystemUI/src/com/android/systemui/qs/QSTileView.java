@@ -23,7 +23,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
@@ -52,8 +51,6 @@ import java.util.Objects;
 
 /** View that represents a standard quick settings tile. **/
 public class QSTileView extends ViewGroup {
-    private static final Typeface CONDENSED = Typeface.create("sans-serif-condensed",
-            Typeface.NORMAL);
 
     protected final Context mContext;
     private final View mIcon;
@@ -163,7 +160,7 @@ public class QSTileView extends ViewGroup {
             mDualLabel.setFirstLineCaret(mContext.getDrawable(R.drawable.qs_dual_tile_caret));
             mDualLabel.setTextColor(mLabelColor);
             mDualLabel.setPadding(0, mDualTileVerticalPaddingPx, 0, mDualTileVerticalPaddingPx);
-            mDualLabel.setTypeface(CONDENSED);
+            mDualLabel.setTypeface(QSPanel.mFontStyle);
             mDualLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                     res.getDimensionPixelSize(R.dimen.qs_tile_text_size));
             mDualLabel.setClickable(true);
@@ -183,7 +180,7 @@ public class QSTileView extends ViewGroup {
             mLabel.setGravity(Gravity.CENTER_HORIZONTAL);
             mLabel.setMinLines(2);
             mLabel.setPadding(0, 0, 0, 0);
-            mLabel.setTypeface(CONDENSED);
+            mLabel.setTypeface(QSPanel.mFontStyle);
             mLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                     Math.round(res.getDimensionPixelSize(R.dimen.qs_tile_text_size) * mSizeScale));
             mLabel.setClickable(false);
