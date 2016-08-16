@@ -1463,79 +1463,79 @@ public abstract class BaseStatusBar extends SystemUI implements
         switch (font) {
             case FontHelper.FONT_NORMAL:
             default:
-                mFontStyle = (Typeface.create("sans-serif", Typeface.NORMAL));
+                mFontStyle = FontHelper.NORMAL;
                 break;
             case FontHelper.FONT_ITALIC:
-                mFontStyle = (Typeface.create("sans-serif", Typeface.ITALIC));
+                mFontStyle = FontHelper.ITALIC;
                 break;
             case FontHelper.FONT_BOLD:
-                mFontStyle = (Typeface.create("sans-serif", Typeface.BOLD));
+                mFontStyle = FontHelper.BOLD;
                 break;
             case FontHelper.FONT_BOLD_ITALIC:
-                mFontStyle = (Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                mFontStyle = FontHelper.BOLD_ITALIC;
                 break;
             case FontHelper.FONT_LIGHT:
-                mFontStyle = (Typeface.create("sans-serif-light", Typeface.NORMAL));
+                mFontStyle = FontHelper.LIGHT;
                 break;
             case FontHelper.FONT_LIGHT_ITALIC:
-                mFontStyle = (Typeface.create("sans-serif-light", Typeface.ITALIC));
+                mFontStyle = FontHelper.LIGHT_ITALIC;
                 break;
             case FontHelper.FONT_THIN:
-                mFontStyle = (Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                mFontStyle = FontHelper.THIN;
                 break;
             case FontHelper.FONT_THIN_ITALIC:
-                mFontStyle = (Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                mFontStyle = FontHelper.THIN_ITALIC;
                 break;
             case FontHelper.FONT_CONDENSED:
-                mFontStyle = (Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                mFontStyle = FontHelper.CONDENSED;
                 break;
             case FontHelper.FONT_CONDENSED_ITALIC:
-                mFontStyle = (Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                mFontStyle = FontHelper.CONDENSED_ITALIC;
                 break;
             case FontHelper.FONT_CONDENSED_LIGHT:
-                mFontStyle = (Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                mFontStyle = FontHelper.CONDENSED_LIGHT;
                 break;
             case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
-                mFontStyle = (Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                mFontStyle = FontHelper.CONDENSED_LIGHT_ITALIC;
                 break;
             case FontHelper.FONT_CONDENSED_BOLD:
-                mFontStyle = (Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                mFontStyle = FontHelper.CONDENSED_BOLD;
                 break;
             case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
-                mFontStyle = (Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                mFontStyle = FontHelper.CONDENSED_BOLD_ITALIC;
                 break;
             case FontHelper.FONT_MEDIUM:
-                mFontStyle = (Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                mFontStyle = FontHelper.MEDIUM;
                 break;
             case FontHelper.FONT_MEDIUM_ITALIC:
-                mFontStyle = (Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                mFontStyle = FontHelper.MEDIUM_ITALIC;
                 break;
             case FontHelper.FONT_BLACK:
-                mFontStyle = (Typeface.create("sans-serif-black", Typeface.NORMAL));
+                mFontStyle = FontHelper.BLACK;
                 break;
             case FontHelper.FONT_BLACK_ITALIC:
-                mFontStyle = (Typeface.create("sans-serif-black", Typeface.ITALIC));
+                mFontStyle = FontHelper.BLACK_ITALIC;
                 break;
             case FontHelper.FONT_DANCINGSCRIPT:
-                mFontStyle = (Typeface.create("cursive", Typeface.NORMAL));
+                mFontStyle = FontHelper.DANCINGSCRIPT;
                 break;
             case FontHelper.FONT_DANCINGSCRIPT_BOLD:
-                mFontStyle = (Typeface.create("cursive", Typeface.BOLD));
+                mFontStyle = FontHelper.DANCINGSCRIPT_BOLD;
                 break;
             case FontHelper.FONT_COMINGSOON:
-                mFontStyle = (Typeface.create("casual", Typeface.NORMAL));
+                mFontStyle = FontHelper.COMINGSOON;
                 break;
             case FontHelper.FONT_NOTOSERIF:
-                mFontStyle = (Typeface.create("serif", Typeface.NORMAL));
+                mFontStyle = FontHelper.NOTOSERIF;
                 break;
             case FontHelper.FONT_NOTOSERIF_ITALIC:
-                mFontStyle = (Typeface.create("serif", Typeface.ITALIC));
+                mFontStyle = FontHelper.NOTOSERIF_ITALIC;
                 break;
             case FontHelper.FONT_NOTOSERIF_BOLD:
-                mFontStyle = (Typeface.create("serif", Typeface.BOLD));
+                mFontStyle = FontHelper.NOTOSERIF_BOLD;
                 break;
             case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
-                mFontStyle = (Typeface.create("serif", Typeface.BOLD_ITALIC));
+                mFontStyle = FontHelper.NOTOSERIF_BOLD_ITALIC;
                 break;
         }
     }
