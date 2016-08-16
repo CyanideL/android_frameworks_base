@@ -3286,6 +3286,12 @@ public final class Settings {
         public static final String POWER_MENU_BG_COLOR = "power_menu_bg_color";
 
         /**
+         * Power menu font style
+         * @hide
+         */
+        public static final String PM_FONT_STYLES = "pm_font_styles";
+
+        /**
          * Show the pending notification counts as overlays on the status bar
          * @hide
          */

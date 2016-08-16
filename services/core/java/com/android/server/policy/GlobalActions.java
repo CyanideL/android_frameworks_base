@@ -47,6 +47,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
@@ -107,6 +108,7 @@ import com.android.internal.util.vrtoxin.PowerMenuColorHelper;
 import com.android.internal.util.vrtoxin.PowerMenuConstants;
 import com.android.internal.util.vrtoxin.PowerMenuHelper;
 import com.android.internal.util.vrtoxin.ActionConfig;
+import com.android.internal.util.vrtoxin.FontHelper;
 
 import com.vrtoxin.util.Helpers;
 
@@ -123,6 +125,7 @@ import com.android.internal.util.vrtoxin.OnTheGoActions;
 class GlobalActions implements DialogInterface.OnDismissListener, DialogInterface.OnClickListener  {
 
     private static final String TAG = "GlobalActions";
+    public static Typeface mFontStyle;
 
     public static final String ACTION_TOGGLE_GLOBAL_ACTIONS = "android.intent.action.TOGGLE_GLOBAL_ACTIONS";
 
@@ -219,12 +222,14 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             mDialog.dismiss();
             mDialog = null;
             updateColors();
+            updatePMFontStyle();
             mDialog = createDialog();
             setBackgroundColor(mDialog);
             // Show delayed, so that the dismiss of the previous dialog completes
             mHandler.sendEmptyMessage(MESSAGE_SHOW);
         } else {
             updateColors();
+            updatePMFontStyle();
             mDialog = createDialog();
             setBackgroundColor(mDialog);
             handleShow();
@@ -1318,6 +1323,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             if (!TextUtils.isEmpty(status)) {
                 statusView.setText(status);
                 statusView.setTextColor(mSecondaryTextColor);
+                statusView.setTypeface(mFontStyle);
             } else {
                 statusView.setVisibility(View.GONE);
             }
@@ -1332,9 +1338,11 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             if (mMessage != null) {
                 messageView.setText(mMessage);
                 messageView.setTextColor(mTextColor);
+                messageView.setTypeface(mFontStyle);
             } else {
                 messageView.setText(mMessageResId);
                 messageView.setTextColor(mTextColor);
+                messageView.setTypeface(mFontStyle);
             }
 
             return v;
@@ -1422,6 +1430,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             if (messageView != null) {
                 messageView.setText(mMessageResId);
                 messageView.setTextColor(mTextColor);
+                messageView.setTypeface(mFontStyle);
                 messageView.setEnabled(enabled);
             }
 
@@ -1436,6 +1445,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             if (statusView != null) {
                 statusView.setText(on ? mEnabledStatusMessageResId : mDisabledStatusMessageResId);
                 statusView.setTextColor(mSecondaryTextColor);
+                statusView.setTypeface(mFontStyle);
                 statusView.setVisibility(View.VISIBLE);
                 statusView.setEnabled(enabled);
             }
@@ -1650,6 +1660,94 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             }
         }
     };
+
+    private void updatePMFontStyle() {
+        final int mPMFontStyle = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PM_FONT_STYLES, FontHelper.FONT_NORMAL);
+
+        getFontStyle(mPMFontStyle);
+    }
+
+    public static void getFontStyle(int font) {
+        switch (font) {
+            case FontHelper.FONT_NORMAL:
+            default:
+                mFontStyle = (Typeface.create("sans-serif", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_BOLD:
+                mFontStyle = (Typeface.create("sans-serif", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_BOLD_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                break;
+            case FontHelper.FONT_LIGHT:
+                mFontStyle = (Typeface.create("sans-serif-light", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_LIGHT_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif-light", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_THIN:
+                mFontStyle = (Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_THIN_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED:
+                mFontStyle = (Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_CONDENSED_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT:
+                mFontStyle = (Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD:
+                mFontStyle = (Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                break;
+            case FontHelper.FONT_MEDIUM:
+                mFontStyle = (Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_MEDIUM_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_BLACK:
+                mFontStyle = (Typeface.create("sans-serif-black", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_BLACK_ITALIC:
+                mFontStyle = (Typeface.create("sans-serif-black", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT:
+                mFontStyle = (Typeface.create("cursive", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT_BOLD:
+                mFontStyle = (Typeface.create("cursive", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_COMINGSOON:
+                mFontStyle = (Typeface.create("casual", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_NOTOSERIF:
+                mFontStyle = (Typeface.create("serif", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_NOTOSERIF_ITALIC:
+                mFontStyle = (Typeface.create("serif", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD:
+                mFontStyle = (Typeface.create("serif", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
+                mFontStyle = (Typeface.create("serif", Typeface.BOLD_ITALIC));
+                break;
+        }
+    }
 
     private SettingsObserver mSettingsObserver = new SettingsObserver(new Handler());
     private final class SettingsObserver extends ContentObserver {
