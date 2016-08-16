@@ -4791,6 +4791,13 @@ public final class Settings {
         public static final String BATTERY_SAVER_MODE_COLOR = "battery_save_mode_color";
 
         /**
+         * Notifications font style
+         *
+         * @hide
+         */
+        public static final String NOTIFICATION_FONT_STYLES = "notification_font_styles";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

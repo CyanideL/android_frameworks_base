@@ -26,9 +26,11 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.provider.Settings;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.NotificationListenerService.Ranking;
 import android.service.notification.StatusBarNotification;
@@ -44,6 +46,7 @@ import android.widget.TextView;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.MetricsProto.MetricsEvent;
+import com.android.internal.util.cyanide.FontHelper;
 import com.android.settingslib.Utils;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
@@ -66,6 +69,7 @@ public class NotificationGuts extends LinearLayout implements TunerService.Tunab
     private int mStartingUserImportance;
     private int mNotificationImportance;
     private boolean mShowSlider;
+    private Typeface mFontStyle;
 
     private SeekBar mSeekBar;
     private ImageView mAutoButton;
@@ -263,14 +267,21 @@ public class NotificationGuts extends LinearLayout implements TunerService.Tunab
         } else {
             mReset.setChecked(true);
         }
+        updateFontStyle();
+        mBlock.setTypeface(mFontStyle);
+        mSilent.setTypeface(mFontStyle);
+        mReset.setTypeface(mFontStyle);
     }
 
     private void bindSlider(final View importanceSlider, final boolean systemApp) {
         mActiveSliderTint = loadColorStateList(R.color.notification_guts_slider_color);
         mInactiveSliderTint = loadColorStateList(R.color.notification_guts_disabled_slider_color);
+        updateFontStyle();
 
         mImportanceSummary = ((TextView) importanceSlider.findViewById(R.id.summary));
+        mImportanceSummary.setTypeface(mFontStyle);
         mImportanceTitle = ((TextView) importanceSlider.findViewById(R.id.title));
+        mImportanceTitle.setTypeface(mFontStyle);
         mSeekBar = (SeekBar) importanceSlider.findViewById(R.id.seekbar);
 
         final int minProgress = systemApp ?
@@ -451,6 +462,94 @@ public class NotificationGuts extends LinearLayout implements TunerService.Tunab
     public void onTuningChanged(String key, String newValue) {
         if (SHOW_SLIDER.equals(key)) {
             mShowSlider = newValue != null && Integer.parseInt(newValue) != 0;
+        }
+    }
+
+    private void updateFontStyle() {
+        final int mNotifsFontStyle = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.NOTIFICATION_FONT_STYLES, FontHelper.FONT_COMINGSOON);
+
+        getFontStyle(mNotifsFontStyle);
+    }
+
+    public void getFontStyle(int font) {
+        switch (font) {
+            case FontHelper.FONT_NORMAL:
+            default:
+                mFontStyle = FontHelper.NORMAL;
+                break;
+            case FontHelper.FONT_ITALIC:
+                mFontStyle = FontHelper.ITALIC;
+                break;
+            case FontHelper.FONT_BOLD:
+                mFontStyle = FontHelper.BOLD;
+                break;
+            case FontHelper.FONT_BOLD_ITALIC:
+                mFontStyle = FontHelper.BOLD_ITALIC;
+                break;
+            case FontHelper.FONT_LIGHT:
+                mFontStyle = FontHelper.LIGHT;
+                break;
+            case FontHelper.FONT_LIGHT_ITALIC:
+                mFontStyle = FontHelper.LIGHT_ITALIC;
+                break;
+            case FontHelper.FONT_THIN:
+                mFontStyle = FontHelper.THIN;
+                break;
+            case FontHelper.FONT_THIN_ITALIC:
+                mFontStyle = FontHelper.THIN_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED:
+                mFontStyle = FontHelper.CONDENSED;
+                break;
+            case FontHelper.FONT_CONDENSED_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT:
+                mFontStyle = FontHelper.CONDENSED_LIGHT;
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_LIGHT_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD:
+                mFontStyle = FontHelper.CONDENSED_BOLD;
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_BOLD_ITALIC;
+                break;
+            case FontHelper.FONT_MEDIUM:
+                mFontStyle = FontHelper.MEDIUM;
+                break;
+            case FontHelper.FONT_MEDIUM_ITALIC:
+                mFontStyle = FontHelper.MEDIUM_ITALIC;
+                break;
+            case FontHelper.FONT_BLACK:
+                mFontStyle = FontHelper.BLACK;
+                break;
+            case FontHelper.FONT_BLACK_ITALIC:
+                mFontStyle = FontHelper.BLACK_ITALIC;
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT:
+                mFontStyle = FontHelper.DANCINGSCRIPT;
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT_BOLD:
+                mFontStyle = FontHelper.DANCINGSCRIPT_BOLD;
+                break;
+            case FontHelper.FONT_COMINGSOON:
+                mFontStyle = FontHelper.COMINGSOON;
+                break;
+            case FontHelper.FONT_NOTOSERIF:
+                mFontStyle = FontHelper.NOTOSERIF;
+                break;
+            case FontHelper.FONT_NOTOSERIF_ITALIC:
+                mFontStyle = FontHelper.NOTOSERIF_ITALIC;
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD:
+                mFontStyle = FontHelper.NOTOSERIF_BOLD;
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
+                mFontStyle = FontHelper.NOTOSERIF_BOLD_ITALIC;
+                break;
         }
     }
 }
