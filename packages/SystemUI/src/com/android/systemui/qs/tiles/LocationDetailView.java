@@ -26,8 +26,10 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TextView;
 
 import com.android.systemui.R;
+import com.android.systemui.qs.QSPanel;
 import com.android.systemui.statusbar.policy.LocationController;
 
 /**
@@ -39,6 +41,7 @@ public class LocationDetailView extends LinearLayout {
     private RadioButton mHighAccuracy;
     private RadioButton mBatterySaving;
     private RadioButton mSensorsOnly;
+    private TextView mTitle;
 
     //private Context mContext;
     private LocationController mController;
@@ -52,8 +55,13 @@ public class LocationDetailView extends LinearLayout {
         super.onFinishInflate();
         mRadioGroup = (RadioGroup) findViewById(R.id.radiogroup_location);
         mHighAccuracy = (RadioButton) findViewById(R.id.radio_high_accuracy);
+        mHighAccuracy.setTypeface(QSPanel.mFontStyle);
         mBatterySaving = (RadioButton) findViewById(R.id.radio_battery_saving);
+        mBatterySaving.setTypeface(QSPanel.mFontStyle);
         mSensorsOnly = (RadioButton) findViewById(R.id.radio_sensors_only);
+        mSensorsOnly.setTypeface(QSPanel.mFontStyle);
+        mTitle = (TextView) findViewById(R.id.location_dv_title);
+        mTitle.setTypeface(QSPanel.mFontStyle);
 
         mRadioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
