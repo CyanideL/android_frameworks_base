@@ -16,8 +16,6 @@
 
 package com.android.systemui.statusbar.policy;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
 import android.app.IActivityManager;
@@ -31,14 +29,14 @@ import android.graphics.drawable.Drawable;
 import android.hardware.input.InputManager;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
+import android.view.GestureDetector;
 import android.view.HapticFeedbackConstants;
 import android.view.InputDevice;
 import android.view.KeyCharacterMap;
@@ -47,16 +45,15 @@ import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ImageView;
 
 import com.android.internal.util.vrtoxin.ActionConstants;
 import com.android.internal.util.vrtoxin.Action;
+import com.android.internal.statusbar.IStatusBarService;
 
 import com.android.systemui.R;
-import com.android.systemui.statusbar.phone.NavigationBarView;
 
 import java.util.ArrayList;
 
@@ -64,29 +61,25 @@ import static android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK;
 import static android.view.accessibility.AccessibilityNodeInfo.ACTION_LONG_CLICK;
 
 public class KeyButtonView extends ImageView {
-    private static final String TAG = "StatusBar.KeyButtonView";
-    private static final boolean DEBUG = false;
-
-    // TODO: Get rid of this
-    public static final float DEFAULT_QUIESCENT_ALPHA = 1f;
 
     private int mContentDescriptionRes;
     private long mDownTime;
     private int mCode;
     String mClickAction;
     String mLongpressAction;
+    String mDoubleTapAction;
     private int mTouchSlop;
-    private float mDrawingAlpha = 1f;
-    private float mQuiescentAlpha = DEFAULT_QUIESCENT_ALPHA;
     boolean mSupportsLongpress = false;
     boolean mIsLongpressed = false;
+    boolean mDoubleTapPending = false;
+    boolean mDoubleTapConsumed = false;
     private AudioManager mAudioManager;
     private boolean mGestureAborted;
-    private Animator mAnimateToQuiescent = new ObjectAnimator();
     private KeyButtonRipple mRipple;
     private LongClickCallback mCallback;
+    private GestureDetector mGestureDetector;
 
-    private final Handler mHandler = new Handler();
+    private IStatusBarService mStatusBar;
 
     private final Runnable mCheckLongPress = new Runnable() {
         public void run() {
@@ -99,15 +92,17 @@ public class KeyButtonView extends ImageView {
                     sendEvent(KeyEvent.ACTION_DOWN, KeyEvent.FLAG_LONG_PRESS);
                     sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_LONG_CLICKED);
                 }
-                if (mLongpressAction != null
-                        && (mLongpressAction.equals(ActionConstants.ACTION_IME_NAVIGATION_UP)
-                        || mLongpressAction.equals(ActionConstants.ACTION_IME_NAVIGATION_DOWN))) {
-                    removeCallbacks(mCheckLongPress);
-                    postDelayed(mCheckLongPress, ViewConfiguration.getDoubleTapTimeout());
-                    return;
-                }
+                performLongClick();
                 setHapticFeedbackEnabled(true);
             }
+        }
+    };
+
+    private final Runnable mDoubleTapTimeout = new Runnable() {
+        @Override
+        public void run() {
+            mDoubleTapPending = false;
+            performClick();
         }
     };
 
@@ -125,9 +120,6 @@ public class KeyButtonView extends ImageView {
 
         mSupportsLongpress = a.getBoolean(R.styleable.KeyButtonView_keyRepeat, true);
 
-
-        setDrawingAlpha(mQuiescentAlpha);
-
         TypedValue value = new TypedValue();
         if (a.getValue(R.styleable.KeyButtonView_android_contentDescription, value)) {
             mContentDescriptionRes = value.resourceId;
@@ -135,11 +127,26 @@ public class KeyButtonView extends ImageView {
 
         a.recycle();
 
+        mStatusBar = IStatusBarService.Stub.asInterface(
+                ServiceManager.getService(Context.STATUS_BAR_SERVICE));
 
         setClickable(true);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         setBackground(mRipple = new KeyButtonRipple(context, this));
+
+        mGestureDetector = new GestureDetector(
+                context, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return true;
+            }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                return true;
+            }
+        });
     }
 
     @Override
@@ -156,7 +163,7 @@ public class KeyButtonView extends ImageView {
         super.onInitializeAccessibilityNodeInfo(info);
         if (mCode != 0) {
             info.addAction(new AccessibilityNodeInfo.AccessibilityAction(ACTION_CLICK, null));
-            if (mSupportsLongpress) {
+            if (mSupportsLongpress || isLongClickable()) {
                 info.addAction(
                         new AccessibilityNodeInfo.AccessibilityAction(ACTION_LONG_CLICK, null));
             }
@@ -188,56 +195,29 @@ public class KeyButtonView extends ImageView {
         }
     }
 
+    public void setDoubleTapAction(String action) {
+        mDoubleTapAction = action;
+    }
+
     @Override
-    public boolean performAccessibilityAction(int action, Bundle arguments) {
+    public boolean performAccessibilityActionInternal(int action, Bundle arguments) {
         if (action == ACTION_CLICK && mCode != 0) {
             sendEvent(KeyEvent.ACTION_DOWN, 0, SystemClock.uptimeMillis());
             sendEvent(KeyEvent.ACTION_UP, 0);
             sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_CLICKED);
             playSoundEffect(SoundEffectConstants.CLICK);
             return true;
-        } else if (action == ACTION_LONG_CLICK && mCode != 0 && mSupportsLongpress) {
+        } else if (action == ACTION_LONG_CLICK && mCode != 0) {
             sendEvent(KeyEvent.ACTION_DOWN, KeyEvent.FLAG_LONG_PRESS);
             sendEvent(KeyEvent.ACTION_UP, 0);
             sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_LONG_CLICKED);
             return true;
         }
-        return super.performAccessibilityAction(action, arguments);
-    }
-
-    public void setQuiescentAlpha(float alpha, boolean animate) {
-        mAnimateToQuiescent.cancel();
-        alpha = Math.min(Math.max(alpha, 0), 1);
-        if (alpha == mQuiescentAlpha && alpha == mDrawingAlpha) return;
-        mQuiescentAlpha = alpha;
-        if (DEBUG) Log.d(TAG, "New quiescent alpha = " + mQuiescentAlpha);
-        if (animate) {
-            mAnimateToQuiescent = animateToQuiescent();
-            mAnimateToQuiescent.start();
-        } else {
-            setDrawingAlpha(mQuiescentAlpha);
-        }
-    }
-
-    private ObjectAnimator animateToQuiescent() {
-        return ObjectAnimator.ofFloat(this, "drawingAlpha", mQuiescentAlpha);
+        return super.performAccessibilityActionInternal(action, arguments);
     }
 
     public void setRippleColor(int color) {
         mRipple.setColor(color);
-    }
-
-    public float getQuiescentAlpha() {
-        return mQuiescentAlpha;
-    }
-
-    public float getDrawingAlpha() {
-        return mDrawingAlpha;
-    }
-
-    public void setDrawingAlpha(float x) {
-        setImageAlpha((int) (x * 255));
-        mDrawingAlpha = x;
     }
 
     public boolean onTouchEvent(MotionEvent ev) {
@@ -255,10 +235,21 @@ public class KeyButtonView extends ImageView {
                 mDownTime = SystemClock.uptimeMillis();
                 mIsLongpressed = false;
                 setPressed(true);
+                performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                if (mClickAction.equals(ActionConstants.ACTION_RECENTS)) {
+                    try {
+                        mStatusBar.preloadRecentApps();
+                    } catch (RemoteException e) {}
+                }
                 if (mCode != 0) {
                     sendEvent(KeyEvent.ACTION_DOWN, 0, mDownTime);
                 }
-                if (mSupportsLongpress) {
+                if (mDoubleTapPending) {
+                    mDoubleTapPending = false;
+                    removeCallbacks(mDoubleTapTimeout);
+                    doubleTap();
+                    mDoubleTapConsumed = true;
+                } else {
                     removeCallbacks(mCheckLongPress);
                     postDelayed(mCheckLongPress, ViewConfiguration.getLongPressTimeout());
                 }
@@ -273,63 +264,60 @@ public class KeyButtonView extends ImageView {
                 break;
             case MotionEvent.ACTION_CANCEL:
                 setPressed(false);
+                if (mClickAction.equals(ActionConstants.ACTION_RECENTS)) {
+                    try {
+                        mStatusBar.cancelPreloadRecentApps();
+                    } catch (RemoteException e) {}
+                }
                 // hack to fix ripple getting stuck. exitHardware() starts an animation,
                 // but sometimes does not finish it.
                 mRipple.exitSoftware();
                 if (mCode != 0) {
                     sendEvent(KeyEvent.ACTION_UP, KeyEvent.FLAG_CANCELED);
                 }
-                if (mSupportsLongpress) {
-                    removeCallbacks(mCheckLongPress);
-                }
+                removeCallbacks(mCheckLongPress);
                 break;
             case MotionEvent.ACTION_UP:
                 final boolean doIt = isPressed();
                 setPressed(false);
+                if (!doIt && mClickAction.equals(ActionConstants.ACTION_RECENTS)) {
+                    try {
+                        mStatusBar.cancelPreloadRecentApps();
+                    } catch (RemoteException e) {}
+                }
                 if (!mIsLongpressed) {
+                    if (hasDoubleTapAction()) {
+                        if (mDoubleTapConsumed) {
+                            mDoubleTapConsumed = false;
+                        } else {
+                            mDoubleTapPending = true;
+                            postDelayed(mDoubleTapTimeout,
+                                    ViewConfiguration.getDoubleTapTimeout() - 100);
+                        }
+                    }
                     if (mCode != 0) {
                         if (doIt) {
                             sendEvent(KeyEvent.ACTION_UP, 0);
                         } else {
                             sendEvent(KeyEvent.ACTION_UP, KeyEvent.FLAG_CANCELED);
                         }
-                    } else {
-                        // no key code, it is a custom click action
-                        if (doIt) {
-                            if (mClickAction != null
-                                && !Action.isActionKeyEvent(mClickAction)) {
-                                performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-                            }
-                            performClick();
-                        }
                     }
-                    if (doIt) {
+                    if (doIt && !hasDoubleTapAction()) {
                         sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_CLICKED);
+                        performClick();
                     }
                 }
-                if (mSupportsLongpress) {
-                    removeCallbacks(mCheckLongPress);
-                }
+                removeCallbacks(mCheckLongPress);
                 break;
         }
-
-        mHandler.post(mNavButtonDimActivator);
 
         return true;
     }
 
-    private final Runnable mNavButtonDimActivator = new Runnable() {
-        @Override
-        public void run() {
-            ViewParent parent = getParent();
-            while (parent != null && !(parent instanceof NavigationBarView)) {
-                parent = parent.getParent();
-            }
-            if (parent != null) {
-                ((NavigationBarView) parent).onNavButtonTouched();
-            }
-        }
-    };
+    private boolean hasDoubleTapAction() {
+        return mDoubleTapAction != null &&
+            mDoubleTapAction != ActionConstants.ACTION_NULL;
+    }
 
     public void playSoundEffect(int soundConstant) {
         mAudioManager.playSoundEffect(soundConstant, ActivityManager.getCurrentUser());
@@ -345,6 +333,7 @@ public class KeyButtonView extends ImageView {
 
     public void setLongClickCallback(LongClickCallback c) {
         mCallback = c;
+        setLongClickable(true);
         setOnLongClickListener(mLongPressListener);
     }
 
@@ -381,8 +370,11 @@ public class KeyButtonView extends ImageView {
         mGestureAborted = true;
     }
 
+    private void doubleTap() {
+        Action.processAction(mContext, mDoubleTapAction, true);
+    }
+
     public interface LongClickCallback {
         public boolean onLongClick(View v);
     }
 }
-

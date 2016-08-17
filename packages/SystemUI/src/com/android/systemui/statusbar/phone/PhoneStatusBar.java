@@ -694,6 +694,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
 		            Settings.System.LOCKSCREEN_SECURITY_ALPHA), false, this,
 					UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_MENU_LOCATION),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_MENU_VISIBILITY),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -795,7 +801,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.NAVIGATION_BAR_ICON_COLOR))
                 || uri.equals(Settings.System.getUriFor(
-                    Settings.System.NAVIGATION_BAR_BUTTON_RIPPLE_COLOR))) {
+                    Settings.System.NAVIGATION_BAR_BUTTON_RIPPLE_COLOR))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_MENU_LOCATION))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_MENU_VISIBILITY))) {
                 if (mNavigationBarView != null) {
                     mNavigationBarView.recreateNavigationBar();
                     prepareNavigationBarView();
