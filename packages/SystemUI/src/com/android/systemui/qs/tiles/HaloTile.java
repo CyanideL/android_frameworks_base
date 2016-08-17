@@ -38,7 +38,7 @@ import com.android.systemui.qs.QSTileView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.cyanogenmod.internal.logging.CMMetricsLogger;
+import com.android.internal.logging.MetricsLogger;
 
 public class HaloTile extends QSTile<QSTile.BooleanState> {
     private boolean mListening;
