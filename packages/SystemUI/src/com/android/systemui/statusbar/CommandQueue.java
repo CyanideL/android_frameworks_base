@@ -551,7 +551,7 @@ public class CommandQueue extends IStatusBar.Stub {
                     break;
                 case MSG_TOGGLE_SCREENSHOT:
                     mCallbacks.toggleScreenshot();
-                   break:
+                   break;
                 case MSG_SCREEN_PINNING_STATE_CHANGED:
                     mCallbacks.screenPinningStateChanged(msg.arg1 != 0);
                     break;

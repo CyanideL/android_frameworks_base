@@ -171,10 +171,6 @@
     <!-- Weather -->
     <uses-permission android:name="com.rogersb11.cyanide.READ_WEATHER" />
 
-    <!-- Visualizer -->
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
     <!-- Sync tile -->
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
@@ -184,6 +180,12 @@
     <uses-permission android:name="android.permission.RECOVERY" />
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <!-- DU permissions -->
+    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
 
     <application
         android:name=".SystemUIApplication"

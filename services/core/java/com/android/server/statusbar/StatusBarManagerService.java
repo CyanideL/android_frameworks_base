@@ -429,18 +429,6 @@ public class StatusBarManagerService extends IStatusBarService.Stub {
         }
     }
 
-    @Override
-    public void startAssist(Bundle args) {
-        enforceStatusBarService();
-
-        if (mBar != null) {
-            try {
-                mBar.startAssist(args);
-            } catch (RemoteException e) {
-            }
-        }
-    }
-
     /**
      * Let systemui know screen pinning state change. This is independent of the
      * showScreenPinningRequest() call as it does not reflect state
@@ -523,15 +511,6 @@ public class StatusBarManagerService extends IStatusBarService.Stub {
         if (mBar != null) {
             try {
                 mBar.toggleScreenshot();
-            } catch (RemoteException ex) {}
-        }
-    }
-
-    @Override
-    public void toggleRecentApps() {
-        if (mBar != null) {
-            try {
-                mBar.toggleRecentApps();
             } catch (RemoteException ex) {}
         }
     }
