@@ -31,6 +31,7 @@ import android.media.AudioManager;
 import android.media.session.MediaSessionLegacyHelper;
 import android.media.ToneGenerator;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -41,6 +42,7 @@ import android.provider.Settings;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.InputDevice;
+import android.view.IWindowManager;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.WindowManagerGlobal;
@@ -95,9 +97,7 @@ public class Action {
             }
 
             if (collapseShade) {
-                if (!action.equals(ActionConstants.ACTION_SETTINGS_PANEL)
-                        && !action.equals(ActionConstants.ACTION_NOTIFICATIONS)
-                        && !action.equals(ActionConstants.ACTION_SMART_PULLDOWN)
+                if (!action.equals(ActionConstants.ACTION_NOTIFICATIONS)
                         && !action.equals(ActionConstants.ACTION_THEME_SWITCH)
                         && !action.equals(ActionConstants.ACTION_TORCH)) {
                     try {
@@ -190,7 +190,7 @@ public class Action {
                     if (searchManager != null) {
                         searchManager.stopSearch();
                     }
-                    startActivity(context, intent, barService, isKeyguardShowing);
+                    startActivity(context, intent);
                 } catch (ActivityNotFoundException e) {
                     Log.e("SlimActions:", "No activity to handle assist long press action.", e);
                 }
@@ -282,6 +282,30 @@ public class Action {
                         (PowerManager) context.getSystemService(Context.POWER_SERVICE);
                 if (!powerManager.isScreenOn()) {
                     powerManager.wakeUp(SystemClock.uptimeMillis());
+                }
+                return;
+            } else if (action.equals(ActionConstants.ACTION_SCREENSHOT)) {
+                try {
+                    barService.toggleScreenshot();
+                } catch (RemoteException e) {
+                }
+                return;
+            } else if (action.equals(ActionConstants.ACTION_LAST_APP)) {
+                if (isKeyguardShowing) {
+                    return;
+                }
+                try {
+                    barService.toggleLastApp();
+                } catch (RemoteException e) {
+                }
+                return;
+            } else if (action.equals(ActionConstants.ACTION_KILL)) {
+                if (isKeyguardShowing) {
+                    return;
+                }
+                try {
+                    barService.toggleKillApp();
+                } catch (RemoteException e) {
                 }
                 return;
             } else {
