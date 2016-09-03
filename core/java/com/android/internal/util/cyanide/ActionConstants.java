@@ -1,5 +1,6 @@
 /*
 * Copyright (C) 2013 SlimRoms Project
+* Copyright (C) 2016 Brett Rogers
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -52,7 +53,8 @@ public class ActionConstants {
     public static final String ACTION_MEDIA_PREVIOUS       = "**media_previous**";
     public static final String ACTION_MEDIA_NEXT           = "**media_next**";
     public static final String ACTION_MEDIA_PLAY_PAUSE     = "**media_play_pause**";
-    public static final String ACTION_WAKE_DEVICE          = "**wake_device**";
+    public static final String ACTION_WAKE_DEVICE          = "**wake_device**";             = "**hwkeys**";
+    public static final String ACTION_NOW_ON_TAP           = "**now_on_tap**";
 
     // no action
     public static final String ACTION_NULL            = "**null**";
