@@ -1,5 +1,6 @@
 /*
 * Copyright (C) 2014 SlimRoms Project
+* Copyright (C) 2016 Brett Rogers
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -22,6 +23,9 @@ import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraAccessException;
 import android.hardware.input.InputManager;
 import android.media.AudioManager;
 import android.media.session.MediaSessionLegacyHelper;
@@ -41,9 +45,13 @@ import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.WindowManagerGlobal;
 
+import com.android.internal.statusbar.IStatusBarService;
+
 import java.net.URISyntaxException;
 
 public class Action {
+
+    private static boolean mTorchEnabled = false;
 
     private static final int MSG_INJECT_KEY_DOWN = 1066;
     private static final int MSG_INJECT_KEY_UP = 1067;
@@ -65,6 +73,38 @@ public class Action {
                         WindowManagerGlobal.getWindowManagerService().isKeyguardLocked();
             } catch (RemoteException e) {
                 Log.w("Action", "Error getting window manager service", e);
+            }
+
+            final IStatusBarService barService = IStatusBarService.Stub.asInterface(
+                    ServiceManager.getService(Context.STATUS_BAR_SERVICE));
+            if (barService == null) {
+                return; // ouch
+            }
+
+            final IWindowManager windowManagerService = IWindowManager.Stub.asInterface(
+                    ServiceManager.getService(Context.WINDOW_SERVICE));
+            if (windowManagerService == null) {
+                return; // ouch
+            }
+
+            boolean isKeyguardSecure = false;
+            try {
+                isKeyguardSecure = windowManagerService.isKeyguardSecure();
+            } catch (RemoteException e) {
+                Log.w("Action", "Error getting window manager service", e);
+            }
+
+            if (collapseShade) {
+                if (!action.equals(ActionConstants.ACTION_SETTINGS_PANEL)
+                        && !action.equals(ActionConstants.ACTION_NOTIFICATIONS)
+                        && !action.equals(ActionConstants.ACTION_SMART_PULLDOWN)
+                        && !action.equals(ActionConstants.ACTION_THEME_SWITCH)
+                        && !action.equals(ActionConstants.ACTION_TORCH)) {
+                    try {
+                        barService.collapsePanels();
+                    } catch (RemoteException ex) {
+                    }
+                }
             }
 
             // process the actions
@@ -108,11 +148,35 @@ public class Action {
             } else if (action.equals(ActionConstants.ACTION_ASSIST)
                     || action.equals(ActionConstants.ACTION_KEYGUARD_SEARCH)) {
                 Intent intent = ((SearchManager) context.getSystemService(Context.SEARCH_SERVICE))
-                  .getAssistIntent(context, true, UserHandle.USER_CURRENT);
+                  .getAssistIntent(true);
                 if (intent == null) {
                     intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
                 }
                 startActivity(context, intent);
+                return;
+            } else if (action.equals(ActionConstants.ACTION_NOW_ON_TAP)) {
+                if (barService != null) {
+                    try {
+                        barService.startAssist(new Bundle());
+                       } catch (RemoteException e) {
+                       }
+                   }
+                return;
+            } else if (action.equals(ActionConstants.ACTION_TORCH)) {
+                try {
+                    CameraManager cameraManager = (CameraManager)
+                            context.getSystemService(Context.CAMERA_SERVICE);
+                    for (final String cameraId : cameraManager.getCameraIdList()) {
+                        CameraCharacteristics characteristics =
+                            cameraManager.getCameraCharacteristics(cameraId);
+                        int orient = characteristics.get(CameraCharacteristics.LENS_FACING);
+                        if (orient == CameraCharacteristics.LENS_FACING_BACK) {
+                            cameraManager.setTorchMode(cameraId, !mTorchEnabled);
+                            mTorchEnabled = !mTorchEnabled;
+                        }
+                    }
+                } catch (CameraAccessException e) {
+                }
                 return;
             } else if (action.equals(ActionConstants.ACTION_VOICE_SEARCH)) {
                 // launch the search activity
@@ -126,7 +190,7 @@ public class Action {
                     if (searchManager != null) {
                         searchManager.stopSearch();
                     }
-                    startActivity(context, intent);
+                    startActivity(context, intent, barService, isKeyguardShowing);
                 } catch (ActivityNotFoundException e) {
                     Log.e("SlimActions:", "No activity to handle assist long press action.", e);
                 }
@@ -187,6 +251,15 @@ public class Action {
                             tg.startTone(ToneGenerator.TONE_PROP_BEEP);
                         }
                     }
+                }
+                return;
+            } else if (action.equals(ActionConstants.ACTION_RECENTS)) {
+                if (isKeyguardShowing) {
+                    return;
+                }
+                try {
+                    barService.toggleRecentApps();
+                } catch (RemoteException e) {
                 }
                 return;
             } else if (action.equals(ActionConstants.ACTION_CAMERA)) {

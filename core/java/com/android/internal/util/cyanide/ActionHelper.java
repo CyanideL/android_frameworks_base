@@ -33,10 +33,12 @@ import java.util.ArrayList;
 
 public class ActionHelper {
 
+    private static final String SYSTEM_METADATA_NAME = "android";
     private static final String SYSTEMUI_METADATA_NAME = "com.android.systemui";
+    private static final String SETTINGS_METADATA_NAME = "com.android.settings";
 
     // General methods to retrieve the correct icon for the respective action.
-    public static Drawable getButtonIconImage(Context context,
+    public static Drawable getActionIconImage(Context context,
             String clickAction, String customIcon) {
         int resId = -1;
         Drawable d = null;
@@ -105,6 +107,32 @@ public class ActionHelper {
         return d;
     }
 
+    public static int getActionIconUri(Context context,
+            String clickAction, String customIcon) {
+        int resId = -1;
+        PackageManager pm = context.getPackageManager();
+        if (pm == null) {
+            return resId;
+        }
+
+        Resources systemUiResources;
+        try {
+            systemUiResources = pm.getResourcesForApplication(SYSTEMUI_METADATA_NAME);
+        } catch (Exception e) {
+            Log.e("ButtonsHelper:", "can't access systemui resources",e);
+            return resId;
+        }
+
+        if (customIcon != null && customIcon.startsWith(ActionConstants.SYSTEM_ICON_IDENTIFIER)) {
+            resId = systemUiResources.getIdentifier(customIcon.substring(
+                        ActionConstants.SYSTEM_ICON_IDENTIFIER.length()), "drawable", "android");
+        } else if (clickAction.startsWith("**")) {
+            resId = getActionSystemIcon(systemUiResources, clickAction);
+        }
+
+        return resId;
+    }
+
     private static int getActionSystemIcon(Resources systemUiResources, String clickAction) {
         int resId = -1;
 
@@ -119,12 +147,10 @@ public class ActionHelper {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_recent", null, null);
         } else if (clickAction.equals(ActionConstants.ACTION_SEARCH)
-                || clickAction.equals(ActionConstants.ACTION_ASSIST)) {
+                || clickAction.equals(ActionConstants.ACTION_ASSIST)
+                || clickAction.equals(ActionConstants.ACTION_KEYGUARD_SEARCH)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_search", null, null);
-        } else if (clickAction.equals(ActionConstants.ACTION_KEYGUARD_SEARCH)) {
-            resId = systemUiResources.getIdentifier(
-                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_search_light", null, null);
         } else if (clickAction.equals(ActionConstants.ACTION_MENU)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_menu", null, null);
@@ -149,6 +175,7 @@ public class ActionHelper {
         } else if (clickAction.equals(ActionConstants.ACTION_VIB_SILENT)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_ring_vib_silent", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_TORCH)) {
         } else {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_null", null, null);
