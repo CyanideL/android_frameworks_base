@@ -27,6 +27,7 @@ import android.util.Pair;
 import com.android.internal.os.SomeArgs;
 import com.android.internal.statusbar.IStatusBar;
 import com.android.internal.statusbar.StatusBarIcon;
+import com.android.internal.statusbar.StatusBarIconList;
 
 /**
  * This class takes the functions from IStatusBar that come in on
@@ -75,6 +76,9 @@ public class CommandQueue extends IStatusBar.Stub {
     private static final int MSG_TOGGLE_APP_SPLIT_SCREEN       = 30 << MSG_SHIFT;
     private static final int MSG_APP_TRANSITION_FINISHED       = 31 << MSG_SHIFT;
     private static final int MSG_DISMISS_KEYBOARD_SHORTCUTS    = 32 << MSG_SHIFT;
+    private static final int MSG_TOGGLE_LAST_APP               = 33 << MSG_SHIFT;
+    private static final int MSG_TOGGLE_KILL_APP               = 34 << MSG_SHIFT;
+    private static final int MSG_TOGGLE_SCREENSHOT             = 35 << MSG_SHIFT;
 
     public static final int FLAG_EXCLUDE_NONE = 0;
     public static final int FLAG_EXCLUDE_SEARCH_PANEL = 1 << 0;
@@ -88,6 +92,7 @@ public class CommandQueue extends IStatusBar.Stub {
     private final Object mLock = new Object();
     private Callbacks mCallbacks;
     private Handler mHandler = new H();
+    private StatusBarIconList mList;
 
     /**
      * These methods are called back on the main thread.
@@ -129,10 +134,14 @@ public class CommandQueue extends IStatusBar.Stub {
         void addQsTile(ComponentName tile);
         void remQsTile(ComponentName tile);
         void clickTile(ComponentName tile);
+        void toggleLastApp();
+        void toggleKillApp();
+        void toggleScreenshot();
     }
 
-    public CommandQueue(Callbacks callbacks) {
+    public CommandQueue(Callbacks callbacks, StatusBarIconList list) {
         mCallbacks = callbacks;
+        mList = list;
     }
 
     public void setIcon(String slot, StatusBarIcon icon) {
@@ -388,6 +397,27 @@ public class CommandQueue extends IStatusBar.Stub {
         }
     }
 
+    public void toggleLastApp() {
+        synchronized (mList) {
+            mHandler.removeMessages(MSG_TOGGLE_LAST_APP);
+            mHandler.obtainMessage(MSG_TOGGLE_LAST_APP, 0, 0, null).sendToTarget();
+        }
+    }
+
+    public void toggleKillApp() {
+        synchronized (mList) {
+            mHandler.removeMessages(MSG_TOGGLE_KILL_APP);
+            mHandler.obtainMessage(MSG_TOGGLE_KILL_APP, 0, 0, null).sendToTarget();
+        }
+    }
+
+    public void toggleScreenshot() {
+        synchronized (mList) {
+            mHandler.removeMessages(MSG_TOGGLE_SCREENSHOT);
+            mHandler.obtainMessage(MSG_TOGGLE_SCREENSHOT, 0, 0, null).sendToTarget();
+        }
+    }
+
     private final class H extends Handler {
         public void handleMessage(Message msg) {
             final int what = msg.what & MSG_MASK;
@@ -502,6 +532,15 @@ public class CommandQueue extends IStatusBar.Stub {
                     break;
                 case MSG_TOGGLE_APP_SPLIT_SCREEN:
                     mCallbacks.toggleSplitScreen();
+                    break;
+                case MSG_TOGGLE_LAST_APP:
+                    mCallbacks.toggleLastApp();
+                    break;
+                case MSG_TOGGLE_KILL_APP:
+                    mCallbacks.toggleKillApp();
+                    break;
+                case MSG_TOGGLE_SCREENSHOT:
+                    mCallbacks.toggleScreenshot();
                     break;
             }
         }

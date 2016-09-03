@@ -66,4 +66,9 @@ interface IStatusBarService
     void addTile(in ComponentName tile);
     void remTile(in ComponentName tile);
     void clickTile(in ComponentName tile);
+    void toggleRecentApps();
+    void startAssist(in Bundle args);
+    void toggleLastApp();
+    void toggleKillApp();
+    void toggleScreenshot();
 }
