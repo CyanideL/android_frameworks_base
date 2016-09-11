@@ -428,6 +428,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_KEYGUARD_SHOW),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_TEXT_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_ICON_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_TEXT_COLOR),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -439,6 +448,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_FORCE_SHOW))) {
                 keyguardExpansionView();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_TEXT_COLOR))) {
+                updateStatusBarTextColor(true);
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_ICON_COLOR))) {
+                updateStatusBarIconColor(true);
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_TEXT_COLOR))) {
+                updateStatusBarBatteryTextColor(true);
             }
         }
     }
@@ -1037,6 +1055,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         // Private API call to make the shadows look better for Recents
         ThreadedRenderer.overrideProperty("ambientRatio", String.valueOf(1.5f));
+
+        updateSettings();
 
         return mStatusBarView;
     }
@@ -2371,6 +2391,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private void updateSettings() {
         forceExpansionView();
         keyguardExpansionView();
+        updateStatusBarTextColor(false);
+        updateStatusBarIconColor(false);
+        updateStatusBarBatteryTextColor(false);
     }
 
     private void forceExpansionView() {
@@ -2389,6 +2412,25 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 Settings.System.EXPANSION_VIEW_KEYGUARD_SHOW, 0) == 1;
         if (mStackScroller != null) {
             mStackScroller.keyguardShowShade(force);
+        }
+    }
+
+    private void updateStatusBarTextColor(boolean animate) {
+        if (mIconController != null) {
+            mIconController.updateTextColor(animate);
+        }
+    }
+
+    private void updateStatusBarIconColor(boolean animate) {
+        if (mIconController != null) {
+            mIconController.updateIconColor(animate);
+        }
+    }
+
+
+    private void updateStatusBarBatteryTextColor(boolean animate) {
+        if (mIconController != null) {
+            mIconController.updateBatteryTextColor(animate);
         }
     }
 
