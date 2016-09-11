@@ -18,14 +18,18 @@ package com.android.systemui.statusbar.phone;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -48,8 +52,10 @@ import com.android.systemui.statusbar.policy.UserInfoController;
 import com.android.systemui.statusbar.policy.UserInfoController.OnUserInfoChangedListener;
 import com.android.systemui.tuner.TunerService;
 
+import java.net.URISyntaxException;
+
 public class QuickStatusBarHeader extends BaseStatusBarHeader implements
-        NextAlarmChangeCallback, OnClickListener, OnUserInfoChangedListener {
+        NextAlarmChangeCallback, OnClickListener, OnLongClickListener, OnUserInfoChangedListener {
 
     private static final String TAG = "QuickStatusBarHeader";
 
@@ -72,7 +78,8 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
     private ViewGroup mDateTimeAlarmGroup;
     private TextView mEmergencyOnly;
 
-    protected ExpandableIndicator mExpandIndicator;
+    //protected ExpandableIndicator mExpandIndicator;
+    private View mCyanideButton;
 
     private boolean mListening;
     private AlarmManager.AlarmClockInfo mNextAlarm;
@@ -113,13 +120,16 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         mDateTimeGroup.setPivotY(0);
         mShowFullAlarm = getResources().getBoolean(R.bool.quick_settings_show_full_alarm);
 
-        mExpandIndicator = (ExpandableIndicator) findViewById(R.id.expand_indicator);
+        //mExpandIndicator = (ExpandableIndicator) findViewById(R.id.expand_indicator);
 
         mHeaderQsPanel = (QuickQSPanel) findViewById(R.id.quick_qs_panel);
 
         mSettingsButton = (SettingsButton) findViewById(R.id.settings_button);
         mSettingsContainer = findViewById(R.id.settings_button_container);
         mSettingsButton.setOnClickListener(this);
+        mCyanideButton = findViewById(R.id.cyanide_button);
+        mCyanideButton.setOnClickListener(this);
+        mCyanideButton.setOnLongClickListener(this);
 
         mAlarmStatusCollapsed = findViewById(R.id.alarm_status_collapsed);
         mAlarmStatus = (TextView) findViewById(R.id.alarm_status);
@@ -131,7 +141,8 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         // RenderThread is doing more harm than good when touching the header (to expand quick
         // settings), so disable it for this view
         ((RippleDrawable) mSettingsButton.getBackground()).setForceSoftware(true);
-        ((RippleDrawable) mExpandIndicator.getBackground()).setForceSoftware(true);
+        //((RippleDrawable) mExpandIndicator.getBackground()).setForceSoftware(true);
+        ((RippleDrawable) mCyanideButton.getBackground()).setForceSoftware(true);
 
         updateResources();
     }
@@ -192,6 +203,7 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
                 .addFloat(mSettingsButton, "rotation", -90, 0)
                 .addFloat(mSettingsContainer, "alpha", 0, 1)
                 .addFloat(mMultiUserSwitch, "alpha", 0, 1)
+                .addFloat(mCyanideButton, "rotation", -120, 0)
                 .setStartDelay(QSAnimator.EXPANDED_TILE_DELAY)
                 .build();
 
@@ -257,7 +269,7 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
 
         updateAlarmVisibilities();
 
-        mExpandIndicator.setExpanded(headerExpansionFraction > EXPAND_INDICATOR_THRESHOLD);
+        //mExpandIndicator.setExpanded(headerExpansionFraction > EXPAND_INDICATOR_THRESHOLD);
     }
 
     @Override
@@ -333,7 +345,7 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
 
     public void setupHost(final QSTileHost host) {
         mHost = host;
-        host.setHeaderView(mExpandIndicator);
+        //host.setHeaderView(mExpandIndicator);
         mHeaderQsPanel.setQSPanelAndHeader(mQsPanel, this);
         mHeaderQsPanel.setHost(host, null /* No customization in header */);
         setUserInfoController(host.getUserInfoController());
@@ -374,12 +386,66 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
             if (showIntent != null && showIntent.isActivity()) {
                 mActivityStarter.startActivity(showIntent.getIntent(), true /* dismissShade */);
             }
+        } else if (v == mCyanideButton) {
+            startCyanideMods();
         }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        if (v == mCyanideButton) {
+            startCyanideModsLongClick();
+        }
+        return false;
     }
 
     private void startSettingsActivity() {
         mActivityStarter.startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS),
                 true /* dismissShade */);
+    }
+
+    private void startCyanideMods() {
+        Intent cyanideShortcutIntent = null;
+            String cyanideShortcutIntentUri = Settings.System.getStringForUser(
+                    mContext.getContentResolver(), Settings.System.CYANIDE_SHORTCUT, UserHandle.USER_CURRENT);
+            if(cyanideShortcutIntentUri != null) {
+                try {
+                    cyanideShortcutIntent = Intent.parseUri(cyanideShortcutIntentUri, 0);
+                } catch (URISyntaxException e) {
+                    cyanideShortcutIntent = null;
+                }
+            }
+
+            if(cyanideShortcutIntent != null) {
+                mActivityStarter.startActivity(cyanideShortcutIntent, true);
+            } else {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.setClassName("com.rogersb11.cyanide",
+                    "com.rogersb11.cyanide.MainActivity");
+                mActivityStarter.startActivity(intent, true /* dismissShade*/ );
+            }
+    }
+
+    private void startCyanideModsLongClick() {
+        Intent cyanideLongShortcutIntent = null;
+            String cyanideLongShortcutIntentUri = Settings.System.getStringForUser(
+                    mContext.getContentResolver(), Settings.System.CYANIDE_LONG_SHORTCUT, UserHandle.USER_CURRENT);
+            if(cyanideLongShortcutIntentUri != null) {
+                try {
+                    cyanideLongShortcutIntent = Intent.parseUri(cyanideLongShortcutIntentUri, 0);
+                } catch (URISyntaxException e) {
+                    cyanideLongShortcutIntent = null;
+                }
+            }
+
+            if(cyanideLongShortcutIntent != null) {
+                mActivityStarter.startActivity(cyanideLongShortcutIntent, true);
+            } else {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.setClassName("com.rogersb11.cyanide",
+                    "com.rogersb11.cyanide.MainActivity");
+                mActivityStarter.startActivity(intent, true /* dismissShade*/ );
+            }
     }
 
     @Override

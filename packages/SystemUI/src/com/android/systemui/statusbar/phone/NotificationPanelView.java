@@ -243,8 +243,8 @@ public class NotificationPanelView extends PanelView implements
             public void onInflated(View v) {
                 mQsContainer = (QSContainer) v.findViewById(R.id.quick_settings_container);
                 mQsContainer.setPanelView(NotificationPanelView.this);
-                mQsContainer.getHeader().findViewById(R.id.expand_indicator)
-                        .setOnClickListener(NotificationPanelView.this);
+                //mQsContainer.getHeader().findViewById(R.id.expand_indicator)
+                        //.setOnClickListener(NotificationPanelView.this);
 
                 // recompute internal state when qspanel height changes
                 mQsContainer.addOnLayoutChangeListener(new OnLayoutChangeListener() {
@@ -1796,17 +1796,12 @@ public class NotificationPanelView extends PanelView implements
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.expand_indicator) {
-            onQsExpansionStarted();
-            if (mQsExpanded) {
-                flingSettings(0 /* vel */, false /* expand */, null, true /* isClick */);
-            } else if (mQsExpansionEnabled) {
+        if (mQsExpansionEnabled) {
                 EventLogTags.writeSysuiLockscreenGesture(
                         EventLogConstants.SYSUI_TAP_TO_OPEN_QS,
                         0, 0);
                 flingSettings(0 /* vel */, true /* expand */, null, true /* isClick */);
             }
-        }
     }
 
     @Override

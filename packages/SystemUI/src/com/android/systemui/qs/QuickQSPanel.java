@@ -266,7 +266,7 @@ public class QuickQSPanel extends QSPanel {
                 mRecords.get(0).tileView.setAccessibilityTraversalAfter(
                         R.id.alarm_status_collapsed);
                 mRecords.get(mRecords.size() - 1).tileView.setAccessibilityTraversalBefore(
-                        R.id.expand_indicator);
+                        R.id.cyanide_button);
             }
         }
     }

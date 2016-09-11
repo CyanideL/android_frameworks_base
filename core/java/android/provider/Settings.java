@@ -3951,6 +3951,18 @@ public final class Settings {
        public static final String USB_DATA_AUTO_UNLOCK = "usb_data_auto_unlock";
 
         /**
+         * What application to launch when the user clicks the cyanide button in the quick settings header
+         * @hide
+         */
+        public static final String CYANIDE_SHORTCUT = "cyanide_shortcut";
+
+        /**
+         * What application to launch when the user long clicks the cyanide button in the quick settings header
+         * @hide
+         */
+        public static final String CYANIDE_LONG_SHORTCUT = "cyanide_long_shortcut";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
