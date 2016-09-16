@@ -56,6 +56,11 @@ import android.util.Slog;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -838,6 +843,34 @@ public final class BatteryService extends SystemService {
                     com.android.internal.R.integer.config_notificationsBatteryLedOn);
             mBatteryLedOff = context.getResources().getInteger(
                     com.android.internal.R.integer.config_notificationsBatteryLedOff);
+        }
+
+        private boolean isHvdcpPresent() {
+            File mChargerTypeFile = new File("/sys/class/power_supply/usb/type");
+            FileReader fileReader;
+            BufferedReader br;
+            String type;
+            boolean ret;
+
+            try {
+                fileReader = new FileReader(mChargerTypeFile);
+                br = new BufferedReader(fileReader);
+                type =  br.readLine();
+                if (type.regionMatches(true, 0, "USB_HVDCP", 0, 9))
+                    ret = true;
+                else
+                    ret = false;
+                br.close();
+                fileReader.close();
+            } catch (FileNotFoundException e) {
+                ret = false;
+                Slog.e(TAG, "Failure in reading charger type", e);
+            } catch (IOException e) {
+                ret = false;
+                Slog.e(TAG, "Failure in reading charger type", e);
+            }
+
+            return ret;
         }
 
         /**

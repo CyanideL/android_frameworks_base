@@ -27,4 +27,6 @@
     <!-- background of the picture in the big material notification template -->
     <color name="notification_mtrl_big_picture_bg">#CC111111</color>
 
+    <color name="notification_material_background_color">@color/material_grey_850</color>
+
 </resources>
