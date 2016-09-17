@@ -37,4 +37,18 @@
     <!-- The color of the material notification background for media notifications when no custom
          color is specified -->
     <color name="notification_material_background_media_default_color">@*android:color/material_grey_850</color>
+    <!-- The background color of the notification shade -->
+    <color name="notification_shade_background_color">@*android:color/material_grey_850</color>
+    <!-- The color of the gear shown behind a notification -->
+    <color name="notification_gear_color">#ff009688</color>
+    <!-- Background color of edit overflow -->
+    <color name="qs_edit_overflow_bg">@*android:color/material_grey_850</color>
+    <!-- The color of the ripples on the untinted notifications -->
+    <color name="notification_ripple_untinted_color">#ff009688</color>
+    <!-- The color of the ripples on the low priority notifications -->
+    <color name="notification_ripple_color_low_priority">#ff009688</color>
+    <!-- The color of the ripples on the tinted notifications -->
+    <color name="notification_ripple_tinted_color">#ff009688</color>
+    <!-- Background color of qs edit section -->
+    <color name="qs_editor_bg_color">@*android:color/material_grey_850</color>
 </resources>
