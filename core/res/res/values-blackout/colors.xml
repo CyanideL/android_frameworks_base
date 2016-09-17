@@ -28,5 +28,6 @@
     <color name="notification_mtrl_big_picture_bg">#CC111111</color>
 
     <color name="notification_material_background_color">@color/material_grey_850</color>
+    <color name="notification_action_list">@color/material_grey_850</color>
 
 </resources>

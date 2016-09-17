@@ -83,11 +83,13 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
     private boolean mAccessibilityMoving;
     private int mAccessibilityFromIndex;
     private QSTileHost mHost;
+    private int mEditAddBgColor;
 
     public TileAdapter(Context context) {
         mContext = context;
         mAccessibilityManager = context.getSystemService(AccessibilityManager.class);
         mItemTouchHelper = new ItemTouchHelper(mCallbacks);
+        mEditAddBgColor = context.getResources().getColor(R.color.qs_editor_bg_color);
     }
 
     public void setHost(QSTileHost host) {
@@ -461,7 +463,7 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
 
     private final ItemDecoration mDecoration = new ItemDecoration() {
         // TODO: Move this to resource.
-        private final ColorDrawable mDrawable = new ColorDrawable(0xff384248);
+        private final ColorDrawable mDrawable = new ColorDrawable(mEditAddBgColor);
 
         @Override
         public void onDraw(Canvas c, RecyclerView parent, State state) {
