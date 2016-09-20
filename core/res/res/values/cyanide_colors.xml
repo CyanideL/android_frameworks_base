@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2012-2015 VRToxin Project
+     Copyright (C) 2016 Cyanide Android
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -24,5 +24,6 @@
     <color name="resolver_list_bg">@color/white</color>
     <!-- Chooser grid background --> 
     <color name="chooser_grid_bg">@color/white</color>
+    <color name="cyanide_blue">#ff1976D2</color>
 
 </resources>

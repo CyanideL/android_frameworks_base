@@ -8,7 +8,7 @@
     </style>
 
     <style name="TextAppearance.Material.Notification.Title">
-        <item name="textColor">@color/primary_text_material_dark</item>
+        <item name="textColor">@color/cyanide_blue</item>
         <item name="textSize">@dimen/notification_title_text_size</item>
     </style>
 
@@ -23,9 +23,11 @@
     </style>
 
     <style name="TextAppearance.Material.Notification.Time">
-        <item name="textColor">@color/secondary_text_material_dark</item>
+        <item name="textColor">@color/cyanide_blue</item>
         <item name="textSize">@dimen/notification_subtext_size</item>
     </style>
+
+    <style name="TextAppearance.Material.Notification.Reply"/>
 
     <style name="TextAppearance.Material.Notification.Emphasis">
         <item name="textColor">#FFFFFF</item>

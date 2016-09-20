@@ -157,12 +157,9 @@
     <color name="ksh_key_item_color">@color/material_grey_600</color>
     <color name="ksh_key_item_background">@color/material_grey_100</color>
 
-<<<<<<< HEAD
-=======
     <!-- Background color of edit overflow -->
     <color name="qs_edit_overflow_bg">#455A64</color>
 
     <!-- Background color of qs edit section -->
     <color name="qs_editor_bg_color">@color/system_primary_color</color>
->>>>>>> 0060792... Some themes updates, more will come later
 </resources>

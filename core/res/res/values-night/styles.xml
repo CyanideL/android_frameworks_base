@@ -27,6 +27,8 @@
         <item name="textSize">@dimen/notification_subtext_size</item>
     </style>
 
+    <style name="TextAppearance.Material.Notification.Reply"/>
+
     <style name="TextAppearance.Material.Notification.Emphasis">
         <item name="textColor">#FFFFFF</item>
     </style>
