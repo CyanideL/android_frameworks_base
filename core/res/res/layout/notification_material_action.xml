@@ -23,7 +23,7 @@
     android:layout_gravity="center"
     android:gravity="start|center_vertical"
     android:layout_marginStart="4dp"
-    android:textColor="@color/notification_mtrl_action_textcolor"
+    android:textColor="@color/notification_default_color"
     android:singleLine="true"
     android:ellipsize="end"
     android:background="@drawable/notification_material_action_background"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2015 The VRToxin Project
+     Copyright (C) 2016 Cyanide Android
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -22,5 +22,7 @@
     <color name="notification_action_color_filter">#9F9F9F</color>
     <color name="notification_material_background_color">@color/material_grey_850</color>
     <color name="notification_action_list">@color/material_grey_850</color>
+    <color name="system_notification_accent_color">#ff009688</color>
+    <color name="notification_default_color">#ff009688</color>
 
 </resources>
