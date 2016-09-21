@@ -270,7 +270,7 @@ final class UiModeManagerService extends SystemService
         final int defaultNightMode = res.getInteger(
                 com.android.internal.R.integer.config_defaultNightMode);
         mNightMode = Settings.Secure.getInt(context.getContentResolver(),
-                Settings.Secure.UI_NIGHT_AUTO_MODE, defaultNightMode);
+                Settings.Secure.UI_NIGHT_MODE, defaultNightMode);
 
         // Update the initial, static configurations.
         synchronized (this) {
@@ -404,7 +404,7 @@ final class UiModeManagerService extends SystemService
                 synchronized (mLock) {
                     if (mNightMode != mode) {
                         Settings.Secure.putInt(getContext().getContentResolver(),
-                                Settings.Secure.UI_NIGHT_AUTO_MODE, mode);
+                                Settings.Secure.UI_NIGHT_MODE, mode);
                         mNightMode = mode;
                         updateLocked(0, 0);
                     }
@@ -553,7 +553,7 @@ final class UiModeManagerService extends SystemService
 
                 mSetUiNightMode = mNightMode;
                 Settings.Secure.putInt(mContext.getContentResolver(),
-                        Settings.Secure.UI_NIGHT_AUTO_MODE, mSetUiNightMode);
+                        Settings.Secure.UI_NIGHT_MODE, mSetUiNightMode);
             }
             try {
                 ActivityManagerNative.getDefault().updateConfiguration(mConfiguration);
@@ -811,7 +811,7 @@ final class UiModeManagerService extends SystemService
                     updateComputedNightModeLocked();
                     updateLocked(0, 0);
                 }
-                if (mNightAutoMode == 0) {
+                if (mNightAutoMode == 2) {
                     updateTwilightNightAutoMode();
                     sendConfigurationLocked();
                 }
