@@ -26,4 +26,12 @@
     <color name="chooser_grid_bg">@color/white</color>
     <color name="cyanide_blue">#ff1976D2</color>
 
+    <!-- Power Menu Colors -->
+    <color name="global_actions_color_normal">@color/white</color>
+    <color name="global_actions_icon_color_normal">@color/global_actions_color_normal</color>
+    <color name="global_actions_icon_color_enabled_selected">#ff1976D2</color>
+    <color name="global_actions_ripple_color">@color/ripple_material_dark</color>
+    <color name="global_actions_text_color">@color/global_actions_color_normal</color>
+    <color name="global_actions_bg_color">@color/global_actions_color_normal</color>
+
 </resources>
