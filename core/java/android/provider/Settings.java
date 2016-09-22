@@ -4171,6 +4171,62 @@ public final class Settings {
         public static final String STATUS_BAR_NOTIF_COUNT_TEXT_COLOR = "status_bar_notif_count_text_color";
 
         /**
+         * Whether to include options in power menu for 
+         * quick rebooting, rebooting into recovery and rebooting into bootloader
+         * @hide
+         */
+        public static final String ADVANCED_REBOOT = "advanced_reboot";
+
+        /**
+         * Whether to show advanced reboot on a secure keyguard
+         * @hide
+         */
+        public static final String POWER_MENU_KEYGUARD = "power_menu_keyguard";
+
+        /**
+         * Buttons in the power menu
+         *
+         * @hide
+         */
+        public static final String POWER_MENU_ACTIONS = "power_menu_actions";
+
+        /**
+         * Color of the icons in global action (normal state)
+         * @hide
+         */
+        public static final String POWER_MENU_ICON_NORMAL_COLOR = "power_menu_icon_normal_color";
+
+        /**
+         * Color of the icons in global actions (enabled/selected state)
+         * @hide
+         */
+        public static final String POWER_MENU_ICON_ENABLED_SELECTED_COLOR = "power_menu_icon_enabled_selected_color";
+
+        /**
+         * Power menu action ripple color
+         * @hide
+         */
+        public static final String POWER_MENU_RIPPLE_COLOR = "power_menu_ripple_color";
+
+        /**
+         * Color of the text in globals action
+         * @hide
+         */
+        public static final String POWER_MENU_TEXT_COLOR = "power_menu_text_color";
+
+        /**
+         * Color of power menu dialog background
+         * @hide
+         */
+        public static final String POWER_MENU_BG_COLOR = "power_menu_bg_color";
+
+        /**
+         * Power menu font style
+         * @hide
+         */
+        public static final String PM_FONT_STYLES = "pm_font_styles";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

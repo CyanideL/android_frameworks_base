@@ -23,6 +23,7 @@ import com.android.internal.logging.MetricsProto.MetricsEvent;
 import com.android.internal.telephony.TelephonyIntents;
 import com.android.internal.telephony.TelephonyProperties;
 import com.android.internal.R;
+import com.android.internal.util.UserIcons;
 import com.android.internal.widget.LockPatternUtils;
 
 import android.app.ActivityManager;
@@ -30,19 +31,41 @@ import android.app.ActivityManagerNative;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.UserInfo;
+import android.content.res.ColorStateList;
+import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Shader;
+import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableWrapper;
+import android.graphics.drawable.RippleDrawable;
+import android.graphics.PorterDuff.Mode;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraAccessException;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
+import android.net.Uri;
+import android.os.IBinder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
@@ -51,6 +74,7 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.os.Vibrator;
 import android.provider.Settings;
+import android.provider.Settings.Global;
 import android.service.dreams.DreamService;
 import android.service.dreams.IDreamManager;
 import android.telephony.PhoneStateListener;
@@ -60,6 +84,7 @@ import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -78,6 +103,12 @@ import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.internal.util.cyanide.PowerMenuColorHelper;
+import com.android.internal.util.cyanide.PowerMenuConstants;
+import com.android.internal.util.cyanide.PowerMenuHelper;
+import com.android.internal.util.cyanide.ActionConfig;
+import com.android.internal.util.cyanide.FontHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,20 +120,9 @@ import java.util.List;
 class GlobalActions implements DialogInterface.OnDismissListener, DialogInterface.OnClickListener  {
 
     private static final String TAG = "GlobalActions";
+    public static Typeface mFontStyle;
 
-    private static final boolean SHOW_SILENT_TOGGLE = true;
-
-    /* Valid settings for global actions keys.
-     * see config.xml config_globalActionList */
-    private static final String GLOBAL_ACTION_KEY_POWER = "power";
-    private static final String GLOBAL_ACTION_KEY_AIRPLANE = "airplane";
-    private static final String GLOBAL_ACTION_KEY_BUGREPORT = "bugreport";
-    private static final String GLOBAL_ACTION_KEY_SILENT = "silent";
-    private static final String GLOBAL_ACTION_KEY_USERS = "users";
-    private static final String GLOBAL_ACTION_KEY_SETTINGS = "settings";
-    private static final String GLOBAL_ACTION_KEY_LOCKDOWN = "lockdown";
-    private static final String GLOBAL_ACTION_KEY_VOICEASSIST = "voiceassist";
-    private static final String GLOBAL_ACTION_KEY_ASSIST = "assist";
+    private static final  boolean SHOW_SILENT_TOGGLE = true;
 
     private final Context mContext;
     private final WindowManagerFuncs mWindowManagerFuncs;
@@ -114,6 +134,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     private Action mSilentModeAction;
     private ToggleAction mAirplaneModeOn;
+    private boolean mTorchEnabled = false;
 
     private MyAdapter mAdapter;
 
@@ -124,6 +145,13 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private boolean mHasTelephony;
     private boolean mHasVibrator;
     private final boolean mShowSilentToggle;
+
+    private static ColorStateList mBackgroundColor;
+    private static int mIconNormalColor;
+    private static int mIconEnabledSelectedColor;
+    private static int mRippleColor;
+    private static int mTextColor;
+    private static int mSecondaryTextColor;
 
     /**
      * @param context everything needs a context :(
@@ -170,9 +198,17 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         if (mDialog != null) {
             mDialog.dismiss();
             mDialog = null;
+            updateColors();
+            updatePMFontStyle();
+            mDialog = createDialog();
+            setBackgroundColor(mDialog);
             // Show delayed, so that the dismiss of the previous dialog completes
             mHandler.sendEmptyMessage(MESSAGE_SHOW);
         } else {
+            updateColors();
+            updatePMFontStyle();
+            mDialog = createDialog();
+            setBackgroundColor(mDialog);
             handleShow();
         }
     }
@@ -194,18 +230,11 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         mDialog = createDialog();
         prepareDialog();
 
-        // If we only have 1 item and it's a simple press action, just do this action.
-        if (mAdapter.getCount() == 1
-                && mAdapter.getItem(0) instanceof SinglePressAction
-                && !(mAdapter.getItem(0) instanceof LongPressAction)) {
-            ((SinglePressAction) mAdapter.getItem(0)).onPress();
-        } else {
-            WindowManager.LayoutParams attrs = mDialog.getWindow().getAttributes();
-            attrs.setTitle("GlobalActions");
-            mDialog.getWindow().setAttributes(attrs);
-            mDialog.show();
-            mDialog.getWindow().getDecorView().setSystemUiVisibility(View.STATUS_BAR_DISABLE_EXPAND);
-        }
+        WindowManager.LayoutParams attrs = mDialog.getWindow().getAttributes();
+        attrs.setTitle("GlobalActions");
+        mDialog.getWindow().setAttributes(attrs);
+        mDialog.show();
+        mDialog.getWindow().getDecorView().setSystemUiVisibility(View.STATUS_BAR_DISABLE_EXPAND);
     }
 
     /**
@@ -213,12 +242,175 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
      * @return A new dialog.
      */
     private GlobalActionsDialog createDialog() {
-        // Simple toggle style if there's no vibrator, otherwise use a tri-state
-        if (!mHasVibrator) {
-            mSilentModeAction = new SilentModeToggleAction();
-        } else {
-            mSilentModeAction = new SilentModeTriStateAction(mContext, mAudioManager, mHandler);
+        ArrayList<ActionConfig> powerMenuConfig =
+                PowerMenuHelper.getPowerMenuConfig(mContext);
+
+        mItems = new ArrayList<Action>();
+        for (final ActionConfig config : powerMenuConfig) {
+
+            if (config.getClickAction().equals(PowerMenuConstants.ACTION_POWER_OFF)) {
+                mItems.add(getPowerAction());
+            } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_REBOOT)) {
+                mItems.add(new RebootAction());
+            } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_AIRPLANE)) {
+                constructAirPlaneModeToggle();
+                mItems.add(mAirplaneModeOn);
+            } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_USERS)) {
+                addUsersToMenu(mItems);
+            } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_SYSTEM_SETTINGS)) {
+                mItems.add(getSettingsAction());
+            } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_LOCK_DOWN)) {
+                mItems.add(getLockdownAction());
+            } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_SCREENSHOT)) {
+                mItems.add(getScreenshotAction());
+            } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_TORCH)) {
+                mItems.add(getTorchToggleAction());
+            } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_SOUND) && mShowSilentToggle) {
+                if (!mHasVibrator) {
+                    mSilentModeAction = new SilentModeToggleAction();
+                } else {
+                    mSilentModeAction = new SilentModeTriStateAction(mContext, mAudioManager, mHandler);
+                }
+                mItems.add(mSilentModeAction);
+            }
         }
+
+        mAdapter = new MyAdapter();
+
+        AlertParams params = new AlertParams(mContext);
+        params.mAdapter = mAdapter;
+        params.mOnClickListener = this;
+        params.mForceInverseBackground = true;
+
+        GlobalActionsDialog dialog = new GlobalActionsDialog(mContext, params);
+        dialog.setCanceledOnTouchOutside(false); // Handled by the custom class.
+
+        dialog.getListView().setItemsCanFocus(true);
+        dialog.getListView().setLongClickable(true);
+        dialog.getListView().setOnItemLongClickListener(
+                new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
+                            long id) {
+                        final Action action = mAdapter.getItem(position);
+                        if (action instanceof LongPressAction) {
+                            return ((LongPressAction) action).onLongPress();
+                        }
+                        return false;
+                    }
+        });
+        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
+
+        dialog.setOnDismissListener(this);
+
+        return dialog;
+    }
+
+    private void updateColors() {
+        mBackgroundColor = PowerMenuColorHelper.getBackgroundColorList(mContext);
+        mIconNormalColor = PowerMenuColorHelper.getIconNormalColor(mContext);
+        mIconEnabledSelectedColor = PowerMenuColorHelper.getIconEnabledSelectedColor(mContext);
+        mRippleColor = PowerMenuColorHelper.getRippleColor(mContext);
+        mTextColor = PowerMenuColorHelper.getTextColor(mContext);
+        mSecondaryTextColor = (179 << 24) | (mTextColor & 0x00ffffff);
+    }
+
+    private static void setBackgroundColor(Dialog d) {
+        ((DrawableWrapper) d.getWindow().getDecorView().getBackground())
+                .setTintList(mBackgroundColor);
+    }
+
+    private static void setButtonRippleColor(Context context, View v) {
+        RippleDrawable rd = (RippleDrawable) context.getDrawable(
+                R.drawable.global_actions_button_bg);
+
+        int states[][] = new int[][] {
+            new int[] {
+                com.android.internal.R.attr.state_enabled
+            }
+        };
+        int colors[] = new int[] {
+            mRippleColor
+        };
+        ColorStateList color = new ColorStateList(states, colors);
+
+        rd.setColor(color);
+        v.setBackground(rd);
+    }
+
+    private static void setSilentModeItemRippleColor(Context context, View v) {
+        RippleDrawable rd = (RippleDrawable) context.getDrawable(
+                R.drawable.global_actions_silent_mode_item_bg);
+
+        int states[][] = new int[][] {
+            new int[] {
+                com.android.internal.R.attr.state_enabled
+            }
+        };
+        int colors[] = new int[] {
+            mRippleColor
+        };
+        ColorStateList color = new ColorStateList(states, colors);
+
+        rd.setColor(color);
+        v.setBackground(rd);
+    }
+
+    private Action getPowerAction() {
+        return new SinglePressAction(com.android.internal.R.drawable.ic_lock_power_off,
+                R.string.global_action_power_off) {
+
+            @Override
+            public void onPress() {
+            // shutdown by making sure radio and power are handled accordingly.
+            mWindowManagerFuncs.shutdown(false /* confirm */);
+            }
+
+            @Override
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            @Override
+            public boolean showBeforeProvisioning() {
+                return true;
+            }
+        };
+    }
+
+    private final class RebootAction extends SinglePressAction implements LongPressAction {
+        private RebootAction() {
+            super(com.android.internal.R.drawable.ic_lock_reboot,
+                R.string.global_action_reboot);
+        }
+
+        @Override
+        public void onPress() {
+            mWindowManagerFuncs.reboot();
+        }
+
+        @Override
+        public boolean onLongPress() {
+            UserManager um = (UserManager) mContext.getSystemService(Context.USER_SERVICE);
+            if (!um.hasUserRestriction(UserManager.DISALLOW_SAFE_BOOT)) {
+                mWindowManagerFuncs.rebootSafeMode(true);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean showDuringKeyguard() {
+            return true;
+        }
+
+        @Override
+        public boolean showBeforeProvisioning() {
+            return true;
+        }
+    }
+
+    private void constructAirPlaneModeToggle() {
         mAirplaneModeOn = new ToggleAction(
                 R.drawable.ic_lock_airplane_mode,
                 R.drawable.ic_lock_airplane_mode_off,
@@ -261,178 +453,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             }
         };
         onAirplaneModeChanged();
-
-        mItems = new ArrayList<Action>();
-        String[] defaultActions = mContext.getResources().getStringArray(
-                com.android.internal.R.array.config_globalActionsList);
-
-        ArraySet<String> addedKeys = new ArraySet<String>();
-        for (int i = 0; i < defaultActions.length; i++) {
-            String actionKey = defaultActions[i];
-            if (addedKeys.contains(actionKey)) {
-                // If we already have added this, don't add it again.
-                continue;
-            }
-            if (GLOBAL_ACTION_KEY_POWER.equals(actionKey)) {
-                mItems.add(new PowerAction());
-            } else if (GLOBAL_ACTION_KEY_AIRPLANE.equals(actionKey)) {
-                mItems.add(mAirplaneModeOn);
-            } else if (GLOBAL_ACTION_KEY_BUGREPORT.equals(actionKey)) {
-                if (Settings.Global.getInt(mContext.getContentResolver(),
-                        Settings.Global.BUGREPORT_IN_POWER_MENU, 0) != 0 && isCurrentUserOwner()) {
-                    mItems.add(new BugReportAction());
-                }
-            } else if (GLOBAL_ACTION_KEY_SILENT.equals(actionKey)) {
-                if (mShowSilentToggle) {
-                    mItems.add(mSilentModeAction);
-                }
-            } else if (GLOBAL_ACTION_KEY_USERS.equals(actionKey)) {
-                if (SystemProperties.getBoolean("fw.power_user_switcher", false)) {
-                    addUsersToMenu(mItems);
-                }
-            } else if (GLOBAL_ACTION_KEY_SETTINGS.equals(actionKey)) {
-                mItems.add(getSettingsAction());
-            } else if (GLOBAL_ACTION_KEY_LOCKDOWN.equals(actionKey)) {
-                mItems.add(getLockdownAction());
-            } else if (GLOBAL_ACTION_KEY_VOICEASSIST.equals(actionKey)) {
-                mItems.add(getVoiceAssistAction());
-            } else if (GLOBAL_ACTION_KEY_ASSIST.equals(actionKey)) {
-                mItems.add(getAssistAction());
-            } else {
-                Log.e(TAG, "Invalid global action key " + actionKey);
-            }
-            // Add here so we don't add more than one.
-            addedKeys.add(actionKey);
-        }
-
-        mAdapter = new MyAdapter();
-
-        AlertParams params = new AlertParams(mContext);
-        params.mAdapter = mAdapter;
-        params.mOnClickListener = this;
-        params.mForceInverseBackground = true;
-
-        GlobalActionsDialog dialog = new GlobalActionsDialog(mContext, params);
-        dialog.setCanceledOnTouchOutside(false); // Handled by the custom class.
-
-        dialog.getListView().setItemsCanFocus(true);
-        dialog.getListView().setLongClickable(true);
-        dialog.getListView().setOnItemLongClickListener(
-                new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
-                            long id) {
-                        final Action action = mAdapter.getItem(position);
-                        if (action instanceof LongPressAction) {
-                            return ((LongPressAction) action).onLongPress();
-                        }
-                        return false;
-                    }
-        });
-        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
-
-        dialog.setOnDismissListener(this);
-
-        return dialog;
-    }
-
-    private final class PowerAction extends SinglePressAction implements LongPressAction {
-        private PowerAction() {
-            super(com.android.internal.R.drawable.ic_lock_power_off,
-                R.string.global_action_power_off);
-        }
-
-        @Override
-        public boolean onLongPress() {
-            UserManager um = (UserManager) mContext.getSystemService(Context.USER_SERVICE);
-            if (!um.hasUserRestriction(UserManager.DISALLOW_SAFE_BOOT)) {
-                mWindowManagerFuncs.rebootSafeMode(true);
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public boolean showDuringKeyguard() {
-            return true;
-        }
-
-        @Override
-        public boolean showBeforeProvisioning() {
-            return true;
-        }
-
-        @Override
-        public void onPress() {
-            // shutdown by making sure radio and power are handled accordingly.
-            mWindowManagerFuncs.shutdown(false /* confirm */);
-        }
-    }
-
-    private class BugReportAction extends SinglePressAction implements LongPressAction {
-
-        public BugReportAction() {
-            super(com.android.internal.R.drawable.ic_lock_bugreport, R.string.bugreport_title);
-        }
-
-        @Override
-        public void onPress() {
-            // don't actually trigger the bugreport if we are running stability
-            // tests via monkey
-            if (ActivityManager.isUserAMonkey()) {
-                return;
-            }
-            // Add a little delay before executing, to give the
-            // dialog a chance to go away before it takes a
-            // screenshot.
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        // Take an "interactive" bugreport.
-                        MetricsLogger.action(mContext,
-                                MetricsEvent.ACTION_BUGREPORT_FROM_POWER_MENU_INTERACTIVE);
-                        ActivityManagerNative.getDefault().requestBugReport(
-                                ActivityManager.BUGREPORT_OPTION_INTERACTIVE);
-                    } catch (RemoteException e) {
-                    }
-                }
-            }, 500);
-        }
-
-        @Override
-        public boolean onLongPress() {
-            // don't actually trigger the bugreport if we are running stability
-            // tests via monkey
-            if (ActivityManager.isUserAMonkey()) {
-                return false;
-            }
-            try {
-                // Take a "full" bugreport.
-                MetricsLogger.action(mContext, MetricsEvent.ACTION_BUGREPORT_FROM_POWER_MENU_FULL);
-                ActivityManagerNative.getDefault().requestBugReport(
-                        ActivityManager.BUGREPORT_OPTION_FULL);
-            } catch (RemoteException e) {
-            }
-            return false;
-        }
-
-        public boolean showDuringKeyguard() {
-            return true;
-        }
-
-        @Override
-        public boolean showBeforeProvisioning() {
-            return false;
-        }
-
-        @Override
-        public String getStatus() {
-            return mContext.getString(
-                    com.android.internal.R.string.bugreport_status,
-                    Build.VERSION.RELEASE,
-                    Build.ID);
-        }
     }
 
     private Action getSettingsAction() {
@@ -528,6 +548,59 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         };
     }
 
+    private Action getScreenshotAction() {
+        return new SinglePressAction(com.android.internal.R.drawable.ic_lock_screenshot,
+                R.string.global_action_screenshot) {
+
+            @Override
+            public void onPress() {
+                com.android.internal.util.cyanide.Action.processAction(
+                        mContext, PowerMenuConstants.ACTION_SCREENSHOT, false);
+            }
+
+            @Override
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            @Override
+            public boolean showBeforeProvisioning() {
+                return true;
+            }
+        };
+    }
+
+    private Action getTorchToggleAction() {
+        return new SinglePressAction(com.android.internal.R.drawable.ic_lock_torch,
+                R.string.global_action_torch) {
+
+            public void onPress() {
+                try {
+                    CameraManager cameraManager = (CameraManager)
+                            mContext.getSystemService(Context.CAMERA_SERVICE);
+                    for (final String cameraId : cameraManager.getCameraIdList()) {
+                        CameraCharacteristics characteristics =
+                            cameraManager.getCameraCharacteristics(cameraId);
+                        int orient = characteristics.get(CameraCharacteristics.LENS_FACING);
+                        if (orient == CameraCharacteristics.LENS_FACING_BACK) {
+                            cameraManager.setTorchMode(cameraId, !mTorchEnabled);
+                            mTorchEnabled = !mTorchEnabled;
+                        }
+                    }
+                } catch (CameraAccessException e) {
+                }
+            }
+
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return false;
+            }
+        };
+    }
+
     private UserInfo getCurrentUser() {
         try {
             return ActivityManagerNative.getDefault().getCurrentUser();
@@ -546,16 +619,24 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         if (um.isUserSwitcherEnabled()) {
             List<UserInfo> users = um.getUsers();
             UserInfo currentUser = getCurrentUser();
+            final int avatarSize = mContext.getResources().getDimensionPixelSize(
+                    com.android.internal.R.dimen.global_actions_avatar_size);
             for (final UserInfo user : users) {
-                if (user.supportsSwitchToByUser()) {
+                if (user.supportsSwitchTo()) {
                     boolean isCurrentUser = currentUser == null
                             ? user.id == 0 : (currentUser.id == user.id);
-                    Drawable icon = user.iconPath != null ? Drawable.createFromPath(user.iconPath)
-                            : null;
+                    Drawable avatar = null;
+                    Bitmap rawAvatar = um.getUserIcon(user.id);
+                    if (rawAvatar == null) {
+                        rawAvatar = UserIcons.convertToBitmap(UserIcons.getDefaultUserIcon(
+                                user.isGuest() ? UserHandle.USER_NULL : user.id, /*light=*/ false));
+                    }
+                    avatar = new BitmapDrawable(mContext.getResources(),
+                            createCircularClip(rawAvatar, avatarSize, avatarSize));
+
                     SinglePressAction switchToUser = new SinglePressAction(
-                            com.android.internal.R.drawable.ic_menu_cc, icon,
-                            (user.name != null ? user.name : "Primary")
-                            + (isCurrentUser ? " \u2714" : "")) {
+                            com.android.internal.R.drawable.ic_lock_user, avatar,
+                            (user.name != null ? user.name : "Primary")) {
                         public void onPress() {
                             try {
                                 ActivityManagerNative.getDefault().switchUser(user.id);
@@ -572,6 +653,10 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                             return false;
                         }
                     };
+                    if (isCurrentUser) {
+                        switchToUser.setStatus(mContext.getString(
+                                R.string.global_action_current_user));
+                    }
                     items.add(switchToUser);
                 }
             }
@@ -579,20 +664,27 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     }
 
     private void prepareDialog() {
-        refreshSilentMode();
-        mAirplaneModeOn.updateState(mAirplaneState);
+        if (mSilentModeAction != null) {
+            refreshSilentMode();
+            if (mShowSilentToggle) {
+                IntentFilter filter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
+                mContext.registerReceiver(mRingerModeReceiver, filter);
+            }
+        }
+
+        if (mAirplaneModeOn != null) {
+            mAirplaneModeOn.updateState(mAirplaneState);
+        }
+
         mAdapter.notifyDataSetChanged();
         mDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
-        if (mShowSilentToggle) {
-            IntentFilter filter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
-            mContext.registerReceiver(mRingerModeReceiver, filter);
-        }
+        mDialog.setTitle(R.string.global_actions);
     }
 
-    private void refreshSilentMode() {
+     private void refreshSilentMode() {
         if (!mHasVibrator) {
             final boolean silentModeOn =
-                    mAudioManager.getRingerModeInternal() != AudioManager.RINGER_MODE_NORMAL;
+                    mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL;
             ((ToggleAction)mSilentModeAction).updateState(
                     silentModeOn ? ToggleAction.State.On : ToggleAction.State.Off);
         }
@@ -739,6 +831,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         private final Drawable mIcon;
         private final int mMessageResId;
         private final CharSequence mMessage;
+        private CharSequence mStatusMessage;
 
         protected SinglePressAction(int iconResId, int messageResId) {
             mIconResId = iconResId;
@@ -754,12 +847,23 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             mIcon = icon;
         }
 
+        protected SinglePressAction(int iconResId, CharSequence message) {
+            mIconResId = iconResId;
+            mMessageResId = 0;
+            mMessage = message;
+            mIcon = null;
+        }
+
         public boolean isEnabled() {
             return true;
         }
 
-        public String getStatus() {
-            return null;
+        public CharSequence getStatus() {
+            return mStatusMessage;
+        }
+
+        public void setStatus(CharSequence status) {
+            mStatusMessage = status;
         }
 
         abstract public void onPress();
@@ -776,26 +880,41 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 Context context, View convertView, ViewGroup parent, LayoutInflater inflater) {
             View v = inflater.inflate(R.layout.global_actions_item, parent, false);
 
+            final int iconPadding =
+                    context.getResources().getDimensionPixelSize(R.dimen.global_actions_icon_padding);
+
             ImageView icon = (ImageView) v.findViewById(R.id.icon);
             TextView messageView = (TextView) v.findViewById(R.id.message);
 
             TextView statusView = (TextView) v.findViewById(R.id.status);
-            final String status = getStatus();
+            final CharSequence status = getStatus();
+
+            setButtonRippleColor(context, v);
+
             if (!TextUtils.isEmpty(status)) {
                 statusView.setText(status);
+                statusView.setTextColor(mSecondaryTextColor);
+                statusView.setTypeface(mFontStyle);
             } else {
                 statusView.setVisibility(View.GONE);
             }
             if (mIcon != null) {
+                icon.setPadding(iconPadding, iconPadding, iconPadding, iconPadding);
                 icon.setImageDrawable(mIcon);
-                icon.setScaleType(ScaleType.CENTER_CROP);
+                icon.setColorFilter(mIconNormalColor, Mode.MULTIPLY);
+                icon.setScaleType(ScaleType.CENTER);
             } else if (mIconResId != 0) {
                 icon.setImageDrawable(context.getDrawable(mIconResId));
+                icon.setColorFilter(mIconNormalColor, Mode.MULTIPLY);
             }
             if (mMessage != null) {
                 messageView.setText(mMessage);
+                messageView.setTextColor(mTextColor);
+                messageView.setTypeface(mFontStyle);
             } else {
                 messageView.setText(mMessageResId);
+                messageView.setTextColor(mTextColor);
+                messageView.setTypeface(mFontStyle);
             }
 
             return v;
@@ -878,8 +997,12 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             TextView statusView = (TextView) v.findViewById(R.id.status);
             final boolean enabled = isEnabled();
 
+            setButtonRippleColor(context, v);
+
             if (messageView != null) {
                 messageView.setText(mMessageResId);
+                messageView.setTextColor(mTextColor);
+                messageView.setTypeface(mFontStyle);
                 messageView.setEnabled(enabled);
             }
 
@@ -887,11 +1010,14 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             if (icon != null) {
                 icon.setImageDrawable(context.getDrawable(
                         (on ? mEnabledIconResId : mDisabledIconResid)));
+                icon.setColorFilter((on ? mIconEnabledSelectedColor : mIconNormalColor), Mode.MULTIPLY);
                 icon.setEnabled(enabled);
             }
 
             if (statusView != null) {
                 statusView.setText(on ? mEnabledStatusMessageResId : mDisabledStatusMessageResId);
+                statusView.setTextColor(mSecondaryTextColor);
+                statusView.setTypeface(mFontStyle);
                 statusView.setVisibility(View.VISIBLE);
                 statusView.setEnabled(enabled);
             }
@@ -932,7 +1058,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
     }
 
-    private class SilentModeToggleAction extends ToggleAction {
+     private class SilentModeToggleAction extends ToggleAction {
         public SilentModeToggleAction() {
             super(R.drawable.ic_audio_vol_mute,
                     R.drawable.ic_audio_vol,
@@ -945,7 +1071,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             if (on) {
                 mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
             } else {
-                mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                mAudioManager.setRingerModeInternal(AudioManager.RINGER_MODE_NORMAL);
             }
         }
 
@@ -961,7 +1087,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private static class SilentModeTriStateAction implements Action, View.OnClickListener {
 
         private final int[] ITEM_IDS = { R.id.option1, R.id.option2, R.id.option3 };
-
+        private final int[] IMAGE_VIEW_IDS = { R.id.option1_icon, R.id.option2_icon, R.id.option3_icon };
         private final AudioManager mAudioManager;
         private final Handler mHandler;
         private final Context mContext;
@@ -990,13 +1116,19 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         public View create(Context context, View convertView, ViewGroup parent,
                 LayoutInflater inflater) {
             View v = inflater.inflate(R.layout.global_actions_silent_mode, parent, false);
-
-            int selectedIndex = ringerModeToIndex(mAudioManager.getRingerModeInternal());
-            for (int i = 0; i < 3; i++) {
+                int selectedIndex = ringerModeToIndex(mAudioManager.getRingerMode());
+                for (int i = 0; i < 3; i++) {
                 View itemView = v.findViewById(ITEM_IDS[i]);
+                ImageView iv = (ImageView) v.findViewById(IMAGE_VIEW_IDS[i]);
                 itemView.setSelected(selectedIndex == i);
+                if (selectedIndex == i) {
+                    ((ImageView)iv).setColorFilter(mIconEnabledSelectedColor, Mode.MULTIPLY);
+                } else {
+                    ((ImageView)iv).setColorFilter(mIconNormalColor, Mode.MULTIPLY);
+                }
                 // Set up click handler
                 itemView.setTag(i);
+                setSilentModeItemRippleColor(context, itemView);
                 itemView.setOnClickListener(this);
             }
             return v;
@@ -1024,7 +1156,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             if (!(v.getTag() instanceof Integer)) return;
 
             int index = (Integer) v.getTag();
-            mAudioManager.setRingerModeInternal(indexToRingerMode(index));
+            mAudioManager.setRingerMode(indexToRingerMode(index));
             mHandler.sendEmptyMessageDelayed(MESSAGE_DISMISS, DIALOG_DISMISS_DELAY);
         }
     }
@@ -1050,13 +1182,103 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
     };
 
+    private void updatePMFontStyle() {
+        final int mPMFontStyle = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PM_FONT_STYLES, FontHelper.FONT_NORMAL);
+
+        getFontStyle(mPMFontStyle);
+    }
+
+    public static void getFontStyle(int font) {
+        switch (font) {
+            case FontHelper.FONT_NORMAL:
+            default:
+                mFontStyle = FontHelper.NORMAL;
+                break;
+            case FontHelper.FONT_ITALIC:
+                mFontStyle = FontHelper.ITALIC;
+                break;
+            case FontHelper.FONT_BOLD:
+                mFontStyle = FontHelper.BOLD;
+                break;
+            case FontHelper.FONT_BOLD_ITALIC:
+                mFontStyle = FontHelper.BOLD_ITALIC;
+                break;
+            case FontHelper.FONT_LIGHT:
+                mFontStyle = FontHelper.LIGHT;
+                break;
+            case FontHelper.FONT_LIGHT_ITALIC:
+                mFontStyle = FontHelper.LIGHT_ITALIC;
+                break;
+            case FontHelper.FONT_THIN:
+                mFontStyle = FontHelper.THIN;
+                break;
+            case FontHelper.FONT_THIN_ITALIC:
+                mFontStyle = FontHelper.THIN_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED:
+                mFontStyle = FontHelper.CONDENSED;
+                break;
+            case FontHelper.FONT_CONDENSED_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT:
+                mFontStyle = FontHelper.CONDENSED_LIGHT;
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_LIGHT_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD:
+                mFontStyle = FontHelper.CONDENSED_BOLD;
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_BOLD_ITALIC;
+                break;
+            case FontHelper.FONT_MEDIUM:
+                mFontStyle = FontHelper.MEDIUM;
+                break;
+            case FontHelper.FONT_MEDIUM_ITALIC:
+                mFontStyle = FontHelper.MEDIUM_ITALIC;
+                break;
+            case FontHelper.FONT_BLACK:
+                mFontStyle = FontHelper.BLACK;
+                break;
+            case FontHelper.FONT_BLACK_ITALIC:
+                mFontStyle = FontHelper.BLACK_ITALIC;
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT:
+                mFontStyle = FontHelper.DANCINGSCRIPT;
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT_BOLD:
+                mFontStyle = FontHelper.DANCINGSCRIPT_BOLD;
+                break;
+            case FontHelper.FONT_COMINGSOON:
+                mFontStyle = FontHelper.COMINGSOON;
+                break;
+            case FontHelper.FONT_NOTOSERIF:
+                mFontStyle = FontHelper.NOTOSERIF;
+                break;
+            case FontHelper.FONT_NOTOSERIF_ITALIC:
+                mFontStyle = FontHelper.NOTOSERIF_ITALIC;
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD:
+                mFontStyle = FontHelper.NOTOSERIF_BOLD;
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
+                mFontStyle = FontHelper.NOTOSERIF_BOLD_ITALIC;
+                break;
+        }
+    }
+
     PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
         @Override
         public void onServiceStateChanged(ServiceState serviceState) {
-            if (!mHasTelephony) return;
+            if (!mHasTelephony || mAirplaneModeOn == null || mAdapter == null) return;
             final boolean inAirplaneMode = serviceState.getState() == ServiceState.STATE_POWER_OFF;
             mAirplaneState = inAirplaneMode ? ToggleAction.State.On : ToggleAction.State.Off;
-            mAirplaneModeOn.updateState(mAirplaneState);
+            if (mAirplaneModeOn != null) {
+                mAirplaneModeOn.updateState(mAirplaneState);
+            }
             mAdapter.notifyDataSetChanged();
         }
     };
@@ -1111,7 +1333,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 Settings.Global.AIRPLANE_MODE_ON,
                 0) == 1;
         mAirplaneState = airplaneModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
-        mAirplaneModeOn.updateState(mAirplaneState);
+        if (mAirplaneModeOn != null) {
+            mAirplaneModeOn.updateState(mAirplaneState);
+        }
     }
 
     /**
@@ -1129,6 +1353,33 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         if (!mHasTelephony) {
             mAirplaneState = on ? ToggleAction.State.On : ToggleAction.State.Off;
         }
+    }
+
+    /**
+     * Generate a new bitmap (width x height pixels, ARGB_8888) with the input bitmap scaled
+     * to fit and clipped to an inscribed circle.
+     * @param input Bitmap to resize and clip
+     * @param width Width of output bitmap (and diameter of circle)
+     * @param height Height of output bitmap
+     * @return A shiny new bitmap for you to use
+     */
+    private static Bitmap createCircularClip(Bitmap input, int width, int height) {
+        if (input == null) return null;
+
+        final int inWidth = input.getWidth();
+        final int inHeight = input.getHeight();
+        final Bitmap output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(output);
+        final Paint paint = new Paint();
+        paint.setShader(new BitmapShader(input, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
+        paint.setAntiAlias(true);
+        final RectF srcRect = new RectF(0, 0, inWidth, inHeight);
+        final RectF dstRect = new RectF(0, 0, width, height);
+        final Matrix m = new Matrix();
+        m.setRectToRect(srcRect, dstRect, Matrix.ScaleToFit.CENTER);
+        canvas.setMatrix(m);
+        canvas.drawCircle(inWidth / 2, inHeight / 2, inWidth / 2, paint);
+        return output;
     }
 
     private static final class GlobalActionsDialog extends Dialog implements DialogInterface {
