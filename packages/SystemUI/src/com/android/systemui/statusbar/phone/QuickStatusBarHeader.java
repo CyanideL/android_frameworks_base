@@ -78,7 +78,7 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
     private ViewGroup mDateTimeAlarmGroup;
     private TextView mEmergencyOnly;
 
-    //protected ExpandableIndicator mExpandIndicator;
+    protected ExpandableIndicator mExpandIndicator;
     private View mCyanideButton;
 
     private boolean mListening;
@@ -120,7 +120,7 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         mDateTimeGroup.setPivotY(0);
         mShowFullAlarm = getResources().getBoolean(R.bool.quick_settings_show_full_alarm);
 
-        //mExpandIndicator = (ExpandableIndicator) findViewById(R.id.expand_indicator);
+        mExpandIndicator = (ExpandableIndicator) findViewById(R.id.expand_indicator);
 
         mHeaderQsPanel = (QuickQSPanel) findViewById(R.id.quick_qs_panel);
 
@@ -141,7 +141,7 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         // RenderThread is doing more harm than good when touching the header (to expand quick
         // settings), so disable it for this view
         ((RippleDrawable) mSettingsButton.getBackground()).setForceSoftware(true);
-        //((RippleDrawable) mExpandIndicator.getBackground()).setForceSoftware(true);
+        ((RippleDrawable) mExpandIndicator.getBackground()).setForceSoftware(true);
         ((RippleDrawable) mCyanideButton.getBackground()).setForceSoftware(true);
 
         updateResources();
@@ -200,10 +200,12 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         mSettingsAlpha = new TouchAnimator.Builder()
                 .addFloat(mSettingsContainer, "translationY", -mGearTranslation, 0)
                 .addFloat(mMultiUserSwitch, "translationY", -mGearTranslation, 0)
+                .addFloat(mCyanideButton, "translationY", -mGearTranslation, 0)
                 .addFloat(mSettingsButton, "rotation", -90, 0)
                 .addFloat(mSettingsContainer, "alpha", 0, 1)
                 .addFloat(mMultiUserSwitch, "alpha", 0, 1)
                 .addFloat(mCyanideButton, "rotation", -120, 0)
+                .addFloat(mCyanideButton, "alpha", 0, 1)
                 .setStartDelay(QSAnimator.EXPANDED_TILE_DELAY)
                 .build();
 
@@ -269,7 +271,7 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
 
         updateAlarmVisibilities();
 
-        //mExpandIndicator.setExpanded(headerExpansionFraction > EXPAND_INDICATOR_THRESHOLD);
+        mExpandIndicator.setExpanded(headerExpansionFraction > EXPAND_INDICATOR_THRESHOLD);
     }
 
     @Override
@@ -345,7 +347,7 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
 
     public void setupHost(final QSTileHost host) {
         mHost = host;
-        //host.setHeaderView(mExpandIndicator);
+        host.setHeaderView(mExpandIndicator);
         mHeaderQsPanel.setQSPanelAndHeader(mQsPanel, this);
         mHeaderQsPanel.setHost(host, null /* No customization in header */);
         setUserInfoController(host.getUserInfoController());

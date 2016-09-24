@@ -83,9 +83,10 @@
             android:layout_height="48dp"
             android:background="@drawable/ripple_drawable"
             android:src="@drawable/ic_qs_cyanide"
-            android:scaleType="centerInside" />
+            android:scaleType="centerInside"
+            android:contentDescription="@string/accessibility_quick_settings_settings"  />
 
-        <!--<com.android.systemui.statusbar.phone.ExpandableIndicator
+        <com.android.systemui.statusbar.phone.ExpandableIndicator
             android:id="@+id/expand_indicator"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -94,7 +95,7 @@
             android:focusable="true"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/accessibility_quick_settings_expand"
-            android:padding="12dp" />-->
+            android:padding="12dp" />
 
     </LinearLayout>
 
@@ -133,7 +134,7 @@
         android:importantForAccessibility="yes"
         android:focusable="true"
         android:accessibilityTraversalAfter="@+id/date_time_group"
-        android:accessibilityTraversalBefore="@id/cyanide_button" />
+        android:accessibilityTraversalBefore="@id/expand_indicator" />
 
     <com.android.systemui.statusbar.AlphaOptimizedImageView
         android:id="@+id/qs_detail_header_progress"

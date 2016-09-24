@@ -33,11 +33,13 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.MathUtils;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
@@ -62,11 +64,12 @@ import com.android.systemui.statusbar.policy.UserInfoController;
 import com.android.systemui.tuner.TunerService;
 
 import java.text.NumberFormat;
+import java.net.URISyntaxException;
 
 /**
  * The view to manage the header area in the expanded status bar.
  */
-public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnClickListener,
+public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnClickListener, OnLongClickListener,
         BatteryController.BatteryStateChangeCallback, NextAlarmController.NextAlarmChangeCallback,
         EmergencyListener {
 
@@ -94,6 +97,7 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
     private TextView mEmergencyCallsOnly;
     private BatteryLevelTextView mBatteryLevel;
     private TextView mAlarmStatus;
+    private View mCyanideButton;
 
     private boolean mShowEmergencyCallsOnly;
     private boolean mAlarmShowing;
@@ -163,6 +167,9 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
         mSettingsButton = (SettingsButton) findViewById(R.id.settings_button);
         mSettingsContainer = findViewById(R.id.settings_button_container);
         mSettingsButton.setOnClickListener(this);
+        mCyanideButton = findViewById(R.id.cyanide_button);
+        mCyanideButton.setOnClickListener(this);
+        mCyanideButton.setOnLongClickListener(this);
         mQsDetailHeader = findViewById(R.id.qs_detail_header);
         mQsDetailHeader.setAlpha(0);
         mQsDetailHeaderTitle = (TextView) mQsDetailHeader.findViewById(android.R.id.title);
@@ -205,6 +212,7 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
         // settings), so disable it for this view
         ((RippleDrawable) getBackground()).setForceSoftware(true);
         ((RippleDrawable) mSettingsButton.getBackground()).setForceSoftware(true);
+        ((RippleDrawable) mCyanideButton.getBackground()).setForceSoftware(true);
         ((RippleDrawable) mSystemIconsSuperContainer.getBackground()).setForceSoftware(true);
     }
 
@@ -353,6 +361,7 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
         mDateExpanded.setVisibility(mExpanded && mAlarmShowing ? View.INVISIBLE : View.VISIBLE);
         mAlarmStatus.setVisibility(mExpanded && mAlarmShowing ? View.VISIBLE : View.INVISIBLE);
         mSettingsContainer.setVisibility(mExpanded ? View.VISIBLE : View.INVISIBLE);
+        mCyanideButton.setVisibility(mExpanded ? View.VISIBLE : View.INVISIBLE);
         mQsDetailHeader.setVisibility(mExpanded && mShowingDetail? View.VISIBLE : View.INVISIBLE);
         if (mSignalCluster != null) {
             updateSignalClusterDetachment();
@@ -387,8 +396,10 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
 
     private void updateSystemIconsLayoutParams() {
         RelativeLayout.LayoutParams lp = (LayoutParams) mSystemIconsSuperContainer.getLayoutParams();
+        int cyanide = mCyanideButton.getVisibility() != View.GONE
+                ? mCyanideButton.getId() : mSettingsContainer.getId();
         int rule = mExpanded
-                ? mSettingsContainer.getId()
+                ? cyanide
                 : mMultiUserSwitch.getId();
         if (rule != lp.getRules()[RelativeLayout.START_OF]) {
             lp.addRule(RelativeLayout.START_OF, rule);
@@ -551,6 +562,8 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
                 }
             }
             startSettingsActivity();
+        } else if (v == mCyanideButton) {
+           startCyanideMods();
         } else if (v == mSystemIconsSuperContainer) {
             startBatteryActivity();
         } else if (v == mAlarmStatus && mNextAlarm != null) {
@@ -561,6 +574,14 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
         }
     }
 
+    @Override
+    public boolean onLongClick(View v) {
+        if (v == mCyanideButton) {
+            startCyanideModsLongClick();
+        }
+        return false;
+    }
+
     private void startSettingsActivity() {
         mActivityStarter.startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS),
                 true /* dismissShade */);
@@ -569,6 +590,50 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
     private void startBatteryActivity() {
         mActivityStarter.startActivity(new Intent(Intent.ACTION_POWER_USAGE_SUMMARY),
                 true /* dismissShade */);
+    }
+
+    private void startCyanideMods() {
+        Intent cyanideShortcutIntent = null;
+            String cyanideShortcutIntentUri = Settings.System.getStringForUser(
+                    mContext.getContentResolver(), Settings.System.CYANIDE_SHORTCUT, UserHandle.USER_CURRENT);
+            if(cyanideShortcutIntentUri != null) {
+                try {
+                    cyanideShortcutIntent = Intent.parseUri(cyanideShortcutIntentUri, 0);
+                } catch (URISyntaxException e) {
+                    cyanideShortcutIntent = null;
+                }
+            }
+
+            if(cyanideShortcutIntent != null) {
+                mActivityStarter.startActivity(cyanideShortcutIntent, true);
+            } else {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.setClassName("com.rogersb11.cyanide",
+                    "com.rogersb11.cyanide.MainActivity");
+                mActivityStarter.startActivity(intent, true /* dismissShade*/ );
+            }
+    }
+
+    private void startCyanideModsLongClick() {
+        Intent cyanideLongShortcutIntent = null;
+            String cyanideLongShortcutIntentUri = Settings.System.getStringForUser(
+                    mContext.getContentResolver(), Settings.System.CYANIDE_LONG_SHORTCUT, UserHandle.USER_CURRENT);
+            if(cyanideLongShortcutIntentUri != null) {
+                try {
+                    cyanideLongShortcutIntent = Intent.parseUri(cyanideLongShortcutIntentUri, 0);
+                } catch (URISyntaxException e) {
+                    cyanideLongShortcutIntent = null;
+                }
+            }
+
+            if(cyanideLongShortcutIntent != null) {
+                mActivityStarter.startActivity(cyanideLongShortcutIntent, true);
+            } else {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.setClassName("com.rogersb11.cyanide",
+                    "com.rogersb11.cyanide.MainActivity");
+                mActivityStarter.startActivity(intent, true /* dismissShade*/ );
+            }
     }
 
     public void setQSPanel(QSPanel qsp) {
@@ -626,8 +691,13 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
         target.settingsTranslation = mExpanded
                 ? 0
                 : mMultiUserSwitch.getLeft() - mSettingsContainer.getLeft();
+        target.cyanideAlpha = getAlphaForVisibility(mCyanideButton);
+        target.cyanideTranslation = mExpanded
+                ? 0
+                : mMultiUserSwitch.getLeft() - mCyanideButton.getLeft();
         target.signalClusterAlpha = mSignalClusterDetached ? 0f : 1f;
         target.settingsRotation = !mExpanded ? 90f : 0f;
+        target.cyanideRotation = mExpanded ? 120f : 0f;
     }
 
     private float getAlphaForVisibility(View v) {
@@ -682,6 +752,9 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
             mSettingsContainer.setTranslationX(values.settingsTranslation);
             mSettingsButton.setRotation(values.settingsRotation);
         }
+        mCyanideButton.setTranslationY(mSystemIconsSuperContainer.getTranslationY());
+        mCyanideButton.setTranslationX(values.cyanideTranslation);
+        mCyanideButton.setRotation(values.cyanideRotation);
         applyAlpha(mEmergencyCallsOnly, values.emergencyCallsOnlyAlpha);
         if (!mShowingDetail && !mDetailTransitioning) {
             // Otherwise it needs to stay invisible
@@ -691,6 +764,7 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
         applyAlpha(mDateExpanded, values.dateExpandedAlpha);
         applyAlpha(mBatteryLevel, values.batteryLevelAlpha);
         applyAlpha(mSettingsContainer, values.settingsAlpha);
+        applyAlpha(mCyanideButton, values.cyanideAlpha);
         applyAlpha(mSignalCluster, values.signalClusterAlpha);
         if (!mExpanded) {
             mTime.setScaleX(1f);
@@ -721,6 +795,9 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
         float batteryLevelExpandedAlpha;
         float settingsAlpha;
         float settingsTranslation;
+        float cyanideAlpha;
+        float cyanideTranslation;
+        float cyanideRotation;
         float signalClusterAlpha;
         float settingsRotation;
 
@@ -734,9 +811,11 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
             batteryX = v1.batteryX * (1 - t) + v2.batteryX * t;
             batteryY = v1.batteryY * (1 - t) + v2.batteryY * t;
             settingsTranslation = v1.settingsTranslation * (1 - t) + v2.settingsTranslation * t;
+            cyanideTranslation = v1.cyanideTranslation * (1 - t) + v2.cyanideTranslation * t;
 
             float t1 = Math.max(0, t - 0.5f) * 2;
             settingsRotation = v1.settingsRotation * (1 - t1) + v2.settingsRotation * t1;
+            cyanideRotation = v1.cyanideRotation * (1 - t1) + v2.cyanideRotation * t1;
             emergencyCallsOnlyAlpha =
                     v1.emergencyCallsOnlyAlpha * (1 - t1) + v2.emergencyCallsOnlyAlpha * t1;
 
@@ -748,6 +827,7 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
             batteryLevelExpandedAlpha =
                     v1.batteryLevelExpandedAlpha * (1 - t3) + v2.batteryLevelExpandedAlpha * t3;
             settingsAlpha = v1.settingsAlpha * (1 - t3) + v2.settingsAlpha * t3;
+            cyanideAlpha = v1.cyanideAlpha * (1 - t3) + v2.cyanideAlpha * t3;
             dateExpandedAlpha = v1.dateExpandedAlpha * (1 - t3) + v2.dateExpandedAlpha * t3;
             dateCollapsedAlpha = v1.dateCollapsedAlpha * (1 - t3) + v2.dateCollapsedAlpha * t3;
             alarmStatusAlpha = v1.alarmStatusAlpha * (1 - t3) + v2.alarmStatusAlpha * t3;
