@@ -180,6 +180,7 @@ import com.android.systemui.statusbar.policy.BatteryControllerImpl;
 import com.android.systemui.statusbar.policy.BluetoothControllerImpl;
 import com.android.systemui.statusbar.policy.BrightnessMirrorController;
 import com.android.systemui.statusbar.policy.CastControllerImpl;
+import com.android.systemui.statusbar.policy.Clock;
 import com.android.systemui.statusbar.policy.FlashlightController;
 import com.android.systemui.statusbar.policy.HeadsUpManager;
 import com.android.systemui.statusbar.policy.HotspotControllerImpl;
@@ -377,6 +378,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private long mKeyguardFadingAwayDelay;
     private long mKeyguardFadingAwayDuration;
 
+    private Clock mCenterClock;
+
     // RemoteInputView to be activated after unlock
     private View mPendingRemoteInputView;
     private View mPendingWorkRemoteInputView;
@@ -457,6 +460,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BATTERY_STATUS_TEXT_COLOR),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CLOCK_COLOR),
+                    false, this, UserHandle.USER_ALL);
         }
 
 
@@ -486,6 +492,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BATTERY_STATUS_TEXT_COLOR))) {
                 updateBatteryLevelTextColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CLOCK_COLOR))) {
+                updateStatusBarClockColor(true);
             }
         }
     }
@@ -912,6 +921,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mDozeScrimController = new DozeScrimController(mScrimController, context);
         mWeatherController = new WeatherServiceControllerImpl(mContext);
 
+        mCenterClock = (Clock) mStatusBarWindow.findViewById(R.id.center_clock);
         mKeyguardStatusBar = (KeyguardStatusBarView) mStatusBarWindow.findViewById(R.id.keyguard_header);
         mKeyguardStatusView = mStatusBarWindow.findViewById(R.id.keyguard_status_view);
         mKeyguardBottomArea =
@@ -2451,6 +2461,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         keyguardExpansionView();
         updateStatusBarTextColor(false);
         updateStatusBarIconColor(false);
+        updateStatusBarClockColor(false);
         updateBatteryLevelTextColor();
     }
 
@@ -2485,12 +2496,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
-
-    /*private void updateStatusBarBatteryTextColor(boolean animate) {
+    private void updateStatusBarClockColor(boolean animate) {
         if (mIconController != null) {
-            mIconController.updateBatteryTextColor(animate);
+            mIconController.updateClockColor(animate);
         }
-    }*/
+    }
 
     private void updateBatteryLevelTextColor() {
         if (mBatteryLevel != null) {
@@ -3456,8 +3466,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mStatusBarContents.setVisibility(View.GONE);
             mStatusBarContents.startAnimation(loadAnim(com.android.internal.R.anim.push_up_out,
                     null));
-            //mClockView.setVisibility(View.GONE);
-            //mClockView.startAnimation(loadAnim(com.android.internal.R.anim.push_up_out, null));
+            if (ClockController.mClockLocation == ClockController.STYLE_CLOCK_CENTER) {
+                mCenterClock.setVisibility(View.GONE);
+                mCenterClock.startAnimation(loadAnim(com.android.internal.R.anim.push_up_out, null));
+            }
             mTickerView.setVisibility(View.VISIBLE);
             mTickerView.startAnimation(loadAnim(com.android.internal.R.anim.push_up_in, null));
         }
@@ -3471,8 +3483,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mTickerView.setVisibility(View.GONE);
             mTickerView.startAnimation(loadAnim(com.android.internal.R.anim.push_down_out,
                         mTickingDoneListener));
-            //mClockView.setVisibility(View.VISIBLE);
-            //mClockView.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in, null));
+            if (ClockController.mClockLocation == ClockController.STYLE_CLOCK_CENTER) {
+                mCenterClock.setVisibility(View.VISIBLE);
+                mCenterClock.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in, null));
+            }
         }
 
         public void tickerHalting() {
@@ -3481,8 +3495,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mStatusBarContents.setVisibility(View.VISIBLE);
                 mStatusBarContents
                         .startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
-                //mClockView.setVisibility(View.VISIBLE);
-                //mClockView.startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
+                if (ClockController.mClockLocation == ClockController.STYLE_CLOCK_CENTER) {
+                    mCenterClock.setVisibility(View.VISIBLE);
+                    mCenterClock.startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
+                }
             }
             mTickerView.setVisibility(View.GONE);
             // we do not animate the ticker away at this point, just get rid of it (b/6992707)
