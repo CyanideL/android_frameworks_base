@@ -4356,6 +4356,23 @@ public final class Settings {
          */
         public static final String STATUS_BAR_CLOCK_DATE_FORMAT = "statusbar_clock_date_format";
 
+        /**
+         * Setting for clock color
+         * @hide
+         */
+        public static final String STATUS_BAR_CLOCK_COLOR = "status_bar_clock_color";
+
+        /**
+         * Setting for clock color on light status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_CLOCK_COLOR_DARK_MODE = "status_bar_clock_color_dark_mode";
+
+        /**
+         * Settings for clock font style
+         * @hide
+         */
+        public static final String STATUSBAR_CLOCK_FONT_STYLE = "statusbar_clock_font_style";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings

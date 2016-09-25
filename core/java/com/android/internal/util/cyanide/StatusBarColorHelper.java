@@ -1,5 +1,6 @@
 /*
 * Copyright (C) 2015 DarkKat
+* Copyright (C) 2016 Brett Rogers
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -49,5 +50,15 @@ public class StatusBarColorHelper {
         int color = Settings.System.getInt(context.getContentResolver(),
                 Settings.System.STATUS_BAR_ICON_COLOR_DARK_MODE, DARK_MODE_COLOR_SINGLE_TONE);
         return (DARK_MODE_ALPHA_SINGLE_TONE << 24) | (color & 0x00ffffff);
+    }
+
+    public static int getClockColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_CLOCK_COLOR, 0xffffffff);
+    }
+
+    public static int getClockColorDarkMode(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_CLOCK_COLOR_DARK_MODE, 0xff000000);
     }
 }

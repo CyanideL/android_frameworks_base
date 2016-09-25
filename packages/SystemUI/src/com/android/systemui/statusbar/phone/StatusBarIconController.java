@@ -88,12 +88,14 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private int mIconHPadding;
 
     private float mDarkIntensity;
+    private int mClockColor;
     private int mTextColor;
     private int mIconColor;
     private final Rect mTintArea = new Rect();
     private static final Rect sTmpRect = new Rect();
     private static final int[] sTmpInt2 = new int[2];
 
+    private boolean mAnimateClockColor = false;
     private boolean mAnimateTextColor = false;
     private boolean mAnimateIconColor = false;
 
@@ -140,11 +142,10 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mSignalClusterKeyguard.setIconController(this);
         notificationIconArea.addView(mNotificationIconAreaInner);
 
+        mClockColor = StatusBarColorHelper.getClockColor(mContext);
         mTextColor = StatusBarColorHelper.getTextColor(mContext);
         mIconColor = StatusBarColorHelper.getIconColor(mContext);
 
-        mDarkModeIconColorSingleTone = context.getColor(R.color.dark_mode_icon_color_single_tone);
-        mLightModeIconColorSingleTone = context.getColor(R.color.light_mode_icon_color_single_tone);
         mHandler = new Handler();
         mClockController = new ClockController(statusBar, mNotificationIcons, mHandler);
         mCenterClockLayout = statusBar.findViewById(R.id.center_clock_layout);
@@ -456,6 +457,9 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
 
     private void setIconTintInternal(float darkIntensity) {
         mDarkIntensity = darkIntensity;
+        mClockColor = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
+                StatusBarColorHelper.getClockColor(mContext),
+                StatusBarColorHelper.getClockColorDarkMode(mContext));
         mTextColor = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
                 StatusBarColorHelper.getTextColor(mContext),
                 StatusBarColorHelper.getTextColorDarkMode(mContext));
@@ -495,6 +499,14 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         }
     }
 
+    private int getClockTint(Rect tintArea, ClockController clock, int color) {
+        if (isClockInArea(tintArea, clock) || mDarkIntensity == 0f) {
+            return color;
+        } else {
+            return StatusBarColorHelper.getClockColor(mContext);
+        }
+    }
+
     /**
      * @return the dark intensity to apply to {@param view} depending on the desired dark
      *         {@param intensity} and the screen {@param tintArea} in which to apply that intensity
@@ -528,6 +540,22 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         return majorityOfWidth && coversFullStatusBar;
     }
 
+    private static boolean isClockInArea(Rect area, ClockController clock) {
+        if (area.isEmpty()) {
+            return true;
+        }
+        sTmpRect.set(area);
+        int left = sTmpInt2[0];
+
+        int intersectStart = Math.max(left, area.left);
+        int intersectEnd = Math.min(left, area.right);
+        int intersectAmount = Math.max(0, intersectEnd - intersectStart);
+
+        boolean coversFullStatusBar = area.top <= 0;
+        boolean majorityOfWidth = 2 * intersectAmount > 0;
+        return majorityOfWidth && coversFullStatusBar;
+    }
+
     private void applyIconTint() {
         for (int i = 0; i < mStatusIcons.getChildCount(); i++) {
             StatusBarIconView v = (StatusBarIconView) mStatusIcons.getChildAt(i);
@@ -536,7 +564,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         applyStatusIconKeyguardTint();
         mSignalCluster.setIconTint(mIconColor, StatusBarColorHelper.getIconColorDarkMode(mContext),
                 mDarkIntensity, mTintArea);
-        mClockController.setTextColor(getTextTint(mTintArea, mClock, mTextColor));
+        mClockController.setTextColor(getClockTint(mTintArea, mClockController, mClockColor));
     }
 
     public void appTransitionPending() {
@@ -615,10 +643,10 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener(){
             @Override public void onAnimationUpdate(ValueAnimator animation) {
                 float position = animation.getAnimatedFraction();
-                if (mAnimateTextColor) {
-                    final int blended = ColorHelper.getBlendColor(mTextColor,
-                            StatusBarColorHelper.getTextColor(mContext), position);
-                    mClock.setTextColor(blended);
+                if (mAnimateClockColor) {
+                    final int blended = ColorHelper.getBlendColor(mClockColor,
+                            StatusBarColorHelper.getClockColor(mContext), position);
+                    mClockController.setTextColor(blended);
                 }
                 if (mAnimateIconColor) {
                     final int blended = ColorHelper.getBlendColor(mIconColor,
@@ -635,6 +663,10 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
+                if (mAnimateClockColor) {
+                    mTextColor = StatusBarColorHelper.getClockColor(mContext);
+                    mAnimateClockColor = false;
+                }
                 if (mAnimateTextColor) {
                     mTextColor = StatusBarColorHelper.getTextColor(mContext);
                     mAnimateTextColor = false;
@@ -661,6 +693,14 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         applyStatusIconKeyguardTint();
         mSignalClusterKeyguard.setIconTint(StatusBarColorHelper.getIconColor(mContext), 0,
                 mDarkIntensity, new Rect());
+    }
+
+    public void updateClockColor(boolean animate) {
+        mAnimateClockColor = animate;
+        if (!mAnimateTextColor && !mAnimateIconColor && mAnimateClockColor) {
+            mColorTransitionAnimator.start();
+        }
+        mClockController.setTextColor(StatusBarColorHelper.getTextColor(mContext));
     }
 
     private void applyStatusIconKeyguardTint() {
