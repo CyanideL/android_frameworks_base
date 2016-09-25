@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -30,6 +31,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.TypedValue;
@@ -66,6 +68,11 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     public static final long DEFAULT_TINT_ANIMATION_DURATION = 120;
     public static final String ICON_BLACKLIST = "icon_blacklist";
 
+    private static final int LOGO_LEFT = 0;
+    private static final int LOGO_RIGHT = 1;
+
+    private int mLogoStyle;
+
     private Context mContext;
     private PhoneStatusBar mPhoneStatusBar;
     private DemoStatusIcons mDemoStatusIcons;
@@ -84,6 +91,14 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private ClockController mClockController;
     private View mCenterClockLayout;
 
+    private ImageView mCyanideLogo;
+    private ImageView mCyanideLogoLeft;
+    private ImageView mCyanideLogoKeyguard;
+    private ImageView mCyanideLogoKeyguardLeft;
+
+    private boolean mShowLogo = false;
+    private boolean mShowKeyguardLogo = false;
+
     private int mIconSize;
     private int mIconHPadding;
 
@@ -91,6 +106,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private int mClockColor;
     private int mTextColor;
     private int mIconColor;
+    private int mLogoColor;
     private final Rect mTintArea = new Rect();
     private static final Rect sTmpRect = new Rect();
     private static final int[] sTmpInt2 = new int[2];
@@ -98,6 +114,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private boolean mAnimateClockColor = false;
     private boolean mAnimateTextColor = false;
     private boolean mAnimateIconColor = false;
+    private boolean mAnimateLogoColor = false;
 
     private boolean mTransitionPending;
     private boolean mTintChangePending;
@@ -126,6 +143,10 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mContext = context;
         mPhoneStatusBar = phoneStatusBar;
         mCarrierTextKeyguard = (CarrierText) keyguardStatusBar.findViewById(R.id.keyguard_carrier_text);
+        mCyanideLogo = (ImageView) statusBar.findViewById(R.id.cyanide_logo);
+        mCyanideLogoLeft = (ImageView) statusBar.findViewById(R.id.left_cyanide_logo);
+        mCyanideLogoKeyguard = (ImageView) keyguardStatusBar.findViewById(R.id.cyanide_logo_keyguard);
+        mCyanideLogoKeyguardLeft = (ImageView) keyguardStatusBar.findViewById(R.id.left_cyanide_logo_keyguard);
         mSystemIconArea = (LinearLayout) statusBar.findViewById(R.id.system_icon_area);
         mStatusIcons = (LinearLayout) statusBar.findViewById(R.id.statusIcons);
         mStatusIconsKeyguard = (LinearLayout) keyguardStatusBar.findViewById(R.id.statusIcons);
@@ -147,6 +168,8 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mClockColor = StatusBarColorHelper.getClockColor(mContext);
         mTextColor = StatusBarColorHelper.getTextColor(mContext);
         mIconColor = StatusBarColorHelper.getIconColor(mContext);
+        mLogoColor = StatusBarColorHelper.getLogoColor(mContext);
+        
 
         mHandler = new Handler();
         mClockController = new ClockController(statusBar, mNotificationIcons, mHandler);
@@ -306,25 +329,76 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     public void hideSystemIconArea(boolean animate) {
         animateHide(mSystemIconArea, animate);
         animateHide(mCenterClockLayout, animate);
+        if (mShowLogo && mLogoStyle == LOGO_LEFT) {
+            animateHide(mCyanideLogoLeft, animate);
+        }
     }
 
     public void showSystemIconArea(boolean animate) {
         animateShow(mSystemIconArea, animate);
         animateShow(mCenterClockLayout, animate);
+        if (mShowLogo && mLogoStyle == LOGO_LEFT) {
+            animateShow(mCyanideLogoLeft, animate);
+        }
     }
 
     public void hideNotificationIconArea(boolean animate) {
         animateHide(mNotificationIconAreaInner, animate);
         animateHide(mCenterClockLayout, animate);
+        if (mShowLogo && mLogoStyle == LOGO_LEFT) {
+            animateHide(mCyanideLogoLeft, animate);
+        }
+        if (mShowLogo && mLogoStyle == LOGO_RIGHT) {
+            animateHide(mCyanideLogo, animate);
+        }
     }
 
     public void showNotificationIconArea(boolean animate) {
         animateShow(mNotificationIconAreaInner, animate);
         animateShow(mCenterClockLayout, animate);
+        if (mShowLogo && mLogoStyle == LOGO_LEFT) {
+            animateShow(mCyanideLogoLeft, animate);
+        }
+        if (mShowLogo && mLogoStyle == LOGO_RIGHT) {
+            animateShow(mCyanideLogo, animate);
+        }
     }
 
     public void setClockVisibility(boolean visible) {
         mClockController.setVisibility(visible);
+    }
+
+    public void setLogoVisibility(boolean showLogo, boolean forceHide, int maxAllowedIcons) {
+        mShowLogo = showLogo;
+        ContentResolver resolver = mContext.getContentResolver();
+        boolean forceHideByNumberOfIcons = false;
+        int notificationIconsCount = mNotificationIconAreaController.getNotificationIconsCount();
+        mLogoStyle = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CYANIDE_LOGO_STYLE, 1);
+        if (forceHide && notificationIconsCount >= maxAllowedIcons) {
+            forceHideByNumberOfIcons = true;
+        }
+        if (mLogoStyle == LOGO_LEFT) {
+            mCyanideLogoLeft.setVisibility(showLogo && !forceHideByNumberOfIcons ? View.VISIBLE : View.GONE);
+            mCyanideLogo.setVisibility(View.GONE);
+        }
+        if (mLogoStyle == LOGO_RIGHT) {
+            mCyanideLogo.setVisibility(showLogo && !forceHideByNumberOfIcons ? View.VISIBLE : View.GONE);
+            mCyanideLogoLeft.setVisibility(View.GONE);
+        }
+        showKeyguardLogo(mShowKeyguardLogo);
+    }
+
+    public void showKeyguardLogo(boolean show) {
+        mShowKeyguardLogo = show;
+        if (mLogoStyle == LOGO_LEFT) {
+            mCyanideLogoKeyguardLeft.setVisibility(show ? View.VISIBLE : View.GONE);
+            mCyanideLogoKeyguard.setVisibility(View.GONE);
+        }
+        if (mLogoStyle == LOGO_RIGHT) {
+            mCyanideLogoKeyguard.setVisibility(show ? View.VISIBLE : View.GONE);
+            mCyanideLogoKeyguardLeft.setVisibility(View.GONE);
+        }
     }
 
     public void dump(PrintWriter pw) {
@@ -463,6 +537,9 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mIconColor = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
                 StatusBarColorHelper.getIconColor(mContext),
                 StatusBarColorHelper.getIconColorDarkMode(mContext));
+        mLogoColor = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
+                StatusBarColorHelper.getLogoColor(mContext),
+                StatusBarColorHelper.getLogoColorDarkMode(mContext));
 
         mNotificationIconAreaController.setIconTint(mIconColor);
         applyIconTint();
@@ -501,6 +578,14 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
             return color;
         } else {
             return StatusBarColorHelper.getClockColor(mContext);
+        }
+    }
+
+    private int getLogoTint(Rect tintArea, View view, int color) {
+        if (isInArea(tintArea, view) || mDarkIntensity == 0f) {
+            return color;
+        } else {
+            return StatusBarColorHelper.getLogoColor(mContext);
         }
     }
 
@@ -562,6 +647,12 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mSignalCluster.setIconTint(mIconColor, StatusBarColorHelper.getIconColorDarkMode(mContext),
                 mDarkIntensity, mTintArea);
         mClockController.setTextColor(getClockTint(mTintArea, mClockController, mClockColor));
+        if (mShowLogo && mLogoStyle == LOGO_LEFT) {
+            mCyanideLogoLeft.setImageTintList(ColorStateList.valueOf(getLogoTint(mTintArea, mCyanideLogo, mLogoColor)));
+        }
+        if (mShowLogo && mLogoStyle == LOGO_RIGHT) {
+            mCyanideLogo.setImageTintList(ColorStateList.valueOf(getLogoTint(mTintArea, mCyanideLogo, mLogoColor)));
+        }
     }
 
     public void appTransitionPending() {
@@ -636,7 +727,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private ValueAnimator createColorTransitionAnimator(float start, float end) {
         ValueAnimator animator = ValueAnimator.ofFloat(start, end);
 
-        animator.setDuration(300);
+        animator.setDuration(600);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener(){
             @Override public void onAnimationUpdate(ValueAnimator animation) {
                 float position = animation.getAnimatedFraction();
@@ -655,13 +746,23 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
                     mSignalCluster.setIconTint(blended, 0, mDarkIntensity, mTintArea);
                     mNotificationIconAreaController.setIconTint(blended);
                 }
+                if (mAnimateLogoColor) {
+                    final int blended = ColorHelper.getBlendColor(mLogoColor,
+                            StatusBarColorHelper.getLogoColor(mContext), position);
+                    if (mLogoStyle == LOGO_LEFT) {
+                        mCyanideLogoLeft.setImageTintList(ColorStateList.valueOf(blended));
+                    }
+                    if (mLogoStyle == LOGO_RIGHT) {
+                        mCyanideLogoLeft.setImageTintList(ColorStateList.valueOf(blended));
+                    }
+                }
             }
         });
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (mAnimateClockColor) {
-                    mTextColor = StatusBarColorHelper.getClockColor(mContext);
+                    mClockColor = StatusBarColorHelper.getClockColor(mContext);
                     mAnimateClockColor = false;
                 }
                 if (mAnimateTextColor) {
@@ -671,6 +772,10 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
                 if (mAnimateIconColor) {
                     mIconColor = StatusBarColorHelper.getIconColor(mContext);
                     mAnimateIconColor = false;
+                }
+                if (mAnimateLogoColor) {
+                    mLogoColor = StatusBarColorHelper.getLogoColor(mContext);
+                    mAnimateLogoColor = false;
                 }
             }
         });
@@ -684,7 +789,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
 
     public void updateIconColor(boolean animate) {
         mAnimateIconColor = animate;
-        if (!mAnimateTextColor && mAnimateIconColor) {
+        if (!mAnimateClockColor && !mAnimateLogoColor && mAnimateIconColor) {
             mColorTransitionAnimator.start();
         }
         applyStatusIconKeyguardTint();
@@ -694,10 +799,25 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
 
     public void updateClockColor(boolean animate) {
         mAnimateClockColor = animate;
-        if (!mAnimateTextColor && !mAnimateIconColor && mAnimateClockColor) {
+        if (!mAnimateIconColor &&  !mAnimateLogoColor && mAnimateClockColor) {
             mColorTransitionAnimator.start();
         }
-        mClockController.setTextColor(StatusBarColorHelper.getTextColor(mContext));
+        mClockController.setTextColor(StatusBarColorHelper.getClockColor(mContext));
+    }
+
+    public void updateLogoColor(boolean animate) {
+        mAnimateLogoColor = animate;
+        if (!mAnimateIconColor && !mAnimateClockColor && mAnimateLogoColor) {
+            mColorTransitionAnimator.start();
+        }
+        mCyanideLogoLeft.setImageTintList(ColorStateList.valueOf(StatusBarColorHelper.getLogoColor(mContext)));
+        mCyanideLogo.setImageTintList(ColorStateList.valueOf(StatusBarColorHelper.getLogoColor(mContext)));
+        updateKeyguardLogoColor();
+    }
+
+    private void updateKeyguardLogoColor() {
+        mCyanideLogoKeyguardLeft.setImageTintList(ColorStateList.valueOf(StatusBarColorHelper.getLogoColor(mContext)));
+        mCyanideLogoKeyguard.setImageTintList(ColorStateList.valueOf(StatusBarColorHelper.getLogoColor(mContext)));
     }
 
     private void applyStatusIconKeyguardTint() {

@@ -36,7 +36,10 @@
     <!-- Expansion View Network traffic monitor multi-line text size -->
     <dimen name="expansion_view_net_traffic_multi_text_size">17dp</dimen>
 
-  <!-- Nadda -->
-  <dimen name="nothing">0dp</dimen>    
+    <!-- Nadda -->
+    <dimen name="nothing">0dp</dimen>
+
+    <!-- Keyguard Items Padding -->
+    <dimen name="keyguard_items_padding">3dp</dimen> 
 
 </resources>
