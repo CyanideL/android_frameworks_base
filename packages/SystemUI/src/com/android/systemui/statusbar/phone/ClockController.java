@@ -42,6 +42,7 @@ public class ClockController {
     private static Typeface mClockFontStyle;
     private int mIconTint = DEFAULT_ICON_TINT;
     private final Rect mTintArea = new Rect();
+    private int mClockFontSize = 14;
 
     class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
@@ -67,6 +68,9 @@ public class ClockController {
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_CLOCK_FONT_STYLE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CLOCK_FONT_SIZE),
                     false, this, UserHandle.USER_ALL);
             updateSettings();
         }
@@ -123,6 +127,7 @@ public class ClockController {
         mActiveClock.setClockDateDisplay(mClockDateDisplay);
         mActiveClock.setClockDateStyle(mClockDateStyle);
         mActiveClock.setTypeface(mClockFontStyle);
+        mActiveClock.setTextSize(mClockFontSize);
 
         setClockAndDateStatus();
         setTextColor(mIconTint);
@@ -142,6 +147,9 @@ public class ClockController {
                 UserHandle.USER_CURRENT);
         mClockDateStyle = Settings.System.getIntForUser(resolver,
                 Settings.System.STATUS_BAR_CLOCK_DATE_STYLE, Clock.CLOCK_DATE_STYLE_REGULAR,
+                UserHandle.USER_CURRENT);
+        mClockFontSize = Settings.System.getIntForUser(resolver,
+                Settings.System.STATUS_BAR_CLOCK_FONT_SIZE, 14,
                 UserHandle.USER_CURRENT);
         updateActiveClock();
         updateClockFontStyles();
