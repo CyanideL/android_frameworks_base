@@ -2208,11 +2208,11 @@ message MetricsEvent {
     ACTION_AMBIENT_DISPLAY = 495;
 
     // ---- End N-MR1 Constants, all N-MR1 constants go above this line ----
+    // Quick setting tiles
+    QUICK_SETTINGS = 412;
 
     // Cyanide Metrics flag
     CYANIDE_SHIT = 999;
 
-    // Add new aosp constants above this line.
-    // END OF AOSP CONSTANTS
   }
 }
