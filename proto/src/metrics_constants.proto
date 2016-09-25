@@ -2218,10 +2218,11 @@ message MetricsEvent {
     // Notification group expansion state toggled by the expand gesture.
     ACTION_NOTIFICATION_GROUP_GESTURE_EXPANDER = 410;
 
+    // Quick setting tiles
+    QUICK_SETTINGS = 412;
+
     // Cyanide Metrics flag
     CYANIDE_SHIT = 999;
 
-    // Add new aosp constants above this line.
-    // END OF AOSP CONSTANTS
   }
 }
