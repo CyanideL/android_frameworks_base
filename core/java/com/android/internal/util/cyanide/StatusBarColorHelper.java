@@ -61,4 +61,14 @@ public class StatusBarColorHelper {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.STATUS_BAR_CLOCK_COLOR_DARK_MODE, 0xff000000);
     }
+
+    public static int getLogoColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_CYANIDE_LOGO_COLOR, 0xffffffff);
+    }
+
+    public static int getLogoColorDarkMode(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_CYANIDE_LOGO_COLOR_DARK_MODE, 0xff000000);
+    }
 }
