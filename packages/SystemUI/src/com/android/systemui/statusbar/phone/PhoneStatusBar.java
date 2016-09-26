@@ -108,6 +108,8 @@ import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.MetricsProto.MetricsEvent;
 import com.android.internal.statusbar.NotificationVisibility;
 import com.android.internal.statusbar.StatusBarIcon;
+import com.android.internal.util.cyanide.WeatherServiceControllerImpl;
+import com.android.internal.util.cyanide.WeatherHelper;
 import com.android.keyguard.KeyguardHostView.OnDismissAction;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
@@ -127,6 +129,7 @@ import com.android.systemui.assist.AssistManager;
 import com.android.systemui.classifier.FalsingLog;
 import com.android.systemui.classifier.FalsingManager;
 import com.android.systemui.cyanide.expansionview.ExpansionViewController;
+import com.android.systemui.cyanide.StatusBarWeather;
 import com.android.systemui.doze.DozeHost;
 import com.android.systemui.doze.DozeLog;
 import com.android.systemui.keyguard.KeyguardViewMediator;
@@ -185,9 +188,6 @@ import com.android.systemui.statusbar.stack.NotificationStackScrollLayout.OnChil
 import com.android.systemui.statusbar.stack.StackStateAnimator;
 import com.android.systemui.statusbar.stack.StackViewState;
 import com.android.systemui.volume.VolumeComponent;
-
-import com.android.internal.util.cyanide.WeatherServiceController;
-import com.android.internal.util.cyanide.WeatherServiceControllerImpl;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -506,6 +506,18 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_BATTERY_STATUS_TEXT_COLOR),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_SHOW),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_TYPE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_HIDE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_NUMBER_OF_NOTIFICATION_ICONS),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CLOCK_COLOR),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -562,6 +574,18 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CYANIDE_LOGO_SHOW_ON_LOCK_SCREEN))) {
                 showKeyguardLogo();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_SHOW))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_HIDE))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_NUMBER_OF_NOTIFICATION_ICONS))) {
+                if (WeatherHelper.isWeatherServiceAvailable(mContext)) {
+                    updateWeatherVisibility();
+                }
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_TYPE))) {
+                updateWeatherType();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CYANIDE_LOGO_SHOW))
                     || uri.equals(Settings.System.getUriFor(
@@ -1039,6 +1063,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         ExpansionViewController expansionViewController = new ExpansionViewController(mContext, expansionViewContainer);
         expansionViewController.setUp(this, mNetworkController, /*mBatteryController,*/ mWeatherController);
         mNotificationPanel.setExpansionViewController(expansionViewController);
+
+        ((StatusBarWeather) mStatusBarView.findViewById(R.id.status_bar_weather_layout))
+                .setWeatherController(new WeatherServiceControllerImpl(mContext));
 
         // Set up the quick settings tile panel
         AutoReinflateContainer container = (AutoReinflateContainer) mStatusBarWindow.findViewById(
@@ -2047,6 +2074,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateNotificationShade();
         mIconController.updateNotificationIcons(mNotificationData);
         setCyanideLogoVisibility();
+        if (WeatherHelper.isWeatherServiceAvailable(mContext)) {
+            updateWeatherVisibility();
+        }
     }
 
     public void requestNotificationUpdate() {
@@ -2436,6 +2466,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateBatteryLevelTextColor();
         setCyanideLogoVisibility();
         showKeyguardLogo();
+        updateWeatherVisibility();
+        updateWeatherType();
     }
 
     private void forceExpansionView() {
@@ -2484,6 +2516,31 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private void updateBatteryLevelTextColor() {
         if (mBatteryLevel != null) {
             mBatteryLevel.setTextColor(false);
+        }
+    }
+
+    private void updateWeatherVisibility() {
+        final ContentResolver resolver = mContext.getContentResolver();
+
+        final boolean show = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_WEATHER_SHOW, 0) == 1;
+        final boolean forceHide = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_WEATHER_HIDE, 1) == 1;
+        final int maxAllowedIcons = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_WEATHER_NUMBER_OF_NOTIFICATION_ICONS, 1);
+
+        if (mIconController != null) {
+            mIconController.updateWeatherVisibility(WeatherHelper.isWeatherServiceAvailable(mContext)
+                    && show, forceHide, maxAllowedIcons);
+        }
+    }
+
+    private void updateWeatherType() {
+        final int type = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_WEATHER_TYPE, 2);
+
+        if (mIconController != null) {
+            mIconController.updateWeatherType(type);
         }
     }
 

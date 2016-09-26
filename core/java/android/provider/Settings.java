@@ -4674,6 +4674,43 @@ public final class Settings {
         public static final String LOCK_SCREEN_VISUALIZER_CUSTOM_COLOR = "lock_screen_visualizer_custom_color";
 
         /**
+         *  Whether to show the weather on the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_WEATHER_SHOW = "status_bar_weather_show";
+
+        /**
+         * Weather type
+         * 0: text
+         * 1: icon
+         * 2: text and icon
+         * default: 2
+         * @hide
+         * @hide
+         */
+        public static final String STATUS_BAR_WEATHER_TYPE = "status_bar_weather_type";
+
+        /**
+         * Wether to hide the weather on the status bar when the custom number of notification icons is reached
+         * @hide
+         */
+        public static final String STATUS_BAR_WEATHER_HIDE = "status_bar_weather_hide";
+
+        /**
+         * Hide the weather on the status bar when the notification icons will reach this number
+         * 1: 1 notification icon (always)
+         * 2: 2 notification icons
+         * 3: 3 notification icons
+         * 4: 4 notification icons
+         * 5: 5 notification icons
+         * 6: 6 notification icons
+         * default: 1
+         * @hide
+         */
+        public static final String STATUS_BAR_WEATHER_NUMBER_OF_NOTIFICATION_ICONS = "status_bar_weather_number_of_notification_icons";
+
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
