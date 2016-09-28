@@ -85,7 +85,7 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
     private boolean mAccessibilityMoving;
     private int mAccessibilityFromIndex;
     private QSTileHost mHost;
-    private int mEditAddBgColor;
+    private final QSItemDecoration mDecoration;
 
     public TileAdapter(Context context) {
         mContext = context;
@@ -501,7 +501,7 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
                 break;
             }
         }
-    };
+    }
 
     private final ItemTouchHelper.Callback mCallbacks = new ItemTouchHelper.Callback() {
 

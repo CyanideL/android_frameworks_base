@@ -18,19 +18,16 @@
 <!-- Colors specific to Material themes. -->
 <resources>
 
-    <color name="background_floating_material_dark">@color/material_grey_850</color>
-    <color name="notification_action_color_filter">#ffffffff</color>
-    <!--<color name="primary_text_material_light">#ffffffff</color>-->
-    <color name="primary_text_material_dark">#ffffffff</color>
-    <!--<color name="secondary_text_material_light">#ffffffff</color>-->
-    <color name="secondary_text_material_dark">#ffffffff</color>
-    <!-- background of the picture in the big material notification template -->
-    <color name="notification_mtrl_big_picture_bg">#CC111111</color>
+    <!-- Blackout theme -->
+    <color name="material_grey_900">#ff000000</color>
+    <color name="material_grey_850">#ff000000</color>
+    <color name="material_grey_800">#ff000000</color>
+    <color name="material_grey_600">#ff000000</color>
+    <color name="material_grey_300">#ff000000</color>
+    <color name="material_grey_100">#ffcfd8dc</color>
+    <color name="material_grey_50">#ffeceff1</color>
 
-    <color name="notification_material_background_color">@color/material_grey_850</color>
-    <color name="notification_action_list">@color/material_grey_850</color>
-    <color name="cyanide_blue">#ff1976D2</color>
-    <color name="system_notification_accent_color">@color/cyanide_blue</color>
-    <color name="notification_default_color">@color/cyanide_blue</color>
+    <color name="material_deep_teal_200">#ff1976D2</color>
+    <color name="material_deep_teal_500">#ff1976D2</color>
 
 </resources>
