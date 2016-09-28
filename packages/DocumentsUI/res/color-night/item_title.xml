@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 2016 Cyanide Android
+<!-- Copyright (C) 2016 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,13 +14,12 @@
      limitations under the License.
 -->
 
-<!-- Colors specific to Material themes. -->
-<resources>
-     <!-- Blackout theme -->
-    <color name="system_notification_accent_color">#ff1976D2</color>
-    <color name="notification_material_background_color">#ff000000</color>
-    <color name="notification_default_color">#b3ffffff</color>
-    <color name="notification_icon_default_color">@color/notification_default_color</color>
-    <color name="notification_action_list">#ff000000</color>
-
-</resources>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:state_enabled="true"
+        android:color="?android:attr/textColorPrimary" />
+    <item
+        android:state_enabled="false"
+        android:color="?android:attr/textColorPrimary"
+        android:alpha="0.70" />
+</selector>

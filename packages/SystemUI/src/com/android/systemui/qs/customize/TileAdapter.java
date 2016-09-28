@@ -83,13 +83,13 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
     private boolean mAccessibilityMoving;
     private int mAccessibilityFromIndex;
     private QSTileHost mHost;
-    private int mEditAddBgColor;
+    private final QSItemDecoration mDecoration;
 
     public TileAdapter(Context context) {
         mContext = context;
         mAccessibilityManager = context.getSystemService(AccessibilityManager.class);
         mItemTouchHelper = new ItemTouchHelper(mCallbacks);
-        mEditAddBgColor = context.getResources().getColor(R.color.qs_editor_bg_color);
+        mDecoration = new QSItemDecoration(mContext);
     }
 
     public void setHost(QSTileHost host) {
@@ -461,9 +461,19 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
         }
     };
 
-    private final ItemDecoration mDecoration = new ItemDecoration() {
-        // TODO: Move this to resource.
-        private final ColorDrawable mDrawable = new ColorDrawable(mEditAddBgColor);
+    private class QSItemDecoration extends ItemDecoration {
+        private ColorDrawable mDrawable;
+
+        public QSItemDecoration() {
+            // TODO: Move this to resource.
+            mDrawable = new ColorDrawable(0xff384248);
+        }
+
+        public QSItemDecoration(Context context) {
+            // TODO: Move this to resource.
+            mDrawable = new ColorDrawable(context.getResources().getColor(
+                    R.color.qs_tile_adapter_bg));
+        }
 
         @Override
         public void onDraw(Canvas c, RecyclerView parent, State state) {
@@ -489,7 +499,7 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
                 break;
             }
         }
-    };
+    }
 
     private final ItemTouchHelper.Callback mCallbacks = new ItemTouchHelper.Callback() {
 
