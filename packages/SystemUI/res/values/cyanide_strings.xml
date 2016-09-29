@@ -60,7 +60,18 @@
     <string name="quick_settings_music_play">Play</string>
     <string name="quick_settings_music_pause">Pause</string>
     <!-- Volume QS Tile -->
-     <string name="accessibility_quick_settings_volume_panel">Volume</string>
-     <string name="quick_settings_volume_panel_label">Volume</string>
+    <string name="accessibility_quick_settings_volume_panel">Volume</string>
+    <string name="quick_settings_volume_panel_label">Volume</string>
+
+    <!-- Network traffic -->
+    <string name="network_traffic_no_traffic">0</string>
+
+    <!-- Network traffic units -->
+    <string name="network_traffic_unit_bits_per_second">bit/s</string>
+    <string name="network_traffic_unit_kilo_bits_per_second">kbit/s</string>
+    <string name="network_traffic_unit_mega_bits_per_second">Mbit/s</string>
+    <string name="network_traffic_unit_bytes_per_second">B/s</string>
+    <string name="network_traffic_unit_kilo_bytes_per_second">kB/s</string>
+    <string name="network_traffic_unit_mega_bytes_per_second">MB/s</string>    
 
 </resources>
