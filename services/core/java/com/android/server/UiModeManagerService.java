@@ -736,23 +736,4 @@ final class UiModeManagerService extends SystemService {
 //                ? Configuration.UI_MODE_NIGHT_BLACKOUT
 //                : Configuration.UI_MODE_NIGHT_NO;
 //    }
-=======
-    void updateTwilight() {
-//        synchronized (mLock) {
-//            if (mNightMode == UiModeManager.MODE_NIGHT_AUTO) {
-//                updateComputedNightModeLocked();
-//                updateLocked(0, 0);
-//            }
-//        }
-    }
-
-//    private void updateComputedNightModeLocked() {
-//        if (mTwilightManager != null) {
-//            TwilightState state = mTwilightManager.getCurrentState();
-//            if (state != null) {
-//                mComputedNightMode = state.isNight();
-//            }
-//        }
-//    }
->>>>>>> 6ed4ebe... DayNight theme updates
 }
