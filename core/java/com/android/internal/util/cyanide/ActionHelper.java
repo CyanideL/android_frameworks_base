@@ -37,13 +37,12 @@ public class ActionHelper {
 
     private static final String SYSTEM_METADATA_NAME = "android";
     private static final String SYSTEMUI_METADATA_NAME = "com.android.systemui";
-    private static final String SETTINGS_METADATA_NAME = "com.android.settings";
+    private static final String SETTINGS_METADATA_NAME = "com.rogersb11.cyanide";
 
     public static ArrayList<ActionConfig> getPanelShortcutsConfig(Context context) {
-        String config = Settings.System.getStringForUser(
+        String config = Settings.System.getString(
                     context.getContentResolver(),
-                    Settings.System.PANEL_SHORTCUTS,
-                    UserHandle.USER_CURRENT);
+                    Settings.System.PANEL_SHORTCUTS);
         if (config == null) {
             config = "";
         }
