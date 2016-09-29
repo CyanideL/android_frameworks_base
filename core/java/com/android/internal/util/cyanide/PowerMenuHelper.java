@@ -45,10 +45,9 @@ public class PowerMenuHelper {
     }
 
     private static String getPowerMenuProvider(Context context) {
-        String config = Settings.System.getStringForUser(
+        String config = Settings.System.getString(
                     context.getContentResolver(),
-                    Settings.System.POWER_MENU_ACTIONS,
-                    UserHandle.USER_CURRENT);
+                    Settings.System.POWER_MENU_ACTIONS);
         if (config == null) {
             config = PowerMenuConstants.POWER_MENU_BUTTONS_DEFAULT;
         }
