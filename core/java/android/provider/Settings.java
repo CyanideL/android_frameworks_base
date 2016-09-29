@@ -4973,6 +4973,80 @@ public final class Settings {
         public static final String POWER_MENU_ANIMATIONS = "power_menu_animations";
 
         /**
+         *  Whether to show the Network traffic on the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_TRAFFIC_SHOW = "status_bar_network_traffic_show";
+
+        /**
+         *  Whether to show the Network traffic on the status bar of the lock screen
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_TRAFFIC_SHOW_ON_LOCK_SCREEN =
+                "status_bar_network_traffic_show_on_lock_screen";
+
+        /**
+         * Network traffic activity direction
+         * 0: download
+         * 1: upload
+         * 2: download and upload
+         * default: 2
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_TRAFFIC_ACTIVITY =
+                "status_bar_network_traffic_activity";
+
+        /**
+         * Network traffic type
+         * 0: text
+         * 1: icon
+         * 2: text and icon
+         * default: 2
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_TRAFFIC_TYPE = "status_bar_network_traffic_type";
+
+        /**
+         * Display network traffic text value as bit/byte
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_TRAFFIC_BIT_BYTE =
+                "status_bar_network_traffic_bit_byte";
+
+        /**
+         * Hide network traffic if network speed is on a specific threshold or below
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_TRAFFIC_HIDE_TRAFFIC =
+                "status_bar_network_traffic_hide_traffic";
+
+        /**
+         * Network traffic threshold (in kilo bytes)
+         * 0
+         * 10
+         * 20
+         * 30
+         * 40
+         * 50
+         * 60
+         * 70
+         * 80
+         * 90
+         * 100
+         * default: 0
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_TRAFFIC_THRESHOLD =
+                "status_bar_network_traffic_threshold";
+
+        /**
+         *  Whether to use the icon to indicate network activity
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_TRAFFIC_ICON_AS_INDICATOR =
+                "status_bar_network_traffic_icon_as_indicator";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

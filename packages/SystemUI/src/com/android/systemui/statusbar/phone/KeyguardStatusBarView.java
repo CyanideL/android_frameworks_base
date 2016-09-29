@@ -30,6 +30,8 @@ import com.android.systemui.BatteryMeterView;
 import com.android.systemui.BatteryLevelTextView;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
+import com.android.systemui.cyanide.NetworkTrafficController;
+import com.android.systemui.cyanide.NetworkTraffic;
 import com.android.systemui.qs.QSPanel;
 import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.KeyguardUserSwitcher;
@@ -45,10 +47,11 @@ public class KeyguardStatusBarView extends RelativeLayout
         implements BatteryController.BatteryStateChangeCallback {
 
     private boolean mKeyguardUserSwitcherShowing;
-    private boolean mBatteryListening;
+    private boolean mListening;
 
     private TextView mCarrierLabel;
     private View mSystemIconsSuperContainer;
+    private NetworkTraffic mNetworkTraffic;
     private MultiUserSwitch mMultiUserSwitch;
     private ImageView mMultiUserAvatar;
     private BatteryLevelTextView mBatteryLevel;
@@ -67,6 +70,7 @@ public class KeyguardStatusBarView extends RelativeLayout
     protected void onFinishInflate() {
         super.onFinishInflate();
         mSystemIconsSuperContainer = findViewById(R.id.system_icons_super_container);
+        mNetworkTraffic = (NetworkTraffic) findViewById(R.id.keyguard_network_traffic);
         mSystemIconsContainer = findViewById(R.id.system_icons_container);
         mMultiUserSwitch = (MultiUserSwitch) findViewById(R.id.multi_user_switch);
         mMultiUserAvatar = (ImageView) findViewById(R.id.multi_user_avatar);
@@ -162,16 +166,21 @@ public class KeyguardStatusBarView extends RelativeLayout
         }
     }
 
+    public void setNetworkTrafficController(NetworkTrafficController ntc) {
+        mNetworkTraffic.setNetworkTrafficController(ntc);
+    }
+
     public void setListening(boolean listening) {
-        if (listening == mBatteryListening) {
+        if (listening == mListening) {
             return;
         }
-        mBatteryListening = listening;
-        if (mBatteryListening) {
+        mListening = listening;
+        if (mListening) {
             mBatteryController.addStateChangedCallback(this);
         } else {
             mBatteryController.removeStateChangedCallback(this);
         }
+        mNetworkTraffic.setListening(mListening);
     }
 
     private void updateUserSwitcher() {
