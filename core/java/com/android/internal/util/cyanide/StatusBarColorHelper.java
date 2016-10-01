@@ -71,4 +71,24 @@ public class StatusBarColorHelper {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.STATUS_BAR_CYANIDE_LOGO_COLOR_DARK_MODE, 0xff000000);
     }
+
+    public static int getWeatherTextColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_WEATHER_TEXT_COLOR, 0xffffffff);
+    }
+
+    public static int getWeatherTextColorDarkMode(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_WEATHER_TEXT_COLOR_DARK_MODE, 0xff000000);
+    }
+
+    public static int getWeatherIconColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_WEATHER_ICON_COLOR, 0xffffffff);
+    }
+
+    public static int getWeatherIconColorDarkMode(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_WEATHER_ICON_COLOR_DARK_MODE, 0xff000000);
+    }
 }

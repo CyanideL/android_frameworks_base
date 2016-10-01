@@ -473,7 +473,22 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_WEATHER_HIDE),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_STYLE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_WEATHER_NUMBER_OF_NOTIFICATION_ICONS),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+					Settings.System.STATUS_BAR_WEATHER_ICON_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+					Settings.System.STATUS_BAR_WEATHER_TEXT_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+					Settings.System.STATUS_BAR_WEATHER_FONT_STYLES),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+					Settings.System.STATUS_BAR_WEATHER_FONT_SIZE),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CLOCK_COLOR),
@@ -535,7 +550,21 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_CYANIDE_LOGO_SHOW_ON_LOCK_SCREEN))) {
                 showKeyguardLogo();
             } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_ICON_COLOR))) {
+                updateWeatherIconColor(true);
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_TEXT_COLOR))) {
+                updateWeatherTextColor(true);
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_FONT_STYLES))) {
+                updateWeatherFontStyle();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_FONT_SIZE))) {
+                updateWeatherFontSize();
+            } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_WEATHER_SHOW))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_WEATHER_STYLE))
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_WEATHER_HIDE))
                 || uri.equals(Settings.System.getUriFor(
@@ -1071,6 +1100,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mNotificationPanel.setExpansionViewController(expansionViewController);
 
         ((StatusBarWeather) mStatusBarView.findViewById(R.id.status_bar_weather_layout))
+                .setWeatherController(new WeatherServiceControllerImpl(mContext));
+        ((StatusBarWeather) mStatusBarView.findViewById(R.id.status_bar_weather_layout_right))
                 .setWeatherController(new WeatherServiceControllerImpl(mContext));
 
         // Set up the quick settings tile panel
@@ -2568,6 +2599,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         showKeyguardLogo();
         updateWeatherVisibility();
         updateWeatherType();
+        updateWeatherIconColor(false);
+        updateWeatherTextColor(false);
+        updateWeatherFontStyle();
+        updateWeatherFontSize();
     }
 
     private void forceExpansionView() {
@@ -2619,6 +2654,18 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
+    private void updateWeatherTextColor(boolean animate) {
+        if (mIconController != null) {
+            mIconController.updateWeatherTextColor(animate);
+        }
+    }
+
+    private void updateWeatherIconColor(boolean animate) {
+        if (mIconController != null) {
+            mIconController.updateWeatherIconColor(animate);
+        }
+    }
+
     private void updateWeatherVisibility() {
         final ContentResolver resolver = mContext.getContentResolver();
 
@@ -2641,6 +2688,18 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         if (mIconController != null) {
             mIconController.updateWeatherType(type);
+        }
+    }
+
+    private void updateWeatherFontSize() {
+        if (mIconController != null) {
+            mIconController.updateWeatherFontSize();
+        }
+    }
+
+    private void updateWeatherFontStyle() {
+        if (mIconController != null) {
+            mIconController.updateWeatherFontStyle();
         }
     }
 
