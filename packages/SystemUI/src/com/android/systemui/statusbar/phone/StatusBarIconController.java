@@ -72,7 +72,11 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private static final int LOGO_LEFT = 0;
     private static final int LOGO_RIGHT = 1;
 
+    private static final int WEATHER_LEFT = 0;
+    private static final int WEATHER_RIGHT = 1;
+
     private int mLogoStyle;
+    private int mWeatherStyle;
 
     private Context mContext;
     private PhoneStatusBar mPhoneStatusBar;
@@ -80,6 +84,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
 
     private CarrierText mCarrierTextKeyguard;
     private StatusBarWeather mWeatherLayout;
+    private StatusBarWeather mWeatherLayoutRight;
     private LinearLayout mSystemIconArea;
     private LinearLayout mStatusIcons;
     private LinearLayout mStatusIconsKeyguard;
@@ -101,6 +106,8 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private boolean mShowLogo = false;
     private boolean mShowKeyguardLogo = false;
 
+    private boolean mShowWeather = false;
+
     private int mIconSize;
     private int mIconHPadding;
 
@@ -109,6 +116,8 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private int mTextColor;
     private int mIconColor;
     private int mLogoColor;
+    private int mWeatherIconColor;
+    private int mWeatherTextColor;
     private final Rect mTintArea = new Rect();
     private static final Rect sTmpRect = new Rect();
     private static final int[] sTmpInt2 = new int[2];
@@ -117,6 +126,8 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private boolean mAnimateTextColor = false;
     private boolean mAnimateIconColor = false;
     private boolean mAnimateLogoColor = false;
+    private boolean mAnimateWeatherIconColor = false;
+    private boolean mAnimateWeatherTextColor = false;
 
     private boolean mTransitionPending;
     private boolean mTintChangePending;
@@ -148,6 +159,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mCyanideLogoKeyguard = (ImageView) keyguardStatusBar.findViewById(R.id.cyanide_logo_keyguard);
         mCyanideLogoKeyguardLeft = (ImageView) keyguardStatusBar.findViewById(R.id.left_cyanide_logo_keyguard);
         mWeatherLayout = (StatusBarWeather) statusBar.findViewById(R.id.status_bar_weather_layout);
+        mWeatherLayoutRight = (StatusBarWeather) statusBar.findViewById(R.id.status_bar_weather_layout_right);
         mSystemIconArea = (LinearLayout) statusBar.findViewById(R.id.system_icon_area);
         mStatusIcons = (LinearLayout) statusBar.findViewById(R.id.statusIcons);
         mStatusIconsKeyguard = (LinearLayout) keyguardStatusBar.findViewById(R.id.statusIcons);
@@ -170,6 +182,8 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mTextColor = StatusBarColorHelper.getTextColor(mContext);
         mIconColor = StatusBarColorHelper.getIconColor(mContext);
         mLogoColor = StatusBarColorHelper.getLogoColor(mContext);
+        mWeatherIconColor = StatusBarColorHelper.getWeatherIconColor(mContext);
+        mWeatherTextColor = StatusBarColorHelper.getWeatherTextColor(mContext);
         
 
         mHandler = new Handler();
@@ -339,6 +353,9 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         if (mShowLogo && mLogoStyle == LOGO_LEFT) {
             animateHide(mCyanideLogoLeft, animate);
         }
+        if (mWeatherLayout.shouldShow() && mWeatherStyle == WEATHER_LEFT) {
+            animateHide(mWeatherLayout, animate);
+        }
     }
 
     public void showSystemIconArea(boolean animate) {
@@ -346,6 +363,9 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         animateShow(mCenterClockLayout, animate);
         if (mShowLogo && mLogoStyle == LOGO_LEFT) {
             animateShow(mCyanideLogoLeft, animate);
+        }
+        if (mWeatherLayout.shouldShow() && mWeatherStyle == WEATHER_LEFT) {
+            animateShow(mWeatherLayout, animate);
         }
     }
 
@@ -358,8 +378,11 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         if (mShowLogo && mLogoStyle == LOGO_RIGHT) {
             animateHide(mCyanideLogo, animate);
         }
-        if (mWeatherLayout.shouldShow()) {
+        if (mWeatherLayout.shouldShow() && mWeatherStyle == WEATHER_LEFT) {
             animateHide(mWeatherLayout, animate);
+        }
+        if (mWeatherLayoutRight.shouldShow() && mWeatherStyle == WEATHER_RIGHT) {
+            animateHide(mWeatherLayoutRight, animate);
         }
     }
 
@@ -372,8 +395,11 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         if (mShowLogo && mLogoStyle == LOGO_RIGHT) {
             animateShow(mCyanideLogo, animate);
         }
-        if (mWeatherLayout.shouldShow()) {
+        if (mWeatherLayout.shouldShow() && mWeatherStyle == WEATHER_LEFT) {
             animateShow(mWeatherLayout, animate);
+        }
+        if (mWeatherLayoutRight.shouldShow() && mWeatherStyle == WEATHER_RIGHT) {
+            animateShow(mWeatherLayoutRight, animate);
         }
     }
 
@@ -552,6 +578,12 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mLogoColor = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
                 StatusBarColorHelper.getLogoColor(mContext),
                 StatusBarColorHelper.getLogoColorDarkMode(mContext));
+        mWeatherIconColor = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
+                StatusBarColorHelper.getWeatherIconColor(mContext),
+                StatusBarColorHelper.getWeatherIconColorDarkMode(mContext));
+        mWeatherTextColor = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
+                StatusBarColorHelper.getWeatherTextColor(mContext),
+                StatusBarColorHelper.getWeatherTextColorDarkMode(mContext));
 
         mNotificationIconAreaController.setIconTint(mIconColor);
         applyIconTint();
@@ -598,6 +630,22 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
             return color;
         } else {
             return StatusBarColorHelper.getLogoColor(mContext);
+        }
+    }
+
+    private int getWeatherIconTint(Rect tintArea, View view, int color) {
+        if (isInArea(tintArea, view) || mDarkIntensity == 0f) {
+            return color;
+        } else {
+            return StatusBarColorHelper.getWeatherIconColor(mContext);
+        }
+    }
+
+    private int getWeatherTextColor(Rect tintArea, View view, int color) {
+        if (isInArea(tintArea, view) || mDarkIntensity == 0f) {
+            return color;
+        } else {
+            return StatusBarColorHelper.getWeatherTextColor(mContext);
         }
     }
 
@@ -651,8 +699,14 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     }
 
     private void applyIconTint() {
-        mWeatherLayout.setTextColor(getTextTint(mTintArea, mWeatherLayout, mTextColor));
-        mWeatherLayout.setIconColor(getTint(mTintArea, mWeatherLayout, mIconColor));
+        if (mWeatherLayout.shouldShow() && mWeatherStyle == WEATHER_LEFT) {
+            mWeatherLayout.setTextColor(getTextTint(mTintArea, mWeatherLayout, mWeatherTextColor));
+            mWeatherLayout.setIconColor(getTint(mTintArea, mWeatherLayout, mWeatherIconColor));
+        }
+        if (mWeatherLayoutRight.shouldShow() && mWeatherStyle == WEATHER_RIGHT) {
+            mWeatherLayoutRight.setTextColor(getTextTint(mTintArea, mWeatherLayoutRight, mWeatherTextColor));
+            mWeatherLayoutRight.setIconColor(getTint(mTintArea, mWeatherLayoutRight, mWeatherIconColor));
+        }
         for (int i = 0; i < mStatusIcons.getChildCount(); i++) {
             StatusBarIconView v = (StatusBarIconView) mStatusIcons.getChildAt(i);
             v.setImageTintList(ColorStateList.valueOf(getTint(mTintArea, v, mIconColor)));
@@ -777,6 +831,26 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
                         mCyanideLogoLeft.setImageTintList(ColorStateList.valueOf(blended));
                     }
                 }
+                if (mAnimateWeatherIconColor) {
+                    final int blended = ColorHelper.getBlendColor(mWeatherIconColor,
+                            StatusBarColorHelper.getWeatherIconColor(mContext), position);
+                    if (mWeatherStyle == WEATHER_LEFT) {
+                        mWeatherLayout.setIconColor(blended);
+                    }
+                    if (mWeatherStyle == WEATHER_RIGHT) {
+                        mWeatherLayoutRight.setIconColor(blended);
+                    }
+                }
+                if (mAnimateWeatherTextColor) {
+                    final int blended = ColorHelper.getBlendColor(mWeatherTextColor,
+                            StatusBarColorHelper.getWeatherTextColor(mContext), position);
+                    if (mWeatherStyle == WEATHER_LEFT) {
+                        mWeatherLayout.setTextColor(blended);
+                    }
+                    if (mWeatherStyle == WEATHER_RIGHT) {
+                        mWeatherLayoutRight.setTextColor(blended);
+                    }
+                }
             }
         });
         animator.addListener(new AnimatorListenerAdapter() {
@@ -798,6 +872,14 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
                     mLogoColor = StatusBarColorHelper.getLogoColor(mContext);
                     mAnimateLogoColor = false;
                 }
+                if (mAnimateWeatherTextColor) {
+                    mWeatherTextColor = StatusBarColorHelper.getWeatherTextColor(mContext);
+                    mAnimateWeatherTextColor = false;
+                }
+                if (mAnimateWeatherIconColor) {
+                    mWeatherIconColor = StatusBarColorHelper.getWeatherIconColor(mContext);
+                    mAnimateWeatherIconColor = false;
+                }
             }
         });
         return animator;
@@ -810,7 +892,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
 
     public void updateIconColor(boolean animate) {
         mAnimateIconColor = animate;
-        if (!mAnimateClockColor && !mAnimateLogoColor && mAnimateIconColor) {
+        if (!mAnimateClockColor && !mAnimateLogoColor && !mAnimateWeatherTextColor && !mAnimateWeatherIconColor && mAnimateIconColor) {
             mColorTransitionAnimator.start();
         }
         applyStatusIconKeyguardTint();
@@ -820,7 +902,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
 
     public void updateClockColor(boolean animate) {
         mAnimateClockColor = animate;
-        if (!mAnimateIconColor &&  !mAnimateLogoColor && mAnimateClockColor) {
+        if (!mAnimateIconColor &&  !mAnimateLogoColor && !mAnimateWeatherTextColor && !mAnimateWeatherIconColor && mAnimateClockColor) {
             mColorTransitionAnimator.start();
         }
         mClockController.setTextColor(StatusBarColorHelper.getClockColor(mContext));
@@ -828,7 +910,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
 
     public void updateLogoColor(boolean animate) {
         mAnimateLogoColor = animate;
-        if (!mAnimateIconColor && !mAnimateClockColor && mAnimateLogoColor) {
+        if (!mAnimateIconColor && !mAnimateClockColor && !mAnimateWeatherTextColor && !mAnimateWeatherIconColor && mAnimateLogoColor) {
             mColorTransitionAnimator.start();
         }
         mCyanideLogoLeft.setImageTintList(ColorStateList.valueOf(StatusBarColorHelper.getLogoColor(mContext)));
@@ -836,18 +918,69 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         updateKeyguardLogoColor();
     }
 
+    public void updateWeatherIconColor(boolean animate) {
+        mAnimateWeatherIconColor = animate;
+        if (!mAnimateIconColor && !mAnimateClockColor && !mAnimateLogoColor && !mAnimateWeatherTextColor && mAnimateWeatherIconColor) {
+            mColorTransitionAnimator.start();
+        }
+        mWeatherLayout.setIconColor(StatusBarColorHelper.getWeatherIconColor(mContext));
+        mWeatherLayoutRight.setIconColor(StatusBarColorHelper.getWeatherIconColor(mContext));
+    }
+
+    public void updateWeatherTextColor(boolean animate) {
+        mAnimateWeatherTextColor = animate;
+        if (!mAnimateIconColor &&  !mAnimateLogoColor && !mAnimateClockColor && !mAnimateWeatherIconColor && mAnimateWeatherTextColor) {
+            mColorTransitionAnimator.start();
+        }
+        mWeatherLayout.setTextColor(StatusBarColorHelper.getWeatherTextColor(mContext));
+        mWeatherLayoutRight.setTextColor(StatusBarColorHelper.getWeatherTextColor(mContext));
+    }
+
     private void updateKeyguardLogoColor() {
         mCyanideLogoKeyguardLeft.setImageTintList(ColorStateList.valueOf(StatusBarColorHelper.getLogoColor(mContext)));
         mCyanideLogoKeyguard.setImageTintList(ColorStateList.valueOf(StatusBarColorHelper.getLogoColor(mContext)));
     }
 
+    public void updateWeatherFontStyle() {
+        if (mWeatherLayout.shouldShow() && mWeatherStyle == WEATHER_LEFT) {
+            mWeatherLayout.updateFontStyle();
+        }
+        if (mWeatherLayoutRight.shouldShow() && mWeatherStyle == WEATHER_RIGHT) {
+            mWeatherLayoutRight.updateFontStyle();
+        }
+    }
+
+    public void updateWeatherFontSize() {
+        if (mWeatherLayout.shouldShow() && mWeatherStyle == WEATHER_LEFT) {
+            mWeatherLayout.updateFontSize();
+        }
+        if (mWeatherLayoutRight.shouldShow() && mWeatherStyle == WEATHER_RIGHT) {
+            mWeatherLayoutRight.updateFontSize();
+        }
+    }
+
     public void updateWeatherVisibility(boolean show, boolean forceHide, int maxAllowedIcons) {
+        mShowWeather = show;
+        ContentResolver resolver = mContext.getContentResolver();
         boolean forceHideByNumberOfIcons = false;
         int notificationIconsCount = mNotificationIconAreaController.getNotificationIconsCount();
+        mWeatherStyle = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_WEATHER_STYLE, 1);
         if (forceHide && notificationIconsCount >= maxAllowedIcons) {
             forceHideByNumberOfIcons = true;
         }
-        mWeatherLayout.setShow(show && !forceHideByNumberOfIcons);
+        if (mWeatherStyle == WEATHER_LEFT) {
+            mWeatherLayout.setShow(show && !forceHideByNumberOfIcons);
+            mWeatherLayout.setListening(true);
+            mWeatherLayoutRight.setListening(false);
+            mWeatherLayoutRight.setVisibility(View.GONE);
+        }
+        if (mWeatherStyle == WEATHER_RIGHT) {
+            mWeatherLayoutRight.setShow(show && !forceHideByNumberOfIcons);
+            mWeatherLayoutRight.setListening(true);
+            mWeatherLayout.setListening(false);
+            mWeatherLayout.setVisibility(View.GONE);
+        }
     }
 
     public void updateWeatherType(int type) {

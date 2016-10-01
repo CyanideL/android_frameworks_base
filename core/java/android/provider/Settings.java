@@ -4709,6 +4709,51 @@ public final class Settings {
          */
         public static final String STATUS_BAR_WEATHER_NUMBER_OF_NOTIFICATION_ICONS = "status_bar_weather_number_of_notification_icons";
 
+        /**
+         * Status Bar Weather font style
+         * @hide
+         */
+        public static final String STATUS_BAR_WEATHER_FONT_STYLES = "status_bar_weather_font_styles";
+
+        /**
+         * Color of the text for the status bar weather
+         * @hide
+         */
+        public static final String STATUS_BAR_WEATHER_TEXT_COLOR = "status_bar_weather_text_color";
+
+        /**
+         * Color of the icons in the status bar weather
+         * @hide
+         */
+        public static final String STATUS_BAR_WEATHER_ICON_COLOR = "status_bar_weather_icon_color";
+
+        /**
+         * Color of the text in the status bar weather, (dark mode)
+         * @hide
+         */
+        public static final String STATUS_BAR_WEATHER_TEXT_COLOR_DARK_MODE = "status_bar_weather_text_color_dark_mode";
+
+        /**
+         * Color of the icons in the status bar, weather (dark mode)
+         * @hide
+         */
+        public static final String STATUS_BAR_WEATHER_ICON_COLOR_DARK_MODE = "status_bar_weather_icon_color_dark_mode";
+
+        /**
+         * Status Bar Weather Font Size
+         * @hide
+         */
+        public static final String STATUS_BAR_WEATHER_FONT_SIZE = "status_bar_weather_font_size";
+
+        /**
+		 * Style of Status Bar Weather
+         * 0 - Left (default)
+         * 1 - Right
+         * @hide
+		 */
+		public static final String STATUS_BAR_WEATHER_STYLE = "status_bar_weather_style";
+
+
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
