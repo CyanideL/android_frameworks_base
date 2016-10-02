@@ -4778,6 +4778,12 @@ public final class Settings {
         public static final String IMMERSIVE_RECENTS = "immersive_recents";
 
         /**
+         * Font style of memory bar text, clock and date in full screen recents
+         * @hide
+         */
+        public static final String RECENTS_FONT_STYLE = "recents_font_style";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

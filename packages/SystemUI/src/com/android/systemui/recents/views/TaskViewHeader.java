@@ -32,7 +32,9 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
+import android.graphics.Typeface;
 import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -46,6 +48,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.internal.logging.MetricsLogger;
+import com.android.internal.util.cyanide.FontHelper;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
 import com.android.systemui.recents.Constants;
@@ -69,6 +72,7 @@ public class TaskViewHeader extends FrameLayout
     private static final float OVERLAY_LIGHTNESS_INCREMENT = -0.0625f;
     private static final int OVERLAY_REVEAL_DURATION = 250;
     private static final long FOCUS_INDICATOR_INTERVAL_MS = 30;
+    private static Typeface mFontStyle;
 
     /**
      * A color drawable that draws a slight highlight at the top to help it stand out.
@@ -238,12 +242,14 @@ public class TaskViewHeader extends FrameLayout
         mIconView = (ImageView) findViewById(R.id.icon);
         mIconView.setOnLongClickListener(this);
         mTitleView = (TextView) findViewById(R.id.title);
+        mTitleView.setTypeface(mFontStyle);
         mDismissButton = (ImageView) findViewById(R.id.dismiss_task);
         if (ssp.hasFreeformWorkspaceSupport()) {
             mMoveTaskButton = (ImageView) findViewById(R.id.move_task);
         }
 
         onConfigurationChanged();
+        updateFontStyle();
     }
 
     /**
@@ -499,6 +505,7 @@ public class TaskViewHeader extends FrameLayout
             mIconView.setOnClickListener(this);
             mIconView.setClickable(true);
         }
+        updateFontStyle();
     }
 
     /**
@@ -658,6 +665,7 @@ public class TaskViewHeader extends FrameLayout
         mAppTitleView.setText(ssp.getBadgedApplicationLabel(activityInfo.applicationInfo, userId));
         mAppTitleView.setTextColor(mTask.useLightOnPrimaryColor ?
                 mTaskBarViewLightTextColor : mTaskBarViewDarkTextColor);
+        mAppTitleView.setTypeface(mFontStyle);
         mAppIconView.setImageDrawable(ssp.getBadgedApplicationIcon(activityInfo.applicationInfo,
                 userId));
         mAppInfoView.setImageDrawable(mTask.useLightOnPrimaryColor
@@ -700,5 +708,95 @@ public class TaskViewHeader extends FrameLayout
             });
             revealAnim.start();
         }
+    }
+
+    private void updateFontStyle() {
+        final int mRecentsFontStyle = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.RECENTS_FONT_STYLE, FontHelper.FONT_COMINGSOON);
+
+        getFontStyle(mRecentsFontStyle);
+    }
+
+    public void getFontStyle(int font) {
+        switch (font) {
+            case FontHelper.FONT_NORMAL:
+            default:
+                mFontStyle = FontHelper.NORMAL;
+                break;
+            case FontHelper.FONT_ITALIC:
+                mFontStyle = FontHelper.ITALIC;
+                break;
+            case FontHelper.FONT_BOLD:
+                mFontStyle = FontHelper.BOLD;
+                break;
+            case FontHelper.FONT_BOLD_ITALIC:
+                mFontStyle = FontHelper.BOLD_ITALIC;
+                break;
+            case FontHelper.FONT_LIGHT:
+                mFontStyle = FontHelper.LIGHT;
+                break;
+            case FontHelper.FONT_LIGHT_ITALIC:
+                mFontStyle = FontHelper.LIGHT_ITALIC;
+                break;
+            case FontHelper.FONT_THIN:
+                mFontStyle = FontHelper.THIN;
+                break;
+            case FontHelper.FONT_THIN_ITALIC:
+                mFontStyle = FontHelper.THIN_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED:
+                mFontStyle = FontHelper.CONDENSED;
+                break;
+            case FontHelper.FONT_CONDENSED_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT:
+                mFontStyle = FontHelper.CONDENSED_LIGHT;
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_LIGHT_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD:
+                mFontStyle = FontHelper.CONDENSED_BOLD;
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_BOLD_ITALIC;
+                break;
+            case FontHelper.FONT_MEDIUM:
+                mFontStyle = FontHelper.MEDIUM;
+                break;
+            case FontHelper.FONT_MEDIUM_ITALIC:
+                mFontStyle = FontHelper.MEDIUM_ITALIC;
+                break;
+            case FontHelper.FONT_BLACK:
+                mFontStyle = FontHelper.BLACK;
+                break;
+            case FontHelper.FONT_BLACK_ITALIC:
+                mFontStyle = FontHelper.BLACK_ITALIC;
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT:
+                mFontStyle = FontHelper.DANCINGSCRIPT;
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT_BOLD:
+                mFontStyle = FontHelper.DANCINGSCRIPT_BOLD;
+                break;
+            case FontHelper.FONT_COMINGSOON:
+                mFontStyle = FontHelper.COMINGSOON;
+                break;
+            case FontHelper.FONT_NOTOSERIF:
+                mFontStyle = FontHelper.NOTOSERIF;
+                break;
+            case FontHelper.FONT_NOTOSERIF_ITALIC:
+                mFontStyle = FontHelper.NOTOSERIF_ITALIC;
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD:
+                mFontStyle = FontHelper.NOTOSERIF_BOLD;
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
+                mFontStyle = FontHelper.NOTOSERIF_BOLD_ITALIC;
+                break;
+        }
+        if (mTitleView != null) mTitleView.setTypeface(mFontStyle);
+        if (mAppTitleView != null) mAppTitleView.setTypeface(mFontStyle);
     }
 }

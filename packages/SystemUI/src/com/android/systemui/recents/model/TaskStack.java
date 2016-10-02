@@ -58,6 +58,7 @@ import com.android.systemui.recents.misc.SystemServicesProxy;
 import com.android.systemui.recents.misc.Utilities;
 import com.android.systemui.recents.views.AnimationProps;
 import com.android.systemui.recents.views.DropTarget;
+import com.android.systemui.recents.views.RecentsView;
 import com.android.systemui.recents.views.TaskStackLayoutAlgorithm;
 
 import java.io.PrintWriter;
@@ -330,6 +331,7 @@ public class TaskStack {
                 mHintText = context.getString(mHintTextResId);
                 mHintTextPaint.setTextSize(res.getDimensionPixelSize(
                         R.dimen.recents_drag_hint_text_size));
+                mHintTextPaint.setTypeface(RecentsView.mFontStyle);
                 mHintTextPaint.getTextBounds(mHintText, 0, mHintText.length(), mTmpRect);
                 mHintTextBounds.set((int) mHintTextPaint.measureText(mHintText), mTmpRect.height());
             }

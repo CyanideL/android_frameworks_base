@@ -28,6 +28,7 @@ import android.graphics.Outline;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.provider.Settings;
@@ -48,6 +49,7 @@ import android.widget.TextView;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.MetricsProto.MetricsEvent;
+import com.android.internal.util.cyanide.FontHelper;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
 import com.android.systemui.recents.Recents;
@@ -104,6 +106,7 @@ public class RecentsView extends FrameLayout {
     private TaskStackView mTaskStackView;
     private TextView mStackActionButton;
     private TextView mEmptyView;
+    public static Typeface mFontStyle;
 
     private boolean mAwaitingFirstLayout = true;
     private boolean mLastTaskLaunchedWasFreeform;
@@ -331,6 +334,7 @@ public class RecentsView extends FrameLayout {
         mClock = (TextClock) ((View)getParent()).findViewById(R.id.recents_clock);
         mDate = (TextView) ((View)getParent()).findViewById(R.id.recents_date);
         updateTimeVisibility();
+        updateFontStyle();
     }
 
     @Override
@@ -369,6 +373,98 @@ public class RecentsView extends FrameLayout {
         }
     }
 
+    private void updateFontStyle() {
+        final int mRecentsFontStyle = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.RECENTS_FONT_STYLE, FontHelper.FONT_COMINGSOON);
+
+        getFontStyle(mRecentsFontStyle);
+    }
+
+    public void getFontStyle(int font) {
+        switch (font) {
+            case FontHelper.FONT_NORMAL:
+            default:
+                mFontStyle = FontHelper.NORMAL;
+                break;
+            case FontHelper.FONT_ITALIC:
+                mFontStyle = FontHelper.ITALIC;
+                break;
+            case FontHelper.FONT_BOLD:
+                mFontStyle = FontHelper.BOLD;
+                break;
+            case FontHelper.FONT_BOLD_ITALIC:
+                mFontStyle = FontHelper.BOLD_ITALIC;
+                break;
+            case FontHelper.FONT_LIGHT:
+                mFontStyle = FontHelper.LIGHT;
+                break;
+            case FontHelper.FONT_LIGHT_ITALIC:
+                mFontStyle = FontHelper.LIGHT_ITALIC;
+                break;
+            case FontHelper.FONT_THIN:
+                mFontStyle = FontHelper.THIN;
+                break;
+            case FontHelper.FONT_THIN_ITALIC:
+                mFontStyle = FontHelper.THIN_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED:
+                mFontStyle = FontHelper.CONDENSED;
+                break;
+            case FontHelper.FONT_CONDENSED_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT:
+                mFontStyle = FontHelper.CONDENSED_LIGHT;
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_LIGHT_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD:
+                mFontStyle = FontHelper.CONDENSED_BOLD;
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_BOLD_ITALIC;
+                break;
+            case FontHelper.FONT_MEDIUM:
+                mFontStyle = FontHelper.MEDIUM;
+                break;
+            case FontHelper.FONT_MEDIUM_ITALIC:
+                mFontStyle = FontHelper.MEDIUM_ITALIC;
+                break;
+            case FontHelper.FONT_BLACK:
+                mFontStyle = FontHelper.BLACK;
+                break;
+            case FontHelper.FONT_BLACK_ITALIC:
+                mFontStyle = FontHelper.BLACK_ITALIC;
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT:
+                mFontStyle = FontHelper.DANCINGSCRIPT;
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT_BOLD:
+                mFontStyle = FontHelper.DANCINGSCRIPT_BOLD;
+                break;
+            case FontHelper.FONT_COMINGSOON:
+                mFontStyle = FontHelper.COMINGSOON;
+                break;
+            case FontHelper.FONT_NOTOSERIF:
+                mFontStyle = FontHelper.NOTOSERIF;
+                break;
+            case FontHelper.FONT_NOTOSERIF_ITALIC:
+                mFontStyle = FontHelper.NOTOSERIF_ITALIC;
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD:
+                mFontStyle = FontHelper.NOTOSERIF_BOLD;
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
+                mFontStyle = FontHelper.NOTOSERIF_BOLD_ITALIC;
+                break;
+        }
+        mStackActionButton.setTypeface(mFontStyle);
+        mEmptyView.setTypeface(mFontStyle);
+        mClock.setTypeface(mFontStyle);
+        mDate.setTypeface(mFontStyle);
+    }
+
     /**
      * This is called with the full size of the window since we are handling our own insets.
      */
@@ -382,6 +478,7 @@ public class RecentsView extends FrameLayout {
         }
 
         updateTimeVisibility();
+        updateFontStyle();
 
         // Measure the empty view to the full size of the screen
         if (mEmptyView.getVisibility() != GONE) {
