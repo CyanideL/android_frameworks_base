@@ -16,11 +16,17 @@
 
 <!-- Colors specific to Material themes. -->
 <resources>
-     <!-- Blackout theme -->
-    <color name="system_notification_accent_color">#ff1976D2</color>
-    <color name="notification_material_background_color">#ff000000</color>
-    <color name="notification_default_color">#b3ffffff</color>
-    <color name="notification_icon_default_color">@color/notification_default_color</color>
-    <color name="notification_action_list">#ff000000</color>
+    <!-- Primary & accent colors -->
+    <eat-comment />
 
+    <color name="material_grey_900">#ff000000</color>
+    <color name="material_grey_850">#ff000000</color>
+    <color name="material_grey_800">#ff000000</color>
+    <color name="material_grey_600">#ff000000</color>
+    <color name="material_grey_300">#ff000000</color>
+    <color name="material_grey_100">#ffcfd8dc</color>
+    <color name="material_grey_50">#ffeceff1</color>
+
+    <color name="material_deep_teal_200">#ff1976D2</color>
+    <color name="material_deep_teal_500">#ff1976D2</color>
 </resources>

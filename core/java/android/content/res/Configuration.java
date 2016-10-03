@@ -584,7 +584,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
      *
      * <p>The {@link #UI_MODE_NIGHT_MASK} defines whether the screen
      * is in a special mode. They may be one of {@link #UI_MODE_NIGHT_UNDEFINED},
-     * {@link #UI_MODE_NIGHT_NO}, {@link #UI_MODE_NIGHT_YES} or {@link #UI_MODE_NIGHT_BLACKOUT}.
+     * {@link #UI_MODE_NIGHT_NO} or {@link #UI_MODE_NIGHT_YES}.
      */
     public int uiMode;
 
@@ -951,13 +951,14 @@ public final class Configuration implements Parcelable, Comparable<Configuration
     }
 
     /**
-     * Copies the fields from delta into this Configuration object, keeping
-     * track of which ones have changed. Any undefined fields in {@code delta}
-     * are ignored and not copied in to the current Configuration.
-     *
-     * @return a bit mask of the changed fields, as per {@link #diff}
+     * Copy the fields from delta into this Configuration object, keeping
+     * track of which ones have changed.  Any undefined fields in
+     * <var>delta</var> are ignored and not copied in to the current
+     * Configuration.
+     * @return Returns a bit mask of the changed fields, as per
+     * {@link #diff}.
      */
-    public @Config int updateFrom(@NonNull Configuration delta) {
+    public int updateFrom(Configuration delta) {
         int changed = 0;
         if (delta.fontScale > 0 && fontScale != delta.fontScale) {
             changed |= ActivityInfo.CONFIG_FONT_SCALE;
@@ -1215,8 +1216,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
      * @return {@code true} if the resource needs to be loaded, {@code false}
      *         otherwise
      */
-    public static boolean needNewResources(@Config int configChanges,
-            @Config int interestingChanges) {
+    public static boolean needNewResources(int configChanges, int interestingChanges) {
         return (configChanges & (interestingChanges|ActivityInfo.CONFIG_FONT_SCALE)) != 0;
     }
 

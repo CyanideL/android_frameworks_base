@@ -27,7 +27,7 @@
     <color name="primary">#ff000000</color>
     <color name="accent">#ff1976D2</color>
     <color name="accent_dark">#ff1976D2</color>
-    <color name="action_mode">@color/material_grey_500</color>
+    <color name="action_mode">@color/accent</color>
     <color name="status_bar_color">#ff000000</color>
     <color name="band_select_background">#ff000000</color>
     <color name="band_select_border">#44000000</color>
