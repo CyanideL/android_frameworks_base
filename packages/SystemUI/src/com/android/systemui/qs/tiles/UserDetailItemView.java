@@ -33,6 +33,7 @@ import com.android.internal.util.ArrayUtils;
 import com.android.settingslib.drawable.UserIconDrawable;
 import com.android.systemui.FontSizeUtils;
 import com.android.systemui.R;
+import com.android.systemui.qs.QSPanel;
 import com.android.systemui.statusbar.phone.UserAvatarView;
 
 /**
@@ -140,8 +141,8 @@ public class UserDetailItemView extends LinearLayout {
     }
 
     private void updateTypeface() {
-        boolean activated = ArrayUtils.contains(getDrawableState(), android.R.attr.state_activated);
-        mName.setTypeface(activated ? mActivatedTypeface : mRegularTypeface);
+        //boolean activated = ArrayUtils.contains(getDrawableState(), android.R.attr.state_activated);
+        mName.setTypeface(QSPanel.mFontStyle);
     }
 
     @Override

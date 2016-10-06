@@ -86,6 +86,7 @@ public class QSTileView extends QSTileBaseView {
     protected void createLabel() {
         View view = LayoutInflater.from(mContext).inflate(R.layout.qs_tile_label, null);
         mLabel = (TextView) view.findViewById(R.id.tile_label);
+        mLabel.setTypeface(QSPanel.mFontStyle);
         mPadLock = (ImageView) view.findViewById(R.id.restricted_padlock);
         addView(view);
     }
@@ -97,6 +98,7 @@ public class QSTileView extends QSTileBaseView {
             mLabel.setText(state.label);
         }
         mLabel.setEnabled(!state.disabledByPolicy);
+        mLabel.setTypeface(QSPanel.mFontStyle);
         mPadLock.setVisibility(state.disabledByPolicy ? View.VISIBLE : View.GONE);
     }
 }

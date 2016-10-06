@@ -40,6 +40,7 @@ import com.android.settingslib.BatteryInfo;
 import com.android.settingslib.graph.UsageView;
 import com.android.systemui.BatteryMeterDrawable;
 import com.android.systemui.R;
+import com.android.systemui.qs.QSPanel;
 import com.android.systemui.qs.QSTile;
 import com.android.systemui.statusbar.policy.BatteryController;
 
@@ -55,6 +56,7 @@ public class BatteryTile extends QSTile<QSTile.State> implements BatteryControll
     private boolean mCharging;
     private boolean mDetailShown;
     private boolean mPluggedIn;
+    private TextView mGraphText;
 
     public BatteryTile(Host host) {
         super(host);
@@ -219,8 +221,10 @@ public class BatteryTile extends QSTile<QSTile.State> implements BatteryControll
             });
             final TextView batterySaverTitle =
                     (TextView) mCurrentView.findViewById(android.R.id.title);
+            batterySaverTitle.setTypeface(QSPanel.mFontStyle);
             final TextView batterySaverSummary =
                     (TextView) mCurrentView.findViewById(android.R.id.summary);
+            batterySaverSummary.setTypeface(QSPanel.mFontStyle);
             if (mCharging) {
                 mCurrentView.findViewById(R.id.switch_container).setAlpha(.7f);
                 batterySaverTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
@@ -250,7 +254,10 @@ public class BatteryTile extends QSTile<QSTile.State> implements BatteryControll
                 }
                 builder.append(info.remainingLabel);
             }
-            ((TextView) mCurrentView.findViewById(R.id.charge_and_estimation)).setText(builder);
+            mGraphText = (TextView) mCurrentView.findViewById(R.id.charge_and_estimation);
+            mGraphText.setText(builder);
+            mGraphText.setTypeface(QSPanel.mFontStyle);
+            //((TextView) mCurrentView.findViewById(R.id.charge_and_estimation)).setText(builder);
 
             info.bindHistory((UsageView) mCurrentView.findViewById(R.id.battery_usage));
         }

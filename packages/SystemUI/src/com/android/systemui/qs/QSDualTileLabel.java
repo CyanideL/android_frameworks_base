@@ -139,8 +139,8 @@ public class QSDualTileLabel extends LinearLayout {
     }
 
     public void setTypeface(Typeface tf) {
-        mFirstLine.setTypeface(tf);
-        mSecondLine.setTypeface(tf);
+        //mFirstLine.setTypeface(tf);
+        //mSecondLine.setTypeface(tf);
         rescheduleUpdateText();
     }
 
@@ -191,6 +191,8 @@ public class QSDualTileLabel extends LinearLayout {
         mFirstLine.setText(mText.substring(0, lastWordBoundary));
         mSecondLine.setText(mText.substring(lastWordBoundary).trim());
         mSecondLine.setVisibility(VISIBLE);
+        mFirstLine.setTypeface(QSPanel.mFontStyle);
+        mSecondLine.setTypeface(QSPanel.mFontStyle);
     }
 
     private final Runnable mUpdateText = new Runnable() {
