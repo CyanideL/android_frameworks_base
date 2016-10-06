@@ -661,6 +661,18 @@ final class DefaultPermissionGrantPolicy {
                 grantRuntimePermissionsLPw(storageManagerPckg, STORAGE_PERMISSIONS, true, userId);
             }
 
+            // Eleven
+            PackageParser.Package elevenPackage = getSystemPackageLPr("com.cyanogenmod.eleven");
+            if (elevenPackage != null && doesPackageSupportRuntimePermissions(elevenPackage)) {
+                grantRuntimePermissionsLPW(elevenPackage, STORAGE_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPW(elevenPackage, MICROPHONE_PERMISSIONS, userId);
+                grantRuntimePermissionsLPW(elevenPackage, PHONE_PERMISSIONS, userId);
+
+
+
+
+            }
+
             // Google Account
             PackageParser.Package googleaccountPackage = getDefaultProviderAuthorityPackageLPr(
                     "com.google.android.gsf.login", userId);
