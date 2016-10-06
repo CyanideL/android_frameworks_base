@@ -876,6 +876,7 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
             mShowingDetail = showingDetail;
             if (showingDetail) {
                 mQsDetailHeaderTitle.setText(detail.getTitle());
+                mQsDetailHeaderTitle.setTypeface(QSPanel.mFontStyle);
                 final Boolean toggleState = detail.getToggleState();
                 if (toggleState == null) {
                     mQsDetailHeaderSwitch.setVisibility(INVISIBLE);

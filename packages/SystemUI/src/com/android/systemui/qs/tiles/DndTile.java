@@ -37,6 +37,7 @@ import com.android.internal.logging.MetricsProto.MetricsEvent;
 import com.android.systemui.Prefs;
 import com.android.systemui.R;
 import com.android.systemui.SysUIToast;
+import com.android.systemui.qs.QSPanel;
 import com.android.systemui.qs.QSTile;
 import com.android.systemui.statusbar.policy.ZenModeController;
 import com.android.systemui.volume.ZenModePanel;
@@ -236,6 +237,7 @@ public class DndTile extends QSTile<QSTile.BooleanState> {
     };
 
     private final class DndDetailAdapter implements DetailAdapter, OnAttachStateChangeListener {
+        private ZenModePanel mZenModePanel = null;
 
         @Override
         public CharSequence getTitle() {
@@ -268,15 +270,16 @@ public class DndTile extends QSTile<QSTile.BooleanState> {
 
         @Override
         public View createDetailView(Context context, View convertView, ViewGroup parent) {
-            final ZenModePanel zmp = convertView != null ? (ZenModePanel) convertView
+            mZenModePanel = convertView != null ? (ZenModePanel) convertView
                     : (ZenModePanel) LayoutInflater.from(context).inflate(
                             R.layout.zen_mode_panel, parent, false);
             if (convertView == null) {
-                zmp.init(mController);
-                zmp.addOnAttachStateChangeListener(this);
-                zmp.setCallback(mZenModePanelCallback);
+                mZenModePanel.init(mController);
+                mZenModePanel.addOnAttachStateChangeListener(this);
+                mZenModePanel.setCallback(mZenModePanelCallback);
+                mZenModePanel.setTypeface(QSPanel.mFontStyle);
             }
-            return zmp;
+            return mZenModePanel;
         }
 
         @Override

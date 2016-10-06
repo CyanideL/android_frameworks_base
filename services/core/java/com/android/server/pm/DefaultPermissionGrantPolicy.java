@@ -608,11 +608,12 @@ final class DefaultPermissionGrantPolicy {
             }
 
             // Eleven
-            PackageParser.Package elevenPackage = getSystemPackageLPr("com.cyanogenmod.eleven");
+            PackageParser.Package elevenPackage = getSystemPackageLPr(
+                    "com.cyanogenmod.eleven");
             if (elevenPackage != null && doesPackageSupportRuntimePermissions(elevenPackage)) {
-                grantRuntimePermissionsLPW(elevenPackage, STORAGE_PERMISSIONS, true, userId);
-                grantRuntimePermissionsLPW(elevenPackage, MICROPHONE_PERMISSIONS, userId);
-                grantRuntimePermissionsLPW(elevenPackage, PHONE_PERMISSIONS, userId);
+                grantRuntimePermissionsLPw(elevenPackage, MICROPHONE_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(elevenPackage, PHONE_PERMISSIONS, true, userId);
+                grantRuntimePermissionsLPw(elevenPackage, STORAGE_PERMISSIONS, true, userId);
             }
 
             // Google Account

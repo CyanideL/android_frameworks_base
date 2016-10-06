@@ -201,6 +201,7 @@ public class QSFooter implements OnClickListener, DialogInterface.OnClickListene
         public void run() {
             if (mFooterTextId != 0) {
                 mFooterText.setText(mFooterTextId);
+                mFooterText.setTypeface(QSPanel.mFontStyle);
             }
             mRootView.setVisibility(mIsVisible ? View.VISIBLE : View.GONE);
             mFooterIcon.setVisibility(mIsIconVisible ? View.VISIBLE : View.INVISIBLE);

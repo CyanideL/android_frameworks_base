@@ -103,6 +103,7 @@ public class QSDetailItems extends FrameLayout {
     public void setEmptyState(int icon, int text) {
         mEmptyIcon.setImageResource(icon);
         mEmptyText.setText(text);
+        mEmptyText.setTypeface(QSPanel.mFontStyle);
     }
 
     @Override
@@ -188,11 +189,13 @@ public class QSDetailItems extends FrameLayout {
             }
             final TextView title = (TextView) view.findViewById(android.R.id.title);
             title.setText(item.line1);
+            title.setTypeface(QSPanel.mFontStyle);
             final TextView summary = (TextView) view.findViewById(android.R.id.summary);
             final boolean twoLines = !TextUtils.isEmpty(item.line2);
             title.setMaxLines(twoLines ? 1 : 2);
             summary.setVisibility(twoLines ? VISIBLE : GONE);
             summary.setText(twoLines ? item.line2 : null);
+            summary.setTypeface(QSPanel.mFontStyle);
             view.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

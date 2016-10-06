@@ -42,6 +42,7 @@ import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.MetricsProto;
 import com.android.systemui.R;
 import com.android.systemui.qs.QSIconView;
+import com.android.systemui.qs.QSPanel;
 import com.android.systemui.qs.customize.TileAdapter.Holder;
 import com.android.systemui.qs.customize.TileQueryHelper.TileInfo;
 import com.android.systemui.qs.customize.TileQueryHelper.TileStateListener;
@@ -84,6 +85,7 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
     private int mAccessibilityFromIndex;
     private QSTileHost mHost;
     private final QSItemDecoration mDecoration;
+    private TextView mTextView;
 
     public TileAdapter(Context context) {
         mContext = context;
@@ -212,9 +214,13 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
             return;
         }
         if (holder.getItemViewType() == TYPE_EDIT) {
-            ((TextView) holder.itemView.findViewById(android.R.id.title)).setText(
-                    mCurrentDrag != null ? R.string.drag_to_remove_tiles
+            mTextView = (TextView) holder.itemView.findViewById(android.R.id.title);
+            mTextView.setText(mCurrentDrag != null ? R.string.drag_to_remove_tiles
                     : R.string.drag_to_add_tiles);
+            mTextView.setTypeface(QSPanel.mFontStyle);
+            //((TextView) holder.itemView.findViewById(android.R.id.title)).setText(
+                    //mCurrentDrag != null ? R.string.drag_to_remove_tiles
+                    //: R.string.drag_to_add_tiles);
             return;
         }
         if (holder.getItemViewType() == TYPE_ACCESSIBLE_DROP) {

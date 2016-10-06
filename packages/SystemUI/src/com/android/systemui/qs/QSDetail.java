@@ -155,6 +155,9 @@ public class QSDetail extends LinearLayout {
         setClickable(showingDetail);
         if (showingDetail) {
             mQsDetailHeaderTitle.setText(adapter.getTitle());
+            mQsDetailHeaderTitle.setTypeface(QSPanel.mFontStyle);
+            mDetailSettingsButton.setTypeface(QSPanel.mFontStyle);
+            mDetailDoneButton.setTypeface(QSPanel.mFontStyle);
             final Boolean toggleState = adapter.getToggleState();
             if (toggleState == null) {
                 mQsDetailHeaderSwitch.setVisibility(INVISIBLE);

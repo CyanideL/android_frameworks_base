@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.systemui.R;
+import com.android.systemui.qs.QSPanel;
 
 import java.util.Objects;
 
@@ -71,7 +72,7 @@ public class SegmentedButtons extends LinearLayout {
     }
 
     protected void setSelectedStyle(TextView textView, boolean selected) {
-        textView.setTypeface(selected ? MEDIUM : REGULAR);
+        textView.setTypeface(QSPanel.mFontStyle);
     }
 
     public Button inflateButton() {

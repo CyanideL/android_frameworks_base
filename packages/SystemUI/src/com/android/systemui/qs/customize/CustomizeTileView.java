@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import com.android.systemui.R;
+import com.android.systemui.qs.QSPanel;
 import com.android.systemui.qs.QSIconView;
 import com.android.systemui.qs.QSTileView;
 import libcore.util.Objects;
@@ -39,6 +40,7 @@ public class CustomizeTileView extends QSTileView {
         mAppLabel = (TextView) view.findViewById(R.id.tile_label);
         mAppLabel.setAlpha(.6f);
         mAppLabel.setSingleLine(true);
+        mAppLabel.setTypeface(QSPanel.mFontStyle);
         addView(view);
     }
 

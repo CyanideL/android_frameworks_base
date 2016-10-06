@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -194,6 +195,25 @@ public class ZenModePanel extends LinearLayout {
         mZenAlarmWarning = (TextView) findViewById(R.id.zen_alarm_warning);
         mZenRadioGroup = (RadioGroup) findViewById(R.id.zen_radio_buttons);
         mZenRadioGroupContent = (LinearLayout) findViewById(R.id.zen_radio_buttons_content);
+    }
+
+    public void setTypeface(Typeface tf) {
+        for (int i = 0; i < mZenConditions.getChildCount(); i++) {
+            View row = mZenConditions.getChildAt(i);
+            if (row != null) {
+                TextView tv1 = (TextView) row.findViewById(android.R.id.text1);
+                TextView tv2 = (TextView) row.findViewById(android.R.id.text2);
+                if (tv1 != null) {
+                    tv1.setTypeface(tf);
+                }
+                if (tv2 != null) {
+                    tv2.setTypeface(tf);
+                }
+            }
+        }
+        mZenAlarmWarning.setTypeface(tf);
+        mZenIntroductionCustomize.setTypeface(tf);
+        mZenIntroductionMessage.setTypeface(tf);
     }
 
     @Override
