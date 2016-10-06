@@ -88,8 +88,7 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
     private TextView mDateExpanded;
     private LinearLayout mSystemIcons;
     private View mSignalCluster;
-    private SettingsButton mSettingsButton;
-    private View mSettingsContainer;
+    private View mSettingsButton;
     private View mQsDetailHeader;
     private TextView mQsDetailHeaderTitle;
     private Switch mQsDetailHeaderSwitch;
@@ -164,8 +163,7 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
         mMultiUserAvatar = (ImageView) findViewById(R.id.multi_user_avatar);
         mDateCollapsed = (TextView) findViewById(R.id.date_collapsed);
         mDateExpanded = (TextView) findViewById(R.id.date_expanded);
-        mSettingsButton = (SettingsButton) findViewById(R.id.settings_button);
-        mSettingsContainer = findViewById(R.id.settings_button_container);
+        mSettingsButton = findViewById(R.id.settings_button);
         mSettingsButton.setOnClickListener(this);
         mCyanideButton = findViewById(R.id.cyanide_button);
         mCyanideButton.setOnClickListener(this);
@@ -360,15 +358,13 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
         mDateCollapsed.setVisibility(mExpanded && mAlarmShowing ? View.VISIBLE : View.INVISIBLE);
         mDateExpanded.setVisibility(mExpanded && mAlarmShowing ? View.INVISIBLE : View.VISIBLE);
         mAlarmStatus.setVisibility(mExpanded && mAlarmShowing ? View.VISIBLE : View.INVISIBLE);
-        mSettingsContainer.setVisibility(mExpanded ? View.VISIBLE : View.INVISIBLE);
+        mSettingsButton.setVisibility(mExpanded ? View.VISIBLE : View.INVISIBLE);
         mCyanideButton.setVisibility(mExpanded ? View.VISIBLE : View.INVISIBLE);
         mQsDetailHeader.setVisibility(mExpanded && mShowingDetail? View.VISIBLE : View.INVISIBLE);
         if (mSignalCluster != null) {
             updateSignalClusterDetachment();
         }
         mEmergencyCallsOnly.setVisibility(mExpanded && mShowEmergencyCallsOnly ? VISIBLE : GONE);
-        mSettingsContainer.findViewById(R.id.tuner_icon).setVisibility(
-                TunerService.isTunerEnabled(mContext) ? View.VISIBLE : View.INVISIBLE);
         updateBatteryLevelVisibility();
     }
 
@@ -397,7 +393,7 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
     private void updateSystemIconsLayoutParams() {
         RelativeLayout.LayoutParams lp = (LayoutParams) mSystemIconsSuperContainer.getLayoutParams();
         int cyanide = mCyanideButton.getVisibility() != View.GONE
-                ? mCyanideButton.getId() : mSettingsContainer.getId();
+                ? mCyanideButton.getId() : mSettingsButton.getId();
         int rule = mExpanded
                 ? cyanide
                 : mMultiUserSwitch.getId();
@@ -547,20 +543,6 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
     @Override
     public void onClick(View v) {
         if (v == mSettingsButton) {
-            if (mSettingsButton.isTunerClick()) {
-                if (TunerService.isTunerEnabled(mContext)) {
-                    TunerService.showResetRequest(mContext, new Runnable() {
-                        @Override
-                        public void run() {
-                            // Relaunch settings so that the tuner disappears.
-                            startSettingsActivity();
-                        }
-                    });
-                } else {
-                    Toast.makeText(getContext(), R.string.tuner_toast, Toast.LENGTH_LONG).show();
-                    TunerService.setTunerEnabled(mContext, true);
-                }
-            }
             startSettingsActivity();
         } else if (v == mCyanideButton) {
            startCyanideMods();
@@ -687,10 +669,10 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
         }
         target.batteryY = mSystemIconsSuperContainer.getTop() + mSystemIconsContainer.getTop();
         target.batteryLevelAlpha = getAlphaForVisibility(mBatteryLevel);
-        target.settingsAlpha = getAlphaForVisibility(mSettingsContainer);
+        target.settingsAlpha = getAlphaForVisibility(mSettingsButton);
         target.settingsTranslation = mExpanded
                 ? 0
-                : mMultiUserSwitch.getLeft() - mSettingsContainer.getLeft();
+                : mMultiUserSwitch.getLeft() - mSettingsButton.getLeft();
         target.cyanideAlpha = getAlphaForVisibility(mCyanideButton);
         target.cyanideTranslation = mExpanded
                 ? 0
@@ -747,11 +729,9 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
             mSignalCluster.setTranslationX(0f);
             mSignalCluster.setTranslationY(0f);
         }
-        if (!mSettingsButton.isAnimating()) {
-            mSettingsContainer.setTranslationY(mSystemIconsSuperContainer.getTranslationY());
-            mSettingsContainer.setTranslationX(values.settingsTranslation);
-            mSettingsButton.setRotation(values.settingsRotation);
-        }
+        mSettingsButton.setTranslationY(mSystemIconsSuperContainer.getTranslationY());
+        mSettingsButton.setTranslationX(values.settingsTranslation);
+        mSettingsButton.setRotation(values.settingsRotation);
         mCyanideButton.setTranslationY(mSystemIconsSuperContainer.getTranslationY());
         mCyanideButton.setTranslationX(values.cyanideTranslation);
         mCyanideButton.setRotation(values.cyanideRotation);
@@ -763,7 +743,7 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
         applyAlpha(mDateCollapsed, values.dateCollapsedAlpha);
         applyAlpha(mDateExpanded, values.dateExpandedAlpha);
         applyAlpha(mBatteryLevel, values.batteryLevelAlpha);
-        applyAlpha(mSettingsContainer, values.settingsAlpha);
+        applyAlpha(mSettingsButton, values.settingsAlpha);
         applyAlpha(mCyanideButton, values.cyanideAlpha);
         applyAlpha(mSignalCluster, values.signalClusterAlpha);
         if (!mExpanded) {
