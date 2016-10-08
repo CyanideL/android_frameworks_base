@@ -30,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
  
 import com.android.systemui.R;
+import com.android.systemui.cyanide.expansionview.ExpansionViewController;
  
 /*
 *
@@ -134,6 +135,7 @@ public class ExpansionViewTraffic extends LinearLayout {
                     if (mTextView != null) {
                         mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, (float)textSize);
                         mTextView.setText(output);
+                        mTextView.setTypeface(ExpansionViewController.mFontStyle);
                     }
                 }
                 setVisibility(View.VISIBLE);
@@ -288,7 +290,7 @@ public class ExpansionViewTraffic extends LinearLayout {
         ContentResolver resolver = mContext.getContentResolver();
  
         int defaultColor = Settings.System.getInt(resolver,
-                Settings.System.EXPANSION_VIEW_NETWORK_TRAFFIC_COLOR, 0xFFFFFFFF);
+                Settings.System.EXPANSION_VIEW_NETWORK_TRAFFIC_COLOR, 0xFF1976D2);
  
         mAutoHide = Settings.System.getIntForUser(resolver,
                 Settings.System.EXPANSION_VIEW_NETWORK_TRAFFIC_AUTOHIDE, 0,
