@@ -24,6 +24,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.Typeface;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.text.format.DateFormat;
@@ -42,6 +43,7 @@ import com.android.internal.util.cyanide.WeatherServiceController;
 import com.android.internal.util.cyanide.WeatherServiceController.DayForecast;
 import com.android.internal.util.cyanide.WeatherServiceControllerImpl;
 import com.android.internal.util.cyanide.ExpansionViewColorHelper;
+import com.android.internal.util.cyanide.FontHelper;
 import com.android.internal.util.cyanide.WeatherHelper;
 
 import java.util.ArrayList;
@@ -60,6 +62,7 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
 
     private LinearLayout mWeatherBar;
     private TextView mNoWeather;
+    private static Typeface mFontStyle;
 
     private boolean mWeatherAvailable = false;
     private boolean mListening = false;
@@ -166,6 +169,7 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
             updateTime.setText(getUpdateTime(info));
             updateTime.setTextColor(textColorPrimary);
             updateTime.setTextSize(mExpansionViewWeatherTextSize);
+            updateTime.setTypeface(mFontStyle);
             calendar.roll(Calendar.DAY_OF_WEEK, true);
 
             ImageView currentImage = (ImageView) currentItem.findViewById(R.id.weather_image);
@@ -179,6 +183,7 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
             temp.setText(info.temp);
             temp.setTextColor(textColorPrimary);
             temp.setTextSize(mExpansionViewWeatherTextSize);
+            temp.setTypeface(mFontStyle);
 
             mWeatherBar.addView(currentItem,
                   new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
@@ -196,6 +201,7 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
                 day.setText(calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
                 day.setTextColor(textColorPrimary);
                 day.setTextSize(mExpansionViewWeatherTextSize);
+                day.setTypeface(mFontStyle);
                 calendar.roll(Calendar.DAY_OF_WEEK, true);
 
                 ImageView image = (ImageView) forecastItem.findViewById(R.id.weather_image);
@@ -209,6 +215,7 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
                 temps.setText(isToday ? info.temp : d.low + " | " + d.high);
                 temps.setTextColor(isToday ? textColorPrimary : textColorSecondary);
                 temps.setTextSize(mExpansionViewWeatherTextSize);
+                temps.setTypeface(mFontStyle);
 
                 mWeatherBar.addView(forecastItem,
                       new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
@@ -217,6 +224,7 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
             }
         }
         setExpansionViewWeatherTextSize();
+        updateFontStyle();
     }
 
     public void updateItems() {
@@ -271,6 +279,94 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
         } else {
             String empty = "";
             return empty;
+        }
+    }
+
+    public void updateFontStyle() {
+        final int mWeatherFontStyle = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.EXPANSION_VIEW_FONT_STYLE, FontHelper.FONT_NORMAL);
+
+        getFontStyle(mWeatherFontStyle);
+    }
+
+    public void getFontStyle(int font) {
+        switch (font) {
+            case FontHelper.FONT_NORMAL:
+            default:
+                mFontStyle = FontHelper.NORMAL;
+                break;
+            case FontHelper.FONT_ITALIC:
+                mFontStyle = FontHelper.ITALIC;
+                break;
+            case FontHelper.FONT_BOLD:
+                mFontStyle = FontHelper.BOLD;
+                break;
+            case FontHelper.FONT_BOLD_ITALIC:
+                mFontStyle = FontHelper.BOLD_ITALIC;
+                break;
+            case FontHelper.FONT_LIGHT:
+                mFontStyle = FontHelper.LIGHT;
+                break;
+            case FontHelper.FONT_LIGHT_ITALIC:
+                mFontStyle = FontHelper.LIGHT_ITALIC;
+                break;
+            case FontHelper.FONT_THIN:
+                mFontStyle = FontHelper.THIN;
+                break;
+            case FontHelper.FONT_THIN_ITALIC:
+                mFontStyle = FontHelper.THIN_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED:
+                mFontStyle = FontHelper.CONDENSED;
+                break;
+            case FontHelper.FONT_CONDENSED_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT:
+                mFontStyle = FontHelper.CONDENSED_LIGHT;
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_LIGHT_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD:
+                mFontStyle = FontHelper.CONDENSED_BOLD;
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_BOLD_ITALIC;
+                break;
+            case FontHelper.FONT_MEDIUM:
+                mFontStyle = FontHelper.MEDIUM;
+                break;
+            case FontHelper.FONT_MEDIUM_ITALIC:
+                mFontStyle = FontHelper.MEDIUM_ITALIC;
+                break;
+            case FontHelper.FONT_BLACK:
+                mFontStyle = FontHelper.BLACK;
+                break;
+            case FontHelper.FONT_BLACK_ITALIC:
+                mFontStyle = FontHelper.BLACK_ITALIC;
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT:
+                mFontStyle = FontHelper.DANCINGSCRIPT;
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT_BOLD:
+                mFontStyle = FontHelper.DANCINGSCRIPT_BOLD;
+                break;
+            case FontHelper.FONT_COMINGSOON:
+                mFontStyle = FontHelper.COMINGSOON;
+                break;
+            case FontHelper.FONT_NOTOSERIF:
+                mFontStyle = FontHelper.NOTOSERIF;
+                break;
+            case FontHelper.FONT_NOTOSERIF_ITALIC:
+                mFontStyle = FontHelper.NOTOSERIF_ITALIC;
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD:
+                mFontStyle = FontHelper.NOTOSERIF_BOLD;
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
+                mFontStyle = FontHelper.NOTOSERIF_BOLD_ITALIC;
+                break;
         }
     }
 }

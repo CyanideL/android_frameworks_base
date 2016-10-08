@@ -47,6 +47,7 @@ public class ExpansionViewController {
     private Handler mHandler;
     private SettingsObserver mSettingsObserver;
     private static ContentResolver mResolver;
+    public static Typeface mFontStyle;
 
     private final View mExpansionViewContainer;
     private ExpansionViewCustomPanel mExpansionViewCustomPanel;
@@ -192,6 +193,7 @@ public class ExpansionViewController {
                 Settings.System.EXPANSION_VIEW_FONT_STYLE, 0);
 
         getExpansionViewFontStyle(mExpansionViewFontStyle);
+        mExpansionViewWeatherPanel.updateFontStyle();
     }
 
     public void getExpansionViewFontStyle(int font) {
@@ -200,106 +202,83 @@ public class ExpansionViewController {
         switch (font) {
             case FontHelper.FONT_NORMAL:
             default:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+                mFontStyle = FontHelper.NORMAL;
                 break;
             case FontHelper.FONT_ITALIC:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                mFontStyle = FontHelper.ITALIC;
                 break;
             case FontHelper.FONT_BOLD:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                mFontStyle = FontHelper.BOLD;
                 break;
             case FontHelper.FONT_BOLD_ITALIC:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                mFontStyle = FontHelper.BOLD_ITALIC;
                 break;
             case FontHelper.FONT_LIGHT:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                mFontStyle = FontHelper.LIGHT;
                 break;
             case FontHelper.FONT_LIGHT_ITALIC:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
+                mFontStyle = FontHelper.LIGHT_ITALIC;
                 break;
             case FontHelper.FONT_THIN:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                mFontStyle = FontHelper.THIN;
                 break;
             case FontHelper.FONT_THIN_ITALIC:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                mFontStyle = FontHelper.THIN_ITALIC;
                 break;
             case FontHelper.FONT_CONDENSED:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                mFontStyle = FontHelper.CONDENSED;
                 break;
             case FontHelper.FONT_CONDENSED_ITALIC:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                mFontStyle = FontHelper.CONDENSED_ITALIC;
                 break;
             case FontHelper.FONT_CONDENSED_LIGHT:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                mFontStyle = FontHelper.CONDENSED_LIGHT;
                 break;
             case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                mFontStyle = FontHelper.CONDENSED_LIGHT_ITALIC;
                 break;
             case FontHelper.FONT_CONDENSED_BOLD:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                mFontStyle = FontHelper.CONDENSED_BOLD;
                 break;
             case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                mFontStyle = FontHelper.CONDENSED_BOLD_ITALIC;
                 break;
             case FontHelper.FONT_MEDIUM:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                mFontStyle = FontHelper.MEDIUM;
                 break;
             case FontHelper.FONT_MEDIUM_ITALIC:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                mFontStyle = FontHelper.MEDIUM_ITALIC;
                 break;
             case FontHelper.FONT_BLACK:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+                mFontStyle = FontHelper.BLACK;
                 break;
             case FontHelper.FONT_BLACK_ITALIC:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
+                mFontStyle = FontHelper.BLACK_ITALIC;
                 break;
             case FontHelper.FONT_DANCINGSCRIPT:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("cursive", Typeface.NORMAL));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("cursive", Typeface.NORMAL));
+                mFontStyle = FontHelper.DANCINGSCRIPT;
                 break;
             case FontHelper.FONT_DANCINGSCRIPT_BOLD:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("cursive", Typeface.BOLD));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("cursive", Typeface.BOLD));
+                mFontStyle = FontHelper.DANCINGSCRIPT_BOLD;
                 break;
             case FontHelper.FONT_COMINGSOON:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("casual", Typeface.NORMAL));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("casual", Typeface.NORMAL));
+                mFontStyle = FontHelper.COMINGSOON;
                 break;
             case FontHelper.FONT_NOTOSERIF:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("serif", Typeface.NORMAL));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("serif", Typeface.NORMAL));
+                mFontStyle = FontHelper.NOTOSERIF;
                 break;
             case FontHelper.FONT_NOTOSERIF_ITALIC:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("serif", Typeface.ITALIC));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("serif", Typeface.ITALIC));
+                mFontStyle = FontHelper.NOTOSERIF_ITALIC;
                 break;
             case FontHelper.FONT_NOTOSERIF_BOLD:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("serif", Typeface.BOLD));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("serif", Typeface.BOLD));
+                mFontStyle = FontHelper.NOTOSERIF_BOLD;
                 break;
             case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
-                mExpansionViewCustomPanel.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
-                mExpansionViewActivityPanel.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                mFontStyle = FontHelper.NOTOSERIF_BOLD_ITALIC;
                 break;
         }
+        mExpansionViewCustomPanel.setTypeface(mFontStyle);
+        mExpansionViewActivityPanel.setTypeface(mFontStyle);
     }
 
     private void setExpansionViewText() {
