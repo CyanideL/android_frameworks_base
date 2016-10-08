@@ -139,7 +139,8 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         // RenderThread is doing more harm than good when touching the header (to expand quick
         // settings), so disable it for this view
         ((RippleDrawable) mSettingsButton.getBackground()).setForceSoftware(true);
-        ((RippleDrawable) mExpandIndicator.getBackground()).setForceSoftware(true);
+        //((RippleDrawable) mExpandIndicator.getBackground()).setForceSoftware(true);
+        mExpandIndicator.setVisibility(View.GONE);
         ((RippleDrawable) mCyanideButton.getBackground()).setForceSoftware(true);
 
         updateResources();
