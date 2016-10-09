@@ -23,7 +23,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
+import android.graphics.drawable.RippleDrawable;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -57,6 +59,8 @@ import com.android.internal.logging.MetricsProto.MetricsEvent;
 import com.android.systemui.Prefs;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.policy.ZenModeController;
+
+import com.android.internal.util.cyanide.QSColorHelper;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -100,7 +104,7 @@ public class ZenModePanel extends LinearLayout {
     protected SegmentedButtons mZenButtons;
     private View mZenIntroduction;
     private TextView mZenIntroductionMessage;
-    private View mZenIntroductionConfirm;
+    private ImageView mZenIntroductionConfirm;
     private TextView mZenIntroductionCustomize;
     protected LinearLayout mZenConditions;
     private TextView mZenAlarmWarning;
@@ -172,7 +176,7 @@ public class ZenModePanel extends LinearLayout {
         mZenIntroduction = findViewById(R.id.zen_introduction);
         mZenIntroductionMessage = (TextView) findViewById(R.id.zen_introduction_message);
         mSpTexts.add(mZenIntroductionMessage);
-        mZenIntroductionConfirm = findViewById(R.id.zen_introduction_confirm);
+        mZenIntroductionConfirm = (ImageView) findViewById(R.id.zen_introduction_confirm);
         mZenIntroductionConfirm.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -830,6 +834,80 @@ public class ZenModePanel extends LinearLayout {
     private void fireExpanded() {
         if (mCallback != null) {
             mCallback.onExpanded(mExpanded);
+        }
+    }
+
+    public void updateZenPanelBackgroundColor(ColorStateList color) {
+        mZenButtons.setBackgroundTintList(color);
+    }
+
+    public void setZenModeTextColor(ColorStateList buttonTextColors, int contitionsTextColor,
+            int accentColor) {
+        mZenButtons.setTextColor(buttonTextColors);
+        mZenIntroductionMessage.setTextColor(QSColorHelper.getAccentColor(mContext));
+        mZenIntroductionCustomize.setTextColor(QSColorHelper.getTextColor(mContext));
+        for (int i = 0; i < mZenConditions.getChildCount(); i++) {
+            View row = mZenConditions.getChildAt(i);
+            if (row != null) {
+                TextView tv1 = (TextView) row.findViewById(android.R.id.text1);
+                TextView tv2 = (TextView) row.findViewById(android.R.id.text2);
+                if (tv1 != null) {
+                    tv1.setTextColor(contitionsTextColor);
+                }
+                if (tv2 != null) {
+                    tv2.setTextColor(accentColor);
+                }
+            }
+        }
+    }
+
+    public void setZenModeIconColor(ColorStateList contitionsIconColors,
+            ColorStateList buttonIconColor) {
+        for (int irg = 0; irg < mZenRadioGroup.getChildCount(); irg++) {
+            CompoundButton cb = (CompoundButton) mZenRadioGroup.getChildAt(irg);
+            if (cb != null) {
+                cb.setButtonTintList(contitionsIconColors);
+            }
+        }
+        for (int i = 0; i < mZenRadioGroupContent.getChildCount(); i++) {
+            View row = mZenRadioGroupContent.getChildAt(i);
+            if (row != null) {
+                ImageView iv1 = (ImageView) row.findViewById(android.R.id.button1);
+                ImageView iv2 = (ImageView) row.findViewById(android.R.id.button2);
+                if (iv1 != null) {
+                    iv1.setImageTintList(buttonIconColor);
+                }
+                if (iv2 != null) {
+                    iv2.setImageTintList(buttonIconColor);
+                }
+            }
+        }
+    }
+
+    public void setZenModeRippleColor(ColorStateList color) {
+        mZenButtons.setRippleColor(color);
+        for (int i = 0; i < mZenConditions.getChildCount(); i++) {
+            View row = mZenConditions.getChildAt(i);
+            if (row != null) {
+                CompoundButton cb = (CompoundButton) row.findViewById(android.R.id.checkbox);
+                ImageView iv1 = (ImageView) row.findViewById(android.R.id.button1);
+                ImageView iv2 = (ImageView) row.findViewById(android.R.id.button2);
+                if (cb != null) {
+                    RippleDrawable cbbg = (RippleDrawable) cb.getBackground().mutate();
+                    cbbg.setColor(color);
+                    cb.setBackground(cbbg);
+                }
+                if (iv1 != null) {
+                    RippleDrawable iv1bg = (RippleDrawable) iv1.getBackground().mutate();
+                    iv1bg.setColor(color);
+                    iv1.setBackground(iv1bg);
+                }
+                if (iv2 != null) {
+                    RippleDrawable iv2bg = (RippleDrawable) iv2.getBackground().mutate();
+                    iv2bg.setColor(color);
+                    iv2.setBackground(iv2bg);
+                }
+            }
         }
     }
 

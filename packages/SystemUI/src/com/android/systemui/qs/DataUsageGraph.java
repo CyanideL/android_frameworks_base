@@ -26,12 +26,14 @@ import android.view.View;
 
 import com.android.systemui.R;
 
+import com.android.internal.util.cyanide.QSColorHelper;
+
 public class DataUsageGraph extends View {
 
-    private final int mTrackColor;
-    private final int mUsageColor;
+    private int mTrackColor;
+    private int mUsageColor;
     private final int mOverlimitColor;
-    private final int mWarningColor;
+    private int mWarningColor;
     private final int mMarkerWidth;
     private final RectF mTmpRect = new RectF();
     private final Paint mTmpPaint = new Paint();
@@ -97,5 +99,16 @@ public class DataUsageGraph extends View {
         r.set(warningLeft, 0, warningLeft + mMarkerWidth, h);
         p.setColor(mWarningColor);
         canvas.drawRect(r, p);
+    }
+
+    public void setAccentColor() {
+        mUsageColor = QSColorHelper.getAccentColor(mContext);
+        postInvalidate();
+    }
+
+    public void setIconColor() {
+        mTrackColor = QSColorHelper.getIconColor(mContext);
+        mWarningColor = QSColorHelper.getIconColor(mContext);
+        postInvalidate();
     }
 }

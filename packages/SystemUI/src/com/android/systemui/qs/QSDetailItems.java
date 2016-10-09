@@ -19,6 +19,7 @@ package com.android.systemui.qs;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.RippleDrawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -34,6 +35,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.android.systemui.FontSizeUtils;
 import com.android.systemui.R;
+
+import com.android.internal.util.cyanide.QSColorHelper;
 
 /**
  * Quick settings common detail view with line items.
@@ -102,7 +105,9 @@ public class QSDetailItems extends FrameLayout {
 
     public void setEmptyState(int icon, int text) {
         mEmptyIcon.setImageResource(icon);
+        mEmptyIcon.setImageTintList(QSColorHelper.getIconColorList(mContext));
         mEmptyText.setText(text);
+        mEmptyText.setTextColor(QSColorHelper.getTextColor(mContext));
         mEmptyText.setTypeface(QSPanel.mFontStyle);
     }
 
@@ -179,21 +184,26 @@ public class QSDetailItems extends FrameLayout {
                         false);
             }
             view.setVisibility(mItemsVisible ? VISIBLE : INVISIBLE);
+            ((RippleDrawable) view.getBackground()).setColor(QSColorHelper.getRippleColorList(mContext));
             final ImageView iv = (ImageView) view.findViewById(android.R.id.icon);
+            iv.setImageTintList(QSColorHelper.getIconColorList(mContext));
             iv.setImageResource(item.icon);
             iv.getOverlay().clear();
             if (item.overlay != null) {
                 item.overlay.setBounds(0, 0, item.overlay.getIntrinsicWidth(),
                         item.overlay.getIntrinsicHeight());
+                item.overlay.setTint(QSColorHelper.getIconColor(mContext));
                 iv.getOverlay().add(item.overlay);
             }
             final TextView title = (TextView) view.findViewById(android.R.id.title);
+            title.setTextColor(QSColorHelper.getTextColor(mContext));
             title.setText(item.line1);
             title.setTypeface(QSPanel.mFontStyle);
             final TextView summary = (TextView) view.findViewById(android.R.id.summary);
             final boolean twoLines = !TextUtils.isEmpty(item.line2);
             title.setMaxLines(twoLines ? 1 : 2);
             summary.setVisibility(twoLines ? VISIBLE : GONE);
+            summary.setTextColor(QSColorHelper.getTextColor(mContext));
             summary.setText(twoLines ? item.line2 : null);
             summary.setTypeface(QSPanel.mFontStyle);
             view.setOnClickListener(new OnClickListener() {
@@ -205,6 +215,10 @@ public class QSDetailItems extends FrameLayout {
                 }
             });
             final ImageView disconnect = (ImageView) view.findViewById(android.R.id.icon2);
+            /*RippleDrawable bg = (RippleDrawable) disconnect.getBackground().mutate();
+            bg.setColor(QSColorHelper.getRippleColorList(mContext));
+            disconnect.setBackground(bg);*/
+            disconnect.setImageTintList(QSColorHelper.getIconColorList(mContext));
             disconnect.setVisibility(item.canDisconnect ? VISIBLE : GONE);
             disconnect.setOnClickListener(new OnClickListener() {
                 @Override

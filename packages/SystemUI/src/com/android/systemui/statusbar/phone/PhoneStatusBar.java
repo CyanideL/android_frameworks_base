@@ -110,6 +110,7 @@ import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.MetricsProto.MetricsEvent;
 import com.android.internal.statusbar.NotificationVisibility;
 import com.android.internal.statusbar.StatusBarIcon;
+import com.android.internal.util.cyanide.QSColorHelper;
 import com.android.internal.util.cyanide.WeatherServiceControllerImpl;
 import com.android.internal.util.cyanide.WeatherHelper;
 import com.android.keyguard.KeyguardHostView.OnDismissAction;
@@ -324,7 +325,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     protected UserSwitcherController mUserSwitcherController;
     NextAlarmController mNextAlarmController;
     protected KeyguardMonitor mKeyguardMonitor;
-    BrightnessMirrorController mBrightnessMirrorController;
+    BrightnessMirrorController mBrightnessMirrorController = null;
     AccessibilityController mAccessibilityController;
     FingerprintUnlockController mFingerprintUnlockController;
     LightStatusBarController mLightStatusBarController;
@@ -361,6 +362,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     // settings
     private QSPanel mQSPanel;
+    private View mQSContainer;
 
     // top bar
     BaseStatusBarHeader mHeader;
@@ -574,6 +576,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_COLUMNS_LANDSCAPE),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_BACKGROUND_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_ACCENT_COLOR),
+                    false, this, UserHandle.USER_ALL);
 
         }
 
@@ -666,6 +674,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.QS_COLUMNS_LANDSCAPE))) {
                 updateQSRowsColumnsLandscape();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_BACKGROUND_COLOR))) {
+                updateQSBackgroundColor();
             }
         }
     }
@@ -1152,6 +1163,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         // Set up the quick settings tile panel
         AutoReinflateContainer container = (AutoReinflateContainer) mStatusBarWindow.findViewById(
                 R.id.qs_auto_reinflate_container);
+        mQSContainer = mStatusBarWindow.findViewById(R.id.quick_settings_container);
+        if (mQSContainer != null) {
+            mQSContainer.setBackgroundTintList(QSColorHelper.getBackgroundColorList(mContext));
+        }
         if (container != null) {
             final QSTileHost qsh = SystemUIFactory.getInstance().createQSTileHost(mContext, this,
                     mBluetoothController, mLocationController, mRotationLockController,
@@ -1160,7 +1175,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     mUserSwitcherController, mUserInfoController, mKeyguardMonitor,
                     mSecurityController, mBatteryController, mIconController,
                     mNextAlarmController);
-            mBrightnessMirrorController = new BrightnessMirrorController(mContext, mStatusBarWindow);
             container.addInflateListener(new InflateListener() {
                 @Override
                 public void onInflated(View v) {
@@ -1168,7 +1182,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                             R.id.quick_settings_container);
                     qsContainer.setHost(qsh);
                     mQSPanel = qsContainer.getQsPanel();
-                    mQSPanel.setBrightnessMirror(mBrightnessMirrorController);
                     mKeyguardStatusBar.setQSPanel(mQSPanel);
                     mHeader = qsContainer.getHeader();
                     initSignalCluster(mHeader);
@@ -2554,6 +2567,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateWeatherTextColor(false);
         updateWeatherFontStyle();
         updateWeatherFontSize();
+        updateQSBackgroundColor();
+    }
+
+    private void updateQSBackgroundColor() {
+        if (mQSContainer != null) {
+            mQSContainer.setBackgroundTintList(QSColorHelper.getBackgroundColorList(mContext));
+        }
     }
 
     private void forceExpansionView() {

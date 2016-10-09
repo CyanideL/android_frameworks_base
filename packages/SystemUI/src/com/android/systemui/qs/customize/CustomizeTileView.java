@@ -24,6 +24,8 @@ import com.android.systemui.qs.QSIconView;
 import com.android.systemui.qs.QSTileView;
 import libcore.util.Objects;
 
+import com.android.internal.util.cyanide.QSColorHelper;
+
 public class CustomizeTileView extends QSTileView {
 
     private TextView mAppLabel;
@@ -40,6 +42,7 @@ public class CustomizeTileView extends QSTileView {
         mAppLabel = (TextView) view.findViewById(R.id.tile_label);
         mAppLabel.setAlpha(.6f);
         mAppLabel.setSingleLine(true);
+        mAppLabel.setTextColor(QSColorHelper.getTextColor(mContext));
         mAppLabel.setTypeface(QSPanel.mFontStyle);
         addView(view);
     }

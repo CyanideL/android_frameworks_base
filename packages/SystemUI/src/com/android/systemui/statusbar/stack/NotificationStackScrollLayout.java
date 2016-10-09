@@ -86,6 +86,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 
+import com.android.internal.util.cyanide.QSColorHelper;
+
 /**
  * A layout which handles a dynamic amount of notifications and presents them in a scrollable stack.
  */
@@ -444,7 +446,7 @@ public class NotificationStackScrollLayout extends ViewGroup
                         + alphaInv * Color.green(scrimColor)),
                 (int) (mBackgroundFadeAmount * Color.blue(mBgColor)
                         + alphaInv * Color.blue(scrimColor)));
-        mBackgroundPaint.setColor(color);
+        mBackgroundPaint.setColor(QSColorHelper.getBackgroundColor(mContext));
         invalidate();
     }
 

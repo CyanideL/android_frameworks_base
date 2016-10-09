@@ -39,6 +39,8 @@ import com.android.systemui.qs.QSTile.DetailAdapter;
 import com.android.systemui.statusbar.phone.BaseStatusBarHeader;
 import com.android.systemui.statusbar.phone.QSTileHost;
 
+import com.android.internal.util.cyanide.QSColorHelper;
+
 public class QSDetail extends LinearLayout {
 
     private static final String TAG = "QSDetail";
@@ -156,8 +158,11 @@ public class QSDetail extends LinearLayout {
         if (showingDetail) {
             mQsDetailHeaderTitle.setText(adapter.getTitle());
             mQsDetailHeaderTitle.setTypeface(QSPanel.mFontStyle);
+            mQsDetailHeaderTitle.setTextColor(QSColorHelper.getTextColor(mContext));
             mDetailSettingsButton.setTypeface(QSPanel.mFontStyle);
+            mDetailSettingsButton.setTextColor(QSColorHelper.getTextColor(mContext));
             mDetailDoneButton.setTypeface(QSPanel.mFontStyle);
+            mDetailDoneButton.setTextColor(QSColorHelper.getTextColor(mContext));
             final Boolean toggleState = adapter.getToggleState();
             if (toggleState == null) {
                 mQsDetailHeaderSwitch.setVisibility(INVISIBLE);

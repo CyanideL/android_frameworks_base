@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.graphics.drawable.RippleDrawable;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Handler;
@@ -54,10 +55,13 @@ import com.android.systemui.qs.QSTile.DetailAdapter;
 import com.android.systemui.qs.QSTile.Host.Callback;
 import com.android.systemui.qs.customize.QSCustomizer;
 import com.android.systemui.qs.external.CustomTile;
+import com.android.systemui.qs.tiles.DndTile;
+import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.settings.BrightnessController;
 import com.android.systemui.settings.ToggleSlider;
 import com.android.systemui.statusbar.phone.QSTileHost;
 import com.android.systemui.statusbar.policy.BrightnessMirrorController;
+import com.android.systemui.statusbar.policy.SplitClockView;
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.tuner.TunerService.Tunable;
 
@@ -65,6 +69,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.android.internal.util.cyanide.FontHelper;
+import com.android.internal.util.cyanide.ColorHelper;
+import com.android.internal.util.cyanide.QSColorHelper;
 
 /** View that represents the quick settings tile panel. **/
 public class QSPanel extends LinearLayout implements Tunable, Callback {
@@ -125,8 +131,27 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
         mBrightnessController = new BrightnessController(getContext(),
                 brightnessIcon,
                 (ToggleSlider) findViewById(R.id.brightness_slider));
+        mBrightnessController.setRippleColor();
         mSettingsObserver = new SettingsObserver(mHandler);
 
+    }
+
+    public void setAccentColor() {
+        for (TileRecord r : mRecords) {
+            if (r.tile instanceof DndTile) {
+                //((DndTile) r.tile).updateZenTextColor();
+                ((DndTile) r.tile).updateZenIconColor();
+            }
+        }
+    }
+
+    public void setBackgroundColor() {
+        mBrightnessController.setBackgroundColor();
+        for (TileRecord r : mRecords) {
+            if (r.tile instanceof DndTile) {
+                ((DndTile) r.tile).updateZenPanelBackgroundColor();
+            }
+        }
     }
 
     protected void setupTileLayout() {
@@ -135,6 +160,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
         mTileLayout.setListening(mListening);
         addView((View) mTileLayout);
         mEditButton = (TextView) findViewById(android.R.id.edit);
+        mEditButton.setTextColor(QSColorHelper.getTextColor(mContext));
         mEditButton.setOnClickListener(view ->
                 mHost.startRunnableDismissingKeyguard(() -> showEdit(view)));
     }
@@ -289,6 +315,45 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
             r.tile.refreshState();
         }
         mFooter.refreshState();
+    }
+
+    private void setSliderColor() {
+        mBrightnessController.setSliderColor();
+    }
+
+    private void setSliderBackgroundColor() {
+        mBrightnessController.setSliderBackgroundColor();
+    }
+
+    private void setSliderIconColor() {
+        mBrightnessController.setSliderIconColor();
+    }
+
+    public void setIconColor() {
+        for (TileRecord r : mRecords) {
+            r.tileView.setIconColor();
+            if (r.tile instanceof WifiTile) {
+                ((WifiTile) r.tile).updateWifiDetail();
+            } else if (r.tile instanceof DndTile) {
+                ((DndTile) r.tile).updateZenIconColor();
+            }
+        }
+        mFooter.setIconColor();
+    }
+
+    public void setTextColor() {
+        mEditButton.setTextColor(QSColorHelper.getTextColor(mContext));
+        mFooter.setTextColor();
+    }
+
+    public void setRippleColor() {
+        mBrightnessController.setRippleColor();
+        for (TileRecord r : mRecords) {
+            r.tileView.setRippleColor();
+            if (r.tile instanceof DndTile) {
+                ((DndTile) r.tile).updateZenRippleColor();
+            }
+        }
     }
 
     public void showDetailAdapter(boolean show, DetailAdapter adapter, int[] locationInWindow) {
@@ -467,6 +532,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
                         int y = loc[1];
                         mCustomizePanel.show(x, y);
                     }
+                    mCustomizePanel.setToolbarIconColors();
                 }
 
             }
@@ -638,21 +704,72 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_FONT_STYLE),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_ACCENT_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_ICON_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_TEXT_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_RIPPLE_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_BG_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_ICON_COLOR),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
         void unobserve() {
-            ContentResolver resolver = mContext.getContentResolver();
-            resolver.unregisterContentObserver(this);
-        }
-
-        @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            update();
+            mContext.getContentResolver().unregisterContentObserver(this);
         }
 
         public void update() {
             updateQSFontStyle();
+            setAccentColor();
+            setIconColor();
+            setTextColor();
+            setRippleColor();
+            setSliderColor();
+            setSliderBackgroundColor();
+            setSliderIconColor();
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_FONT_STYLE))) {
+                updateQSFontStyle();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_ACCENT_COLOR))) {
+                setAccentColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_ICON_COLOR))) {
+                setIconColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_RIPPLE_COLOR))) {
+                setRippleColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_TEXT_COLOR))) {
+                setTextColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_COLOR))) {
+                setSliderColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_BG_COLOR))) {
+                setSliderBackgroundColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_ICON_COLOR))) {
+                setSliderIconColor();
+            }
         }
     }
 
@@ -663,7 +780,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
         getFontStyle(mQSFontStyle);
     }
 
-    public static void getFontStyle(int font) {
+    public void getFontStyle(int font) {
         switch (font) {
             case FontHelper.FONT_NORMAL:
             default:
@@ -741,7 +858,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
             case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
                 mFontStyle = FontHelper.NOTOSERIF_BOLD_ITALIC;
                 break;
-        }
-        mEditButton.setTypeface(mFontStyle);
+         }
+         mEditButton.setTypeface(mFontStyle);
     }
 }

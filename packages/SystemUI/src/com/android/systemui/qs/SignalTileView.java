@@ -26,6 +26,8 @@ import android.widget.ImageView;
 import com.android.systemui.R;
 import com.android.systemui.qs.QSTile.SignalState;
 
+import com.android.internal.util.cyanide.QSColorHelper;
+
 /** View that represents a custom quick settings tile for displaying signal info (wifi/cell). **/
 public final class SignalTileView extends QSIconView {
     private static final long DEFAULT_DURATION = new ValueAnimator().getDuration();
@@ -52,6 +54,7 @@ public final class SignalTileView extends QSIconView {
     private ImageView addTrafficView(int icon) {
         final ImageView traffic = new ImageView(mContext);
         traffic.setImageResource(icon);
+        traffic.setImageTintList(QSColorHelper.getIconColorList(mContext));
         traffic.setAlpha(0f);
         addView(traffic);
         return traffic;
@@ -112,6 +115,7 @@ public final class SignalTileView extends QSIconView {
         if (s.overlayIconId > 0) {
             mOverlay.setVisibility(VISIBLE);
             mOverlay.setImageResource(s.overlayIconId);
+            mOverlay.setImageTintList(QSColorHelper.getIconColorList(mContext));
         } else {
             mOverlay.setVisibility(GONE);
         }
@@ -140,5 +144,12 @@ public final class SignalTileView extends QSIconView {
         } else {
             view.setAlpha(newAlpha);
         }
+    }
+
+    @Override
+    public void setIconColor() {
+        super.setIconColor();
+        mIn.setImageTintList(QSColorHelper.getIconColorList(mContext));
+        mOut.setImageTintList(QSColorHelper.getIconColorList(mContext));
     }
 }

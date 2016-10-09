@@ -18,7 +18,9 @@ package com.android.systemui.settings;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.database.ContentObserver;
+import android.graphics.drawable.RippleDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -32,10 +34,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.android.systemui.R;
+
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.MetricsProto.MetricsEvent;
 
 import java.util.ArrayList;
+
+import com.android.internal.util.cyanide.QSColorHelper;
 
 public class BrightnessController implements ToggleSlider.Listener {
     private static final String TAG = "StatusBar.BrightnessController";
@@ -314,6 +320,31 @@ public class BrightnessController implements ToggleSlider.Listener {
             mControl.setMax(mMaximumBacklight - mMinimumBacklight);
             mControl.setValue(value - mMinimumBacklight);
         }
+    }
+
+    public void setBackgroundColor() {
+        mControl.setBackgroundColor();
+    }
+
+    public void setSliderBackgroundColor() {
+        mControl.setSliderBackgroundColor();
+    }
+
+    public void setSliderColor() {
+        mControl.setSliderColor();
+    }
+
+    public void setSliderIconColor() {
+        mControl.setSliderIconColor();
+        mIcon.setImageTintList(ColorStateList.valueOf(QSColorHelper.getBrightnessSliderIconColor(mContext)));
+    }
+
+    public void setRippleColor() {
+        mControl.setRippleColor();
+        RippleDrawable rippleBackground =
+                (RippleDrawable) mContext.getDrawable(R.drawable.ripple_drawable_oval).mutate();
+        rippleBackground.setColor(QSColorHelper.getRippleColorList(mContext));
+        mIcon.setBackground(rippleBackground);
     }
 
 }

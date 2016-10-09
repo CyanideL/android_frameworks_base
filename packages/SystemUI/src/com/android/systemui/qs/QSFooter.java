@@ -38,6 +38,8 @@ import com.android.systemui.statusbar.policy.SecurityController;
 
 import static android.provider.Settings.ACTION_VPN_SETTINGS;
 
+import com.android.internal.util.cyanide.QSColorHelper;
+
 public class QSFooter implements OnClickListener, DialogInterface.OnClickListener {
     protected static final String TAG = "QSFooter";
     protected static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
@@ -45,7 +47,7 @@ public class QSFooter implements OnClickListener, DialogInterface.OnClickListene
     private final View mRootView;
     private final TextView mFooterText;
     private final ImageView mFooterIcon;
-    private final Context mContext;
+    private Context mContext;
     private final Callback mCallback = new Callback();
 
     private SecurityController mSecurityController;
@@ -59,11 +61,13 @@ public class QSFooter implements OnClickListener, DialogInterface.OnClickListene
     private int mFooterTextId;
 
     public QSFooter(QSPanel qsPanel, Context context) {
+        mContext = context;
         mRootView = LayoutInflater.from(context)
                 .inflate(R.layout.quick_settings_footer, qsPanel, false);
         mRootView.setOnClickListener(this);
         mFooterText = (TextView) mRootView.findViewById(R.id.footer_text);
         mFooterIcon = (ImageView) mRootView.findViewById(R.id.footer_icon);
+        mFooterIcon.setImageTintList(QSColorHelper.getIconColorList(mContext));
         mContext = context;
         mMainHandler = new Handler();
     }
@@ -194,6 +198,14 @@ public class QSFooter implements OnClickListener, DialogInterface.OnClickListene
         } else {
             return R.string.monitoring_title;
         }
+    }
+
+    public void setIconColor() {
+        mFooterIcon.setImageTintList(QSColorHelper.getIconColorList(mContext));
+    }
+
+    public void setTextColor() {
+        mFooterText.setTextColor(QSColorHelper.getTextColor(mContext));
     }
 
     private final Runnable mUpdateDisplayState = new Runnable() {

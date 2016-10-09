@@ -44,6 +44,8 @@ import com.android.systemui.qs.QSPanel;
 import com.android.systemui.qs.QSTile;
 import com.android.systemui.statusbar.policy.BatteryController;
 
+import com.android.internal.util.cyanide.QSColorHelper;
+
 import java.text.NumberFormat;
 
 public class BatteryTile extends QSTile<QSTile.State> implements BatteryController.BatteryStateChangeCallback {
@@ -123,6 +125,7 @@ public class BatteryTile extends QSTile<QSTile.State> implements BatteryControll
                         context.getColor(R.color.batterymeter_frame_color));
                 drawable.onBatteryLevelChanged(mLevel, mPluggedIn, mCharging);
                 drawable.onPowerSaveChanged(mPowerSave);
+                drawable.setIconColor(QSColorHelper.getIconColor(mContext));
                 return drawable;
             }
 
@@ -222,9 +225,11 @@ public class BatteryTile extends QSTile<QSTile.State> implements BatteryControll
             final TextView batterySaverTitle =
                     (TextView) mCurrentView.findViewById(android.R.id.title);
             batterySaverTitle.setTypeface(QSPanel.mFontStyle);
+            batterySaverTitle.setTextColor(QSColorHelper.getTextColor(mContext));
             final TextView batterySaverSummary =
                     (TextView) mCurrentView.findViewById(android.R.id.summary);
             batterySaverSummary.setTypeface(QSPanel.mFontStyle);
+            batterySaverSummary.setTextColor(QSColorHelper.getTextColor(mContext));
             if (mCharging) {
                 mCurrentView.findViewById(R.id.switch_container).setAlpha(.7f);
                 batterySaverTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
@@ -256,8 +261,8 @@ public class BatteryTile extends QSTile<QSTile.State> implements BatteryControll
             }
             mGraphText = (TextView) mCurrentView.findViewById(R.id.charge_and_estimation);
             mGraphText.setText(builder);
+            mGraphText.setTextColor(QSColorHelper.getAccentColor(mContext));
             mGraphText.setTypeface(QSPanel.mFontStyle);
-            //((TextView) mCurrentView.findViewById(R.id.charge_and_estimation)).setText(builder);
 
             info.bindHistory((UsageView) mCurrentView.findViewById(R.id.battery_usage));
         }

@@ -177,6 +177,7 @@ public class StatusBarHeaderView extends BaseStatusBarHeader implements View.OnC
         mBatteryLevel = (BatteryLevelTextView) findViewById(R.id.battery_level_text);
         mAlarmStatus = (TextView) findViewById(R.id.alarm_status);
         mAlarmStatus.setOnClickListener(this);
+        if (mAlarmStatus != null) mAlarmStatus.setTypeface(QSPanel.mFontStyle);
         mSignalCluster = findViewById(R.id.signal_cluster);
         mSystemIcons = (LinearLayout) findViewById(R.id.system_icons);
         mSettingsObserver = new SettingsObserver(new Handler());

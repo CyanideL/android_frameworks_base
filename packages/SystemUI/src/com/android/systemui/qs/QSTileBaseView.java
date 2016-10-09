@@ -26,10 +26,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 
 import com.android.systemui.R;
+
+import com.android.internal.util.cyanide.QSColorHelper;
 
 public class QSTileBaseView extends LinearLayout {
 
@@ -52,6 +56,7 @@ public class QSTileBaseView extends LinearLayout {
 
         mTileBackground = newTileBackground();
         if (mTileBackground instanceof RippleDrawable) {
+            ((RippleDrawable) mTileBackground).setColor(QSColorHelper.getRippleColorList(mContext));
             setRipple((RippleDrawable) mTileBackground);
         }
         setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
@@ -173,6 +178,27 @@ public class QSTileBaseView extends LinearLayout {
                 info.setChecked(mTileState);
                 info.setCheckable(true);
             }
+        }
+    }
+
+    public void setIconColor() {
+        if (mIcon instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) mIcon).getChildCount(); i++) {
+                if (((ViewGroup) mIcon).getChildAt(i) instanceof ImageView) {
+                    ImageView iv = (ImageView) ((ViewGroup) mIcon).getChildAt(i);
+                    if (iv.getDrawable() != null) {
+                        iv.getDrawable().setTint(QSColorHelper.getIconColor(mContext));
+                    }
+                }
+            }
+        }
+        mIcon.setIconColor();
+    }
+
+    public void setRippleColor() {
+        if (mTileBackground instanceof RippleDrawable) {
+            ((RippleDrawable) mTileBackground).setColor(
+                    QSColorHelper.getRippleColorList(mContext));
         }
     }
 

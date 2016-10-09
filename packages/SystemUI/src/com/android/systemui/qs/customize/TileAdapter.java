@@ -50,6 +50,8 @@ import com.android.systemui.qs.external.CustomTile;
 import com.android.systemui.statusbar.phone.QSTileHost;
 import com.android.systemui.statusbar.phone.SystemUIDialog;
 
+import com.android.internal.util.cyanide.QSColorHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -217,10 +219,8 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
             mTextView = (TextView) holder.itemView.findViewById(android.R.id.title);
             mTextView.setText(mCurrentDrag != null ? R.string.drag_to_remove_tiles
                     : R.string.drag_to_add_tiles);
+            mTextView.setTextColor(QSColorHelper.getAccentColor(mContext));
             mTextView.setTypeface(QSPanel.mFontStyle);
-            //((TextView) holder.itemView.findViewById(android.R.id.title)).setText(
-                    //mCurrentDrag != null ? R.string.drag_to_remove_tiles
-                    //: R.string.drag_to_add_tiles);
             return;
         }
         if (holder.getItemViewType() == TYPE_ACCESSIBLE_DROP) {

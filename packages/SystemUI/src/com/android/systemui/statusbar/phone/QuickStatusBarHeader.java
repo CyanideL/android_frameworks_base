@@ -18,13 +18,20 @@ package com.android.systemui.statusbar.phone;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
+import android.net.Uri;
+import android.os.Handler;
 import android.os.UserHandle;
+import android.provider.AlarmClock;
+import android.provider.CalendarContract;
+import android.provider.CalendarContract.Events;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
@@ -33,6 +40,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TextClock;
 import android.widget.Toast;
 
 import com.android.internal.logging.MetricsLogger;
@@ -52,6 +60,8 @@ import com.android.systemui.statusbar.policy.UserInfoController;
 import com.android.systemui.statusbar.policy.UserInfoController.OnUserInfoChangedListener;
 import com.android.systemui.tuner.TunerService;
 
+import com.android.internal.util.cyanide.QSColorHelper;
+
 import java.net.URISyntaxException;
 
 public class QuickStatusBarHeader extends BaseStatusBarHeader implements
@@ -67,6 +77,13 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
 
     private TextView mAlarmStatus;
     private View mAlarmStatusCollapsed;
+
+    private View mClock;
+    private View mDate;
+    private TextView mTime;
+    private TextView mAmPm;
+    private TextView mDateCollapsed;
+    private TextView mDateExpanded;
 
     private QSPanel mQsPanel;
 
@@ -102,6 +119,8 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
     private QSTileHost mHost;
     private boolean mShowFullAlarm;
 
+    private SettingsObserver mSettingsObserver;
+
     public QuickStatusBarHeader(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -109,6 +128,7 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mSettingsObserver = new SettingsObserver(new Handler());
 
         mEmergencyOnly = (TextView) findViewById(R.id.header_emergency_calls_only);
 
@@ -118,6 +138,15 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         mDateTimeGroup.setPivotX(0);
         mDateTimeGroup.setPivotY(0);
         mShowFullAlarm = getResources().getBoolean(R.bool.quick_settings_show_full_alarm);
+
+        mClock = findViewById(R.id.clock);
+        mClock.setOnClickListener(this);
+        mDate = findViewById(R.id.date);
+        mDate.setOnClickListener(this);
+        mTime = (TextView) findViewById(R.id.time_view);
+        mAmPm = (TextView) findViewById(R.id.am_pm_view);
+        mDateCollapsed = (TextView) findViewById(R.id.date_collapsed);
+        mDateExpanded = (TextView) findViewById(R.id.date_expanded);
 
         mExpandIndicator = (ExpandableIndicator) findViewById(R.id.expand_indicator);
 
@@ -309,6 +338,7 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         updateDateTimePosition();
         updateVisibilities();
         setClickable(false);
+        updateRippleColor();
     }
 
     protected void updateVisibilities() {
@@ -323,8 +353,10 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
     private void updateListeners() {
         if (mListening) {
             mNextAlarmController.addStateChangedCallback(this);
+            mSettingsObserver.observe();
         } else {
             mNextAlarmController.removeStateChangedCallback(this);
+            mSettingsObserver.unobserve();
         }
     }
 
@@ -368,6 +400,10 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
             }
         } else if (v == mCyanideButton) {
             startCyanideMods();
+        } else if (v == mClock) {
+            startClockActivity();
+        } else if (v == mDate) {
+            startDateActivity();
         }
     }
 
@@ -428,6 +464,19 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
             }
     }
 
+    private void startClockActivity() {
+        mActivityStarter.startActivity(new Intent(AlarmClock.ACTION_SET_ALARM),
+                true /* dismissShade */);
+    }
+
+    private void startDateActivity() {
+        Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
+        builder.appendPath("time");
+        ContentUris.appendId(builder, System.currentTimeMillis());
+        Intent intent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
+        mActivityStarter.startActivity(intent, true /* dismissShade */);
+    }
+
     @Override
     public void setNextAlarmController(NextAlarmController nextAlarmController) {
         mNextAlarmController = nextAlarmController;
@@ -462,5 +511,122 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
     @Override
     public void onUserInfoChanged(String name, Drawable picture) {
         mMultiUserAvatar.setImageDrawable(picture);
+    }
+
+    private void updateRippleColor() {
+        mSettingsButton.setBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
+        mCyanideButton.setBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
+        mAlarmStatus.setBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable_rectangle), false));
+        mTime.setBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable_rectangle), false));
+        mAmPm.setBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable_rectangle), false));
+        mMultiUserSwitch.setBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
+    }
+
+    private RippleDrawable getColoredBackgroundDrawable(Drawable rd, boolean applyRippleColor) {
+        RippleDrawable background = (RippleDrawable) rd.mutate();
+
+        background.setColor(QSColorHelper.getHeaderRippleColorList(mContext));
+        return background;
+    }
+
+    public void setFontStyle() {
+        if (mDateTimeGroup instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) mDateTimeGroup).getChildCount(); i++) {
+                if (((ViewGroup) mDateTimeGroup).getChildAt(i) instanceof TextView) {
+                    TextView tv = (TextView) ((ViewGroup) mDateTimeGroup).getChildAt(i);
+                    if (tv != null) {
+                        tv.setTypeface(QSPanel.mFontStyle);
+                    }
+                }
+            }
+        }
+        mAmPm.setTypeface(QSPanel.mFontStyle);
+        mTime.setTypeface(QSPanel.mFontStyle);
+        mAlarmStatus.setTypeface(QSPanel.mFontStyle);
+    }
+
+    private void updateIconColor() {
+        ((ImageView) mCyanideButton).setImageTintList(QSColorHelper.getHeaderIconColorList(mContext));
+        ((ImageView) mSettingsButton).setImageTintList(QSColorHelper.getHeaderIconColorList(mContext));
+        ((TextView) mDateTimeAlarmGroup.findViewById(R.id.date)).setCompoundDrawableTintList(QSColorHelper.getHeaderIconColorList(mContext));
+        ((ImageView) mAlarmStatusCollapsed).setImageTintList(QSColorHelper.getHeaderIconColorList(mContext));
+        Drawable alarmIcon =
+                getResources().getDrawable(R.drawable.ic_access_alarms_small).mutate();
+        alarmIcon.setTintList(QSColorHelper.getHeaderIconColorList(mContext));
+        mAlarmStatus.setCompoundDrawablesWithIntrinsicBounds(alarmIcon, null, null, null);
+    }
+
+    private void updateTextColor() {
+        mAmPm.setTextColor(QSColorHelper.getHeaderTextColor(mContext));
+        mTime.setTextColor(QSColorHelper.getHeaderTextColor(mContext));
+        if (mDateTimeGroup instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) mDateTimeGroup).getChildCount(); i++) {
+                if (((ViewGroup) mDateTimeGroup).getChildAt(i) instanceof TextView) {
+                    TextView tv = (TextView) ((ViewGroup) mDateTimeGroup).getChildAt(i);
+                    if (tv != null) {
+                        tv.setTextColor(QSColorHelper.getHeaderTextColor(mContext));
+                    }
+                }
+            }
+        }
+        mAlarmStatus.setTextColor(QSColorHelper.getHeaderTextColor(mContext));
+    }
+
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_FONT_STYLE),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_HEADER_ICON_COLOR),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_HEADER_RIPPLE_COLOR),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_HEADER_TEXT_COLOR),
+                    false, this);
+            updateSettings();
+        }
+
+        void unobserve() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.unregisterContentObserver(this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_FONT_STYLE))) {
+                setFontStyle();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_HEADER_ICON_COLOR))) {
+                updateIconColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_HEADER_RIPPLE_COLOR))) {
+                updateRippleColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_HEADER_TEXT_COLOR))) {
+                updateTextColor();
+            }
+
+        }
+
+        public void updateSettings() {
+            setFontStyle();
+            updateIconColor();
+            updateTextColor();
+        }
     }
 }

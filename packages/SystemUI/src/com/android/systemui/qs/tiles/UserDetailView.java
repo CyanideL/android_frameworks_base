@@ -18,6 +18,7 @@ package com.android.systemui.qs.tiles;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.RippleDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,8 @@ import com.android.settingslib.RestrictedLockUtils;
 import com.android.systemui.R;
 import com.android.systemui.qs.PseudoGridView;
 import com.android.systemui.statusbar.policy.UserSwitcherController;
+
+import com.android.internal.util.cyanide.QSColorHelper;
 /**
  * Quick settings detail view for user switching.
  */
@@ -71,6 +74,8 @@ public class UserDetailView extends PseudoGridView {
             UserSwitcherController.UserRecord item = getItem(position);
             UserDetailItemView v = UserDetailItemView.convertOrInflate(
                     mContext, convertView, parent);
+            ((RippleDrawable) v.getBackground()).setColor(
+                    QSColorHelper.getRippleColorList(mContext));
             if (v != convertView) {
                 v.setOnClickListener(this);
             }
