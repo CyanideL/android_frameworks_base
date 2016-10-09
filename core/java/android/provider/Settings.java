@@ -5129,6 +5129,12 @@ public final class Settings {
 		public static final String STATUS_BAR_CUSTOM_LABEL_TEXT_COLOR_DARK_MODE = "status_bar_custom_label_text_color_dark_mode";
 
         /**
+          * Cyanide Settings activity custom summary text
+          * @hide
+          */
+        public static final String CM_SETTINGS_SUMMARY= "cm_settings_summary";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
