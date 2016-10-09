@@ -129,9 +129,9 @@ public class WeatherServiceControllerImpl implements WeatherServiceController {
     }
 
     public void queryWeather() {
-        if (!isServiceEnabled()) {
+        /*if (!isServiceEnabled()) {
             return;
-        }
+        }*/
         Cursor c = mContext.getContentResolver().query(WEATHER_URI, WEATHER_PROJECTION,
                 null, null, null);
         if (c != null) {

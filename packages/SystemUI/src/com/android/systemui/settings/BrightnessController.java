@@ -18,7 +18,9 @@ package com.android.systemui.settings;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.database.ContentObserver;
+import android.graphics.drawable.RippleDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -34,10 +36,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.android.systemui.R;
+
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.MetricsProto.MetricsEvent;
 
 import java.util.ArrayList;
+
+import com.android.internal.util.cyanide.QSColorHelper;
 
 public class BrightnessController implements ToggleSlider.Listener {
     private static final String TAG = "StatusBar.BrightnessController";
@@ -380,5 +386,64 @@ public class BrightnessController implements ToggleSlider.Listener {
                     com.android.systemui.R.drawable.ic_qs_brightness_auto_on_new :
                     com.android.systemui.R.drawable.ic_qs_brightness_auto_off_new);
         }
+    }
+
+    /** Fetch the brightness mode from the system settings and update the icon */
+//    private void updateMode() {
+//        if (mAutomaticAvailable) {
+//            int automatic;
+//            automatic = Settings.System.getIntForUser(mContext.getContentResolver(),
+//                    Settings.System.SCREEN_BRIGHTNESS_MODE,
+//                    Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL,
+//                    UserHandle.USER_CURRENT);
+//            mAutomatic = automatic != Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
+//            updateIcon(mAutomatic);
+//        } else {
+//            mControl.setChecked(false);
+//            updateIcon(false /*automatic*/);
+//        }
+//    }
+
+//    /** Fetch the brightness from the system settings and update the slider */
+//    private void updateSlider() {
+//        if (mAutomatic) {
+//            float value = Settings.System.getFloatForUser(mContext.getContentResolver(),
+//                    Settings.System.SCREEN_AUTO_BRIGHTNESS_ADJ, 0,
+//                    UserHandle.USER_CURRENT);
+//            mControl.setMax((int) BRIGHTNESS_ADJ_RESOLUTION);
+//            mControl.setValue((int) ((value + 1) * BRIGHTNESS_ADJ_RESOLUTION / 2f));
+//        } else {
+//            int value;
+//            value = Settings.System.getIntForUser(mContext.getContentResolver(),
+//                    Settings.System.SCREEN_BRIGHTNESS, mMaximumBacklight,
+//                    UserHandle.USER_CURRENT);
+//            mControl.setMax(mMaximumBacklight - mMinimumBacklight);
+//            mControl.setValue(value - mMinimumBacklight);
+//        }
+//    }
+
+    public void setBackgroundColor() {
+        mControl.setBackgroundColor();
+    }
+
+    public void setSliderBackgroundColor() {
+        mControl.setSliderBackgroundColor();
+    }
+
+    public void setSliderColor() {
+        mControl.setSliderColor();
+    }
+
+    public void setSliderIconColor() {
+        mControl.setSliderIconColor();
+        mIcon.setImageTintList(ColorStateList.valueOf(QSColorHelper.getBrightnessSliderIconColor(mContext)));
+    }
+
+    public void setRippleColor() {
+        mControl.setRippleColor();
+        RippleDrawable rippleBackground =
+                (RippleDrawable) mContext.getDrawable(R.drawable.ripple_drawable_oval).mutate();
+        rippleBackground.setColor(QSColorHelper.getRippleColorList(mContext));
+        mIcon.setBackground(rippleBackground);
     }
 }

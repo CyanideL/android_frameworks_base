@@ -11,6 +11,8 @@ import com.android.systemui.R;
 
 import java.util.ArrayList;
 
+import com.android.internal.util.cyanide.QSColorHelper;
+
 public class PageIndicator extends ViewGroup {
 
     private static final String TAG = "PageIndicator";
@@ -52,6 +54,7 @@ public class PageIndicator extends ViewGroup {
         while (numPages > getChildCount()) {
             ImageView v = new ImageView(mContext);
             v.setImageResource(R.drawable.minor_a_b);
+            v.setImageTintList(QSColorHelper.getAccentColorList(mContext));
             addView(v, new LayoutParams(mPageIndicatorWidth, mPageIndicatorHeight));
         }
         // Refresh state.
@@ -97,6 +100,7 @@ public class PageIndicator extends ViewGroup {
             // Clear out any animation positioning.
             v.setTranslationX(0);
             v.setImageResource(R.drawable.major_a_b);
+            v.setImageTintList(QSColorHelper.getAccentColorList(mContext));
             v.setAlpha(getAlpha(i == index));
         }
     }
@@ -129,9 +133,11 @@ public class PageIndicator extends ViewGroup {
 
         playAnimation(first, getTransition(fromTransition, isAState, false));
         first.setAlpha(getAlpha(false));
+        first.setImageTintList(QSColorHelper.getAccentColorList(mContext));
 
         playAnimation(second, getTransition(fromTransition, isAState, true));
         second.setAlpha(getAlpha(true));
+        second.setImageTintList(QSColorHelper.getAccentColorList(mContext));
 
         mAnimating = true;
     }
@@ -200,6 +206,14 @@ public class PageIndicator extends ViewGroup {
         setMeasuredDimension(width, mPageIndicatorHeight);
     }
 
+    public void setIconColor() {
+        final int N = getChildCount();
+        for (int i = 0; i < N; i++) {
+            ImageView v = (ImageView) getChildAt(i);
+            v.setImageTintList(QSColorHelper.getAccentColorList(mContext));
+        }
+    }
+
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         final int N = getChildCount();
@@ -211,6 +225,8 @@ public class PageIndicator extends ViewGroup {
             getChildAt(i).layout(left, 0, mPageIndicatorWidth + left, mPageIndicatorHeight);
         }
     }
+
+    
 
     private final Runnable mAnimationDone = new Runnable() {
         @Override

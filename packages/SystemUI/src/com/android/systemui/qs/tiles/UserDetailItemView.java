@@ -36,6 +36,8 @@ import com.android.systemui.R;
 import com.android.systemui.qs.QSPanel;
 import com.android.systemui.statusbar.phone.UserAvatarView;
 
+import com.android.internal.util.cyanide.QSColorHelper;
+
 /**
  * Displays one user in the {@link UserDetailView} view.
  */
@@ -91,11 +93,13 @@ public class UserDetailItemView extends LinearLayout {
 
     public void bind(String name, Bitmap picture, int userId) {
         mName.setText(name);
+        mName.setTextColor(QSColorHelper.getTextColor(mContext));
         mAvatar.setAvatarWithBadge(picture, userId);
     }
 
     public void bind(String name, Drawable picture, int userId) {
         mName.setText(name);
+        mName.setTextColor(QSColorHelper.getTextColor(mContext));
         mAvatar.setDrawableWithBadge(picture, userId);
     }
 

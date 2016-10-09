@@ -125,14 +125,25 @@ public class UserAvatarView extends View {
     }
 
     public void setDrawable(Drawable d) {
+        setDrawable(d, 0);
+    }
+
+    public void setDrawable(Drawable d, int color) {
         if (d instanceof UserIconDrawable) {
             throw new RuntimeException("Recursively adding UserIconDrawable");
+        }
+        if (color != 0) {
+            d.setTint(color);
         }
         mDrawable.setIconDrawable(d);
         mDrawable.setBadge(null);
     }
 
     public void setDrawableWithBadge(Drawable d, int userId) {
+        setDrawableWithBadge(d, userId, 0);
+    }
+
+    public void setDrawableWithBadge(Drawable d, int userId, int color) {
         if (d instanceof UserIconDrawable) {
             throw new RuntimeException("Recursively adding UserIconDrawable");
         }

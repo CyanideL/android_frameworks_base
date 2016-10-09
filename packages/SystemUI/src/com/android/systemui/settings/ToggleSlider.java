@@ -17,8 +17,12 @@
 package com.android.systemui.settings;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.RippleDrawable;
+import android.graphics.PorterDuff.Mode;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,6 +35,8 @@ import android.widget.TextView;
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.policy.BrightnessMirrorController;
+
+import com.android.internal.util.cyanide.QSColorHelper;
 
 public class ToggleSlider extends RelativeLayout {
     public interface Listener {
@@ -135,6 +141,35 @@ public class ToggleSlider extends RelativeLayout {
             copy.recycle();
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    public void setBackgroundColor() {
+        if (mSlider.getThumb() instanceof LayerDrawable) {
+            ((LayerDrawable) mSlider.getThumb()).findDrawableByLayerId(R.id.background)
+                    .setTint(QSColorHelper.getBackgroundColor(mContext));
+        }
+    }
+
+    public void setSliderColor() {
+        mSlider.setProgressTintList(ColorStateList.valueOf(QSColorHelper.getBrightnessSliderColor(mContext)));
+    }
+
+    public void setSliderBackgroundColor() {
+        mSlider.setProgressBackgroundTintList(ColorStateList.valueOf(QSColorHelper.getBrightnessSliderEmptyColor(mContext)));
+    }
+
+    public void setSliderIconColor() {
+        if (mSlider.getThumb() instanceof LayerDrawable) {
+            ((LayerDrawable) mSlider.getThumb()).findDrawableByLayerId(R.id.color_fill)
+                    .setColorFilter(QSColorHelper.getBrightnessSliderIconColor(mContext), Mode.MULTIPLY);
+        }
+    }
+
+    public void setRippleColor() {
+        if (mSlider.getBackground() instanceof RippleDrawable) {
+            ((RippleDrawable) mSlider.getBackground()).setColor(
+                    QSColorHelper.getRippleColorList(mContext));
+        }
     }
 
     private final OnCheckedChangeListener mCheckListener = new OnCheckedChangeListener() {

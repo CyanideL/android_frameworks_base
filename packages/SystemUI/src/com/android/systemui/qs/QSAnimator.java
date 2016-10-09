@@ -30,6 +30,8 @@ import com.android.systemui.statusbar.phone.QSTileHost;
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.tuner.TunerService.Tunable;
 
+import com.android.internal.util.cyanide.QSColorHelper;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -162,6 +164,7 @@ public class QSAnimator implements Callback, PageListener, Listener, OnLayoutCha
             QSTileBaseView tileView = mQsPanel.getTileView(tile);
             final TextView label = ((QSTileView) tileView).getLabel();
             label.setTypeface(QSPanel.mFontStyle);
+            label.setTextColor(QSColorHelper.getTextColor(mQsContainer.getContext()));
             final View tileIcon = tileView.getIcon().getIconView();
             if (count < mNumQuickTiles && mAllowFancy) {
                 // Quick tiles.

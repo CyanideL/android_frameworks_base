@@ -42,6 +42,8 @@ import com.android.systemui.qs.QSTile;
 import com.android.systemui.statusbar.policy.ZenModeController;
 import com.android.systemui.volume.ZenModePanel;
 
+import com.android.internal.util.cyanide.QSColorHelper;
+
 /** Quick settings tile: Do not disturb **/
 public class DndTile extends QSTile<QSTile.BooleanState> {
 
@@ -209,6 +211,18 @@ public class DndTile extends QSTile<QSTile.BooleanState> {
         return isVisible(mContext);
     }
 
+    public void updateZenPanelBackgroundColor() {
+        mDetailAdapter.updateZenPanelBackground();
+    }
+
+    public void updateZenIconColor() {
+        mDetailAdapter.updateZenIconColor();
+    }
+
+    public void updateZenRippleColor() {
+        mDetailAdapter.updateZenRippleColor();
+    }
+
     private final OnSharedPreferenceChangeListener mPrefListener
             = new OnSharedPreferenceChangeListener() {
         @Override
@@ -277,6 +291,9 @@ public class DndTile extends QSTile<QSTile.BooleanState> {
                 mZenModePanel.init(mController);
                 mZenModePanel.addOnAttachStateChangeListener(this);
                 mZenModePanel.setCallback(mZenModePanelCallback);
+                mZenModePanel.updateZenPanelBackgroundColor(QSColorHelper.getBackgroundColorList(mContext));
+                mZenModePanel.setZenModeIconColor(QSColorHelper.getIconColorList(mContext), QSColorHelper.getIconColorList(mContext));
+                mZenModePanel.setZenModeRippleColor(QSColorHelper.getRippleColorList(mContext));
                 mZenModePanel.setTypeface(QSPanel.mFontStyle);
             }
             return mZenModePanel;
@@ -290,6 +307,26 @@ public class DndTile extends QSTile<QSTile.BooleanState> {
         @Override
         public void onViewDetachedFromWindow(View v) {
             mShowingDetail = false;
+        }
+
+        private void updateZenPanelBackground() {
+            if (mZenModePanel != null) {
+                mZenModePanel.updateZenPanelBackgroundColor(
+                        QSColorHelper.getBackgroundColorList(mContext));
+            }
+        }
+
+        private void updateZenIconColor() {
+            if (mZenModePanel != null) {
+                mZenModePanel.setZenModeIconColor(
+                        QSColorHelper.getIconColorList(mContext), QSColorHelper.getIconColorList(mContext));
+            }
+        }
+
+        private void updateZenRippleColor() {
+            if (mZenModePanel != null) {
+                mZenModePanel.setZenModeRippleColor(QSColorHelper.getRippleColorList(mContext));
+            }
         }
     }
 

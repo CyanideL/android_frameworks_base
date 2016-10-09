@@ -44,6 +44,8 @@ import com.android.systemui.statusbar.phone.PhoneStatusBar;
 import com.android.systemui.statusbar.phone.QSTileHost;
 import com.android.systemui.statusbar.policy.KeyguardMonitor.Callback;
 
+import com.android.internal.util.cyanide.QSColorHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,10 +79,7 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
         LayoutInflater.from(getContext()).inflate(R.layout.qs_customize_panel_content, this);
 
         mToolbar = (Toolbar) findViewById(com.android.internal.R.id.action_bar);
-        TypedValue value = new TypedValue();
-        mContext.getTheme().resolveAttribute(android.R.attr.homeAsUpIndicator, value, true);
-        mToolbar.setNavigationIcon(
-                getResources().getDrawable(value.resourceId, mContext.getTheme()));
+        mToolbar.setNavigationIcon(R.drawable.action_bar_back);
         mToolbar.setNavigationOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +89,7 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
         mToolbar.setOnMenuItemClickListener(this);
         mToolbar.getMenu().add(Menu.NONE, MENU_RESET, 0,
                 mContext.getString(com.android.internal.R.string.reset));
+        mToolbar.setTitleTextColor(QSColorHelper.getTextColor(mContext));
         mToolbar.setTitle(R.string.qs_edit);
 
         mRecyclerView = (RecyclerView) findViewById(android.R.id.list);
@@ -202,6 +202,17 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
 
     private void save() {
         mTileAdapter.saveSpecs(mHost);
+    }
+
+    public void setToolbarIconColors() {
+        if (mToolbar.getNavigationIcon() != null) {
+            mToolbar.getNavigationIcon().mutate().setTint(
+                    QSColorHelper.getIconColor(mContext));
+        }
+        if (mToolbar.getOverflowIcon() != null) {
+            mToolbar.getOverflowIcon().mutate().setTint(
+                    QSColorHelper.getIconColor(mContext));
+        }
     }
 
     private final Callback mKeyguardCallback = new Callback() {
