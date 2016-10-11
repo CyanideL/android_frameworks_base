@@ -372,8 +372,8 @@ public class ExpansionViewActivityPanel extends RelativeLayout /*implements Batt
 
     private void startTrafficLongClickActivity() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.android.settings",
-            "com.android.settings.Settings$ExpansionViewTrafficSettingsActivity");
+        intent.setClassName("com.rogersb11.cyanide",
+            "com.rogersb11.cyanide.ExpansionViewTrafficActivity");
         mActivityStarter.startActivity(intent, true /* dismissShade */);
     }
 
