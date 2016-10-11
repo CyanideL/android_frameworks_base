@@ -1164,21 +1164,11 @@ public abstract class BaseStatusBar extends SystemUI implements
             final View publicTime = (TextView) publicView.findViewById(R.id.time);
             final View publicInternalTime = (TextView) publicView.findViewById(
                     com.android.internal.R.id.time);
-            //final TextView publicAppName = (TextView) publicView.findViewById(R.id.app_name_text);
-            //final TextView publicInternalAppName = (TextView) publicView.findViewById(
-            //        com.android.internal.R.id.app_name_text);
-            //final TextView publicHeaderText = (TextView) publicView.findViewById(R.id.header_text);
-            //final TextView publicInternalHeaderText = (TextView) publicView.findViewById(
-            //        com.android.internal.R.id.header_text);
 
             setNotificationTypeface(publicTitle, mFontStyle);
             setNotificationTypeface(publicInternalTitle, mFontStyle);
             setNotificationTypeface(publicText, mFontStyle);
             setNotificationTypeface(publicInternalText, mFontStyle);
-            //setNotificationTypeface(publicAppName, mFontStyle);
-            //setNotificationTypeface(publicInternalAppName, mFontStyle);
-            //setNotificationTypeface(publicHeaderText, mFontStyle);
-            //setNotificationTypeface(publicInternalHeaderText, mFontStyle);
             if (publicTime instanceof DateTimeView) {
                 setNotificationTypeface((TextView) publicTime, mFontStyle);
             }
@@ -1218,8 +1208,6 @@ public abstract class BaseStatusBar extends SystemUI implements
                     com.android.internal.R.id.inbox_text6);
             final NotificationActionListLayout expandedActions = (NotificationActionListLayout) expandedView.findViewById(
                     com.android.internal.R.id.actions);
-            final TextView action0 = (TextView) expandedView.findViewById(
-                    com.android.internal.R.id.action0);
             final TextView action1 = (TextView) expandedView.findViewById(
                     com.android.internal.R.id.action1);
             final TextView action2 = (TextView) expandedView.findViewById(
@@ -1247,7 +1235,6 @@ public abstract class BaseStatusBar extends SystemUI implements
             setNotificationTypeface(expandedInbox4, mFontStyle);
             setNotificationTypeface(expandedInbox5, mFontStyle);
             setNotificationTypeface(expandedInbox6, mFontStyle);
-            setNotificationTypeface(action0, mFontStyle);
             setNotificationTypeface(action1, mFontStyle);
             setNotificationTypeface(action2, mFontStyle);
             setNotificationTypeface(appName, mFontStyle);
@@ -1293,8 +1280,6 @@ public abstract class BaseStatusBar extends SystemUI implements
                     com.android.internal.R.id.inbox_text6);
             final NotificationActionListLayout headsUpActions = (NotificationActionListLayout) headsUpView.findViewById(
                     com.android.internal.R.id.actions);
-            final TextView headsUpAction0 = (TextView) headsUpView.findViewById(
-                    com.android.internal.R.id.action0);
             final TextView headsUpAction1 = (TextView) headsUpView.findViewById(
                     com.android.internal.R.id.action1);
             final TextView headsUpAction2 = (TextView) headsUpView.findViewById(
@@ -1321,7 +1306,6 @@ public abstract class BaseStatusBar extends SystemUI implements
             setNotificationTypeface(headsUpInbox4, mFontStyle);
             setNotificationTypeface(headsUpInbox5, mFontStyle);
             setNotificationTypeface(headsUpInbox6, mFontStyle);
-            setNotificationTypeface(headsUpAction0, mFontStyle);
             setNotificationTypeface(headsUpAction1, mFontStyle);
             setNotificationTypeface(headsUpAction2, mFontStyle);
             setNotificationTypeface(headsUpAppName, mFontStyle);
