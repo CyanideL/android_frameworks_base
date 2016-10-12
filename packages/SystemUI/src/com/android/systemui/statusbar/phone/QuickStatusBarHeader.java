@@ -526,6 +526,17 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
                 mContext.getDrawable(R.drawable.ripple_drawable_rectangle), false));
         mMultiUserSwitch.setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable_oval), false));
+        if (mDateTimeGroup instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) mDateTimeGroup).getChildCount(); i++) {
+                if (((ViewGroup) mDateTimeGroup).getChildAt(i) instanceof TextView) {
+                    TextView tv = (TextView) ((ViewGroup) mDateTimeGroup).getChildAt(i);
+                    if (tv != null) {
+                        tv.setBackground(getColoredBackgroundDrawable(
+                                mContext.getDrawable(R.drawable.ripple_drawable_rectangle), false));
+                    }
+                }
+            }
+        }
     }
 
     private RippleDrawable getColoredBackgroundDrawable(Drawable rd, boolean applyRippleColor) {
