@@ -49,9 +49,6 @@
          SDK.  Instead, put them here. -->
   <private-symbols package="com.android.internal" />
 
-  <!-- LED pulse -->
-  <java-symbol type="bool" name="config_ledCanPulse" />
-
   <!-- Config Power Menu -->
   <!-- <java-symbol type="id" name="option4" />
   <java-symbol type="id" name="option5" /> -->
