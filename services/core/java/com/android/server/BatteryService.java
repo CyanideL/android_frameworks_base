@@ -97,9 +97,6 @@ public final class BatteryService extends SystemService {
 
     private static final int BATTERY_SCALE = 100;    // battery capacity is a percentage
 
-    // notification light maximum brightness value to use
-    private static final int LIGHT_BRIGHTNESS_MAXIMUM = 255;
-
     // Used locally for determining when to make a last ditch effort to log
     // discharge stats before the device dies.
     private int mCriticalBatteryLevel;
@@ -134,9 +131,6 @@ public final class BatteryService extends SystemService {
 
     private int mInvalidCharger;
     private int mLastInvalidCharger;
-
-    private boolean mAdjustableNotificationLedBrightness;
-    private int mNotificationLedBrightnessLevel = LIGHT_BRIGHTNESS_MAXIMUM;
 
     private int mLowBatteryWarningLevel;
     private int mLowBatteryCloseWarningLevel;
@@ -830,10 +824,6 @@ public final class BatteryService extends SystemService {
             mMultiColorLed = context.getResources().getBoolean(
                     com.android.internal.R.bool.config_multiColorBatteryLed);
 
-            // Is the notification LED brightness changeable ?
-            mAdjustableNotificationLedBrightness = context.getResources().getBoolean(
-                    com.android.internal.R.bool.config_adjustableNotificationLedBrightness);
-
             mBatteryLedOn = context.getResources().getInteger(
                     com.android.internal.R.integer.config_notificationsBatteryLedOn);
             mBatteryLedOff = context.getResources().getInteger(
@@ -856,7 +846,6 @@ public final class BatteryService extends SystemService {
                 // No lights if explicitly disabled
                 mBatteryLight.turnOff();
             } else if (level < mLowBatteryWarningLevel) {
-                mBatteryLight.setModes(mNotificationLedBrightnessLevel);
                 if (status == BatteryManager.BATTERY_STATUS_CHARGING) {
                     // Battery is charging and low
                     mBatteryLight.setColor(mBatteryLowARGB);
@@ -870,7 +859,6 @@ public final class BatteryService extends SystemService {
                 }
             } else if (status == BatteryManager.BATTERY_STATUS_CHARGING
                     || status == BatteryManager.BATTERY_STATUS_FULL) {
-                mBatteryLight.setModes(mNotificationLedBrightnessLevel);
                 if (status == BatteryManager.BATTERY_STATUS_FULL || level >= 90) {
                     // Battery is full or charging and nearly full
                     mBatteryLight.setColor(mBatteryFullARGB);
@@ -975,13 +963,6 @@ public final class BatteryService extends SystemService {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.BATTERY_LIGHT_PULSE), false, this, UserHandle.USER_ALL);
 
-            // Notification LED brightness
-            if (mAdjustableNotificationLedBrightness) {
-                resolver.registerContentObserver(Settings.System.getUriFor(
-                        Settings.System.NOTIFICATION_LIGHT_BRIGHTNESS_LEVEL),
-                        false, this, UserHandle.USER_ALL);
-            }
-
             // Light colors
             if (mMultiColorLed) {
                 // Register observer if we have a multi color led
@@ -1025,13 +1006,6 @@ public final class BatteryService extends SystemService {
             mBatteryFullARGB = Settings.System.getInt(resolver,
                     Settings.System.BATTERY_LIGHT_FULL_COLOR, res.getInteger(
                     com.android.internal.R.integer.config_notificationsBatteryFullARGB));
-
-            // Notification LED brightness
-            if (mAdjustableNotificationLedBrightness) {
-                mNotificationLedBrightnessLevel = Settings.System.getInt(resolver,
-                        Settings.System.NOTIFICATION_LIGHT_BRIGHTNESS_LEVEL,
-                        LIGHT_BRIGHTNESS_MAXIMUM);
-            }
 
             updateLedPulse();
         }
