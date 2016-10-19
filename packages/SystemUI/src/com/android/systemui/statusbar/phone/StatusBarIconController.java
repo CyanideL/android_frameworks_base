@@ -44,7 +44,6 @@ import android.widget.TextView;
 import com.android.internal.statusbar.StatusBarIcon;
 import com.android.internal.util.cyanide.ColorHelper;
 import com.android.internal.util.cyanide.StatusBarColorHelper;
-import com.android.keyguard.CarrierText;
 import com.android.systemui.FontSizeUtils;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
@@ -83,7 +82,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private PhoneStatusBar mPhoneStatusBar;
     private DemoStatusIcons mDemoStatusIcons;
 
-    private CarrierText mCarrierTextKeyguard;
+    //private CarrierText mCarrierTextKeyguard;
     private StatusBarWeather mWeatherLayout;
     private StatusBarWeather mWeatherLayoutRight;
     private NetworkTraffic mNetworkTraffic;
@@ -160,7 +159,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
                 com.android.internal.R.array.config_statusBarIcons));
         mContext = context;
         mPhoneStatusBar = phoneStatusBar;
-        mCarrierTextKeyguard = (CarrierText) keyguardStatusBar.findViewById(R.id.keyguard_carrier_text);
+        //mCarrierTextKeyguard = (CarrierText) keyguardStatusBar.findViewById(R.id.keyguard_carrier_text);
         mCyanideLogo = (ImageView) statusBar.findViewById(R.id.cyanide_logo);
         mCyanideLogoLeft = (ImageView) statusBar.findViewById(R.id.left_cyanide_logo);
         mCyanideLogoKeyguard = (ImageView) keyguardStatusBar.findViewById(R.id.cyanide_logo_keyguard);
@@ -919,8 +918,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
 
     public void updateTextColor(boolean animate) {
         mAnimateTextColor = animate;
-        mCarrierTextKeyguard.setTextColor(StatusBarColorHelper.getTextColor(mContext));
-        mNetworkTrafficKeyguard.setTextColor(StatusBarColorHelper.getTextColor(mContext));
+        //mCarrierTextKeyguard.setTextColor(StatusBarColorHelper.getTextColor(mContext));
     }
 
     public void updateIconColor(boolean animate) {
