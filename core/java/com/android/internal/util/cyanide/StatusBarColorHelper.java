@@ -91,4 +91,14 @@ public class StatusBarColorHelper {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.STATUS_BAR_WEATHER_ICON_COLOR_DARK_MODE, 0xff000000);
     }
+
+    public static int getTrafficColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_NETWORK_TRAFFIC_COLOR, 0xffffffff);
+    }
+
+    public static int getTrafficColorDarkMode(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_NETWORK_TRAFFIC_COLOR_DARK_MODE, 0xff000000);
+    }
 }

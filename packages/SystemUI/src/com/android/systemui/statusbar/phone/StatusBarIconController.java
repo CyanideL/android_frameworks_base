@@ -121,6 +121,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private int mLogoColor;
     private int mWeatherIconColor;
     private int mWeatherTextColor;
+    private int mTrafficColor;
     private final Rect mTintArea = new Rect();
     private static final Rect sTmpRect = new Rect();
     private static final int[] sTmpInt2 = new int[2];
@@ -131,6 +132,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private boolean mAnimateLogoColor = false;
     private boolean mAnimateWeatherIconColor = false;
     private boolean mAnimateWeatherTextColor = false;
+    private boolean mAnimateTrafficColor = false;
 
     private boolean mTransitionPending;
     private boolean mTintChangePending;
@@ -192,6 +194,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mLogoColor = StatusBarColorHelper.getLogoColor(mContext);
         mWeatherIconColor = StatusBarColorHelper.getWeatherIconColor(mContext);
         mWeatherTextColor = StatusBarColorHelper.getWeatherTextColor(mContext);
+        mTrafficColor = StatusBarColorHelper.getTrafficColor(mContext);
         
 
         mHandler = new Handler();
@@ -586,6 +589,9 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mWeatherTextColor = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
                 StatusBarColorHelper.getWeatherTextColor(mContext),
                 StatusBarColorHelper.getWeatherTextColorDarkMode(mContext));
+        mTrafficColor = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
+                StatusBarColorHelper.getTrafficColor(mContext),
+                StatusBarColorHelper.getTrafficColorDarkMode(mContext));
 
         mNotificationIconAreaController.setIconTint(mIconColor);
         applyIconTint();
@@ -632,6 +638,14 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
             return color;
         } else {
             return StatusBarColorHelper.getLogoColor(mContext);
+        }
+    }
+
+    private int getTrafficTint(Rect tintArea, View view, int color) {
+        if (isInArea(tintArea, view) || mDarkIntensity == 0f) {
+            return color;
+        } else {
+            return StatusBarColorHelper.getTrafficColor(mContext);
         }
     }
 
@@ -709,8 +723,8 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
             mWeatherLayoutRight.setTextColor(getTextTint(mTintArea, mWeatherLayoutRight, mWeatherTextColor));
             mWeatherLayoutRight.setIconColor(getTint(mTintArea, mWeatherLayoutRight, mWeatherIconColor));
         }
-        mNetworkTraffic.setTextColor(getTextTint(mTintArea, mNetworkTraffic, mTextColor));
-        mNetworkTraffic.setIconColor(getTint(mTintArea, mNetworkTraffic, mIconColor));
+        mNetworkTraffic.setTextColor(getTextTint(mTintArea, mNetworkTraffic, mTrafficColor));
+        mNetworkTraffic.setIconColor(getTint(mTintArea, mNetworkTraffic, mTrafficColor));
         for (int i = 0; i < mStatusIcons.getChildCount(); i++) {
             StatusBarIconView v = (StatusBarIconView) mStatusIcons.getChildAt(i);
             v.setImageTintList(ColorStateList.valueOf(getTint(mTintArea, v, mIconColor)));
@@ -859,6 +873,12 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
                         mWeatherLayoutRight.setTextColor(blended);
                     }
                 }
+                if (mAnimateTrafficColor) {
+                    final int blended = ColorHelper.getBlendColor(mTextColor,
+                            StatusBarColorHelper.getTrafficColor(mContext), position);
+                    mNetworkTraffic.setTextColor(blended);
+                    mNetworkTraffic.setIconColor(blended);
+                }
             }
         });
         animator.addListener(new AnimatorListenerAdapter() {
@@ -887,6 +907,10 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
                 if (mAnimateWeatherIconColor) {
                     mWeatherIconColor = StatusBarColorHelper.getWeatherIconColor(mContext);
                     mAnimateWeatherIconColor = false;
+                }
+                if (mAnimateTrafficColor) {
+                    mTrafficColor = StatusBarColorHelper.getTrafficColor(mContext);
+                    mAnimateTrafficColor = false;
                 }
             }
         });
@@ -949,6 +973,20 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private void updateKeyguardLogoColor() {
         mCyanideLogoKeyguardLeft.setImageTintList(ColorStateList.valueOf(StatusBarColorHelper.getLogoColor(mContext)));
         mCyanideLogoKeyguard.setImageTintList(ColorStateList.valueOf(StatusBarColorHelper.getLogoColor(mContext)));
+    }
+
+    public void updateTrafficColor(boolean animate) {
+        mAnimateTrafficColor = animate;
+        if (!mAnimateIconColor && !mAnimateClockColor && !mAnimateWeatherTextColor && !mAnimateWeatherIconColor && !mAnimateLogoColor && mAnimateTrafficColor) {
+            mColorTransitionAnimator.start();
+        }
+        mNetworkTraffic.setTextColor(StatusBarColorHelper.getTrafficColor(mContext));
+        mNetworkTraffic.setIconColor(StatusBarColorHelper.getTrafficColor(mContext));
+        updateKeyguardTrafficColor();
+    }
+
+    private void updateKeyguardTrafficColor() {
+        mNetworkTrafficKeyguard.setTextColor(StatusBarColorHelper.getTrafficColor(mContext));
     }
 
     public void updateWeatherFontStyle() {

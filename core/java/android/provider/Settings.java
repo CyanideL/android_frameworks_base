@@ -5047,6 +5047,19 @@ public final class Settings {
                 "status_bar_network_traffic_icon_as_indicator";
 
         /**
+         * Dark mode color of status bar traffic
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_TRAFFIC_COLOR_DARK_MODE = "status_bar_network_traffic_color_dark_mode";
+
+        /**
+         * Color of the status bar traffic
+         *
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_TRAFFIC_COLOR = "status_bar_network_traffic_color";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
