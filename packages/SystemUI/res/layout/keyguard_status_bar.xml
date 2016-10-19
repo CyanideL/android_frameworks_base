@@ -99,19 +99,6 @@
             />
     </com.android.systemui.cyanide.NetworkTraffic>
 
-    <com.android.keyguard.CarrierText
-        android:id="@+id/keyguard_carrier_text"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_toEndOf="@+id/left_cyanide_logo_keyguard"
-        android:gravity="center_vertical"
-        android:ellipsize="marquee"
-        android:paddingStart="@dimen/keyguard_items_padding"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#ffffff"
-        android:singleLine="true" />
-
     <com.android.systemui.statusbar.AlphaImageView
         android:id="@+id/left_cyanide_logo_keyguard"
         android:layout_width="wrap_content"
