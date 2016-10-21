@@ -135,6 +135,7 @@ import com.android.systemui.SystemUIFactory;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.classifier.FalsingLog;
 import com.android.systemui.classifier.FalsingManager;
+import com.android.systemui.cyanide.CustomLabel;
 import com.android.systemui.cyanide.expansionview.ExpansionViewController;
 import com.android.systemui.cyanide.NetworkTrafficControllerImpl;
 import com.android.systemui.cyanide.NetworkTraffic;
@@ -372,6 +373,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     // settings
     private QSPanel mQSPanel;
     private View mQSContainer;
+
+    private CustomLabel mCustomLabel;
 
     // top bar
     BaseStatusBarHeader mHeader;
@@ -650,6 +653,33 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_NETWORK_TRAFFIC_COLOR),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CUSTOM_LABEL_SHOW),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CUSTOM_LABEL_SHOW_ON_LOCK_SCREEN),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+					Settings.System.STATUS_BAR_CUSTOM_LABEL_TEXT_CUSTOM),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CUSTOM_LABEL_HIDE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CUSTOM_LABEL_STYLE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CUSTOM_LABEL_NUMBER_OF_NOTIFICATION_ICONS),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+					Settings.System.STATUS_BAR_CUSTOM_LABEL_TEXT_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+					Settings.System.STATUS_BAR_CUSTOM_LABEL_FONT_STYLE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+					Settings.System.STATUS_BAR_CUSTOM_LABEL_FONT_SIZE),
+                    false, this, UserHandle.USER_ALL);
 
         }
 
@@ -770,6 +800,30 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_NETWORK_TRAFFIC_COLOR))) {
                 updateTrafficColor(true);
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CUSTOM_LABEL_TEXT_COLOR))) {
+                updateCustomLabelTextColor(true);
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CUSTOM_LABEL_FONT_STYLE))) {
+                updateCustomLabelFontStyle();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CUSTOM_LABEL_FONT_SIZE))) {
+                updateCustomLabelFontSize();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CUSTOM_LABEL_SHOW_ON_LOCK_SCREEN))) {
+                setKeyguardCustomLabel();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CUSTOM_LABEL_TEXT_CUSTOM))) {
+                setCustomLabelText();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CUSTOM_LABEL_SHOW))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CUSTOM_LABEL_STYLE))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CUSTOM_LABEL_HIDE))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CUSTOM_LABEL_NUMBER_OF_NOTIFICATION_ICONS))) {
+                    updateCustomLabelVisibility();
             }
         }
     }
@@ -1257,6 +1311,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 .setWeatherController(new WeatherServiceControllerImpl(mContext));
         ((StatusBarWeather) mStatusBarView.findViewById(R.id.status_bar_weather_layout_right))
                 .setWeatherController(new WeatherServiceControllerImpl(mContext));
+
+        mCustomLabel = (CustomLabel) mStatusBarView.findViewById(R.id.status_bar_custom_label_layout);
 
         mNetworkTrafficController = new NetworkTrafficControllerImpl(mContext);
         ((NetworkTraffic) mStatusBarView.findViewById(R.id.network_traffic))
@@ -2263,6 +2319,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateNotificationShade();
         mIconController.updateNotificationIcons(mNotificationData);
         setCyanideLogoVisibility();
+        updateCustomLabelVisibility();
         if (WeatherHelper.isWeatherServiceAvailable(mContext)) {
             updateWeatherVisibility();
         }
@@ -2669,6 +2726,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateNetworkTrafficIsBit();
         updateNetworkTrafficHideTraffic();
         updateTrafficColor(false);
+        updateCustomLabelVisibility();
+        updateCustomLabelTextColor(false);
+        updateCustomLabelFontStyle();
+        updateCustomLabelFontSize();
+        setCustomLabelText();
+        updateCustomLabelFontStyle();
+        setKeyguardCustomLabel();
     }
 
     private void updateTrafficColor(boolean animate) {
@@ -2699,6 +2763,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 Settings.System.EXPANSION_VIEW_KEYGUARD_SHOW, 0) == 1;
         if (mStackScroller != null) {
             mStackScroller.keyguardShowShade(force);
+        }
+    }
+
+    private void setKeyguardCustomLabel() {
+
+        boolean show = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_CUSTOM_LABEL_SHOW_ON_LOCK_SCREEN, 0) == 1;
+        if (mIconController != null) {
+            mIconController.showKeyguardLabel(show);
         }
     }
 
@@ -2873,6 +2946,45 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         Resources res = mContext.getResources();
         if (res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             updateResources();
+        }
+    }
+
+    private void setCustomLabelText() {
+        if (mIconController != null) {
+            mIconController.setCustomLabelText();
+        }
+    }
+
+    private void updateCustomLabelTextColor(boolean animate) {
+        if (mIconController != null) {
+            mIconController.updateCustomLabelTextColor(animate);
+        }
+    }
+
+    private void updateCustomLabelVisibility() {
+        final ContentResolver resolver = mContext.getContentResolver();
+
+        final boolean show = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CUSTOM_LABEL_SHOW, 0) == 1;
+        final boolean forceHide = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CUSTOM_LABEL_HIDE, 1) == 1;
+        final int maxAllowedIcons = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CUSTOM_LABEL_NUMBER_OF_NOTIFICATION_ICONS, 3);
+
+        if (mIconController != null) {
+            mIconController.updateCustomLabelVisibility(show, forceHide, maxAllowedIcons);
+        }
+    }
+
+    private void updateCustomLabelFontSize() {
+        if (mIconController != null) {
+            mIconController.updateCustomLabelFontSize();
+        }
+    }
+
+    private void updateCustomLabelFontStyle() {
+        if (mIconController != null) {
+            mIconController.updateCustomLabelFontStyle();
         }
     }
 

@@ -49,10 +49,12 @@ import com.android.systemui.Interpolators;
 import com.android.systemui.R;
 import com.android.systemui.SystemUIFactory;
 import com.android.systemui.cyanide.StatusBarWeather;
+import com.android.systemui.cyanide.CustomLabel;
 import com.android.systemui.cyanide.NetworkTraffic;
 import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.SignalClusterView;
 import com.android.systemui.statusbar.StatusBarIconView;
+import com.android.systemui.statusbar.StatusBarState;
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.tuner.TunerService.Tunable;
 
@@ -75,14 +77,22 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private static final int WEATHER_LEFT = 0;
     private static final int WEATHER_RIGHT = 1;
 
+    private static final int CUSTOM_LABEL_LEFT = 0;
+    private static final int CUSTOM_LABEL_RIGHT = 1;
+
+    private int mCustomLabelStyle;
     private int mLogoStyle;
     private int mWeatherStyle;
 
     private Context mContext;
     private PhoneStatusBar mPhoneStatusBar;
     private DemoStatusIcons mDemoStatusIcons;
+    LinearLayout mStatusBarContents;
 
-    //private CarrierText mCarrierTextKeyguard;
+    private CustomLabel mCustomLabel;
+    private CustomLabel mCustomLabelRight;
+    private CustomLabel mKeyguardCustomLabel;
+    private CustomLabel mKeyguardCustomLabelRight;
     private StatusBarWeather mWeatherLayout;
     private StatusBarWeather mWeatherLayoutRight;
     private NetworkTraffic mNetworkTraffic;
@@ -109,6 +119,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private boolean mShowKeyguardLogo = false;
 
     private boolean mShowWeather = false;
+    private boolean mShowCustomLabel = false;
 
     private int mIconSize;
     private int mIconHPadding;
@@ -121,6 +132,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private int mWeatherIconColor;
     private int mWeatherTextColor;
     private int mTrafficColor;
+    private int mCustomLabelTextColor;
     private final Rect mTintArea = new Rect();
     private static final Rect sTmpRect = new Rect();
     private static final int[] sTmpInt2 = new int[2];
@@ -132,6 +144,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private boolean mAnimateWeatherIconColor = false;
     private boolean mAnimateWeatherTextColor = false;
     private boolean mAnimateTrafficColor = false;
+    private boolean mAnimateCustomLabelTextColor = false;
 
     private boolean mTransitionPending;
     private boolean mTintChangePending;
@@ -159,7 +172,11 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
                 com.android.internal.R.array.config_statusBarIcons));
         mContext = context;
         mPhoneStatusBar = phoneStatusBar;
-        //mCarrierTextKeyguard = (CarrierText) keyguardStatusBar.findViewById(R.id.keyguard_carrier_text);
+        mStatusBarContents = (LinearLayout) statusBar.findViewById(R.id.status_bar_contents);
+        mCustomLabel = (CustomLabel) statusBar.findViewById(R.id.status_bar_custom_label_layout);
+        mCustomLabelRight = (CustomLabel) statusBar.findViewById(R.id.status_bar_custom_label_layout_right);
+        mKeyguardCustomLabel = (CustomLabel) keyguardStatusBar.findViewById(R.id.status_bar_custom_label_layout_keyguard);
+        mKeyguardCustomLabelRight = (CustomLabel) keyguardStatusBar.findViewById(R.id.status_bar_custom_label_layout_right_keyguard);
         mCyanideLogo = (ImageView) statusBar.findViewById(R.id.cyanide_logo);
         mCyanideLogoLeft = (ImageView) statusBar.findViewById(R.id.left_cyanide_logo);
         mCyanideLogoKeyguard = (ImageView) keyguardStatusBar.findViewById(R.id.cyanide_logo_keyguard);
@@ -194,6 +211,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mWeatherIconColor = StatusBarColorHelper.getWeatherIconColor(mContext);
         mWeatherTextColor = StatusBarColorHelper.getWeatherTextColor(mContext);
         mTrafficColor = StatusBarColorHelper.getTrafficColor(mContext);
+        mCustomLabelTextColor = StatusBarColorHelper.getCustomLabelTextColor(mContext);
         
 
         mHandler = new Handler();
@@ -388,6 +406,12 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         if (mWeatherLayoutRight.shouldShow() && mWeatherStyle == WEATHER_RIGHT) {
             animateHide(mWeatherLayoutRight, animate);
         }
+        if (mCustomLabel.shouldShow() && mCustomLabelStyle == CUSTOM_LABEL_LEFT) {
+            animateHide(mCustomLabel, animate);
+        }
+        if (mCustomLabelRight.shouldShow() && mCustomLabelStyle == CUSTOM_LABEL_RIGHT) {
+            animateHide(mCustomLabelRight, animate);
+        }
     }
 
     public void showNotificationIconArea(boolean animate) {
@@ -404,6 +428,12 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         }
         if (mWeatherLayoutRight.shouldShow() && mWeatherStyle == WEATHER_RIGHT) {
             animateShow(mWeatherLayoutRight, animate);
+        }
+        if (mCustomLabel.shouldShow() && mCustomLabelStyle == CUSTOM_LABEL_LEFT) {
+            animateShow(mCustomLabel, animate);
+        }
+        if (mCustomLabelRight.shouldShow() && mCustomLabelStyle == CUSTOM_LABEL_RIGHT) {
+            animateShow(mCustomLabelRight, animate);
         }
     }
 
@@ -591,6 +621,9 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mTrafficColor = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
                 StatusBarColorHelper.getTrafficColor(mContext),
                 StatusBarColorHelper.getTrafficColorDarkMode(mContext));
+        mCustomLabelTextColor = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
+                StatusBarColorHelper.getCustomLabelTextColor(mContext),
+                StatusBarColorHelper.getCustomLabelTextColorDarkMode(mContext));
 
         mNotificationIconAreaController.setIconTint(mIconColor);
         applyIconTint();
@@ -664,6 +697,14 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         }
     }
 
+    private int getCustomLabelTextColor(Rect tintArea, View view, int color) {
+        if (isInArea(tintArea, view) || mDarkIntensity == 0f) {
+            return color;
+        } else {
+            return StatusBarColorHelper.getCustomLabelTextColor(mContext);
+        }
+    }
+
     /**
      * @return the dark intensity to apply to {@param view} depending on the desired dark
      *         {@param intensity} and the screen {@param tintArea} in which to apply that intensity
@@ -714,6 +755,12 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     }
 
     private void applyIconTint() {
+        if (mCustomLabel.shouldShow() && mCustomLabelStyle == CUSTOM_LABEL_LEFT) {
+            mCustomLabel.setTextColor(getTextTint(mTintArea, mCustomLabel, mCustomLabelTextColor));
+        }
+        if (mCustomLabelRight.shouldShow() && mCustomLabelStyle == CUSTOM_LABEL_RIGHT) {
+            mCustomLabelRight.setTextColor(getTextTint(mTintArea, mCustomLabelRight, mCustomLabelTextColor));
+        }
         if (mWeatherLayout.shouldShow() && mWeatherStyle == WEATHER_LEFT) {
             mWeatherLayout.setTextColor(getTextTint(mTintArea, mWeatherLayout, mWeatherTextColor));
             mWeatherLayout.setIconColor(getTint(mTintArea, mWeatherLayout, mWeatherIconColor));
@@ -824,17 +871,23 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
                             StatusBarColorHelper.getClockColor(mContext), position);
                     mClockController.setTextColor(blended);
                 }
+                if (mAnimateCustomLabelTextColor) {
+                    final int blended = ColorHelper.getBlendColor(mTextColor,
+                            StatusBarColorHelper.getCustomLabelTextColor(mContext), position);
+                    if (mCustomLabelStyle == CUSTOM_LABEL_LEFT) {
+                        mCustomLabel.setTextColor(blended);
+                    }
+                    if (mCustomLabelStyle == CUSTOM_LABEL_RIGHT) {
+                        mCustomLabelRight.setTextColor(blended);
+                    }
+                }
                 if (mAnimateTextColor) {
                     final int blended = ColorHelper.getBlendColor(mTextColor,
                             StatusBarColorHelper.getTextColor(mContext), position);
-                    mWeatherLayout.setTextColor(blended);
-                    mNetworkTraffic.setTextColor(blended);
                 }
                 if (mAnimateIconColor) {
                     final int blended = ColorHelper.getBlendColor(mIconColor,
                             StatusBarColorHelper.getIconColor(mContext), position);
-                    mWeatherLayout.setIconColor(blended);
-                    mNetworkTraffic.setIconColor(blended);
                     for (int i = 0; i < mStatusIcons.getChildCount(); i++) {
                         StatusBarIconView v = (StatusBarIconView) mStatusIcons.getChildAt(i);
                         v.setImageTintList(ColorStateList.valueOf(blended));
@@ -911,6 +964,10 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
                     mTrafficColor = StatusBarColorHelper.getTrafficColor(mContext);
                     mAnimateTrafficColor = false;
                 }
+                if (mAnimateCustomLabelTextColor) {
+                    mCustomLabelTextColor = StatusBarColorHelper.getCustomLabelTextColor(mContext);
+                    mAnimateCustomLabelTextColor = false;
+                }
             }
         });
         return animator;
@@ -966,6 +1023,21 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         }
         mWeatherLayout.setTextColor(StatusBarColorHelper.getWeatherTextColor(mContext));
         mWeatherLayoutRight.setTextColor(StatusBarColorHelper.getWeatherTextColor(mContext));
+    }
+
+    public void updateCustomLabelTextColor(boolean animate) {
+        mAnimateCustomLabelTextColor = animate;
+        if (!mAnimateIconColor &&  !mAnimateLogoColor && !mAnimateClockColor && !mAnimateWeatherIconColor && !mAnimateWeatherTextColor && mAnimateCustomLabelTextColor) {
+            mColorTransitionAnimator.start();
+        }
+        mCustomLabel.setTextColor(StatusBarColorHelper.getCustomLabelTextColor(mContext));
+        mCustomLabelRight.setTextColor(StatusBarColorHelper.getCustomLabelTextColor(mContext));
+        setKeyguardCustomLabelColors();
+    }
+
+    private void setKeyguardCustomLabelColors() {
+        mKeyguardCustomLabel.setTextColor(StatusBarColorHelper.getCustomLabelTextColor(mContext));
+        mKeyguardCustomLabelRight.setTextColor(StatusBarColorHelper.getCustomLabelTextColor(mContext));
     }
 
     private void updateKeyguardLogoColor() {
@@ -1033,6 +1105,48 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mWeatherLayout.setType(type);
     }
 
+    public void updateCustomLabelFontStyle() {
+        mCustomLabel.updateFontStyle();
+        mCustomLabelRight.updateFontStyle();
+    }
+
+    public void updateCustomLabelFontSize() {
+        mCustomLabel.updateFontSize();
+        mCustomLabelRight.updateFontSize();
+    }
+
+    public void updateCustomLabelVisibility(boolean show, boolean forceHide, int maxAllowedIcons) {
+        mShowCustomLabel = show;
+        ContentResolver resolver = mContext.getContentResolver();
+        boolean forceHideByNumberOfIcons = false;
+        int notificationIconsCount = mNotificationIconAreaController.getNotificationIconsCount();
+        mCustomLabelStyle = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CUSTOM_LABEL_STYLE, 0);
+        if (forceHide && notificationIconsCount >= maxAllowedIcons) {
+            forceHideByNumberOfIcons = true;
+        }
+        if (mCustomLabelStyle == CUSTOM_LABEL_LEFT) {
+            mCustomLabel.setShow(show && !forceHideByNumberOfIcons);
+            mCustomLabelRight.setVisibility(View.GONE);
+        }
+        if (mCustomLabelStyle == CUSTOM_LABEL_RIGHT) {
+            mCustomLabelRight.setShow(show && !forceHideByNumberOfIcons);
+            mCustomLabel.setVisibility(View.GONE);
+        }
+        showKeyguardLabel(mShowCustomLabel);
+    }
+
+    public void setCustomLabelText() {
+        String customLabelText = Settings.System.getString(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_CUSTOM_LABEL_TEXT_CUSTOM);
+
+        if (customLabelText == null || customLabelText.isEmpty()) {
+            customLabelText = "Cyanide";
+        }
+        mCustomLabel.setCustomText(customLabelText);
+        mCustomLabelRight.setCustomText(customLabelText);
+    }
+
     private void applyStatusIconKeyguardTint() {
         for (int i = 0; i < mStatusIconsKeyguard.getChildCount(); i++) {
             StatusBarIconView v = (StatusBarIconView) mStatusIconsKeyguard.getChildAt(i);
@@ -1066,5 +1180,17 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     public void updateNetworkTrafficHideTraffic(boolean hide, int threshold, boolean iconAsIndicator) {
         mNetworkTraffic.setHide(hide, threshold, iconAsIndicator);
         mNetworkTrafficKeyguard.setHide(hide, threshold, iconAsIndicator);
+    }
+
+    public void showKeyguardLabel(boolean show) {
+        mShowKeyguardLogo = show;
+        if (mCustomLabelStyle == CUSTOM_LABEL_LEFT) {
+            mKeyguardCustomLabel.setVisibility(show ? View.VISIBLE : View.GONE);
+            mKeyguardCustomLabelRight.setVisibility(View.GONE);
+        }
+        if (mCustomLabelStyle == CUSTOM_LABEL_RIGHT) {
+            mKeyguardCustomLabelRight.setVisibility(show ? View.VISIBLE : View.GONE);
+            mKeyguardCustomLabel.setVisibility(View.GONE);
+        }
     }
 }

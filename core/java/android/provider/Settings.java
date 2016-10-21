@@ -5060,6 +5060,75 @@ public final class Settings {
         public static final String STATUS_BAR_NETWORK_TRAFFIC_COLOR = "status_bar_network_traffic_color";
 
         /**
+		 * Statusbar Custom View
+		 * @hide
+		 */
+		public static final String STATUS_BAR_CUSTOM_LABEL_SHOW = "status_bar_custom_label_show";
+
+        /**
+		 * Statusbar Custom View Custom Text
+		 * @hide
+		 */
+		public static final String STATUS_BAR_CUSTOM_LABEL_TEXT_CUSTOM = "status_bar_custom_label_test_custom";
+
+        /**
+		 * Statusbar custom view on the lock screen
+		 * @hide
+		 */
+		public static final String STATUS_BAR_CUSTOM_LABEL_SHOW_ON_LOCK_SCREEN = "status_bar_custom_label_show_on_lock_screen";
+
+        /**
+		 * Style of custom label in the status bar
+         * 0 - Left (default)
+         * 1 - Right
+         * @hide
+		 */
+		public static final String STATUS_BAR_CUSTOM_LABEL_STYLE = "status_bar_custom_label_style";
+
+        /**
+         * Wether to hide the custom label on the status bar when the custom number of notifications is reached
+         * @hide
+         */
+        public static final String STATUS_BAR_CUSTOM_LABEL_HIDE = "status_bar_custom_label_hide";
+
+        /**
+         * Hide the custom label on the status bar when the notification icons will reach this number
+         * 1: 1 notification icon (always)
+         * 2: 2 notification icons
+         * 3: 3 notification icons
+         * 4: 4 notification icons
+         * 5: 5 notification icons
+         * 6: 6 notification icons
+         * default: 1
+         * @hide
+         */
+        public static final String STATUS_BAR_CUSTOM_LABEL_NUMBER_OF_NOTIFICATION_ICONS = "status_bar_custom_label_number_of_notification_icons";
+
+        /**
+		 * Statusbar Custom label Font Style
+		 * @hide
+		 */
+		public static final String STATUS_BAR_CUSTOM_LABEL_FONT_STYLE = "status_bar_custom_label_font_style";
+
+        /**
+		 * Statusbar Custom label Font Size
+		 * @hide
+		 */
+		public static final String STATUS_BAR_CUSTOM_LABEL_FONT_SIZE = "status_bar_custom_label_font_size";
+
+        /**
+         * Statusbar custom label text color setting
+         * @hide
+         */
+        public static final String STATUS_BAR_CUSTOM_LABEL_TEXT_COLOR = "status_bar_custom_label_text_color";
+
+        /**
+		 * Statusbar custom label color in dark mode
+		 * @hide
+		 */
+		public static final String STATUS_BAR_CUSTOM_LABEL_TEXT_COLOR_DARK_MODE = "status_bar_custom_label_text_color_dark_mode";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

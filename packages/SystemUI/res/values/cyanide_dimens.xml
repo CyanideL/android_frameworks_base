@@ -50,7 +50,7 @@
     <dimen name="phone_height">420dp</dimen>
 
     <!-- Network traffic -->
-    <dimen name="weather_layout_start_padding">6dp</dimen>
+    <dimen name="weather_layout_start_padding">3dp</dimen>
     <dimen name="weather_icon_top_bottom_padding">1dp</dimen>
     <dimen name="network_traffic_single_text_size">12sp</dimen>
     <dimen name="network_traffic_dual_text_size">10sp</dimen>
