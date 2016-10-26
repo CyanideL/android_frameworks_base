@@ -32,7 +32,7 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
     private final PhoneStatusBarView mView;
     private final float mIconAlphaWhenOpaque;
 
-    private View mCyanideLogoLeft, mWeather, mCustomView, mLeftSide, mNetworkTraffic, mStatusIcons, mWeatherRight, mCustomViewRight, mSignalCluster, mBattery, mClock, mCyanideLogo;
+    private View mCyanideLogoLeft, mWeather, mCustomLabel, mLeftSide, mNetworkTraffic, mStatusIcons, mWeatherRight, mSignalCluster, mBattery, mClock, mCustomLabelRight, mCyanideLogo;
 
     private Animator mCurrentAnimation;
 
@@ -46,12 +46,12 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
     public void init() {
         mCyanideLogoLeft = mView.findViewById(R.id.left_cyanide_logo);
         mWeather = mView.findViewById(R.id.status_bar_weather_layout);
-        mCustomView = mView.findViewById(R.id.status_bar_custom_label_layout);
+        mCustomLabel = mView.findViewById(R.id.status_bar_custom_label_layout);
         mLeftSide = mView.findViewById(R.id.notification_icon_area);
         mNetworkTraffic = mView.findViewById(R.id.network_traffic);
         mStatusIcons = mView.findViewById(R.id.statusIcons);
         mWeatherRight = mView.findViewById(R.id.status_bar_weather_layout_right);
-        mCustomViewRight = mView.findViewById(R.id.status_bar_custom_label_layout_right);
+        mCustomLabelRight = mView.findViewById(R.id.status_bar_custom_label_layout_right);
         mSignalCluster = mView.findViewById(R.id.signal_cluster);
         mBattery = mView.findViewById(R.id.battery);
         mClock = mView.findViewById(R.id.clock);
@@ -98,15 +98,15 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
             anims.playTogether(
                     animateTransitionTo(mCyanideLogoLeft, newAlphaBC),
                     animateTransitionTo(mWeather, newAlpha),
-                    animateTransitionTo(mCustomView, newAlpha),
+                    animateTransitionTo(mCustomLabel, newAlpha),
                     animateTransitionTo(mLeftSide, newAlpha),
                     animateTransitionTo(mNetworkTraffic, newAlpha),
                     animateTransitionTo(mStatusIcons, newAlpha),
                     animateTransitionTo(mWeatherRight, newAlpha),
-                    animateTransitionTo(mCustomViewRight, newAlpha),
                     animateTransitionTo(mSignalCluster, newAlpha),
                     animateTransitionTo(mBattery, newAlphaBC),
                     animateTransitionTo(mClock, newAlphaBC),
+                    animateTransitionTo(mCustomLabelRight, newAlpha),
                     animateTransitionTo(mCyanideLogo, newAlphaBC)
                     );
             if (isLightsOut(mode)) {
@@ -117,15 +117,15 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
         } else {
             mCyanideLogoLeft.setAlpha(newAlphaBC);
             mWeather.setAlpha(newAlpha);
-            mCustomView.setAlpha(newAlpha);
+            mCustomLabel.setAlpha(newAlpha);
             mLeftSide.setAlpha(newAlpha);
             mNetworkTraffic.setAlpha(newAlpha);
             mStatusIcons.setAlpha(newAlpha);
             mWeatherRight.setAlpha(newAlpha);
-            mCustomViewRight.setAlpha(newAlpha);
             mSignalCluster.setAlpha(newAlpha);
             mBattery.setAlpha(newAlphaBC);
             mClock.setAlpha(newAlphaBC);
+            mCustomLabelRight.setAlpha(newAlpha);
             mCyanideLogo.setAlpha(newAlphaBC);
         }
     }
