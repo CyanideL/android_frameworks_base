@@ -91,6 +91,7 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
         mContext = context;
         mAccessibilityManager = context.getSystemService(AccessibilityManager.class);
         mItemTouchHelper = new ItemTouchHelper(mCallbacks);
+        mDecoration = new TileItemDecoration(context);
         mEditAddBgColor = context.getResources().getColor(R.color.qs_editor_bg_color);
     }
 
@@ -475,7 +476,6 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
             mDrawable = new ColorDrawable(ta.getColor(0, 0));
             ta.recycle();
         }
-
 
         @Override
         public void onDraw(Canvas c, RecyclerView parent, State state) {
