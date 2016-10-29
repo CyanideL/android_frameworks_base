@@ -86,7 +86,6 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
     private boolean mAccessibilityMoving;
     private int mAccessibilityFromIndex;
     private QSTileHost mHost;
-    private final QSItemDecoration mDecoration;
     private TextView mTextView;
 
     public TileAdapter(Context context) {
@@ -94,7 +93,6 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
         mAccessibilityManager = context.getSystemService(AccessibilityManager.class);
         mItemTouchHelper = new ItemTouchHelper(mCallbacks);
         mDecoration = new TileItemDecoration(context);
-        mEditAddBgColor = context.getResources().getColor(R.color.qs_editor_bg_color);
     }
 
     public void setHost(QSTileHost host) {

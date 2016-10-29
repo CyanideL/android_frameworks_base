@@ -67,7 +67,7 @@
 
         <com.android.keyguard.AlphaOptimizedImageButton android:id="@+id/settings_button"
             style="@android:style/Widget.Material.Button.Borderless"
-            android:layout_toStartOf="@id/edit"
+            android:layout_toStartOf="@android:id/edit"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@drawable/ripple_drawable"

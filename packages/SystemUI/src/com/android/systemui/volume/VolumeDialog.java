@@ -240,7 +240,7 @@ public class VolumeDialog implements TunerService.Tunable {
         updateWindowWidthH();
         updateExpandButtonH();
 
-        mDialogContentView.setLayoutTransition(mLayoutTransition);
+        //mDialogContentView.setLayoutTransition(mLayoutTransition);
 
         if (mRows.isEmpty()) {
             addRow(AudioManager.STREAM_RING,

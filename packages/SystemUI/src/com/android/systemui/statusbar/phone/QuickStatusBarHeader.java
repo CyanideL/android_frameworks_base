@@ -279,8 +279,8 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
                 ? View.VISIBLE : View.INVISIBLE);
         final boolean isDemo = UserManager.isDeviceInDemoMode(mContext);
         mMultiUserSwitch.setVisibility(mExpanded && mMultiUserSwitch.hasMultipleUsers() && !isDemo
-        mSettingsButton.setVisibility(mExpanded ? View.VISIBLE : View.INVISIBLE);
                 ? View.VISIBLE : View.INVISIBLE);
+        mSettingsButton.setVisibility(mExpanded ? View.VISIBLE : View.INVISIBLE);
         mEdit.setVisibility(isDemo || !mExpanded ? View.INVISIBLE : View.VISIBLE);
     }
 

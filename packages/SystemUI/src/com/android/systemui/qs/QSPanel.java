@@ -80,7 +80,6 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
     private int mBrightnessPaddingTop;
     protected boolean mExpanded;
     protected boolean mListening;
-    private TextView mEditButton;
 
     private Callback mCallback;
     private BrightnessController mBrightnessController;
@@ -749,6 +748,5 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
                 mFontStyle = FontHelper.NOTOSERIF_BOLD_ITALIC;
                 break;
         }
-        mEditButton.setTypeface(mFontStyle);
     }
 }
