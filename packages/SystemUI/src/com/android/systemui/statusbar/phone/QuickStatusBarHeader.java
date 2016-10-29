@@ -83,8 +83,6 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
     private View mDate;
     private TextView mTime;
     private TextView mAmPm;
-    private TextView mDateCollapsed;
-    private TextView mDateExpanded;
 
     private QSPanel mQsPanel;
 
@@ -146,8 +144,6 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
         mDate.setOnClickListener(this);
         mTime = (TextView) findViewById(R.id.time_view);
         mAmPm = (TextView) findViewById(R.id.am_pm_view);
-        mDateCollapsed = (TextView) findViewById(R.id.date_collapsed);
-        mDateExpanded = (TextView) findViewById(R.id.date_expanded);
 
         mExpandIndicator = (ExpandableIndicator) findViewById(R.id.expand_indicator);
 
@@ -534,6 +530,7 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
     private void updateIconColor() {
         ((ImageView) mCyanideButton).setImageTintList(QSColorHelper.getHeaderIconColorList(mContext));
         ((ImageView) mSettingsButton).setImageTintList(QSColorHelper.getHeaderIconColorList(mContext));
+        ((ImageView) mEdit).setImageTintList(QSColorHelper.getHeaderIconColorList(mContext));
         ((TextView) mDateTimeAlarmGroup.findViewById(R.id.date)).setCompoundDrawableTintList(QSColorHelper.getHeaderIconColorList(mContext));
         ((ImageView) mAlarmStatusCollapsed).setImageTintList(QSColorHelper.getHeaderIconColorList(mContext));
         Drawable alarmIcon =

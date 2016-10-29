@@ -343,7 +343,6 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
     }
 
     public void setTextColor() {
-        mEditButton.setTextColor(QSColorHelper.getTextColor(mContext));
         mFooter.setTextColor();
     }
 
