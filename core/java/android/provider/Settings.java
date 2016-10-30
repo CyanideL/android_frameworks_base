@@ -5087,6 +5087,12 @@ public final class Settings {
 		 */
 		public static final String STATUS_BAR_CUSTOM_LABEL_STYLE = "status_bar_custom_label_style";
 
+          /**
+          * Whether to show the negociated charger current in the lockscreen
+          * @hide
+          */
+         public static final String LOCKSCREEN_CHARGING_CURRENT = "lockscreen_charging_current";
+ 
         /**
          * Wether to hide the custom label on the status bar when the custom number of notifications is reached
          * @hide
