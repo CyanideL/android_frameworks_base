@@ -1243,7 +1243,7 @@ public abstract class BaseStatusBar extends SystemUI implements
             setNotificationTypeface(action2, mFontStyle);
             setNotificationTypeface(appName, mFontStyle);
             setNotificationTypeface(headerText, mFontStyle);
-            if (expandedActions != null) {
+            /*if (expandedActions != null) {
                 final int expandedActionsCount = expandedActions.getChildCount();
                 for (int index=0; index<expandedActionsCount; index++) {
                     final TextView expandedAction = (TextView) expandedActions.getChildAt(index);
@@ -1251,7 +1251,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                         setNotificationTypeface(expandedAction, mFontStyle);
                     }
                 }
-            }
+            }*/
         }
         if (headsUpView != null) {
             final TextView headsUpTitle = (TextView) headsUpView.findViewById(
@@ -1314,7 +1314,7 @@ public abstract class BaseStatusBar extends SystemUI implements
             setNotificationTypeface(headsUpAction2, mFontStyle);
             setNotificationTypeface(headsUpAppName, mFontStyle);
             setNotificationTypeface(headsUpHeaderText, mFontStyle);
-            if (headsUpActions != null) {
+            /*if (headsUpActions != null) {
                 final int headsUpActionsCount = headsUpActions.getChildCount();
                 for (int index=0; index<headsUpActionsCount; index++) {
                     final TextView headsUpAction =  (TextView) headsUpActions.getChildAt(index);
@@ -1322,7 +1322,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                         setNotificationTypeface(headsUpAction, mFontStyle);
                     }
                 }
-            }
+            }*/
         }
     }
 
