@@ -352,7 +352,7 @@ public class KeyguardStatusView extends GridLayout {
 
     private void updateLogoColor() {
         int color = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.KEYGUARD_LOGO_COLOR, 0xff1976D2);
+                Settings.System.KEYGUARD_LOGO_COLOR, 0xffffffff);
 
         if (mRomLogo != null) {
             mRomLogo.setIconColor(color);
