@@ -21,6 +21,7 @@ import android.app.AlarmManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -35,6 +36,7 @@ import android.widget.TextClock;
 import android.widget.TextView;
 
 import com.android.internal.widget.LockPatternUtils;
+import com.android.internal.util.cyanide.FontHelper;
 
 import java.util.Locale;
 
@@ -53,6 +55,7 @@ public class KeyguardStatusView extends GridLayout {
     private TextView mOwnerInfo;
     private int mOwnerSize = 14;
     private int mAlarmDateSize = 14;
+    private static Typeface mFontStyle;
 
     //On the first boot, keyguard will start to receiver TIME_TICK intent.
     //And onScreenTurnedOff will not get called if power off when keyguard is not started.
@@ -66,9 +69,10 @@ public class KeyguardStatusView extends GridLayout {
             if (enableRefresh) {
                 refresh();
             }
-            updateOwnerSize();
-            updateClockSize();
-            updateAlarmDateSize();
+            //updateOwnerSize();
+            //updateClockSize();
+            //updateAlarmDateSize();
+            //updateFontStyle();
         }
 
         @Override
@@ -83,6 +87,7 @@ public class KeyguardStatusView extends GridLayout {
                 updateOwnerSize();
                 updateClockSize();
                 updateAlarmDateSize();
+                updateFontStyle();
             }
         }
 
@@ -112,6 +117,7 @@ public class KeyguardStatusView extends GridLayout {
             updateOwnerSize();
             updateClockSize();
             updateAlarmDateSize();
+            updateFontStyle();
         }
     };
 
@@ -130,6 +136,7 @@ public class KeyguardStatusView extends GridLayout {
         updateOwnerSize();
         updateClockSize();
         updateAlarmDateSize();
+        updateFontStyle();
     }
 
     private void setEnableMarquee(boolean enabled) {
@@ -159,6 +166,7 @@ public class KeyguardStatusView extends GridLayout {
         updateOwnerSize();
         updateClockSize();
         updateAlarmDateSize();
+        updateFontStyle();
 
         // Disable elegant text height because our fancy colon makes the ymin value huge for no
         // reason.
@@ -357,5 +365,97 @@ public class KeyguardStatusView extends GridLayout {
         if (mRomLogo != null) {
             mRomLogo.updateLogoImage();
         }
+    }
+
+    private void updateFontStyle() {
+        final int mLSFontStyle = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LOCK_SCREEN_FONT_STYLE, FontHelper.FONT_COMINGSOON);
+
+        getFontStyle(mLSFontStyle);
+    }
+
+    public void getFontStyle(int font) {
+        switch (font) {
+            case FontHelper.FONT_NORMAL:
+            default:
+                mFontStyle = FontHelper.NORMAL;
+                break;
+            case FontHelper.FONT_ITALIC:
+                mFontStyle = FontHelper.ITALIC;
+                break;
+            case FontHelper.FONT_BOLD:
+                mFontStyle = FontHelper.BOLD;
+                break;
+            case FontHelper.FONT_BOLD_ITALIC:
+                mFontStyle = FontHelper.BOLD_ITALIC;
+                break;
+            case FontHelper.FONT_LIGHT:
+                mFontStyle = FontHelper.LIGHT;
+                break;
+            case FontHelper.FONT_LIGHT_ITALIC:
+                mFontStyle = FontHelper.LIGHT_ITALIC;
+                break;
+            case FontHelper.FONT_THIN:
+                mFontStyle = FontHelper.THIN;
+                break;
+            case FontHelper.FONT_THIN_ITALIC:
+                mFontStyle = FontHelper.THIN_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED:
+                mFontStyle = FontHelper.CONDENSED;
+                break;
+            case FontHelper.FONT_CONDENSED_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT:
+                mFontStyle = FontHelper.CONDENSED_LIGHT;
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_LIGHT_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD:
+                mFontStyle = FontHelper.CONDENSED_BOLD;
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_BOLD_ITALIC;
+                break;
+            case FontHelper.FONT_MEDIUM:
+                mFontStyle = FontHelper.MEDIUM;
+                break;
+            case FontHelper.FONT_MEDIUM_ITALIC:
+                mFontStyle = FontHelper.MEDIUM_ITALIC;
+                break;
+            case FontHelper.FONT_BLACK:
+                mFontStyle = FontHelper.BLACK;
+                break;
+            case FontHelper.FONT_BLACK_ITALIC:
+                mFontStyle = FontHelper.BLACK_ITALIC;
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT:
+                mFontStyle = FontHelper.DANCINGSCRIPT;
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT_BOLD:
+                mFontStyle = FontHelper.DANCINGSCRIPT_BOLD;
+                break;
+            case FontHelper.FONT_COMINGSOON:
+                mFontStyle = FontHelper.COMINGSOON;
+                break;
+            case FontHelper.FONT_NOTOSERIF:
+                mFontStyle = FontHelper.NOTOSERIF;
+                break;
+            case FontHelper.FONT_NOTOSERIF_ITALIC:
+                mFontStyle = FontHelper.NOTOSERIF_ITALIC;
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD:
+                mFontStyle = FontHelper.NOTOSERIF_BOLD;
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
+                mFontStyle = FontHelper.NOTOSERIF_BOLD_ITALIC;
+                break;
+        }
+        if (mDateView != null) mDateView.setTypeface(mFontStyle);
+        if (mClockView != null) mClockView.setTypeface(mFontStyle);
+        if (mOwnerInfo != null) mOwnerInfo.setTypeface(mFontStyle);
+        if (mAlarmStatusView != null) mAlarmStatusView.setTypeface(mFontStyle);
     }
 }

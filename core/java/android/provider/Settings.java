@@ -5249,6 +5249,12 @@ public final class Settings {
         public static final String LS_ALARM_DATE_FONT_SIZE = "ls_alarm_date_font_size";
 
         /**
+         * Font style for everything lockscreen
+         * @hide
+         */
+        public static final String LOCK_SCREEN_FONT_STYLE = "lock_screen_font_style";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
