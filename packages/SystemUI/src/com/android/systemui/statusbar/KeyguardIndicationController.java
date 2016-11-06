@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.BatteryManager;
 import android.os.BatteryStats;
@@ -45,6 +46,8 @@ import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.KeyguardIndicationTextView;
 import com.android.systemui.statusbar.phone.LockIcon;
 import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
+
+import com.android.internal.util.cyanide.FontHelper;
 
 /**
  * Controls the indications and error messages shown on the Keyguard
@@ -80,6 +83,8 @@ public class KeyguardIndicationController {
     private int mChargingVoltage;
     private int mChargingWattage;
     private String mMessageToShowOnScreenOn;
+
+    private static Typeface mFontStyle;
 
     public KeyguardIndicationController(Context context, KeyguardIndicationTextView textView,
                                         LockIcon lockIcon) {
@@ -161,28 +166,32 @@ public class KeyguardIndicationController {
     }
 
     private void updateIndication() {
+        final boolean mUseCustomText = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.KEYGUARD_INDICATOR_TEXT_CUSTOM, 0) == 1;
+        final String mCustomText = Settings.System.getString(mContext.getContentResolver(),
+                Settings.System.KEYGUARD_INDICATOR_CUSTOM_TEXT);
         if (mVisible) {
             // Walk down a precedence-ordered list of what should indication
             // should be shown based on user or device state
             if (!mUserManager.isUserUnlocked(ActivityManager.getCurrentUser())) {
-                mTextView.switchIndication(com.android.internal.R.string.lockscreen_storage_locked);
-                mTextView.setTextColor(Color.WHITE);
+                mTextView.switchIndication(com.android.internal.R.string.lockscreen_storage_locked, mCustomText, mUseCustomText);
+                //mTextView.setTextColor(Color.WHITE);
 
             } else if (!TextUtils.isEmpty(mTransientIndication)) {
-                mTextView.switchIndication(mTransientIndication);
-                mTextView.setTextColor(mTransientTextColor);
+                mTextView.switchIndication(mTransientIndication, mCustomText, mUseCustomText);
+                //mTextView.setTextColor(mTransientTextColor);
 
             } else if (mPowerPluggedIn) {
                 String indication = computePowerIndication();
                 if (DEBUG_CHARGING_SPEED) {
                     indication += ",  " + (mChargingWattage / 1000) + " mW";
                 }
-                mTextView.switchIndication(indication);
-                mTextView.setTextColor(Color.WHITE);
+                mTextView.switchIndication(indication, mCustomText, mUseCustomText);
+                //mTextView.setTextColor(Color.WHITE);
 
             } else {
-                mTextView.switchIndication(mRestingIndication);
-                mTextView.setTextColor(Color.WHITE);
+                mTextView.switchIndication(mRestingIndication, mCustomText, mUseCustomText);
+                //mTextView.setTextColor(Color.WHITE);
             }
         }
     }
@@ -363,5 +372,106 @@ public class KeyguardIndicationController {
     public void setStatusBarKeyguardViewManager(
             StatusBarKeyguardViewManager statusBarKeyguardViewManager) {
         mStatusBarKeyguardViewManager = statusBarKeyguardViewManager;
+    }
+
+    public void setTextColor (int color) {
+        if (mTextView != null) {
+            mTextView.setTextColor(color);
+        }
+    }
+
+    public void setTextSize(int size) {
+        if (mTextView != null) {
+            mTextView.setTextSize(size);
+        }
+    }
+
+    public void setIndicatorFontStyle() {
+        final int mIndicatorFontStyle = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LOCK_SCREEN_FONT_STYLE, FontHelper.FONT_COMINGSOON);
+
+        getFontStyle(mIndicatorFontStyle);
+    }
+
+    public void getFontStyle(int font) {
+        switch (font) {
+            case FontHelper.FONT_NORMAL:
+            default:
+                mFontStyle = FontHelper.NORMAL;
+                break;
+            case FontHelper.FONT_ITALIC:
+                mFontStyle = FontHelper.ITALIC;
+                break;
+            case FontHelper.FONT_BOLD:
+                mFontStyle = FontHelper.BOLD;
+                break;
+            case FontHelper.FONT_BOLD_ITALIC:
+                mFontStyle = FontHelper.BOLD_ITALIC;
+                break;
+            case FontHelper.FONT_LIGHT:
+                mFontStyle = FontHelper.LIGHT;
+                break;
+            case FontHelper.FONT_LIGHT_ITALIC:
+                mFontStyle = FontHelper.LIGHT_ITALIC;
+                break;
+            case FontHelper.FONT_THIN:
+                mFontStyle = FontHelper.THIN;
+                break;
+            case FontHelper.FONT_THIN_ITALIC:
+                mFontStyle = FontHelper.THIN_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED:
+                mFontStyle = FontHelper.CONDENSED;
+                break;
+            case FontHelper.FONT_CONDENSED_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT:
+                mFontStyle = FontHelper.CONDENSED_LIGHT;
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_LIGHT_ITALIC;
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD:
+                mFontStyle = FontHelper.CONDENSED_BOLD;
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
+                mFontStyle = FontHelper.CONDENSED_BOLD_ITALIC;
+                break;
+            case FontHelper.FONT_MEDIUM:
+                mFontStyle = FontHelper.MEDIUM;
+                break;
+            case FontHelper.FONT_MEDIUM_ITALIC:
+                mFontStyle = FontHelper.MEDIUM_ITALIC;
+                break;
+            case FontHelper.FONT_BLACK:
+                mFontStyle = FontHelper.BLACK;
+                break;
+            case FontHelper.FONT_BLACK_ITALIC:
+                mFontStyle = FontHelper.BLACK_ITALIC;
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT:
+                mFontStyle = FontHelper.DANCINGSCRIPT;
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT_BOLD:
+                mFontStyle = FontHelper.DANCINGSCRIPT_BOLD;
+                break;
+            case FontHelper.FONT_COMINGSOON:
+                mFontStyle = FontHelper.COMINGSOON;
+                break;
+            case FontHelper.FONT_NOTOSERIF:
+                mFontStyle = FontHelper.NOTOSERIF;
+                break;
+            case FontHelper.FONT_NOTOSERIF_ITALIC:
+                mFontStyle = FontHelper.NOTOSERIF_ITALIC;
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD:
+                mFontStyle = FontHelper.NOTOSERIF_BOLD;
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
+                mFontStyle = FontHelper.NOTOSERIF_BOLD_ITALIC;
+                break;
+         }
+         if (mTextView != null) mTextView.setTypeface(mFontStyle);
     }
 }

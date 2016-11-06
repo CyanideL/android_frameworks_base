@@ -5267,6 +5267,30 @@ public final class Settings {
         public static final String SCREENSHOT_TYPE = "screenshot_type";
 
         /**
+         * Size of the Keyguard Indicator Text
+         * @hide
+         */
+        public static final String KEYGUARD_INDICATOR_TEXT_SIZE = "keyguard_indicator_text_size";
+
+        /**
+         * Keyguard Indicator Custom Text Switch
+         * @hide
+         */
+        public static final String KEYGUARD_INDICATOR_TEXT_CUSTOM = "keyguard_indicator_text_custom";
+
+        /**
+         * Keyguard Indicator Custom Text
+         * @hide
+         */
+        public static final String KEYGUARD_INDICATOR_CUSTOM_TEXT = "keyguard_indicator_custom_text";
+
+        /**
+         * Keyguard Indicator Custom Text Switch
+         * @hide
+         */
+        public static final String KEYGUARD_INDICATOR_TEXT_COLOR = "keyguard_indicator_text_color";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

@@ -638,6 +638,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
 					Settings.System.STATUS_BAR_CUSTOM_LABEL_FONT_SIZE),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+					Settings.System.LOCK_SCREEN_FONT_STYLE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+					Settings.System.KEYGUARD_INDICATOR_TEXT_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+					Settings.System.KEYGUARD_INDICATOR_TEXT_SIZE),
+                    false, this, UserHandle.USER_ALL);
 
         }
 
@@ -784,6 +793,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CUSTOM_LABEL_NUMBER_OF_NOTIFICATION_ICONS))) {
                     updateCustomLabelVisibility();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.LOCK_SCREEN_FONT_STYLE))) {
+                setKeyguardIndicatorFontStyle();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.KEYGUARD_INDICATOR_TEXT_COLOR))) {
+                setKeyguardIndicatorTextColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.KEYGUARD_INDICATOR_TEXT_SIZE))) {
+                setKeyguardIndicatorTextSize();
             }
         }
     }
@@ -2815,6 +2833,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         setCustomLabelText();
         updateCustomLabelFontStyle();
         setKeyguardCustomLabel();
+        setKeyguardIndicatorFontStyle();
+        setKeyguardIndicatorTextColor();
+        setKeyguardIndicatorTextSize();
     }
 
     private void updateTrafficColor(boolean animate) {
@@ -3067,6 +3088,30 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private void updateCustomLabelFontStyle() {
         if (mIconController != null) {
             mIconController.updateCustomLabelFontStyle();
+        }
+    }
+
+    private void setKeyguardIndicatorTextColor () {
+        final int color = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.KEYGUARD_INDICATOR_TEXT_COLOR, 0xffffffff);
+
+        if (mKeyguardIndicationController != null) {
+            mKeyguardIndicationController.setTextColor(color);
+        }
+    }
+
+    private void setKeyguardIndicatorTextSize() {
+       final int size = Settings.System.getInt(mContext.getContentResolver(),
+               Settings.System.KEYGUARD_INDICATOR_TEXT_SIZE, 14);
+
+        if (mKeyguardIndicationController != null) {
+            mKeyguardIndicationController.setTextSize(size);
+        }
+    }
+
+    private void setKeyguardIndicatorFontStyle() {
+        if (mKeyguardIndicationController != null) {
+            mKeyguardIndicationController.setIndicatorFontStyle();
         }
     }
 

@@ -17,6 +17,7 @@
 package com.android.systemui.statusbar.phone;
 
 import android.content.Context;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -49,21 +50,30 @@ public class KeyguardIndicationTextView extends TextView {
      *
      * @param text The text to show.
      */
-    public void switchIndication(CharSequence text) {
+    public void switchIndication(CharSequence text, String customText, boolean useCustomText) {
+
+        /*final boolean mUseCustomText = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.KEYGUARD_INDICATOR_TEXT_CUSTOM, 0) == 1;
+        final String mCustomText = Settings.System.getString(mContext.getContentResolver(),
+                Settings.System.KEYGUARD_INDICATOR_CUSTOM_TEXT);*/
 
         // TODO: Animation, make sure that we will show one indication long enough.
         if (TextUtils.isEmpty(text)) {
             setVisibility(View.INVISIBLE);
         } else {
             setVisibility(View.VISIBLE);
-            setText(text);
+            if (useCustomText) {
+                setText(customText);
+            } else {
+                setText(text);
+            }
         }
     }
 
     /**
      * See {@link #switchIndication}.
      */
-    public void switchIndication(int textResId) {
-        switchIndication(getResources().getText(textResId));
+    public void switchIndication(int textResId, String customText, boolean useCustomText) {
+        switchIndication(getResources().getText(textResId), customText, useCustomText);
     }
 }
