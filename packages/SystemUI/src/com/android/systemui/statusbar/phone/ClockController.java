@@ -185,7 +185,7 @@ public class ClockController {
     }
 
     public void updateFontSize() {
-        if (mActiveClock != null) {
+        /*if (mActiveClock != null) {
             FontSizeUtils.updateFontSize(mActiveClock, R.dimen.status_bar_clock_size);
             mActiveClock.setPaddingRelative(
                     mContext.getResources().getDimensionPixelSize(
@@ -194,7 +194,7 @@ public class ClockController {
                     mContext.getResources().getDimensionPixelSize(
                         R.dimen.status_bar_clock_end_padding),
                     0);
-        }
+        }*/
     }
 
     /*private void applyClockTint() {
