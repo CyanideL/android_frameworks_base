@@ -5404,6 +5404,50 @@ public final class Settings {
         public static final String APP_CIRCLE_BAR_SHOW_TRIGGER = "app_circle_bar_show_trigger";
 
         /**
+         * Whether to show the clear all button in the recent apps panel
+         * @hide
+         */
+        public static final String RECENT_APPS_SHOW_CLEAR_ALL = "recent_apps_show_clear_all";
+
+        /**
+         * Horizontal position of the clear all button in the recent apps panel
+         * 0: Left
+         * 1: Center
+         * 2: Right
+         * default: 2
+         * @hide
+         */
+        public static final String RECENT_APPS_CLEAR_ALL_POSITION_HORIZONTAL = "recent_apps_clear_all_position_horizontal";
+
+        /**
+         * Vertical position of the clear all button in the recent apps panel
+         * 0: Top
+         * 1: Center
+         * 2: Bottom
+         * default: 0
+         * @hide
+         */
+        public static final String RECENT_APPS_CLEAR_ALL_POSITION_VERTICAL = "recent_apps_clear_all_position_vertical";
+
+        /**
+         * Color of the clear all button background in the recent apps panel
+         * @hide
+         */
+        public static final String RECENT_APPS_CLEAR_ALL_BG_COLOR = "recent_apps_clear_all_bg_color";
+
+        /**
+         * Color of the clear all button icon in the recent apps panel
+         * @hide
+         */
+        public static final String RECENT_APPS_CLEAR_ALL_ICON_COLOR = "recent_apps_clear_all_icon_color";
+
+        /**
+         * Color of the clear all button ripple
+         * @hide
+         */
+        public static final String RECENT_APPS_CLEAR_ALL_RIPPLE_COLOR = "recent_apps_clear_all_ripple_color";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

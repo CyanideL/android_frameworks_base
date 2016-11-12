@@ -61,5 +61,16 @@
     <dimen name="app_sidebar_listview_width">160dp</dimen>
     <dimen name="app_sidebar_icon_width">72dp</dimen>
     <dimen name="app_sidebar_icon_height">72dp</dimen>
+    
+    <!--Recents floating action button -->
+    <dimen name="recents_fab_height">56dp</dimen>
+    <dimen name="recents_fab_width">56dp</dimen>
+    <dimen name="recents_fab_margin_side">8dp</dimen>
+    <dimen name="recents_fab_translation_z">12dp</dimen>
+    <dimen name="recents_fab_no_margin">0dp</dimen>
+    <dimen name="recents_fab_margin_top">8dp</dimen>
+    <dimen name="recents_fab_margin_top_extra">16dp</dimen>
+    <dimen name="recents_fab_margin_bottom">56dp</dimen>
+    <dimen name="recents_fab_margin_bottom">32dp</dimen>
 
 </resources>

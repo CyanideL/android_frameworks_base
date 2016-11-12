@@ -23,4 +23,6 @@
     <!-- Day theme -->
     <color name="notification_guts_seekbar_tick_mark_tint">#ff000000</color>
     <color name="qs_tile_adapter_bg">#ff384248</color>
+
+    <color name="fab_background_color">#ffffffff</color>
 </resources>

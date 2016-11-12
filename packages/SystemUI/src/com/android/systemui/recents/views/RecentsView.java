@@ -21,13 +21,19 @@ import static android.app.ActivityManager.StackId.INVALID_STACK_ID;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.ActivityOptions.OnAnimationStartedListener;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Outline;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.RippleDrawable;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.UserHandle;
@@ -35,6 +41,7 @@ import android.provider.Settings;
 import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.view.AppTransitionAnimationSpec;
+import android.view.Gravity;
 import android.view.IAppTransitionAnimationSpecsFuture;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -44,6 +51,7 @@ import android.view.ViewOutlineProvider;
 import android.view.ViewPropertyAnimator;
 import android.view.WindowInsets;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextClock;
 import android.widget.TextView;
 
@@ -88,6 +96,8 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.android.systemui.R;
+
 /**
  * This view is the the top level layout that contains TaskStacks (which are laid out according
  * to their SpaceNode bounds.
@@ -107,6 +117,7 @@ public class RecentsView extends FrameLayout {
     private TextView mStackActionButton;
     private TextView mEmptyView;
     public static Typeface mFontStyle;
+    
 
     private boolean mAwaitingFirstLayout = true;
     private boolean mLastTaskLaunchedWasFreeform;
@@ -126,6 +137,9 @@ public class RecentsView extends FrameLayout {
 
     TextClock mClock;
     TextView mDate;
+    private boolean mDateClockOn;
+    private FrameLayout mClearRecentsLayout;
+    private ImageView mClearRecents;
 
     public RecentsView(Context context) {
         this(context, null);
@@ -300,9 +314,9 @@ public class RecentsView extends FrameLayout {
         mEmptyView.setText(msgResId);
         mEmptyView.setVisibility(View.VISIBLE);
         mEmptyView.bringToFront();
-        if (RecentsDebugFlags.Static.EnableStackActionButton) {
+        /*if (RecentsDebugFlags.Static.EnableStackActionButton) {
             mStackActionButton.bringToFront();
-        }
+        }*/
     }
 
     /**
@@ -312,9 +326,9 @@ public class RecentsView extends FrameLayout {
         mEmptyView.setVisibility(View.INVISIBLE);
         mTaskStackView.setVisibility(View.VISIBLE);
         mTaskStackView.bringToFront();
-        if (RecentsDebugFlags.Static.EnableStackActionButton) {
+        /*if (RecentsDebugFlags.Static.EnableStackActionButton) {
             mStackActionButton.bringToFront();
-        }
+        }*/
     }
 
     @Override
@@ -324,7 +338,21 @@ public class RecentsView extends FrameLayout {
         super.onAttachedToWindow();
         mClock = (TextClock) ((View)getParent()).findViewById(R.id.recents_clock);
         mDate = (TextView) ((View)getParent()).findViewById(R.id.recents_date);
+        mStackActionButton.setVisibility(View.GONE);
+        mClearRecentsLayout = (FrameLayout) ((View)getParent()).findViewById(R.id.clear_recents_layout);
+        mClearRecents = (ImageView) ((View)getParent()).findViewById(R.id.clear_recents);
+        mClearRecents.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (mClearRecentsLayout.getAlpha() != 1f) {
+                    return;
+                }
+                // Hide clear recents button before dismiss all tasks
+                startHideClearRecentsButtonAnimation();
+                EventBus.getDefault().send(new DismissAllTaskViewsEvent());
+            }
+        });
         updateTimeVisibility();
+        setClearAllVisibility();
         updateFontStyle();
     }
 
@@ -335,6 +363,16 @@ public class RecentsView extends FrameLayout {
         EventBus.getDefault().unregister(mTouchHandler);
     }
 
+    private void setClearAllVisibility() {
+        boolean showClearAll = Settings.System.getInt(mContext.getContentResolver(),
+                       Settings.System.RECENT_APPS_SHOW_CLEAR_ALL, 1) == 1;
+        if (showClearAll && mEmptyView.getVisibility() == INVISIBLE) {
+            mClearRecentsLayout.setVisibility(View.VISIBLE);
+        } else {
+            mClearRecentsLayout.setVisibility(View.GONE);
+        }
+    }
+
     public void updateTimeVisibility() {
         boolean showClock = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.RECENTS_FULL_SCREEN_CLOCK, 0, UserHandle.USER_CURRENT) != 0;
@@ -342,6 +380,7 @@ public class RecentsView extends FrameLayout {
                 Settings.System.RECENTS_FULL_SCREEN_DATE, 0, UserHandle.USER_CURRENT) != 0;
         boolean fullscreenEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.IMMERSIVE_RECENTS, 0, UserHandle.USER_CURRENT) != 0;
+        mDateClockOn = showClock || showDate;
 
         if (fullscreenEnabled) {
             if (showClock) {
@@ -469,6 +508,7 @@ public class RecentsView extends FrameLayout {
         }
 
         updateTimeVisibility();
+        setClearAllVisibility();
         updateFontStyle();
 
         // Measure the empty view to the full size of the screen
@@ -483,6 +523,91 @@ public class RecentsView extends FrameLayout {
             measureChild(mStackActionButton,
                     MeasureSpec.makeMeasureSpec(buttonBounds.width(), MeasureSpec.AT_MOST),
                     MeasureSpec.makeMeasureSpec(buttonBounds.height(), MeasureSpec.AT_MOST));
+        }
+
+        if (mClearRecents != null) {
+            ContentResolver resolver = getContext().getContentResolver();
+            Resources res = getContext().getResources();
+
+            int taskViewWidth = 0;
+            boolean isLandscape = res.getConfiguration().orientation
+                    == Configuration.ORIENTATION_LANDSCAPE;
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)
+                    mClearRecentsLayout.getLayoutParams();
+            int noMargin = res.getDimensionPixelSize(
+                    R.dimen.recents_fab_no_margin);
+            int navigationBarWidth = res.getDimensionPixelSize(
+                    com.android.internal.R.dimen.navigation_bar_width);
+            int marginSide = (width / 2);
+
+            int positionHorizontal = Settings.System.getInt(resolver,
+                    Settings.System.RECENT_APPS_CLEAR_ALL_POSITION_HORIZONTAL, 1);
+            int positionVertical = Settings.System.getInt(resolver,
+                    Settings.System.RECENT_APPS_CLEAR_ALL_POSITION_VERTICAL, 2);
+            int bgColor = Settings.System.getInt(resolver,
+                    Settings.System.RECENT_APPS_CLEAR_ALL_BG_COLOR, 0xff1976D2);
+            int iconColor = Settings.System.getInt(resolver,
+                    Settings.System.RECENT_APPS_CLEAR_ALL_ICON_COLOR, 0xffff0000);
+            int rippleColor = Settings.System.getInt(resolver,
+                    Settings.System.RECENT_APPS_CLEAR_ALL_RIPPLE_COLOR, 0xff00ff00);
+
+            int gravityHorizontal;
+            int gravityVertical;
+            int marginTop = noMargin;
+            int marginBottom = noMargin;
+            int marginRight = noMargin;
+            int marginLeft = noMargin;
+
+            if (positionHorizontal == 0) {
+                gravityHorizontal = Gravity.LEFT;
+                if (isLandscape) {
+                    marginLeft = res.getDimensionPixelSize(
+                    R.dimen.recents_fab_margin_side) - (navigationBarWidth / 2);
+                } else {
+                    marginLeft = res.getDimensionPixelSize(
+                    R.dimen.recents_fab_margin_side);
+                }
+            } else if (positionHorizontal == 1) {
+                gravityHorizontal = Gravity.CENTER_HORIZONTAL;
+            } else {
+                gravityHorizontal = Gravity.RIGHT;
+                if (isLandscape) {
+                    marginRight = res.getDimensionPixelSize(
+                    R.dimen.recents_fab_margin_side) + (navigationBarWidth / 2);
+                } else {
+                    marginRight = res.getDimensionPixelSize(
+                    R.dimen.recents_fab_margin_side);
+                }
+            }
+            if (positionVertical == 0) {
+                gravityVertical = Gravity.TOP;
+                if (mDateClockOn) {
+                    marginTop = res.getDimensionPixelSize(
+                    R.dimen.recents_fab_margin_top_extra);
+                } else {
+                    marginTop = res.getDimensionPixelSize(
+                    R.dimen.recents_fab_margin_top);
+                }
+            } else if (positionVertical == 1) {
+                gravityVertical = Gravity.CENTER_VERTICAL;
+            } else {
+                gravityVertical = Gravity.BOTTOM;
+                marginBottom = res.getDimensionPixelSize(
+                        R.dimen.recents_fab_margin_bottom);
+            }
+            params.topMargin = marginTop;
+            params.bottomMargin = marginBottom;
+            params.rightMargin = marginRight;
+            params.leftMargin = marginLeft;
+            params.gravity = gravityVertical | gravityHorizontal;
+            mClearRecentsLayout.setLayoutParams(params);
+
+            mClearRecentsLayout.getBackground().setColorFilter(bgColor, Mode.MULTIPLY);
+            mClearRecents.setColorFilter(iconColor, Mode.MULTIPLY);
+            RippleDrawable rippleBackground =
+                (RippleDrawable) mContext.getDrawable(R.drawable.fab_ripple).mutate();
+            rippleBackground.setColor(ColorStateList.valueOf(rippleColor));
+            mClearRecents.setBackground(rippleBackground);
         }
 
         setMeasuredDimension(width, height);
@@ -510,13 +635,13 @@ public class RecentsView extends FrameLayout {
             mEmptyView.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
         }
 
-        if (RecentsDebugFlags.Static.EnableStackActionButton) {
+        /*if (RecentsDebugFlags.Static.EnableStackActionButton) {
             // Layout the stack action button such that its drawable is start-aligned with the
             // stack, vertically centered in the available space above the stack
             Rect buttonBounds = getStackActionButtonBoundsFromStackLayout();
             mStackActionButton.layout(buttonBounds.left, buttonBounds.top, buttonBounds.right,
                     buttonBounds.bottom);
-        }
+        }*/
 
         if (mAwaitingFirstLayout) {
             mAwaitingFirstLayout = false;
@@ -582,11 +707,32 @@ public class RecentsView extends FrameLayout {
 
     public final void onBusEvent(DismissRecentsToHomeAnimationStarted event) {
         int taskViewExitToHomeDuration = TaskStackAnimationHelper.EXIT_TO_HOME_TRANSLATION_DURATION;
-        if (RecentsDebugFlags.Static.EnableStackActionButton) {
+        //if (RecentsDebugFlags.Static.EnableStackActionButton) {
             // Hide the stack action button
-            hideStackActionButton(taskViewExitToHomeDuration, false /* translate */);
-        }
+        //    hideStackActionButton(taskViewExitToHomeDuration, false /* translate */);
+        //}
         animateBackgroundScrim(0f, taskViewExitToHomeDuration);
+        // Hide clear recents button before return to home
+        startHideClearRecentsButtonAnimation();
+    }
+
+    public void startHideClearRecentsButtonAnimation() {
+        if (mClearRecentsLayout != null) {
+            mClearRecentsLayout.animate()
+                .alpha(0f)
+                .setStartDelay(0)
+                .setUpdateListener(null)
+                .setDuration(HIDE_STACK_ACTION_BUTTON_DURATION)
+                .setInterpolator(Interpolators.FAST_OUT_LINEAR_IN)
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        mClearRecentsLayout.setVisibility(View.GONE);
+                        mClearRecentsLayout.setAlpha(1f);
+                    }
+                })
+                .start();
+        }
     }
 
     public final void onBusEvent(DragStartEvent event) {
@@ -596,13 +742,13 @@ public class RecentsView extends FrameLayout {
                 true /* animateAlpha */, false /* animateBounds */);
 
         // Temporarily hide the stack action button without changing visibility
-        if (mStackActionButton != null) {
+        /*if (mStackActionButton != null) {
             mStackActionButton.animate()
                     .alpha(0f)
                     .setDuration(HIDE_STACK_ACTION_BUTTON_DURATION)
                     .setInterpolator(Interpolators.ALPHA_OUT)
                     .start();
-        }
+        }*/
     }
 
     public final void onBusEvent(DragDropTargetChangedEvent event) {
@@ -617,7 +763,7 @@ public class RecentsView extends FrameLayout {
                     false /* isDefaultDockState */, -1, -1, true /* animateAlpha */,
                     true /* animateBounds */);
         }
-        if (mStackActionButton != null) {
+        /*if (mStackActionButton != null) {
             event.addPostAnimationCallback(new Runnable() {
                 @Override
                 public void run() {
@@ -627,7 +773,7 @@ public class RecentsView extends FrameLayout {
                             buttonBounds.right, buttonBounds.bottom);
                 }
             });
-        }
+        }*/
     }
 
     public final void onBusEvent(final DragEndEvent event) {
@@ -685,13 +831,13 @@ public class RecentsView extends FrameLayout {
         }
 
         // Show the stack action button again without changing visibility
-        if (mStackActionButton != null) {
+       /* if (mStackActionButton != null) {
             mStackActionButton.animate()
                     .alpha(1f)
                     .setDuration(SHOW_STACK_ACTION_BUTTON_DURATION)
                     .setInterpolator(Interpolators.ALPHA_IN)
                     .start();
-        }
+        }*/
     }
 
     public final void onBusEvent(final DragEndCancelledEvent event) {
@@ -779,13 +925,15 @@ public class RecentsView extends FrameLayout {
      * Shows the stack action button.
      */
     private void showStackActionButton(final int duration, final boolean translate) {
-        if (!RecentsDebugFlags.Static.EnableStackActionButton) {
+       //mClearRecentsLayout.setVisibility(View.VISIBLE);
+        /*if (!RecentsDebugFlags.Static.EnableStackActionButton) {
             return;
         }
 
         final ReferenceCountedTrigger postAnimationTrigger = new ReferenceCountedTrigger();
         if (mStackActionButton.getVisibility() == View.INVISIBLE) {
             mStackActionButton.setVisibility(View.VISIBLE);
+            mClearRecentsLayout.setVisibility(View.VISIBLE);
             mStackActionButton.setAlpha(0f);
             if (translate) {
                 mStackActionButton.setTranslationY(-mStackActionButton.getMeasuredHeight() * 0.25f);
@@ -807,7 +955,7 @@ public class RecentsView extends FrameLayout {
                 }
             });
         }
-        postAnimationTrigger.flushLastDecrementRunnables();
+        postAnimationTrigger.flushLastDecrementRunnables();*/
     }
 
     /**

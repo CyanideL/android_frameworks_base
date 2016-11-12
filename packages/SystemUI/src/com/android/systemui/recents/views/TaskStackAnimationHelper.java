@@ -86,7 +86,7 @@ public class TaskStackAnimationHelper {
             Interpolators.LINEAR_OUT_SLOW_IN;
     private static final Interpolator ENTER_FROM_HOME_ALPHA_INTERPOLATOR = Interpolators.LINEAR;
 
-    public static final int EXIT_TO_HOME_TRANSLATION_DURATION = 200;
+    public static final int EXIT_TO_HOME_TRANSLATION_DURATION = 450;
     private static final Interpolator EXIT_TO_HOME_TRANSLATION_INTERPOLATOR =
             new PathInterpolator(0.4f, 0, 0.6f, 1f);
 
