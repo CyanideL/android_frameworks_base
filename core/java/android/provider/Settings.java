@@ -5448,6 +5448,18 @@ public final class Settings {
         public static final String RECENT_APPS_CLEAR_ALL_RIPPLE_COLOR = "recent_apps_clear_all_ripple_color";
 
         /**
+         * Color of the navbar buttons
+         * @hide
+         */
+        public static final String NAV_BAR_ICON_COLOR = "nav_bar_icon_color";
+
+        /**
+         * Color of the navbar ripple
+         * @hide
+         */
+        public static final String NAV_BAR_RIPPLE_COLOR = "nav_bar_ripple_color";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
