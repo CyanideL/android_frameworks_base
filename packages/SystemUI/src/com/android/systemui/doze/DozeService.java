@@ -16,12 +16,14 @@
 
 package com.android.systemui.doze;
 
+import android.app.ActivityManager;
 import android.app.UiModeManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -29,14 +31,19 @@ import android.hardware.SensorManager;
 import android.hardware.TriggerEvent;
 import android.hardware.TriggerEventListener;
 import android.media.AudioAttributes;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.service.dreams.DreamService;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 
+import com.android.internal.hardware.AmbientDisplayConfiguration;
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.MetricsProto.MetricsEvent;
 import com.android.systemui.SystemUIApplication;
@@ -45,6 +52,7 @@ import com.android.systemui.statusbar.phone.DozeParameters;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.Date;
+import java.util.List;
 
 public class DozeService extends DreamService implements ProximitySensorManager.ProximityListener,
                                 ShakeSensorManager.ShakeListener {
@@ -54,14 +62,19 @@ public class DozeService extends DreamService implements ProximitySensorManager.
     private static final String ACTION_BASE = "com.android.systemui.doze";
     private static final String PULSE_ACTION = ACTION_BASE + ".pulse";
 
+    /**
+     * If true, reregisters all trigger sensors when the screen turns off.
+     */
+    private static final boolean REREGISTER_ALL_SENSORS_ON_SCREEN_OFF = true;
+
     private final String mTag = String.format(TAG + ".%08x", hashCode());
     private final Context mContext = this;
     private final DozeParameters mDozeParameters = new DozeParameters(mContext);
     private final Handler mHandler = new Handler();
 
     private DozeHost mHost;
-    private SensorManager mSensors;
-    private TriggerSensor mSigMotionSensor;
+    private SensorManager mSensorManager;
+    private TriggerSensor[] mSensors;
     private TriggerSensor mPickupSensor;
     private PowerManager mPowerManager;
     private PowerManager.WakeLock mWakeLock;
@@ -80,6 +93,7 @@ public class DozeService extends DreamService implements ProximitySensorManager.
     // sensor
     private ProximitySensorManager mProximitySensorManager;
     private ShakeSensorManager mShakeSensorManager;
+    private AmbientDisplayConfiguration mConfig;
 
     public DozeService() {
         if (DEBUG) Log.d(mTag, "new DozeService()");
@@ -94,8 +108,10 @@ public class DozeService extends DreamService implements ProximitySensorManager.
         pw.print("  mWakeLock: held="); pw.println(mWakeLock.isHeld());
         pw.print("  mHost: "); pw.println(mHost);
         pw.print("  mBroadcastReceiverRegistered: "); pw.println(mBroadcastReceiverRegistered);
-        pw.print("  mSigMotionSensor: "); pw.println(mSigMotionSensor);
-        pw.print("  mPickupSensor:"); pw.println(mPickupSensor);
+        for (TriggerSensor s : mSensors) {
+            pw.print("  sensor: ");
+            pw.println(s);
+        }
         pw.print("  mDisplayStateSupported: "); pw.println(mDisplayStateSupported);
         pw.print("  mPowerSaveActive: "); pw.println(mPowerSaveActive);
         pw.print("  mCarMode: "); pw.println(mCarMode);
@@ -118,19 +134,26 @@ public class DozeService extends DreamService implements ProximitySensorManager.
 
         setWindowless(true);
 
-        mSensors = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
-        mUseAccelerometer = mDozeParameters.setUsingAccelerometerAsSensorPickUp();
-        if (!mUseAccelerometer) {
-            mSigMotionSensor = new TriggerSensor(Sensor.TYPE_SIGNIFICANT_MOTION,
-                    mDozeParameters.getPulseOnSigMotion(), mDozeParameters.getVibrateOnSigMotion(),
-                    DozeLog.PULSE_REASON_SENSOR_SIGMOTION);
-            mPickupSensor = new TriggerSensor(Sensor.TYPE_PICK_UP_GESTURE,
-                    mDozeParameters.getPulseOnPickup(), mDozeParameters.getVibrateOnPickup(),
-                    DozeLog.PULSE_REASON_SENSOR_PICKUP);
-        } else {
-            mProximitySensorManager = new ProximitySensorManager(mContext, this);
-            mShakeSensorManager = new ShakeSensorManager(mContext, this);
-        }
+        mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
+        mConfig = new AmbientDisplayConfiguration(mContext);
+        mSensors = new TriggerSensor[] {
+                new TriggerSensor(
+                        mSensorManager.getDefaultSensor(Sensor.TYPE_SIGNIFICANT_MOTION),
+                        null /* setting */,
+                        mDozeParameters.getPulseOnSigMotion(),
+                        mDozeParameters.getVibrateOnSigMotion(),
+                        DozeLog.PULSE_REASON_SENSOR_SIGMOTION),
+                mPickupSensor = new TriggerSensor(
+                        mSensorManager.getDefaultSensor(Sensor.TYPE_PICK_UP_GESTURE),
+                        Settings.Secure.DOZE_PULSE_ON_PICK_UP,
+                        mConfig.pulseOnPickupAvailable(), mDozeParameters.getVibrateOnPickup(),
+                        DozeLog.PULSE_REASON_SENSOR_PICKUP),
+                new TriggerSensor(
+                        findSensorWithType(mConfig.doubleTapSensorType()),
+                        Settings.Secure.DOZE_PULSE_ON_DOUBLE_TAP, true,
+                        mDozeParameters.getVibrateOnPickup(),
+                        DozeLog.PULSE_REASON_SENSOR_DOUBLE_TAP)
+        };
         mPowerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
         mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         mWakeLock.setReferenceCounted(true);
@@ -246,18 +269,15 @@ public class DozeService extends DreamService implements ProximitySensorManager.
         // Ask the host to get things ready to start dozing.
         // Once ready, we call startDozing() at which point the CPU may suspend
         // and we will need to acquire a wakelock to do work.
-        mHost.startDozing(new Runnable() {
-            @Override
-            public void run() {
-                if (mDreaming) {
-                    startDozing();
+        mHost.startDozing(mWakeLock.wrap(() -> {
+            if (mDreaming) {
+                startDozing();
 
-                    // From this point until onDreamingStopped we will need to hold a
-                    // wakelock whenever we are doing work.  Note that we never call
-                    // stopDozing because can we just keep dozing until the bitter end.
-                }
+                // From this point until onDreamingStopped we will need to hold a
+                // wakelock whenever we are doing work.  Note that we never call
+                // stopDozing because can we just keep dozing until the bitter end.
             }
-        });
+        }));
     }
 
     @Override
@@ -348,6 +368,9 @@ public class DozeService extends DreamService implements ProximitySensorManager.
             public void onPulseFinished() {
                 if (mPulsing && mDreaming) {
                     mPulsing = false;
+                    if (REREGISTER_ALL_SENSORS_ON_SCREEN_OFF) {
+                        reregisterAllSensors();
+                    }
                     turnDisplayOff();
                 }
                 mWakeLock.release(); // needs to be unconditional to balance acquire
@@ -382,32 +405,19 @@ public class DozeService extends DreamService implements ProximitySensorManager.
 
     private void listenForPulseSignals(boolean listen) {
         if (DEBUG) Log.d(mTag, "listenForPulseSignals: " + listen);
-        if (!mUseAccelerometer) {
-            mSigMotionSensor.setListening(listen);
-            mPickupSensor.setListening(listen);
-        } else {
-            listenForSignalsSensor(listen);
+        for (TriggerSensor s : mSensors) {
+            s.setListening(listen);
         }
         listenForBroadcasts(listen);
         listenForNotifications(listen);
     }
 
-    private void listenForSignalsSensor(boolean listen) {
-        if (listen && mDozeParameters.getFullMode()) {
-            mProximitySensorManager.enable();
-        } else {
-            // its safe to call this everytime
-            mProximitySensorManager.disable(true);
-            mShakeSensorManager.disable();
+    private void reregisterAllSensors() {
+        for (TriggerSensor s : mSensors) {
+            s.setListening(false);
         }
-    }
-
-    private void listenForHalfMode(boolean listen) {
-        if (!mUseAccelerometer || mDozeParameters.getFullMode()) return;
-        if (listen && mDozeParameters.getHalfMode()) {
-            mProximitySensorManager.enable();
-        } else {
-            mProximitySensorManager.disable(true);
+        for (TriggerSensor s : mSensors) {
+            s.setListening(true);
         }
     }
 
@@ -415,11 +425,21 @@ public class DozeService extends DreamService implements ProximitySensorManager.
         if (listen) {
             final IntentFilter filter = new IntentFilter(PULSE_ACTION);
             filter.addAction(UiModeManager.ACTION_ENTER_CAR_MODE);
+            filter.addAction(Intent.ACTION_USER_SWITCHED);
             mContext.registerReceiver(mBroadcastReceiver, filter);
+
+            for (TriggerSensor s : mSensors) {
+                if (s.mConfigured && !TextUtils.isEmpty(s.mSetting)) {
+                    mContext.getContentResolver().registerContentObserver(
+                            Settings.Secure.getUriFor(s.mSetting), false /* descendants */,
+                            mSettingsObserver, UserHandle.USER_ALL);
+                }
+            }
             mBroadcastReceiverRegistered = true;
         } else {
             if (mBroadcastReceiverRegistered) {
                 mContext.unregisterReceiver(mBroadcastReceiver);
+                mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
             }
             mBroadcastReceiverRegistered = false;
         }
@@ -435,7 +455,7 @@ public class DozeService extends DreamService implements ProximitySensorManager.
 
     private void requestNotificationPulse() {
         if (DEBUG) Log.d(mTag, "requestNotificationPulse");
-        if (!mDozeParameters.getPulseOnNotifications()) return;
+        if (!mConfig.pulseOnNotificationEnabled(UserHandle.USER_CURRENT)) return;
         mNotificationPulseTime = SystemClock.elapsedRealtime();
         requestPulse(DozeLog.PULSE_REASON_NOTIFICATION);
     }
@@ -470,6 +490,23 @@ public class DozeService extends DreamService implements ProximitySensorManager.
                     finishForCarMode();
                 }
             }
+            if (Intent.ACTION_USER_SWITCHED.equals(intent.getAction())) {
+                for (TriggerSensor s : mSensors) {
+                    s.updateListener();
+                }
+            }
+        }
+    };
+
+    private final ContentObserver mSettingsObserver = new ContentObserver(mHandler) {
+        @Override
+        public void onChange(boolean selfChange, Uri uri, int userId) {
+            if (userId != ActivityManager.getCurrentUser()) {
+                return;
+            }
+            for (TriggerSensor s : mSensors) {
+                s.updateListener();
+            }
         }
     };
 
@@ -500,18 +537,34 @@ public class DozeService extends DreamService implements ProximitySensorManager.
         }
     };
 
+    private Sensor findSensorWithType(String type) {
+        if (TextUtils.isEmpty(type)) {
+            return null;
+        }
+        List<Sensor> sensorList = mSensorManager.getSensorList(Sensor.TYPE_ALL);
+        for (Sensor s : sensorList) {
+            if (type.equals(s.getStringType())) {
+                return s;
+            }
+        }
+        return null;
+    }
+
     private class TriggerSensor extends TriggerEventListener {
-        private final Sensor mSensor;
-        private final boolean mConfigured;
-        private final boolean mDebugVibrate;
-        private final int mPulseReason;
+        final Sensor mSensor;
+        final boolean mConfigured;
+        final boolean mDebugVibrate;
+        final int mPulseReason;
+        final String mSetting;
 
         private boolean mRequested;
         private boolean mRegistered;
         private boolean mDisabled;
 
-        public TriggerSensor(int type, boolean configured, boolean debugVibrate, int pulseReason) {
-            mSensor = mSensors.getDefaultSensor(type);
+        public TriggerSensor(Sensor sensor, String setting, boolean configured,
+                boolean debugVibrate, int pulseReason) {
+            mSensor = sensor;
+            mSetting = setting;
             mConfigured = configured;
             mDebugVibrate = debugVibrate;
             mPulseReason = pulseReason;
@@ -529,16 +582,24 @@ public class DozeService extends DreamService implements ProximitySensorManager.
             updateListener();
         }
 
-        private void updateListener() {
+        public void updateListener() {
             if (!mConfigured || mSensor == null) return;
-            if (mRequested && !mDisabled && !mRegistered) {
-                mRegistered = mSensors.requestTriggerSensor(this, mSensor);
+            if (mRequested && !mDisabled && enabledBySetting() && !mRegistered) {
+                mRegistered = mSensorManager.requestTriggerSensor(this, mSensor);
                 if (DEBUG) Log.d(mTag, "requestTriggerSensor " + mRegistered);
             } else if (mRegistered) {
-                final boolean rt = mSensors.cancelTriggerSensor(this, mSensor);
+                final boolean rt = mSensorManager.cancelTriggerSensor(this, mSensor);
                 if (DEBUG) Log.d(mTag, "cancelTriggerSensor " + rt);
                 mRegistered = false;
             }
+        }
+
+        private boolean enabledBySetting() {
+            if (TextUtils.isEmpty(mSetting)) {
+                return true;
+            }
+            return Settings.Secure.getIntForUser(mContext.getContentResolver(), mSetting, 1,
+                    UserHandle.USER_CURRENT) != 0;
         }
 
         @Override
@@ -609,7 +670,7 @@ public class DozeService extends DreamService implements ProximitySensorManager.
 
         public void check() {
             if (mFinished || mRegistered) return;
-            final Sensor sensor = mSensors.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+            final Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
             if (sensor == null) {
                 if (DEBUG) Log.d(mTag, "No sensor found");
                 finishWithResult(RESULT_UNKNOWN);
@@ -620,7 +681,8 @@ public class DozeService extends DreamService implements ProximitySensorManager.
                 mPickupSensor.setDisabled(true);
             }
             mMaxRange = sensor.getMaximumRange();
-            mSensors.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL, 0, mHandler);
+            mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL, 0,
+                    mHandler);
             mHandler.postDelayed(this, TIMEOUT_DELAY_MS);
             mRegistered = true;
         }
@@ -647,7 +709,7 @@ public class DozeService extends DreamService implements ProximitySensorManager.
             if (mFinished) return;
             if (mRegistered) {
                 mHandler.removeCallbacks(this);
-                mSensors.unregisterListener(this);
+                mSensorManager.unregisterListener(this);
                 // we're done - reenable the pickup sensor
                 if (!mUseAccelerometer) {
                     mPickupSensor.setDisabled(false);
