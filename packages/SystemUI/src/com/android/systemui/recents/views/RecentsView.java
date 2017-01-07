@@ -551,7 +551,6 @@ public class RecentsView extends FrameLayout {
         }
 
         if (mClearRecents != null) {
-            ContentResolver resolver = getContext().getContentResolver();
             Resources res = getContext().getResources();
 
             int taskViewWidth = 0;
