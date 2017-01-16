@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2016 DarkKat
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+
+    <!-- Status bar -->
+
+    <!-- Weather layout start padding -->
+    <dimen name="weather_layout_start_padding">6dp</dimen>
+
+    <!-- Weather icon top and bottom padding -->
+    <dimen name="weather_icon_top_bottom_padding">1dp</dimen>
+
+    <!-- Network traffic single-line text size -->
+    <dimen name="network_traffic_single_text_size">12sp</dimen>
+
+    <!-- Network traffic dual-line text size -->
+    <dimen name="network_traffic_dual_text_size">10sp</dimen>
+
+    <!-- Network traffic text end margin -->
+    <dimen name="network_traffic_text_end_margin">3dp</dimen>
+
+    <!-- Battery arcs size -->
+    <dimen name="status_bar_battery_arcs_size">16dp</dimen>
+
+    <!-- Battery arcs stroke width -->
+    <dimen name="status_bar_battery_arcs_stroke_width">1.5dp</dimen>
+
+    <!-- Battery charging bolt text padding -->
+    <dimen name="battery_charging_bolt_text_padding">4dp</dimen>
+
+    <!-- Ticker start padding -->
+    <dimen name="ticker_start_padding">6dp</dimen>
+
+    <!-- Ticker icon end margin -->
+    <dimen name="ticker_icon_end_margin">4dp</dimen>
+
+    <!-- Ticker text top padding -->
+    <dimen name="ticker_text_top_padding">2dp</dimen>
+
+    <!-- Ticker text end padding -->
+    <dimen name="ticker_text_end_padding">10dp</dimen>
+
+    <!-- OmniRom addition -->
+
+    <!-- Quick settings (bar) -->
+
+    <!-- Start and end margin of the QS bar scroller -->
+    <dimen name="qs_scroller_margin_start_end">12dp</dimen>
+</resources>

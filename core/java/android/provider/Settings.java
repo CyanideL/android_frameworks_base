@@ -5424,6 +5424,61 @@ public final class Settings {
         public static final String SMARTBAR_DOUBLETAP_SLEEP = "smartbar_doubletap_sleep";
 
         /**
+         * Whether to allow one finger quick settings expansion on the right side of the statusbar.
+         * @hide
+         */
+        public static final String STATUS_BAR_QUICK_QS_PULLDOWN = "status_bar_quick_qs_pulldown";
+
+         /**
+         * Type of the battery meter on the status bar
+         * 0 - Battery icon portrait
+         * 1 - Battery icon landscape left
+         * 2 - Battery icon landscape right
+         * 3 - Battery icon circle
+         * 4 - Battery icon arcs
+         * 5 - Battery text only
+         * 6 - Hidden
+         * default: 0
+         * @hide
+         */
+        public static final String STATUS_BAR_BATTERY_METER_TYPE = "status_bar_battery_meter_type";
+
+        /**
+         *  Whether to show the percentage text embedded in the battery meter on the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_BATTERY_METER_SHOW_TEXT = "status_bar_battery_meter_show_text";
+
+        /**
+         * Dot interval of the circle battery meter icon on the status bar
+         * 0 - No dots
+         * 1 - 10
+         * default: 0
+         * @hide
+         */
+        public static final String STATUS_BAR_BATTERY_METER_CIRCLE_DOT_INTERVAL = "status_bar_battery_meter_circle_dot_interval";
+
+        /**
+         * Dot length of the circle battery meter icon on the status bar
+         * 0 - 10
+         * default: 0
+         * @hide
+         */
+        public static final String STATUS_BAR_BATTERY_METER_CIRCLE_DOT_LENGTH = "status_bar_battery_meter_circle_dot_length";
+
+        /**
+         *  Whether to show the battery meter charging animation on the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_BATTERY_METER_SHOW_CHARGE_ANIMATION = "status_bar_battery_meter_show_charge_animation";
+
+        /**
+         *  Whether to cut the embedded percentage text out of the battery meter icon on the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_BATTERY_METER_CUT_OUT_TEXT = "status_bar_battery_meter_cut_out_text";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

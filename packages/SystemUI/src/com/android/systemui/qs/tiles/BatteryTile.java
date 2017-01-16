@@ -121,8 +121,7 @@ public class BatteryTile extends QSTile<QSTile.State> implements BatteryControll
             @Override
             public Drawable getDrawable(Context context) {
                 BatteryMeterDrawable drawable =
-                        new BatteryMeterDrawable(context, new Handler(Looper.getMainLooper()),
-                        context.getColor(R.color.batterymeter_frame_color));
+                        new BatteryMeterDrawable(context, new Handler(Looper.getMainLooper()), 0f, 0f);
                 drawable.onBatteryLevelChanged(mLevel, mPluggedIn, mCharging);
                 drawable.onPowerSaveChanged(mPowerSave);
                 drawable.setIconColor(QSColorHelper.getIconColor(mContext));
@@ -169,7 +168,7 @@ public class BatteryTile extends QSTile<QSTile.State> implements BatteryControll
     private final class BatteryDetail implements DetailAdapter, OnClickListener,
             OnAttachStateChangeListener {
         private final BatteryMeterDrawable mDrawable = new BatteryMeterDrawable(mHost.getContext(),
-                new Handler(), mHost.getContext().getColor(R.color.batterymeter_frame_color));
+                new Handler(), 0f, 0f);
         private View mCurrentView;
 
         @Override
@@ -210,7 +209,6 @@ public class BatteryTile extends QSTile<QSTile.State> implements BatteryControll
             }
             mDrawable.onBatteryLevelChanged(100, false, false);
             mDrawable.onPowerSaveChanged(true);
-            mDrawable.disableShowPercent();
             ((ImageView) mCurrentView.findViewById(android.R.id.icon)).setImageDrawable(mDrawable);
             Checkable checkbox = (Checkable) mCurrentView.findViewById(android.R.id.toggle);
             checkbox.setChecked(mPowerSave);

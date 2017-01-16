@@ -32,7 +32,7 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
     private final PhoneStatusBarView mView;
     private final float mIconAlphaWhenOpaque;
 
-    private View mCyanideLogoLeft, mWeather, mCustomLabel, mLeftSide, mNetworkTraffic, mStatusIcons, mWeatherRight, mSignalCluster, mBattery, mClock, mCustomLabelRight, mCyanideLogo;
+    private View mCyanideLogoLeft, mWeather, mCustomLabel, mLeftSide, mNetworkTraffic, mStatusIcons, mWeatherRight, mSignalCluster, mBattery, mBatteryText, mClock, mCustomLabelRight, mCyanideLogo;
 
     private Animator mCurrentAnimation;
 
@@ -54,6 +54,7 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
         mCustomLabelRight = mView.findViewById(R.id.status_bar_custom_label_layout_right);
         mSignalCluster = mView.findViewById(R.id.signal_cluster);
         mBattery = mView.findViewById(R.id.battery);
+        mBatteryText = mView.findViewById(R.id.battery_meter_text);
         mClock = mView.findViewById(R.id.clock);
         mCyanideLogo = mView.findViewById(R.id.cyanide_logo);
         applyModeBackground(-1, getMode(), false /*animate*/);
@@ -105,6 +106,7 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
                     animateTransitionTo(mWeatherRight, newAlpha),
                     animateTransitionTo(mSignalCluster, newAlpha),
                     animateTransitionTo(mBattery, newAlphaBC),
+                    animateTransitionTo(mBatteryText, newAlphaBC),
                     animateTransitionTo(mClock, newAlphaBC),
                     animateTransitionTo(mCustomLabelRight, newAlpha),
                     animateTransitionTo(mCyanideLogo, newAlphaBC)
@@ -124,6 +126,7 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
             mWeatherRight.setAlpha(newAlpha);
             mSignalCluster.setAlpha(newAlpha);
             mBattery.setAlpha(newAlphaBC);
+            mBatteryText.setAlpha(newAlphaBC);
             mClock.setAlpha(newAlphaBC);
             mCustomLabelRight.setAlpha(newAlpha);
             mCyanideLogo.setAlpha(newAlphaBC);

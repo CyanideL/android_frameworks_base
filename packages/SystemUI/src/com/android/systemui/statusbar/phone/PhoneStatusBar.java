@@ -130,6 +130,7 @@ import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.MetricsProto.MetricsEvent;
 import com.android.internal.statusbar.NotificationVisibility;
 import com.android.internal.statusbar.StatusBarIcon;
+import com.android.internal.util.cyanide.StatusBarColorHelper;
 import com.android.internal.util.cyanide.QSColorHelper;
 import com.android.internal.util.cyanide.WeatherServiceControllerImpl;
 import com.android.internal.util.cyanide.WeatherHelper;
@@ -143,6 +144,7 @@ import com.android.keyguard.ViewMediatorCallback;
 import com.android.systemui.AutoReinflateContainer;
 import com.android.systemui.AutoReinflateContainer.InflateListener;
 import com.android.systemui.BatteryMeterView;
+import com.android.systemui.BatteryMeterTextView;
 import com.android.systemui.DemoMode;
 import com.android.systemui.EventLogConstants;
 import com.android.systemui.EventLogTags;
@@ -617,6 +619,24 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_NETWORK_TRAFFIC_COLOR),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_METER_TYPE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_METER_SHOW_TEXT),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_METER_CIRCLE_DOT_INTERVAL),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_METER_CIRCLE_DOT_LENGTH),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_METER_SHOW_CHARGE_ANIMATION),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_METER_CUT_OUT_TEXT),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CUSTOM_LABEL_SHOW),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -758,6 +778,23 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         mBatterySaverWarningColor = mContext.getResources()
                                 .getColor(com.android.internal.R.color.battery_saver_mode_color);
                     }
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_METER_TYPE))) {
+                setupBatteryMeter();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_METER_SHOW_TEXT))) {
+                updateBatteryMeterTextVisibility();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_METER_CIRCLE_DOT_INTERVAL))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_METER_CIRCLE_DOT_LENGTH))) {
+                updateBatteryMeterCircleDots();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_METER_SHOW_CHARGE_ANIMATION))) {
+                updateBatteryShowChargeAnimation();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_METER_CUT_OUT_TEXT))) {
+                updateBatteryMeterCutOutText();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.QS_ROWS_PORTRAIT))
                 || uri.equals(Settings.System.getUriFor(
@@ -1401,7 +1438,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         ((BatteryMeterView) mStatusBarView.findViewById(R.id.battery)).setBatteryController(
                 mBatteryController);
-        mKeyguardStatusBar.setBatteryController(mBatteryController);
+        ((BatteryMeterView) mKeyguardStatusBar.findViewById(R.id.battery)).setBatteryController(
+                mBatteryController);
+        ((BatteryMeterTextView) mStatusBarView.findViewById(R.id.battery_meter_text)).setBatteryController(
+                mBatteryController);
+        ((BatteryMeterTextView) mKeyguardStatusBar.findViewById(R.id.battery_meter_text)).setBatteryController(
+                mBatteryController);
 
         mReportRejectedTouch = mStatusBarWindow.findViewById(R.id.report_rejected_touch);
         if (mReportRejectedTouch != null) {
@@ -2865,6 +2907,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         setKeyguardIndicatorTextColor();
         updateStatusBarBatteryTextColor(false);
         setKeyguardIndicatorTextSize();
+        setupBatteryMeter();
     }
 
     private void updateTrafficColor(boolean animate) {
@@ -2929,7 +2972,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
          if (mIconController != null) {
              mIconController.updateBatteryTextColor(animate);
          }
-+    }
+    }
 
     private void updateStatusBarLogoColor(boolean animate) {
         if (mIconController != null) {
@@ -3105,6 +3148,62 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         if (mIconController != null) {
             mIconController.updateCustomLabelVisibility(show, forceHide, maxAllowedIcons);
+        }
+    }
+    
+      private void setupBatteryMeter() {
+        final int iconColor = StatusBarColorHelper.getIconColor(mContext);
+        final int textColor = StatusBarColorHelper.getBatteryTextColor(mContext);
+        final int type = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_METER_TYPE, 0);
+        final boolean showText = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_METER_SHOW_TEXT, 0) == 1;
+        final int dotInterval = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_METER_CIRCLE_DOT_INTERVAL, 0);
+        final int dotLength = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_METER_CIRCLE_DOT_LENGTH, 0);
+        final boolean showChargeAnimation = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_METER_SHOW_CHARGE_ANIMATION, 0) == 1;
+        final boolean cutOutText = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_METER_CUT_OUT_TEXT, 1) == 1;
+
+        if (mIconController != null) {
+            mIconController.setupBatteryMeter(type, iconColor, textColor, showText,
+                    dotInterval, dotLength, showChargeAnimation, cutOutText);
+        }
+    }
+
+    private void updateBatteryMeterTextVisibility() {
+        final boolean show = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_METER_SHOW_TEXT, 0) == 1;
+        if (mIconController != null) {
+            mIconController.updateBatteryMeterTextVisibility(show);
+        }
+    }
+
+    private void updateBatteryMeterCircleDots() {
+        final int interval = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_METER_CIRCLE_DOT_INTERVAL, 0);
+        final int length = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_METER_CIRCLE_DOT_LENGTH, 0);
+        if (mIconController != null) {
+            mIconController.updateBatteryMeterCircleDots(interval, length);
+        }
+    }
+
+    private void updateBatteryShowChargeAnimation() {
+        final boolean show = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_METER_SHOW_CHARGE_ANIMATION, 0) == 1;
+        if (mIconController != null) {
+            mIconController.updateBatteryShowChargeAnimation(show);
+        }
+    }
+
+    private void updateBatteryMeterCutOutText() {
+        final boolean cutOut = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_METER_CUT_OUT_TEXT, 1) == 1;
+        if (mIconController != null) {
+            mIconController.updateBatteryMeterCutOutText(cutOut);
         }
     }
 
