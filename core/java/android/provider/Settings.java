@@ -5479,6 +5479,12 @@ public final class Settings {
         public static final String STATUS_BAR_BATTERY_METER_CUT_OUT_TEXT = "status_bar_battery_meter_cut_out_text";
 
         /**
+         * Dashboard columns in settings
+         * @hide
+         */
+        public static final String DASHBOARD_COLUMNS = "dashboard_columns";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
