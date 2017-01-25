@@ -34,6 +34,12 @@ public class StatusBarColorHelper {
         return (LIGHT_MODE_ALPHA_SINGLE_TONE << 24) | (color & 0x00ffffff);
     }
 
+    public static int getBatteryTextColor(Context context) {
+        int color = Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_TEXT_COLOR, LIGHT_MODE_COLOR_SINGLE_TONE);
+        return (LIGHT_MODE_ALPHA_SINGLE_TONE << 24) | (color & 0x00ffffff);
+    }
+
     public static int getIconColor(Context context) {
         int color = Settings.System.getInt(context.getContentResolver(),
                 Settings.System.STATUS_BAR_ICON_COLOR, LIGHT_MODE_COLOR_SINGLE_TONE);
@@ -43,6 +49,12 @@ public class StatusBarColorHelper {
     public static int getTextColorDarkMode(Context context) {
         int color = Settings.System.getInt(context.getContentResolver(),
                 Settings.System.STATUS_BAR_TEXT_COLOR_DARK_MODE,  DARK_MODE_COLOR_SINGLE_TONE);
+        return (DARK_MODE_ALPHA_SINGLE_TONE << 24) | (color & 0x00ffffff);
+    }
+
+    public static int getBatteryTextColorDarkMode(Context context) {
+        int color = Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_TEXT_COLOR_DARK_MODE, DARK_MODE_COLOR_SINGLE_TONE);
         return (DARK_MODE_ALPHA_SINGLE_TONE << 24) | (color & 0x00ffffff);
     }
 

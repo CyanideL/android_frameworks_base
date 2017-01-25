@@ -143,7 +143,6 @@ import com.android.keyguard.ViewMediatorCallback;
 import com.android.systemui.AutoReinflateContainer;
 import com.android.systemui.AutoReinflateContainer.InflateListener;
 import com.android.systemui.BatteryMeterView;
-import com.android.systemui.BatteryLevelTextView;
 import com.android.systemui.DemoMode;
 import com.android.systemui.EventLogConstants;
 import com.android.systemui.EventLogTags;
@@ -418,10 +417,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     int mMaxAllowedKeyguardNotifications;
 
-    // battery
-    private BatteryMeterView mBatteryView;
-    private BatteryLevelTextView mBatteryLevel;
-
     boolean mExpandedVisible;
 
     private int mNavigationBarWindowState = WINDOW_STATE_SHOWING;
@@ -520,10 +515,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_ICON_COLOR),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_SHOW_TICKER),
+                    Settings.System.STATUS_BAR_BATTERY_TEXT_COLOR),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_BATTERY_STATUS_TEXT_COLOR),
+                    Settings.System.STATUS_BAR_SHOW_TICKER),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_WEATHER_SHOW),
@@ -677,6 +672,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_ICON_COLOR))) {
                 updateStatusBarIconColor(true);
             } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_TEXT_COLOR))) {
+                updateStatusBarBatteryTextColor(true);
+            } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_SHOW_TICKER))) {
                 mTickerEnabled = Settings.System.getIntForUser(
                         mContext.getContentResolver(),
@@ -684,9 +682,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         mContext.getResources().getBoolean(R.bool.enable_ticker)
                         ? 1 : 1, UserHandle.USER_CURRENT) == 1;
                 initTickerView();
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_BATTERY_STATUS_TEXT_COLOR))) {
-                updateBatteryLevelTextColor();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CLOCK_COLOR))) {
                 updateStatusBarClockColor(true);
@@ -1216,8 +1211,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mPixelFormat = PixelFormat.OPAQUE;
         mStatusBarContents = (LinearLayout)mStatusBarView.findViewById(R.id.status_bar_contents);
 
-        mBatteryView = (BatteryMeterView) mStatusBarView.findViewById(R.id.battery);
-        mBatteryLevel = (BatteryLevelTextView) mStatusBarView.findViewById(R.id.battery_level_text);
         mStackScroller = (NotificationStackScrollLayout) mStatusBarWindow.findViewById(
                 R.id.notification_stack_scroller);
         mStackScroller.setLongPressListener(getNotificationLongClicker());
@@ -1406,8 +1399,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mKeyguardStatusBar.setUserSwitcherController(mUserSwitcherController);
         mUserInfoController.reloadUserInfo();
 
-        mBatteryView.setBatteryController(mBatteryController);
-        mBatteryLevel.setBatteryController(mBatteryController);
+        ((BatteryMeterView) mStatusBarView.findViewById(R.id.battery)).setBatteryController(
+                mBatteryController);
         mKeyguardStatusBar.setBatteryController(mBatteryController);
 
         mReportRejectedTouch = mStatusBarWindow.findViewById(R.id.report_rejected_touch);
@@ -1477,6 +1470,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         ThreadedRenderer.overrideProperty("ambientRatio", String.valueOf(1.5f));
 
         updateSettings();
+
         return mStatusBarView;
     }
 
@@ -2844,7 +2838,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateStatusBarIconColor(false);
         updateStatusBarClockColor(false);
         updateStatusBarLogoColor(false);
-        updateBatteryLevelTextColor();
         setCyanideLogoVisibility();
         showKeyguardLogo();
         updateWeatherVisibility();
@@ -2870,6 +2863,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         setKeyguardCustomLabel();
         setKeyguardIndicatorFontStyle();
         setKeyguardIndicatorTextColor();
+        updateStatusBarBatteryTextColor(false);
         setKeyguardIndicatorTextSize();
     }
 
@@ -2930,16 +2924,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mIconController.updateClockColor(animate);
         }
     }
+    
+    private void updateStatusBarBatteryTextColor(boolean animate) {
+         if (mIconController != null) {
+             mIconController.updateBatteryTextColor(animate);
+         }
++    }
 
     private void updateStatusBarLogoColor(boolean animate) {
         if (mIconController != null) {
             mIconController.updateLogoColor(animate);
-        }
-    }
-
-    private void updateBatteryLevelTextColor() {
-        if (mBatteryLevel != null) {
-            mBatteryLevel.setTextColor(false);
         }
     }
 
