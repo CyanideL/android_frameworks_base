@@ -338,16 +338,16 @@ public class ExpansionViewTraffic extends LinearLayout {
                     lastUpdateTime = SystemClock.elapsedRealtime();
                     mTrafficHandler.sendEmptyMessage(1);
                 }
-                setVisibility(View.VISIBLE);
                 if (!mHideArrows) {
                     updateTrafficDrawable();
                 }
+                updateTrafficDrawable(mNetworkTrafficColor);
                 return;
             }
         } else {
             clearHandlerCallbacks();
         }
-        setVisibility(View.GONE);
+        setVisibility(View.GONE); //this is needed when the icon is shown then we disable it
     }
  
     private static boolean isSet(int intState, int intMask) {
