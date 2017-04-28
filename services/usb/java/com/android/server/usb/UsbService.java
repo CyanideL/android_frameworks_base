@@ -287,7 +287,7 @@ public class UsbService extends IUsbManager.Stub {
     }
 
     @Override
-    public void setCurrentFunction(String function, boolean usbDataUnlocked) {
+    public void setCurrentFunction(String function) {
         mContext.enforceCallingOrSelfPermission(android.Manifest.permission.MANAGE_USB, null);
 
         if (!isSupportedCurrentFunction(function)) {
@@ -297,7 +297,7 @@ public class UsbService extends IUsbManager.Stub {
         }
 
         if (mDeviceManager != null) {
-            mDeviceManager.setCurrentFunctions(function, usbDataUnlocked);
+            mDeviceManager.setCurrentFunctions(function);
         } else {
             throw new IllegalStateException("USB device mode not supported");
         }
@@ -317,6 +317,12 @@ public class UsbService extends IUsbManager.Stub {
         }
 
         return false;
+    }
+
+    @Override
+    public void setUsbDataUnlocked(boolean unlocked) {
+        mContext.enforceCallingOrSelfPermission(android.Manifest.permission.MANAGE_USB, null);
+        mDeviceManager.setUsbDataUnlocked(unlocked);
     }
 
     @Override

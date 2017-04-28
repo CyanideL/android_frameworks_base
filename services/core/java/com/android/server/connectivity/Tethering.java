@@ -897,7 +897,7 @@ public class Tethering extends BaseNetworkObserver implements IControlsTethering
                     }
                 } else {
                     mUsbTetherRequested = true;
-                    usbManager.setCurrentFunction(UsbManager.USB_FUNCTION_RNDIS, false);
+                    usbManager.setCurrentFunction(UsbManager.USB_FUNCTION_RNDIS);
                 }
             } else {
                 final long ident = Binder.clearCallingIdentity();
@@ -907,7 +907,7 @@ public class Tethering extends BaseNetworkObserver implements IControlsTethering
                     Binder.restoreCallingIdentity(ident);
                 }
                 if (mRndisEnabled) {
-                    usbManager.setCurrentFunction(null, false);
+                    usbManager.setCurrentFunction(null);
                 }
                 mUsbTetherRequested = false;
             }

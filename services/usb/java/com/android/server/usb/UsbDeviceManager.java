@@ -358,6 +358,17 @@ public class UsbDeviceManager {
                         SystemProperties.get(USB_STATE_PROPERTY));
                 mAdbEnabled = UsbManager.containsFunction(getDefaultFunctions(),
                         UsbManager.USB_FUNCTION_ADB);
+
+                /**
+                 * Remove MTP from persistent config, to bring usb to a good state
+                 * after fixes to b/31814300. This block can be removed after the update
+                 */
+                String persisted = SystemProperties.get(USB_PERSISTENT_CONFIG_PROPERTY);
+                if (UsbManager.containsFunction(persisted, UsbManager.USB_FUNCTION_MTP)) {
+                    SystemProperties.set(USB_PERSISTENT_CONFIG_PROPERTY,
+                            UsbManager.removeFunction(persisted, UsbManager.USB_FUNCTION_MTP));
+                }
+
                 setEnabledFunctions(null, false);
 
                 String state = FileUtils.readTextFile(new File(STATE_PATH), 0, null).trim();
@@ -496,8 +507,7 @@ public class UsbDeviceManager {
                     SystemProperties.set(USB_PERSISTENT_CONFIG_PROPERTY, newFunctions);
                 }
 
-                // After persisting them use the lock-down aware function set
-                setEnabledFunctions(mCurrentFunctions, false);
+                setEnabledFunctions(oldFunctions, false);
                 updateAdbNotification();
             }
 
