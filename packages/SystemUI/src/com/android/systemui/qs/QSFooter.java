@@ -81,7 +81,6 @@ public class QSFooter implements OnClickListener, DialogInterface.OnClickListene
         mFooterIconId = R.drawable.ic_qs_vpn;
         mFooterIcon.setImageTintList(QSColorHelper.getIconColorList(mContext));
         mFooterIcon2Id = R.drawable.ic_qs_network_logging;
-        mContext = context;
         mMainHandler = new Handler();
     }
 

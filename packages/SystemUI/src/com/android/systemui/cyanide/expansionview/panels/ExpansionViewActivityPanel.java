@@ -41,15 +41,14 @@ import com.android.systemui.statusbar.phone.ActivityStarter;
 //import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NetworkController.IconState;
-import com.android.systemui.statusbar.policy.SignalCallbackAdapter;
+import com.android.systemui.statusbar.policy.NetworkController.SignalCallback;
 import com.android.systemui.R;
 
-public class ExpansionViewActivityPanel extends RelativeLayout /*implements BatteryController.BatteryStateChangeCallback*/ {
+public class ExpansionViewActivityPanel extends RelativeLayout implements SignalCallback {
 
     private final Context mContext;
     private final boolean mSupportsMobileData;
 
-    private final SignalCallback mSignalCallback = new SignalCallback();
     private ActivityStarter mActivityStarter;
     //private BatteryController mBatteryController;
     //private BatteryMeterView mBatteryMeterView;
@@ -183,10 +182,10 @@ public class ExpansionViewActivityPanel extends RelativeLayout /*implements Batt
         mListening = listening;
         if (mListening) {
             //mBatteryController.addStateChangedCallback(this);
-            mNetworkController.addSignalCallback(mSignalCallback);
+            mNetworkController.addSignalCallback(this);
         } else {
             //mBatteryController.removeStateChangedCallback(this);
-            mNetworkController.removeSignalCallback(mSignalCallback);
+            mNetworkController.removeSignalCallback(this);
         }
     }
 
@@ -270,7 +269,6 @@ public class ExpansionViewActivityPanel extends RelativeLayout /*implements Batt
         mWifiLabel.setTypeface(tf);
     }
 
-    private final class SignalCallback extends SignalCallbackAdapter {
         @Override
         public void setWifiIndicators(boolean enabled, IconState statusIcon, IconState qsIcon,
                 boolean activityIn, boolean activityOut, String description) {
@@ -283,7 +281,7 @@ public class ExpansionViewActivityPanel extends RelativeLayout /*implements Batt
         @Override
         public void setMobileDataIndicators(IconState statusIcon, IconState qsIcon, int statusType,
                 int qsType, boolean activityIn, boolean activityOut, String typeContentDescription,
-                String description, boolean isWide, int subId) {
+                String description, boolean isWide, int subId, boolean roaming) {
             if (statusIcon == null || !mSupportsMobileData) {
                 return;
             }
@@ -299,7 +297,7 @@ public class ExpansionViewActivityPanel extends RelativeLayout /*implements Batt
             mIsNoSims = show;
             updateViews();
         }
-    };
+
 
     /*@Override
     public void onBatteryLevelChanged(int level, boolean pluggedIn, boolean charging) {

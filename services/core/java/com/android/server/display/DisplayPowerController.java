@@ -138,6 +138,9 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
     // The proximity sensor, or null if not available or needed.
     private Sensor mProximitySensor;
 
+    // The doze screen brightness.
+    private final int mScreenBrightnessDozeConfig;
+
     // The dim screen brightness.
     private final int mScreenBrightnessDimConfig;
 
@@ -278,6 +281,9 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
         final int screenBrightnessSettingMinimum = clampAbsoluteBrightness(resources.getInteger(
                 com.android.internal.R.integer.config_screenBrightnessSettingMinimum));
 
+        mScreenBrightnessDozeConfig = clampAbsoluteBrightness(resources.getInteger(
+                com.android.internal.R.integer.config_screenBrightnessDoze));
+
         mScreenBrightnessDimConfig = clampAbsoluteBrightness(resources.getInteger(
                 com.android.internal.R.integer.config_screenBrightnessDim));
 
@@ -303,6 +309,9 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
 
         mUseSoftwareAutoBrightnessConfig = resources.getBoolean(
                 com.android.internal.R.bool.config_automatic_brightness_available);
+
+        mAllowAutoBrightnessWhileDozingConfig = resources.getBoolean(
+                com.android.internal.R.bool.config_allowAutoBrightnessWhileDozing);
 
         mBrightnessRampRateFast = resources.getInteger(
                 com.android.internal.R.integer.config_brightness_ramp_rate_fast);

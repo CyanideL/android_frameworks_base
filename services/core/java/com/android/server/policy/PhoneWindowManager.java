@@ -914,10 +914,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             KeyEvent.changeAction(event, KeyEvent.ACTION_UP));
                     break;
                 }
-                case MSG_BACK_DELAYED_PRESS:
+                /*case MSG_BACK_DELAYED_PRESS:
                     backMultiPressAction((Long) msg.obj, msg.arg1);
                     finishBackKeyPress();
-                    break;
+                    break;*/
             }
         }
     }

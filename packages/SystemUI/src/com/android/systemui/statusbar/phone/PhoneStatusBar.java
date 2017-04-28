@@ -1840,6 +1840,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     };
 
+    private View.OnLongClickListener mLongPressBackListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            return handleLongPressBack();
+        }
+    };
+
     @Override
     protected void toggleSplitScreenMode(int metricsDockAction, int metricsUndockAction) {
         if (mRecents == null) {
@@ -2456,7 +2463,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     /**
      * Return whether there are any clearable notifications
      */
-    private boolean hasActiveClearableNotifications() {
+    public boolean hasActiveClearableNotifications() {
         int childCount = mStackScroller.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = mStackScroller.getChildAt(i);
@@ -2524,9 +2531,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         return mNotificationData.hasActiveOngoingNotifications();
     }
 
-    protected boolean hasActiveClearableNotifications() {
+    /*protected boolean hasActiveClearableNotifications() {
         return mNotificationData.hasActiveClearableNotifications();
-    }
+    }*/
 
     @Override
     protected void setAreThereNotifications() {
@@ -5958,6 +5965,22 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         toggleSplitScreenMode(MetricsEvent.ACTION_WINDOW_DOCK_LONGPRESS,
                 MetricsEvent.ACTION_WINDOW_UNDOCK_LONGPRESS);
         return true;
+    }
+    
+    /**
+     * Handles long press for back button. This exits screen pinning.
+     */
+    private boolean handleLongPressBack() {
+        try {
+            IActivityManager activityManager = ActivityManagerNative.getDefault();
+            if (activityManager.isInLockTaskMode()) {
+                activityManager.stopSystemLockTaskMode();
+                return true;
+            }
+        } catch (RemoteException e) {
+            Log.d(TAG, "Unable to reach activity manager", e);
+        }
+        return false;
     }
 
     @Override

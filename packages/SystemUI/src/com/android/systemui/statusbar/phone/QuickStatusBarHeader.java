@@ -364,11 +364,12 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
             if (mHost.getNetworkController().hasVoiceCallingFeature()) {
                 mHost.getNetworkController().addEmergencyListener(this);
                 mHost.getNetworkController().addSignalCallback(this);
-        } else {
-            mNextAlarmController.removeStateChangedCallback(this);
-            mHost.getNetworkController().removeEmergencyListener(this);
-            mHost.getNetworkController().removeSignalCallback(this);
-            mSettingsObserver.unobserve();
+            } else {
+                mNextAlarmController.removeStateChangedCallback(this);
+                mHost.getNetworkController().removeEmergencyListener(this);
+                mHost.getNetworkController().removeSignalCallback(this);
+                mSettingsObserver.unobserve();
+            }
         }
     }
 
