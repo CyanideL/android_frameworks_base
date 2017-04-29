@@ -60,6 +60,8 @@ public class KeyguardIndicationController {
     private static final int MSG_HIDE_TRANSIENT = 1;
     private static final int MSG_CLEAR_FP_MSG = 2;
     private static final long TRANSIENT_FP_ERROR_TIMEOUT = 1300;
+    private int mChargingCurrent;
+    private int mChargingVoltage;
 
     private final Context mContext;
     private final KeyguardIndicationTextView mTextView;
@@ -257,6 +259,8 @@ public class KeyguardIndicationController {
                     || status.status == BatteryManager.BATTERY_STATUS_FULL;
             mPowerPluggedIn = status.isPluggedIn() && isChargingOrFull;
             mPowerCharged = status.isCharged();
+            mChargingCurrent = status.maxChargingCurrent;
+            mChargingVoltage = status.maxChargingVoltage;
             mChargingWattage = status.maxChargingWattage;
             mChargingSpeed = status.getChargingSpeed(mSlowThreshold, mFastThreshold);
             updateIndication();
